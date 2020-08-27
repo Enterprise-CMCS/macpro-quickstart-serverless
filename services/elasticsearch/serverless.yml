@@ -1,0 +1,124 @@
+
+service: elasticsearch
+
+package:
+  individually: true
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  cognito_identity_pool_id: ${cf:elasticsearch-auth-${self:custom.stage}.IdentityPoolId}
+  cognito_identity_pool_authenticated_role_arn: ${cf:elasticsearch-auth-${self:custom.stage}.IdentityPoolAuthenticatedRoleArn}
+  cognito_user_pool_id: ${cf:elasticsearch-auth-${self:custom.stage}.UserPoolId}
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  stage: dev
+
+resources:
+  Conditions:
+    BuildProdInfrastructure:
+      Fn::Equals:
+        - ${env:INFRASTRUCTURE_TYPE, ""}
+        - "production"
+  Resources:
+    ElasticSearchInstance:
+      Type: AWS::Elasticsearch::Domain
+      Properties:
+        EBSOptions:
+          EBSEnabled: true
+          VolumeType: gp2
+          VolumeSize: 10
+        ElasticsearchClusterConfig:
+          Fn::If:
+            - BuildProdInfrastructure
+            - InstanceType: m5.large.elasticsearch
+              InstanceCount: 3
+              DedicatedMasterEnabled: false
+            - InstanceType: t2.small.elasticsearch
+              InstanceCount: 1
+              DedicatedMasterEnabled: false
+        EncryptionAtRestOptions:
+          Fn::If:
+            - BuildProdInfrastructure
+            - Enabled: true
+            - Enabled: false
+        NodeToNodeEncryptionOptions:
+          Fn::If:
+            - BuildProdInfrastructure
+            - Enabled: true
+            - Enabled: false
+        ElasticsearchVersion: 7.7
+        DomainEndpointOptions:
+          EnforceHTTPS: true
+          TLSSecurityPolicy: Policy-Min-TLS-1-0-2019-07
+        CognitoOptions:
+          Enabled: true
+          IdentityPoolId: ${self:custom.cognito_identity_pool_id}
+          RoleArn:
+            Fn::GetAtt: [ "EsCognitoRole", "Arn" ]
+          UserPoolId: ${self:custom.cognito_user_pool_id}
+        AccessPolicies:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: 'Allow'
+              Principal:
+                AWS: ${self:custom.cognito_identity_pool_authenticated_role_arn}
+              Action: 'es:ESHttp*'
+              Resource: '*'
+        AdvancedOptions:
+          rest.action.multi.allow_explicit_index: 'true'
+
+    EsCognitoRole:
+      Type: AWS::IAM::Role
+      Properties:
+        Path: /
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: 'Allow'
+              Principal:
+                Service: 'es.amazonaws.com'
+              Action:
+                - 'sts:AssumeRole'
+        Policies:
+          - PolicyName: 'CognitoAuthorizedPolicy'
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: 'Allow'
+                  Action:
+                    - 'cognito-idp:DescribeUserPool'
+                    - 'cognito-idp:CreateUserPoolClient'
+                    - 'cognito-idp:DeleteUserPoolClient'
+                    - 'cognito-idp:DescribeUserPoolClient'
+                    - 'cognito-idp:AdminInitiateAuth'
+                    - 'cognito-idp:AdminUserGlobalSignOut'
+                    - 'cognito-idp:ListUserPoolClients'
+                    - 'cognito-identity:DescribeIdentityPool'
+                    - 'cognito-identity:UpdateIdentityPool'
+                    - 'cognito-identity:SetIdentityPoolRoles'
+                    - 'cognito-identity:GetIdentityPoolRoles'
+                  Resource: '*'
+                - Effect: 'Allow'
+                  Action:
+                    - 'iam:PassRole'
+                  Resource: '*'
+                  Condition:
+                    'StringLike':
+                      'iam:PassedToService': cognito-identity.amazonaws.com
+
+  Outputs:
+    ElasticSearchDomainArn:
+      Value: !GetAtt ElasticSearchInstance.Arn
+
+    ElasticSearchDomainEndpoint:
+      Value:
+        Fn::Join:
+          - ''
+          -
+            - https://
+            - Fn::GetAtt:
+              - ElasticSearchInstance
+              - DomainEndpoint

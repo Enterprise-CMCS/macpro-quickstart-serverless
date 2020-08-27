@@ -1,0 +1,126 @@
+
+service: elasticsearch-auth
+
+package:
+  individually: true
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  stage: dev
+
+resources:
+  Conditions:
+    CreateEmailConfiguration:
+      Fn::Not:
+        - Fn::Equals:
+          - ""
+          - ${env:SES_SOURCE_EMAIL_ARN, ""}
+
+  Resources:
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: ${self:custom.stage}-elasticsearch-user-pool
+        UsernameAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+        EmailConfiguration:
+          Fn::If:
+            - CreateEmailConfiguration
+            - EmailSendingAccount: DEVELOPER
+              SourceArn: ${env:SES_SOURCE_EMAIL_ARN, ""}
+            - Ref: AWS::NoValue
+
+    CognitoUserPoolDomain:
+      Type: AWS::Cognito::UserPoolDomain
+      Properties:
+        Domain: ${self:custom.stage}-elasticsearch-user-pool
+        UserPoolId:
+          Ref: CognitoUserPool
+
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: ${self:custom.stage}-elasticsearch-user-pool-client
+        UserPoolId:
+          Ref: CognitoUserPool
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH
+        GenerateSecret: false
+
+    CognitoIdentityPool:
+      Type: AWS::Cognito::IdentityPool
+      Properties:
+        IdentityPoolName: ${self:custom.stage}ElasticSearchIdentityPool
+        AllowUnauthenticatedIdentities: false
+        CognitoIdentityProviders:
+          - ClientId:
+              Ref: CognitoUserPoolClient
+            ProviderName:
+              Fn::GetAtt: [ "CognitoUserPool", "ProviderName" ]
+
+    CognitoIdentityPoolRoles:
+      Type: AWS::Cognito::IdentityPoolRoleAttachment
+      Properties:
+        IdentityPoolId:
+          Ref: CognitoIdentityPool
+        Roles:
+          authenticated:
+            Fn::GetAtt: [CognitoAuthRole, Arn]
+
+    CognitoAuthRole:
+      Type: AWS::IAM::Role
+      Properties:
+        Path: /
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: 'Allow'
+              Principal:
+                Federated: 'cognito-identity.amazonaws.com'
+              Action:
+                - 'sts:AssumeRoleWithWebIdentity'
+              Condition:
+                StringEquals:
+                  'cognito-identity.amazonaws.com:aud':
+                    Ref: CognitoIdentityPool
+                'ForAnyValue:StringLike':
+                  'cognito-identity.amazonaws.com:amr': authenticated
+            - Effect: 'Allow'
+              Principal:
+                Service: 'es.amazonaws.com'
+              Action:
+                - 'sts:AssumeRole'
+        Policies:
+          - PolicyName: 'CognitoAuthorizedPolicy'
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: 'Allow'
+                  Action:
+                    - 'mobileanalytics:PutEvents'
+                    - 'cognito-sync:*'
+                    - 'cognito-identity:*'
+                  Resource: '*'
+
+  Outputs:
+    UserPoolId:
+      Value:
+        Ref: CognitoUserPool
+    UserPoolClientId:
+      Value:
+        Ref: CognitoUserPoolClient
+    IdentityPoolId:
+      Value:
+        Ref: CognitoIdentityPool
+    IdentityPoolAuthenticatedRoleArn:
+      Value: !GetAtt CognitoAuthRole.Arn
+    Region:
+      Value:
+        Ref: AWS::Region

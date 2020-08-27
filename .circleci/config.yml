@@ -1,0 +1,73 @@
+version: 2.1
+
+executors:
+  executor:
+    docker:
+      - image: circleci/node:12
+
+commands:
+  serverless:
+    parameters:
+      command:
+        type: string
+        default: "deploy"
+      service:
+        type: string
+    steps:
+      - run:
+          name: deploy << parameters.service >>
+          no_output_timeout: 30m
+          command: |
+            cd services/<< parameters.service >>
+            npm install
+            serverless << parameters.command >> --stage $CIRCLE_BRANCH
+
+jobs:
+  deploy:
+    executor: executor
+    steps:
+      - checkout
+      - run:
+          name: set environment for deploy
+          command: |
+            # Environment variable names cannot contain hyphens
+            # So here we take the branch name, swap hyphens for underscores, and set variables if they exist.
+            echo "export ROUTE_53_HOSTED_ZONE_ID=\$${CIRCLE_BRANCH//-/_}_ROUTE_53_HOSTED_ZONE_ID" >> $BASH_ENV
+            echo "export ROUTE_53_DOMAIN_NAME=\$${CIRCLE_BRANCH//-/_}_ROUTE_53_DOMAIN_NAME" >> $BASH_ENV
+            echo "export CLOUDFRONT_CERTIFICATE_ARN=\$${CIRCLE_BRANCH//-/_}_CLOUDFRONT_CERTIFICATE_ARN" >> $BASH_ENV
+            echo "export CLOUDFRONT_DOMAIN_NAME=\$${CIRCLE_BRANCH//-/_}_CLOUDFRONT_DOMAIN_NAME" >> $BASH_ENV
+            echo "export INFRASTRUCTURE_TYPE=\$${CIRCLE_BRANCH//-/_}_INFRASTRUCTURE_TYPE" >> $BASH_ENV
+      - run: sudo npm install -g serverless
+      - serverless:
+          service: database
+      - serverless:
+          service: uploads
+      - serverless:
+          service: app-api
+      - serverless:
+          service: elasticsearch-auth
+      - serverless:
+          service: elasticsearch
+      - serverless:
+          service: stream-functions
+      - serverless:
+          service: ui-auth
+      - serverless:
+          service: ui
+      - serverless:
+          service: ui-src
+      - run:
+          name: Print the application endpoint
+          command: |
+            cd services
+            ./output.sh ui CloudFrontEndpointUrl $CIRLCE_BRANCH
+
+workflows:
+  deploy:
+    jobs:
+      - deploy:
+          filters:
+            branches:
+              only:
+                - master
+                - /^cci-[a-zA-Z0-9-]*$/ # Branch begins with cci- and only contains letters, numbers, and hyphens

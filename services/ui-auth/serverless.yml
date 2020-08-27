@@ -1,0 +1,157 @@
+# Welcome to serverless. Read the docs
+# https://serverless.com/framework/docs/
+
+# Serverless.yml is the configuration the CLI
+# uses to deploy your code to your provider of choice
+
+# The `service` block is the name of the service
+service: ui-auth
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  attachments_bucket_arn: ${cf:uploads-${self:custom.stage}.AttachmentsBucketArn}
+  api_gateway_rest_api_name: ${cf:app-api-${self:custom.stage}.ApiGatewayRestApiName}
+
+# The `provider` block defines where your service will be deployed
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  stage: dev
+
+resources:
+  Conditions:
+    CreateEmailConfiguration:
+      Fn::Not:
+        - Fn::Equals:
+          - ""
+          - ${env:SES_SOURCE_EMAIL_ARN, ""}
+
+  Resources:
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: ${self:custom.stage}-user-pool
+        UsernameAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+        EmailConfiguration:
+          Fn::If:
+            - CreateEmailConfiguration
+            - EmailSendingAccount: DEVELOPER
+              SourceArn: ${env:SES_SOURCE_EMAIL_ARN, ""}
+            - Ref: AWS::NoValue
+        Schema:
+          - Name: given_name
+            AttributeDataType: String
+            Mutable: true
+            Required: false
+          - Name: family_name
+            AttributeDataType: String
+            Mutable: true
+            Required: false
+          - Name: phone_number
+            AttributeDataType: String
+            Mutable: true
+            Required: false
+
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: ${self:custom.stage}-user-pool-client
+        UserPoolId:
+          Ref: CognitoUserPool
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH
+        GenerateSecret: false
+
+    CognitoIdentityPool:
+      Type: AWS::Cognito::IdentityPool
+      Properties:
+        IdentityPoolName: ${self:custom.stage}IdentityPool
+        AllowUnauthenticatedIdentities: false
+        CognitoIdentityProviders:
+          - ClientId:
+              Ref: CognitoUserPoolClient
+            ProviderName:
+              Fn::GetAtt: [ "CognitoUserPool", "ProviderName" ]
+    CognitoIdentityPoolRoles:
+      Type: AWS::Cognito::IdentityPoolRoleAttachment
+      Properties:
+        IdentityPoolId:
+          Ref: CognitoIdentityPool
+        Roles:
+          authenticated:
+            Fn::GetAtt: [CognitoAuthRole, Arn]
+
+    CognitoAuthRole:
+      Type: AWS::IAM::Role
+      Properties:
+        Path: /
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: 'Allow'
+              Principal:
+                Federated: 'cognito-identity.amazonaws.com'
+              Action:
+                - 'sts:AssumeRoleWithWebIdentity'
+              Condition:
+                StringEquals:
+                  'cognito-identity.amazonaws.com:aud':
+                    Ref: CognitoIdentityPool
+                'ForAnyValue:StringLike':
+                  'cognito-identity.amazonaws.com:amr': authenticated
+        Policies:
+          - PolicyName: 'CognitoAuthorizedPolicy'
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: 'Allow'
+                  Action:
+                    - 'mobileanalytics:PutEvents'
+                    - 'cognito-sync:*'
+                    - 'cognito-identity:*'
+                  Resource: '*'
+
+                - Effect: 'Allow'
+                  Action:
+                    - 'execute-api:Invoke'
+                  Resource:
+                    Fn::Join:
+                      - ''
+                      -
+                        - 'arn:aws:execute-api:'
+                        - Ref: AWS::Region
+                        - ':'
+                        - Ref: AWS::AccountId
+                        - ':'
+                        - ${self:custom.api_gateway_rest_api_name}
+                        - '/*'
+
+                - Effect: 'Allow'
+                  Action:
+                    - 's3:*'
+                  Resource:
+                    - Fn::Join:
+                      - ''
+                      -
+                        - ${self:custom.attachments_bucket_arn}
+                        - '/private/'
+                        - '$'
+                        - '{cognito-identity.amazonaws.com:sub}/*'
+
+  Outputs:
+    UserPoolId:
+      Value:
+        Ref: CognitoUserPool
+    UserPoolClientId:
+      Value:
+        Ref: CognitoUserPoolClient
+    IdentityPoolId:
+      Value:
+        Ref: CognitoIdentityPool
+    Region:
+      Value:
+        Ref: AWS::Region
