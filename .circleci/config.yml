@@ -60,7 +60,7 @@ jobs:
           name: Print the application endpoint
           command: |
             cd services
-            ./output.sh ui CloudFrontEndpointUrl $CIRLCE_BRANCH
+            ./output.sh ui CloudFrontEndpointUrl $CIRCLE_BRANCH
 
 workflows:
   deploy:
