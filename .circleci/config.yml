@@ -37,14 +37,12 @@ jobs:
             echo "export CLOUDFRONT_CERTIFICATE_ARN=\$${CIRCLE_BRANCH//-/_}_CLOUDFRONT_CERTIFICATE_ARN" >> $BASH_ENV
             echo "export CLOUDFRONT_DOMAIN_NAME=\$${CIRCLE_BRANCH//-/_}_CLOUDFRONT_DOMAIN_NAME" >> $BASH_ENV
             echo "export INFRASTRUCTURE_TYPE=\$${CIRCLE_BRANCH//-/_}_INFRASTRUCTURE_TYPE" >> $BASH_ENV
-            sleep 99999999 &
-            echo "export CIRCLE_LOCK_PID=$!" >> $BASH_ENV
-            ps -ef | grep sleep
+      - run: sudo npm install -g serverless
       - run:
+          name: lock this branch to prevent concurrent builds
           command: |
-            echo $CIRCLE_LOCK_PID
-            ps -ef | grep sleep
-      - run: breakkkk sudo npm install -g serverless
+            ./.circleci/circle-lock.sh --branch $CIRCLE_BRANCH
+      - run: sleep 90
       - serverless:
           service: database
       - serverless:

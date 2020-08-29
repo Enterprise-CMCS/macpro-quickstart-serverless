@@ -75,7 +75,7 @@ if [[ "$0" != *bats* ]]; then
     tag=""
     job_name=""
     rest=()
-    api_url="https://circleci.west.cms.gov/api/v1/project/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME?circle-token=$CIRCLE_TOKEN&limit=100"
+    api_url="https://circleci.com/api/v1/project/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME?circle-token=$CIRCLE_TOKEN&limit=100"
 
     parse_args "$@"
     commit_message=$(git log -1 --pretty=%B)
@@ -87,7 +87,7 @@ if [[ "$0" != *bats* ]]; then
     # unset errexit so we can detect and handle temporary circleci api failures
     set +e
     consecutive_failures=0
-    while true; do
+    while true;  do
         builds=$(curl --fail --silent --connect-timeout 5 --max-time 10 -H "Accept: application/json" "$api_url" | jq "$jq_prog")
 
         if [[ $? -ne 0 ]]; then
@@ -114,8 +114,4 @@ if [[ "$0" != *bats* ]]; then
     done
 
     echo "Acquired lock"
-
-    if [[ "${#rest[@]}" -ne 0 ]]; then
-        "${rest[@]}"
-    fi
 fi
