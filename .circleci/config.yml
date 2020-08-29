@@ -1,30 +1,9 @@
-version: 2.1
-
-executors:
-  executor:
-    docker:
-      - image: circleci/node:12
-
-commands:
-  serverless:
-    parameters:
-      command:
-        type: string
-        default: "deploy"
-      service:
-        type: string
-    steps:
-      - run:
-          name: deploy << parameters.service >>
-          no_output_timeout: 30m
-          command: |
-            cd services/<< parameters.service >>
-            npm install
-            serverless << parameters.command >> --stage $CIRCLE_BRANCH
+version: 2.0
 
 jobs:
   deploy:
-    executor: executor
+    docker:
+      - image: circleci/node:12
     steps:
       - checkout
       - run:
@@ -38,24 +17,15 @@ jobs:
             echo "export CLOUDFRONT_DOMAIN_NAME=\$${CIRCLE_BRANCH//-/_}_CLOUDFRONT_DOMAIN_NAME" >> $BASH_ENV
             echo "export INFRASTRUCTURE_TYPE=\$${CIRCLE_BRANCH//-/_}_INFRASTRUCTURE_TYPE" >> $BASH_ENV
       - run: sudo npm install -g serverless
-      - serverless:
-          service: database
-      - serverless:
-          service: uploads
-      - serverless:
-          service: app-api
-      - serverless:
-          service: elasticsearch-auth
-      - serverless:
-          service: elasticsearch
-      - serverless:
-          service: stream-functions
-      - serverless:
-          service: ui-auth
-      - serverless:
-          service: ui
-      - serverless:
-          service: ui-src
+      - run:
+          name: lock this branch to prevent concurrent builds
+          command: |
+            ./.circleci/circle-lock.sh --branch $CIRCLE_BRANCH
+      - run:
+          name: deploy
+          no_output_timeout: 30m
+          command: |
+            ./deploy.sh $CIRCLE_BRANCH
       - run:
           name: Print the application endpoint
           command: |
@@ -63,6 +33,7 @@ jobs:
             ./output.sh ui CloudFrontEndpointUrl $CIRCLE_BRANCH
 
 workflows:
+  version: 2
   deploy:
     jobs:
       - deploy:
