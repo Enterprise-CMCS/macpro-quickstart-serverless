@@ -37,6 +37,12 @@ jobs:
             echo "export CLOUDFRONT_CERTIFICATE_ARN=\$${CIRCLE_BRANCH//-/_}_CLOUDFRONT_CERTIFICATE_ARN" >> $BASH_ENV
             echo "export CLOUDFRONT_DOMAIN_NAME=\$${CIRCLE_BRANCH//-/_}_CLOUDFRONT_DOMAIN_NAME" >> $BASH_ENV
             echo "export INFRASTRUCTURE_TYPE=\$${CIRCLE_BRANCH//-/_}_INFRASTRUCTURE_TYPE" >> $BASH_ENV
+            sleep 99999999 &
+            echo "export CIRCLE_LOCK_PID=$!" >> $BASH_ENV
+      - run:
+          command: |
+            echo $CIRCLE_LOCK_PID
+            ps -ef | grep $CIRCLE_LOCK_PID
       - run: sudo npm install -g serverless
       - serverless:
           service: database
