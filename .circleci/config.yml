@@ -44,7 +44,7 @@ jobs:
           command: |
             echo $CIRCLE_LOCK_PID
             ps -ef | grep sleep
-      - run: sudo npm install -g serverless
+      - run: breakkkk sudo npm install -g serverless
       - serverless:
           service: database
       - serverless:
