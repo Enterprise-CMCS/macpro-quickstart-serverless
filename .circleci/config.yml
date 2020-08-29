@@ -39,10 +39,11 @@ jobs:
             echo "export INFRASTRUCTURE_TYPE=\$${CIRCLE_BRANCH//-/_}_INFRASTRUCTURE_TYPE" >> $BASH_ENV
             sleep 99999999 &
             echo "export CIRCLE_LOCK_PID=$!" >> $BASH_ENV
+            ps -ef | grep sleep
       - run:
           command: |
             echo $CIRCLE_LOCK_PID
-            ps -ef | grep $CIRCLE_LOCK_PID
+            ps -ef | grep sleep
       - run: sudo npm install -g serverless
       - serverless:
           service: database
