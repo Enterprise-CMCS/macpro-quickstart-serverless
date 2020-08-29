@@ -5,6 +5,7 @@ executors:
     docker:
       - image: circleci/node:12
 
+
 commands:
   serverless:
     parameters:
