@@ -1,4 +1,4 @@
-# quickstart-serverless [![latest release](https://img.shields.io/github/release/cmsgov/macpro-quickstart-serverless.svg)](https://github.com/cmsgov/macpro-quickstart-serverless/releases/latest)
+# macpro-quickstart-serverless [![latest release](https://img.shields.io/github/release/cmsgov/macpro-quickstart-serverless.svg)](https://github.com/cmsgov/macpro-quickstart-serverless/releases/latest)
 
 A serverless form submission application built and deployed to AWS with the Serverless Application Framework.
 
