@@ -25,12 +25,14 @@ jobs:
           name: deploy
           no_output_timeout: 30m
           command: |
-            ./deploy.sh $CIRCLE_BRANCH
+            # When deploying multiple copies of this quickstart to the same AWS Account (not ideal), a prefix helps prevent stepping on each other.
+            # This can optionally be set as an environment variable in the CircleCI Project Settings
+            ./deploy.sh $STAGE_PREFIX$CIRCLE_BRANCH
       - run:
           name: Print the application endpoint
           command: |
             cd services
-            ./output.sh ui CloudFrontEndpointUrl $CIRCLE_BRANCH
+            ./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$CIRCLE_BRANCH
 
 workflows:
   version: 2

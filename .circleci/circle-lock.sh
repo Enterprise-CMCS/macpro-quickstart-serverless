@@ -75,7 +75,8 @@ if [[ "$0" != *bats* ]]; then
     tag=""
     job_name=""
     rest=()
-    api_url="https://circleci.com/api/v1/project/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME?circle-token=$CIRCLE_TOKEN&limit=100"
+    circle_base_url=`${CIRCLE_BUILD_URL##https://} | cut -d/ -f1`
+    api_url="https://$circle_base_url/api/v1/project/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME?circle-token=$CIRCLE_TOKEN&limit=100"
 
     parse_args "$@"
     commit_message=$(git log -1 --pretty=%B)
