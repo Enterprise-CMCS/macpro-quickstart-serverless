@@ -65,7 +65,7 @@ jobs:
             popd
             ./test.sh
       - store_test_results:
-          path: testcafe/testcafe_results
+          path: tests/testcafe/testcafe_results
 
 workflows:
   version: 2
