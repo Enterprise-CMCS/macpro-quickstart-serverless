@@ -5,6 +5,7 @@ jobs:
     docker:
       - image: circleci/node:12
     steps:
+      - checkout
       - run:
           name: lock this branch to prevent concurrent builds
           command: |
