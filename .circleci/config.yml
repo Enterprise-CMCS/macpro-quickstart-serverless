@@ -9,7 +9,7 @@ master_and_cci_only: &master_and_cci_only
 
 orbs:
   browser-tools: circleci/browser-tools
-  
+
 jobs:
   lock:
     docker:
@@ -54,12 +54,13 @@ jobs:
             ./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$CIRCLE_BRANCH
   test:
     docker:
-      - image: circleci/node:jessie-browsers
+      - image: circleci/node:12
         environment:
           TERM: xterm
     steps:
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
       - checkout
-      - run: ls -la
 
 
 workflows:
