@@ -1,9 +1,18 @@
 version: 2.0
 
+master_and_cci_only: &master_and_cci_only
+  filters:
+    branches:
+      only:
+        - master
+        - /^cci-[a-zA-Z0-9-]*$/ # Branch begins with cci- and only contains letters, numbers, and hyphens
+
 jobs:
   lock:
     docker:
       - image: circleci/node:12
+        environment:
+          TERM: xterm
     steps:
       - checkout
       - run:
@@ -13,6 +22,8 @@ jobs:
   deploy:
     docker:
       - image: circleci/node:12
+        environment:
+          TERM: xterm
     steps:
       - checkout
       - run:
@@ -44,16 +55,8 @@ workflows:
   deploy:
     jobs:
       - lock:
-          filters:
-            branches:
-              only:
-                - master
-                - /^cci-[a-zA-Z0-9-]*$/ # Branch begins with cci- and only contains letters, numbers, and hyphens
+          <<: *master_and_cci_only
       - deploy:
           requires:
             - lock
-          filters:
-            branches:
-              only:
-                - master
-                - /^cci-[a-zA-Z0-9-]*$/ # Branch begins with cci- and only contains letters, numbers, and hyphens
+          <<: *master_and_cci_only
