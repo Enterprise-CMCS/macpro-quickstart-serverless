@@ -60,7 +60,3 @@ workflows:
           requires:
             - lock
           <<: *master_and_cci_only
-      - test:
-          requires:
-            - deploy
-          <<: *master_and_cci_only
