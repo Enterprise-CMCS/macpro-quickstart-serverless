@@ -7,9 +7,6 @@ master_and_cci_only: &master_and_cci_only
         - master
         - /^cci-[a-zA-Z0-9-]*$/ # Branch begins with cci- and only contains letters, numbers, and hyphens
 
-orbs:
-  browser-tools: circleci/browser-tools@1.0.1
-
 jobs:
   lock:
     docker:
@@ -52,16 +49,6 @@ jobs:
           command: |
             cd services
             ./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$CIRCLE_BRANCH
-  test:
-    docker:
-      - image: circleci/node:12
-        environment:
-          TERM: xterm
-    steps:
-      - browser-tools/install-chrome
-      - browser-tools/install-chromedriver
-      - checkout
-
 
 workflows:
   version: 2
