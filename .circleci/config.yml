@@ -55,6 +55,7 @@ jobs:
         environment:
           TERM: xterm
     steps:
+      - checkout
       - run:
           name: Run TestCafe suite
           command: |
