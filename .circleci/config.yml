@@ -7,6 +7,9 @@ master_and_cci_only: &master_and_cci_only
         - master
         - /^cci-[a-zA-Z0-9-]*$/ # Branch begins with cci- and only contains letters, numbers, and hyphens
 
+orbs:
+  browser-tools: circleci/browser-tools
+  
 jobs:
   lock:
     docker:
