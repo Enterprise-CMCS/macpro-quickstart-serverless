@@ -64,6 +64,8 @@ jobs:
             export APPLICATION_ENDPOINT=`./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$CIRCLE_BRANCH`
             popd
             ./test.sh
+      - store_test_results:
+          path: testcafe/testcafe_results
 
 workflows:
   version: 2
