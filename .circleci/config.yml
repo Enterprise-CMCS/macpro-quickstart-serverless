@@ -49,6 +49,15 @@ jobs:
           command: |
             cd services
             ./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$CIRCLE_BRANCH
+  test:
+    docker:
+      - image: circleci/node:jessie-browsers
+        environment:
+          TERM: xterm
+    steps:
+      - checkout
+      - run: ls -la
+
 
 workflows:
   version: 2
@@ -59,4 +68,8 @@ workflows:
       - deploy:
           requires:
             - lock
+          <<: *master_and_cci_only
+      - test:
+          requires:
+            - deploy
           <<: *master_and_cci_only
