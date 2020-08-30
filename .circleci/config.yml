@@ -55,7 +55,13 @@ jobs:
         environment:
           TERM: xterm
     steps:
-      - run: ls -la
+      - run:
+          name: Run TestCafe suite
+          command: |
+            cd services
+            export APPLICATION_ENDPOINT=`./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$CIRCLE_BRANCH`
+            cd ../tests
+            testcafe "chrome:headless" testcafe/**/*.js
 
 workflows:
   version: 2
