@@ -1,6 +1,14 @@
 version: 2.0
 
 jobs:
+  lock:
+    docker:
+      - image: circleci/node:12
+    steps:
+      - run:
+          name: lock this branch to prevent concurrent builds
+          command: asdf
+            ./.circleci/circle-lock.sh --branch $CIRCLE_BRANCH
   deploy:
     docker:
       - image: circleci/node:12
@@ -18,10 +26,6 @@ jobs:
             echo "export INFRASTRUCTURE_TYPE=\$${CIRCLE_BRANCH//-/_}_INFRASTRUCTURE_TYPE" >> $BASH_ENV
       - run: sudo npm install -g serverless
       - run:
-          name: lock this branch to prevent concurrent builds
-          command: |
-            ./.circleci/circle-lock.sh --branch $CIRCLE_BRANCH
-      - run:
           name: deploy
           no_output_timeout: 30m
           command: |
@@ -38,7 +42,15 @@ workflows:
   version: 2
   deploy:
     jobs:
+      - lock:
+          filters:
+            branches:
+              only:
+                - master
+                - /^cci-[a-zA-Z0-9-]*$/ # Branch begins with cci- and only contains letters, numbers, and hyphens
       - deploy:
+          requires:
+            - lock
           filters:
             branches:
               only:
