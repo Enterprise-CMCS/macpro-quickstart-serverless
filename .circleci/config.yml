@@ -59,7 +59,7 @@ jobs:
       - run:
           name: Run TestCafe suite
           command: |
-            npm install -g testcafe
+            sudo npm install -g testcafe
             cd services
             export APPLICATION_ENDPOINT=`./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$CIRCLE_BRANCH`
             cd ../tests
