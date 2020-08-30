@@ -60,10 +60,10 @@ jobs:
           name: Run TestCafe suite
           command: |
             sudo npm install -g testcafe serverless
-            cd services
+            pushd services
             export APPLICATION_ENDPOINT=`./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$CIRCLE_BRANCH`
-            cd ../tests
-            testcafe "chrome:headless" testcafe/**/*.js
+            popd
+            ./test.sh
 
 workflows:
   version: 2
