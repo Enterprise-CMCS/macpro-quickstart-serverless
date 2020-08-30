@@ -59,7 +59,7 @@ jobs:
       - run:
           name: Run TestCafe suite
           command: |
-            sudo npm install -g testcafe serverless
+            sudo npm install -g testcafe serverless testcafe-reporter-junit
             pushd services
             export APPLICATION_ENDPOINT=`./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$CIRCLE_BRANCH`
             popd
