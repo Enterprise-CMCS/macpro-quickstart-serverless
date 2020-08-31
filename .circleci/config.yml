@@ -1,12 +1,12 @@
 version: 2.0
 
-
-master_and_cci_only: &master_and_cci_only
+master_and_cci_only: &ignore_nocci
   filters:
     branches:
       only:
-        - master
-        - /^cci-[a-zA-Z0-9-]*$/ # Branch begins with cci- and only contains letters, numbers, and hyphens
+        - /^[a-zA-Z0-9-]*$/ # Branch begins with cci- and only contains letters, numbers, and hyphens
+      ignore:
+        - /^nocci-*$/ # Branch begins with cci- and only contains letters, numbers, and hyphens
 
 jobs:
   lock:
@@ -73,12 +73,12 @@ workflows:
   deploy:
     jobs:
       - lock:
-          <<: *master_and_cci_only
+          <<: *ignore_nocci
       - deploy:
           requires:
             - lock
-          <<: *master_and_cci_only
+          <<: *ignore_nocci
       - test:
           requires:
             - deploy
-          <<: *master_and_cci_only
+          <<: *ignore_nocci
