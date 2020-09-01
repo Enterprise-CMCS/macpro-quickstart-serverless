@@ -148,21 +148,21 @@ resources:
                 Service: 'lambda.amazonaws.com'
               Action: 'sts:AssumeRole'
         Path: '/delegatedadmin/developer/'
-        Policies:
-          - PolicyName: 'Warmup'
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-                - Effect: 'Allow'
-                  Action:
-                    - logs:CreateLogGroup
-                    - logs:CreateLogStream
-                    - logs:PutLogEvents
-                  Resource: 'arn:aws:logs:*:*:*'
-                - Effect: 'Allow'
-                  Action:
-                    - lambda:InvokeFunction
-                  Resource: '*'
+        # Policies:
+        #   - PolicyName: 'Warmup'
+        #     PolicyDocument:
+        #       Version: '2012-10-17'
+        #       Statement:
+        #         - Effect: 'Allow'
+        #           Action:
+        #             - logs:CreateLogGroup
+        #             - logs:CreateLogStream
+        #             - logs:PutLogEvents
+        #           Resource: 'arn:aws:logs:*:*:*'
+        #         - Effect: 'Allow'
+        #           Action:
+        #             - lambda:InvokeFunction
+        #           Resource: '*'
     GatewayResponseDefault4XX:
       Type: 'AWS::ApiGateway::GatewayResponse'
       Properties:
