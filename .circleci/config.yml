@@ -25,12 +25,13 @@ jobs:
 
                 The Serverless Application Framework has a concept of stages that facilitate multiple deployments of the same service.
                 In this setup, the git branch name gets passed to Serverless to serve as the stage name.
-                Therefore, the branch name must be a valid stage name.
+                The stage name (branch name in this case) is tacked onto the end of the service name by Serverless.
+                Therefore, the branch name must be a valid service name.
 
                 From Serverless:
                   A service name should only contain alphanumeric (case sensitive) and hyphens. It should start with an alphabetic character and shouldnt exceed 128 characters.
 
-                For CircleCI support, please rename your branch so it is a valid Serverless stage name.
+                For CircleCI support, please rename your branch so it is a valid Serverless service name.
                 ------------------------------------------------------------------------------------------------------------------------------
               """
               exit 1
