@@ -105,30 +105,30 @@ resources:
         Path: '/delegatedadmin/developer/'
         ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
-        Policies:
-          - PolicyName: 'LambdaApiRolePolicy'
-            PolicyDocument:
-              Version: '2012-10-17'
-              Statement:
-              - Effect: 'Allow'
-                Action:
-                - logs:CreateLogGroup
-                - logs:CreateLogStream
-                - logs:PutLogEvents
-                Resource: 'arn:aws:logs:*:*:*'
-              - Effect: 'Allow'
-                Action:
-                - dynamodb:DescribeTable
-                - dynamodb:Query
-                - dynamodb:Scan
-                - dynamodb:GetItem
-                - dynamodb:PutItem
-                - dynamodb:UpdateItem
-                - dynamodb:DeleteItem
-                Resource:
-                - ${self:custom.tableArn}
-                - ${self:custom.atomicCounterTableArn}
-              # - Effect: 'Allow'
+        # Policies:
+        #   - PolicyName: 'LambdaApiRolePolicy'
+        #     PolicyDocument:
+        #       Version: '2012-10-17'
+        #       Statement:
+        #       - Effect: 'Allow'
+        #         Action:
+        #         - logs:CreateLogGroup
+        #         - logs:CreateLogStream
+        #         - logs:PutLogEvents
+        #         Resource: 'arn:aws:logs:*:*:*'
+        #       - Effect: 'Allow'
+        #         Action:
+        #         - dynamodb:DescribeTable
+        #         - dynamodb:Query
+        #         - dynamodb:Scan
+        #         - dynamodb:GetItem
+        #         - dynamodb:PutItem
+        #         - dynamodb:UpdateItem
+        #         - dynamodb:DeleteItem
+        #         Resource:
+        #         - ${self:custom.tableArn}
+        #         - ${self:custom.atomicCounterTableArn}
+        #       # - Effect: 'Allow'
               #   Action:
               #   - logs:CreateLogStream
               #   - logs:CreateLogGroup
