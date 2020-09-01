@@ -16,10 +16,8 @@ jobs:
       - run:
           name: Check branch name is a legal serverless stage name
           command: |
-            RED='\033[0;31m'
-            NC='\033[0m'
             if [[ ! $CIRCLE_BRANCH =~ ^[a-zA-Z0-9-]*$ ]] || [[ ${#CIRCLE_BRANCH} -gt 128 ]]; then
-              echo """${RED}
+              echo """
                 ------------------------------------------------------------------------------------------------------------------------------
                 ERROR:  Please read below
                 ------------------------------------------------------------------------------------------------------------------------------
@@ -34,7 +32,7 @@ jobs:
 
                 For CircleCI support, please rename your branch so it is a valid Serverless stage name.
                 ------------------------------------------------------------------------------------------------------------------------------
-              ${NC}"""
+              """
               exit 1
             fi
   lock:
