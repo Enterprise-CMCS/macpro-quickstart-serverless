@@ -39,23 +39,10 @@ provider:
     tableName: ${self:custom.tableName}
     atomicCounterTableName: ${self:custom.atomicCounterTableName}
 
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:DescribeTable
-        - dynamodb:Query
-        - dynamodb:Scan
-        - dynamodb:GetItem
-        - dynamodb:PutItem
-        - dynamodb:UpdateItem
-        - dynamodb:DeleteItem
-      Resource:
-        - ${self:custom.tableArn}
-        - ${self:custom.atomicCounterTableArn}
-
 functions:
   create:
     handler: create.main
+    role: LambdaApiRole
     events:
       - http:
           path: amendments
@@ -65,6 +52,7 @@ functions:
 
   get:
     handler: get.main
+    role: LambdaApiRole
     events:
       - http:
           path: amendments/{id}
@@ -74,6 +62,7 @@ functions:
 
   list:
     handler: list.main
+    role: LambdaApiRole
     events:
       - http:
           path: amendments
@@ -83,6 +72,7 @@ functions:
 
   update:
     handler: update.main
+    role: LambdaApiRole
     events:
       - http:
           path: amendments/{id}
@@ -92,6 +82,7 @@ functions:
 
   delete:
     handler: delete.main
+    role: LambdaApiRole
     events:
       - http:
           path: amendments/{id}
@@ -101,6 +92,51 @@ functions:
 
 resources:
   Resources:
+    LambdaApiRole: # Why isn't this with the function as an iamRoleStatements?  https://github.com/serverless/serverless/issues/6485
+      Type: 'AWS::IAM::Role'
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+          - Effect: 'Allow'
+            Principal:
+              Service: 'lambda.amazonaws.com'
+            Action: 'sts:AssumeRole'
+        Path: '/delegatedadmin/developer/'
+        ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+        Policies:
+          - PolicyName: 'LambdaApiRolePolicy'
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+              - Effect: 'Allow'
+                Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+                Resource: 'arn:aws:logs:*:*:*'
+              - Effect: 'Allow'
+                Action:
+                - dynamodb:DescribeTable
+                - dynamodb:Query
+                - dynamodb:Scan
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
+                Resource:
+                - ${self:custom.tableArn}
+                - ${self:custom.atomicCounterTableArn}
+              # - Effect: 'Allow'
+              #   Action:
+              #   - logs:CreateLogStream
+              #   - logs:CreateLogGroup
+              #   - Resource:
+              #     - Fn::Join:
+              #       - "/"
+              #       -
+              #         - Fn::Join: [":", ["arn:aws:execute-api", {"Ref": "AWS::Region"}, {"Ref":"AWS::AccountId"}, {"Ref": "ApiGatewayRestApi"}]]
     LambdaWarmupRole:
       Type: 'AWS::IAM::Role'
       Properties:
@@ -111,7 +147,7 @@ resources:
               Principal:
                 Service: 'lambda.amazonaws.com'
               Action: 'sts:AssumeRole'
-        Path: '/'
+        Path: '/delegatedadmin/developer/'
         Policies:
           - PolicyName: 'Warmup'
             PolicyDocument:
