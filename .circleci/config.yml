@@ -7,6 +7,30 @@ ignore_branches_that_begin_with_skipci: &ignore_branches_that_begin_with_skipci
         - /^skipci.*/ # Ignore any branch that begin with skipci
 
 jobs:
+  verify_branch:
+    docker:
+      - image: circleci/node:12
+        environment:
+          TERM: xterm
+    steps:
+      - run:
+          name: Check branch name is a legal serverless stage name
+          command: |
+            if [[ ! $CIRCLE_BRANCH =~ ^[a-zA-Z0-9-]*$ ]] || [[ ${#CIRCLE_BRANCH} -gt 128 ]]; then
+              echo '''
+                Bad branch name detected; cannot continue.
+
+                The Serverless Application Framework has a concept of stages that facilitate multiple deployments of the same service.
+                In this setup, the git branch name gets passed to Serverless to serve as the stage name.
+                Therefore, the branch name must be a valid stage name.
+
+                From Serverless:
+                  A service name should only contain alphanumeric (case sensitive) and hyphens. It should start with an alphabetic character and shouldnt exceed 128 characters.
+
+                For CircleCI support, please rename your branch so it is a valid Serverless stage name.
+              '''
+              exit 1
+            fi
   lock:
     docker:
       - image: circleci/node:12
@@ -70,7 +94,11 @@ workflows:
   version: 2
   deploy:
     jobs:
+      - verify_branch:
+          <<: *ignore_branches_that_begin_with_skipci
       - lock:
+          requires:
+            - verify_branch
           <<: *ignore_branches_that_begin_with_skipci
       - deploy:
           requires:
