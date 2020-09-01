@@ -103,8 +103,8 @@ resources:
               Service: 'lambda.amazonaws.com'
             Action: 'sts:AssumeRole'
         Path: '/delegatedadmin/developer/'
-        ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+        # ManagedPolicyArns:
+        # - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
         # Policies:
         #   - PolicyName: 'LambdaApiRolePolicy'
         #     PolicyDocument:
