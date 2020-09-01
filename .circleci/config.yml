@@ -1,6 +1,6 @@
 version: 2.0
 
-ignore_branches_beginning_with_skipci: &ignore_branches_beginning_with_skipci
+ignore_branches_that_begin_with_skipci: &ignore_branches_that_begin_with_skipci
   filters:
     branches:
       ignore:
@@ -71,12 +71,12 @@ workflows:
   deploy:
     jobs:
       - lock:
-          <<: *ignore_branches_beginning_with_skipci
+          <<: *ignore_branches_that_begin_with_skipci
       - deploy:
           requires:
             - lock
-          <<: *ignore_branches_beginning_with_skipci
+          <<: *ignore_branches_that_begin_with_skipci
       - test:
           requires:
             - deploy
-          <<: *ignore_branches_beginning_with_skipci
+          <<: *ignore_branches_that_begin_with_skipci
