@@ -1,11 +1,10 @@
 version: 2.0
 
-master_and_cci_only: &master_and_cci_only
+ignore_branches_that_begin_with_skipci: &ignore_branches_that_begin_with_skipci
   filters:
     branches:
-      only:
-        - master
-        - /^cci-[a-zA-Z0-9-]*$/ # Branch begins with cci- and only contains letters, numbers, and hyphens
+      ignore:
+        - /^skipci.*/ # Ignore any branch that begin with skipci
 
 jobs:
   lock:
@@ -72,12 +71,12 @@ workflows:
   deploy:
     jobs:
       - lock:
-          <<: *master_and_cci_only
+          <<: *ignore_branches_that_begin_with_skipci
       - deploy:
           requires:
             - lock
-          <<: *master_and_cci_only
+          <<: *ignore_branches_that_begin_with_skipci
       - test:
           requires:
             - deploy
-          <<: *master_and_cci_only
+          <<: *ignore_branches_that_begin_with_skipci
