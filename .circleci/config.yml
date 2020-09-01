@@ -16,8 +16,13 @@ jobs:
       - run:
           name: Check branch name is a legal serverless stage name
           command: |
+            RED='\033[0;31m'
+            NC='\033[0m'
             if [[ ! $CIRCLE_BRANCH =~ ^[a-zA-Z0-9-]*$ ]] || [[ ${#CIRCLE_BRANCH} -gt 128 ]]; then
-              echo '''
+              echo """${RED}
+                ------------------------------------------------------------------------------------------------------------------------------
+                ERROR:  Please read below
+                ------------------------------------------------------------------------------------------------------------------------------
                 Bad branch name detected; cannot continue.
 
                 The Serverless Application Framework has a concept of stages that facilitate multiple deployments of the same service.
@@ -28,7 +33,8 @@ jobs:
                   A service name should only contain alphanumeric (case sensitive) and hyphens. It should start with an alphabetic character and shouldnt exceed 128 characters.
 
                 For CircleCI support, please rename your branch so it is a valid Serverless stage name.
-              '''
+                ------------------------------------------------------------------------------------------------------------------------------
+              ${NC}"""
               exit 1
             fi
   lock:
