@@ -113,27 +113,27 @@ resources:
               Statement:
               - Effect: 'Allow'
                 Action:
-                - logs:CreateLogGroup
-                - logs:CreateLogStream
-                - logs:PutLogEvents
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
                 Resource: 'arn:aws:logs:*:*:*'
               - Effect: 'Allow'
                 Action:
-                - dynamodb:DescribeTable
-                - dynamodb:Query
-                - dynamodb:Scan
-                - dynamodb:GetItem
-                - dynamodb:PutItem
-                - dynamodb:UpdateItem
-                - dynamodb:DeleteItem
+                  - dynamodb:DescribeTable
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:DeleteItem
                 Resource:
-                - ${self:custom.tableArn}
-                - ${self:custom.atomicCounterTableArn}
+                  - ${self:custom.tableArn}
+                  - ${self:custom.atomicCounterTableArn}
               - Effect: 'Allow'
                 Action:
-                - logs:CreateLogStream
-                - logs:CreateLogGroup
-                - Resource:
+                  - logs:CreateLogStream
+                  - logs:CreateLogGroup
+                Resource:
                   - Fn::Join:
                     - "/"
                     -

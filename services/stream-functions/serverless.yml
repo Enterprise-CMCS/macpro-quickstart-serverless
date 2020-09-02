@@ -73,7 +73,8 @@ resources:
             Principal:
               Service: 'lambda.amazonaws.com'
             Action: 'sts:AssumeRole'
-        Path: '/'
+        Path: '/delegatedadmin/developer/'
+        PermissionsBoundary: arn:aws:iam::121499393294:policy/cms-cloud-admin/developer-boundary-policy
         Policies:
           - PolicyName: 'LambdaRolePolicy'
             PolicyDocument:
@@ -106,7 +107,8 @@ resources:
             Principal:
               Service: 'lambda.amazonaws.com'
             Action: 'sts:AssumeRole'
-        Path: '/'
+        Path: '/delegatedadmin/developer/'
+        PermissionsBoundary: arn:aws:iam::121499393294:policy/cms-cloud-admin/developer-boundary-policy
         Policies:
           - PolicyName: 'LambdaRolePolicy'
             PolicyDocument:

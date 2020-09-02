@@ -40,7 +40,12 @@ resources:
     CognitoUserPoolDomain:
       Type: AWS::Cognito::UserPoolDomain
       Properties:
-        Domain: ${self:custom.stage}-elasticsearch-user-pool
+        Domain:
+          Fn::Join:
+            - "-"
+            -
+              - !Ref "AWS::AccountId"
+              - ${self:custom.stage}-elasticsearch-user-pool
         UserPoolId:
           Ref: CognitoUserPool
 
@@ -77,7 +82,8 @@ resources:
     CognitoAuthRole:
       Type: AWS::IAM::Role
       Properties:
-        Path: /
+        Path: '/delegatedadmin/developer/'
+        PermissionsBoundary: arn:aws:iam::121499393294:policy/cms-cloud-admin/developer-boundary-policy
         AssumeRolePolicyDocument:
           Version: '2012-10-17'
           Statement:
