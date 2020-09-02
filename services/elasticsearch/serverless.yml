@@ -22,6 +22,11 @@ resources:
       Fn::Equals:
         - ${env:INFRASTRUCTURE_TYPE, ""}
         - "production"
+    CreatePermissionsBoundary:
+      Fn::Not:
+        - Fn::Equals:
+          - ""
+          - ${env:IAM_PERMISSIONS_BOUNDARY_ARN, ""}
   Resources:
     ElasticSearchInstance:
       Type: AWS::Elasticsearch::Domain
@@ -74,7 +79,11 @@ resources:
       Type: AWS::IAM::Role
       Properties:
         Path: '/delegatedadmin/developer/'
-        PermissionsBoundary: arn:aws:iam::121499393294:policy/cms-cloud-admin/developer-boundary-policy
+        PermissionsBoundary:
+          Fn::If:
+            - CreatePermissionsBoundary
+            - ${env:IAM_PERMISSIONS_BOUNDARY_ARN, ""}
+            - Ref: AWS::NoValue
         AssumeRolePolicyDocument:
           Version: '2012-10-17'
           Statement:
