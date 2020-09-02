@@ -129,7 +129,7 @@ resources:
                 Resource:
                 - ${self:custom.tableArn}
                 - ${self:custom.atomicCounterTableArn}
-              # - Effect: 'Allow'
+              - Effect: 'Allow'
                 Action:
                 - logs:CreateLogStream
                 - logs:CreateLogGroup
