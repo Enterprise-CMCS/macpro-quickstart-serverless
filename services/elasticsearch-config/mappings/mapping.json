@@ -1,7 +1,25 @@
 {
     "properties": {
-      "age":    { "type": "integer" },
-      "email":  { "type": "keyword"  },
-      "name":   { "type": "text"  }
+      "amendmentId": {
+        "type": "text"
+      },
+      "email": {
+        "type": "text"
+      },
+      "firstName": {
+        "type": "text"
+      },
+      "lastName": {
+        "type": "text"
+      },
+      "territory": {
+        "type": "text"
+      },
+      "transmittalNumber": {
+        "type": "text"
+      },
+      "comments": {
+        "type": "text"
+      }
     }
 }
