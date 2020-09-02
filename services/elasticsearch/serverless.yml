@@ -9,6 +9,7 @@ custom:
   cognito_identity_pool_id: ${cf:elasticsearch-auth-${self:custom.stage}.IdentityPoolId}
   cognito_identity_pool_authenticated_role_arn: ${cf:elasticsearch-auth-${self:custom.stage}.IdentityPoolAuthenticatedRoleArn}
   cognito_user_pool_id: ${cf:elasticsearch-auth-${self:custom.stage}.UserPoolId}
+  iamPath: ${env:IAM_PATH, "/"}
 
 provider:
   name: aws
@@ -78,7 +79,7 @@ resources:
     EsCognitoRole:
       Type: AWS::IAM::Role
       Properties:
-        Path: '/delegatedadmin/developer/'
+        Path: ${self:custom.iamPath}
         PermissionsBoundary:
           Fn::If:
             - CreatePermissionsBoundary

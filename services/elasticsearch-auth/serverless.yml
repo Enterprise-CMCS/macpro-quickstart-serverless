@@ -6,6 +6,7 @@ package:
 
 custom:
   stage: ${opt:stage, self:provider.stage}
+  iamPath: ${env:IAM_PATH, "/"}
 
 provider:
   name: aws
@@ -86,7 +87,7 @@ resources:
     CognitoAuthRole:
       Type: AWS::IAM::Role
       Properties:
-        Path: '/delegatedadmin/developer/'
+        Path: ${self:custom.iamPath}
         PermissionsBoundary:
           Fn::If:
             - CreatePermissionsBoundary

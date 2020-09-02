@@ -16,6 +16,7 @@ custom:
   elasticSearchDomainArn: ${cf:elasticsearch-${self:custom.stage}.ElasticSearchDomainArn}
   emailSource: ${opt:emailSource, env:SES_SOURCE_EMAIL_ADDRESS, "admin@example.com"}
   reviewerEmail: ${opt:reviewTeamEmail, env:SES_REVIEW_TEAM_EMAIL_ADDRESS, "reviewteam@example.com"}
+  iamPath: ${env:IAM_PATH, "/"}
 
 provider:
   name: aws
@@ -79,7 +80,7 @@ resources:
             Principal:
               Service: 'lambda.amazonaws.com'
             Action: 'sts:AssumeRole'
-        Path: '/delegatedadmin/developer/'
+        Path: ${self:custom.iamPath}
         PermissionsBoundary:
           Fn::If:
             - CreatePermissionsBoundary
@@ -117,7 +118,7 @@ resources:
             Principal:
               Service: 'lambda.amazonaws.com'
             Action: 'sts:AssumeRole'
-        Path: '/delegatedadmin/developer/'
+        Path: ${self:custom.iamPath}
         PermissionsBoundary:
           Fn::If:
             - CreatePermissionsBoundary
