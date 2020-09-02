@@ -1,0 +1,7 @@
+{
+    "properties": {
+      "age":    { "type": "integer" },
+      "email":  { "type": "keyword"  },
+      "name":   { "type": "text"  }
+    }
+}

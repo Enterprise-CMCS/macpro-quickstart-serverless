@@ -25,15 +25,13 @@ functions:
     environment:
       ES_ENDPOINT: ${self:custom.elasticSearchDomainEndpoint}
       INDEX: newstuff
-      TYPE: json
     maximumRetryAttempts: 2
   createMapping:
     handler: createMapping.handler
     role: LambdaEsConfigRole
     environment:
       ES_ENDPOINT: ${self:custom.elasticSearchDomainEndpoint}
-      INDEX: amendments
-      TYPE: json
+      INDEX: newstuff
     maximumRetryAttempts: 2
 
 resources:
