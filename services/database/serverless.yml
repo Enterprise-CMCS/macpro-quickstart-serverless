@@ -22,6 +22,7 @@ resources:
     DelegatedRoleTest:
       Type: 'AWS::IAM::Role'
       Properties:
+        PermissionsBoundary: arn:aws:iam::121499393294:policy/cms-cloud-admin/developer-boundary-policy
         AssumeRolePolicyDocument:
           Version: '2012-10-17'
           Statement:
