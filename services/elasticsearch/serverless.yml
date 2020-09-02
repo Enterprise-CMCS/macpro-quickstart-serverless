@@ -112,7 +112,8 @@ resources:
   Outputs:
     ElasticSearchDomainArn:
       Value: !GetAtt ElasticSearchInstance.Arn
-
+    ElasticSearchDomain:
+      Value: !GetAtt ElasticSearchInstance.DomainEndpoint
     ElasticSearchDomainEndpoint:
       Value:
         Fn::Join:
