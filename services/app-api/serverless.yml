@@ -103,6 +103,7 @@ resources:
               Service: 'lambda.amazonaws.com'
             Action: 'sts:AssumeRole'
         Path: '/delegatedadmin/developer/'
+        PermissionsBoundary: arn:aws:iam::121499393294:policy/cms-cloud-admin/developer-boundary-policy
         # ManagedPolicyArns:
         # - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
         # Policies:
@@ -148,6 +149,7 @@ resources:
                 Service: 'lambda.amazonaws.com'
               Action: 'sts:AssumeRole'
         Path: '/delegatedadmin/developer/'
+        PermissionsBoundary: arn:aws:iam::121499393294:policy/cms-cloud-admin/developer-boundary-policy
         # Policies:
         #   - PolicyName: 'Warmup'
         #     PolicyDocument:
