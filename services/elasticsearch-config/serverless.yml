@@ -10,6 +10,7 @@ custom:
   stage: ${opt:stage, self:provider.stage}
   elasticSearchDomainEndpoint: ${cf:elasticsearch-${self:custom.stage}.ElasticSearchDomainEndpoint}
   elasticSearchDomainArn: ${cf:elasticsearch-${self:custom.stage}.ElasticSearchDomainArn}
+  iamPath: ${env:IAM_PATH, "/"}
 
 provider:
   name: aws
@@ -35,6 +36,12 @@ functions:
     maximumRetryAttempts: 2
 
 resources:
+  Conditions:
+    CreatePermissionsBoundary:
+      Fn::Not:
+        - Fn::Equals:
+          - ""
+          - ${env:IAM_PERMISSIONS_BOUNDARY_POLICY, ""}
   Resources:
     LambdaEsConfigRole:
       Type: 'AWS::IAM::Role'
@@ -46,7 +53,18 @@ resources:
             Principal:
               Service: 'lambda.amazonaws.com'
             Action: 'sts:AssumeRole'
-        Path: '/'
+        Path: ${self:custom.iamPath}
+        PermissionsBoundary:
+          Fn::If:
+            - CreatePermissionsBoundary
+            - Fn::Join:
+              - ''
+              -
+                - 'arn:aws:iam::'
+                - Ref: AWS::AccountId
+                - ':policy'
+                - '${env:IAM_PERMISSIONS_BOUNDARY_POLICY, ""}'
+            - Ref: AWS::NoValue
         Policies:
           - PolicyName: 'LambdaRolePolicy'
             PolicyDocument:
