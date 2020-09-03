@@ -17,8 +17,8 @@ custom:
     hooks:
       # Create and configure indices
       deploy:finalize: |
-        serverless invoke --stage ${self:custom.stage} --function createIndex
-        serverless invoke --stage ${self:custom.stage} --function createMapping
+        serverless invoke --stage ${self:custom.stage} --function createAmendmentsIndex
+        serverless invoke --stage ${self:custom.stage} --function createAmendmentsMapping
 
 provider:
   name: aws
@@ -28,19 +28,22 @@ package:
   individually: true
 
 functions:
-  createIndex:
+  createAmendmentsIndex:
     handler: createIndex.handler
     role: LambdaEsConfigRole
     environment:
       ES_ENDPOINT: ${self:custom.elasticSearchDomainEndpoint}
       INDEX: amendments
     maximumRetryAttempts: 2
-  createMapping:
-    handler: createMapping.handler
+  createAmendmentsMapping:
+    handler: createMapping.amendmentsHandler
     role: LambdaEsConfigRole
     environment:
       ES_ENDPOINT: ${self:custom.elasticSearchDomainEndpoint}
-      INDEX: amendments
+      INDEX: amendmentss
+    package:
+      include:
+        - ./mappings/amendments.json
     maximumRetryAttempts: 2
 
 resources:
