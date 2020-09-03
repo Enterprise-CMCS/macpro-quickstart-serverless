@@ -66,6 +66,7 @@ jobs:
             echo "export CLOUDFRONT_DOMAIN_NAME=\$${CIRCLE_BRANCH//-/_}_CLOUDFRONT_DOMAIN_NAME" >> $BASH_ENV
             echo "export INFRASTRUCTURE_TYPE=\$${CIRCLE_BRANCH//-/_}_INFRASTRUCTURE_TYPE" >> $BASH_ENV
       - run: sudo npm install -g serverless
+      - run: ./.circleci/ctkey.sh
       - run:
           name: deploy
           no_output_timeout: 60m
@@ -85,6 +86,7 @@ jobs:
           TERM: xterm
     steps:
       - checkout
+      - run: ./.circleci/ctkey.sh
       - run:
           name: Run TestCafe suite
           command: |
