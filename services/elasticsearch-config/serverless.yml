@@ -33,14 +33,14 @@ functions:
     role: LambdaEsConfigRole
     environment:
       ES_ENDPOINT: ${self:custom.elasticSearchDomainEndpoint}
-      INDEX: newstuff
+      INDEX: amendments
     maximumRetryAttempts: 2
   createMapping:
     handler: createMapping.handler
     role: LambdaEsConfigRole
     environment:
       ES_ENDPOINT: ${self:custom.elasticSearchDomainEndpoint}
-      INDEX: newstuff
+      INDEX: amendments
     maximumRetryAttempts: 2
 
 resources:
