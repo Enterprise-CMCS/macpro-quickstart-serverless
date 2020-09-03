@@ -34,7 +34,7 @@ functions:
           maximumRetryAttempts: 2
     role: LambdaElasticSearchIndexerRole
     environment:
-      ES_ENDPOINT: ${self:custom.elasticSearchDomainEndpoint}
+      ES_ENDPOINT_URL: https://${self:custom.elasticSearchDomainEndpoint}
       INDEX: amendments
       TYPE: json
     maximumRetryAttempts: 2

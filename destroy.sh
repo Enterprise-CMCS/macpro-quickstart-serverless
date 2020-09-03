@@ -16,6 +16,7 @@ services=(
   'database'
   'uploads'
   'app-api'
+  'elasticsearch-config'
   'elasticsearch-auth'
   'elasticsearch'
   'stream-functions'
