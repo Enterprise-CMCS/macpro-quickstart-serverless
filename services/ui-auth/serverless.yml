@@ -26,7 +26,7 @@ resources:
       Fn::Not:
         - Fn::Equals:
           - ""
-          - ${env:SES_SOURCE_EMAIL_ARN, ""}
+          - ${env:SES_SOURCE_EMAIL_ADDRESS, ""}
     CreatePermissionsBoundary:
       Fn::Not:
         - Fn::Equals:
@@ -45,7 +45,14 @@ resources:
           Fn::If:
             - CreateEmailConfiguration
             - EmailSendingAccount: DEVELOPER
-              SourceArn: ${env:SES_SOURCE_EMAIL_ARN, ""}
+              SourceArn:
+                Fn::Join:
+                  - ''
+                  -
+                    - 'arn:aws:ses:us-east-1:'
+                    - Ref: AWS::AccountId
+                    - ':identity/'
+                    - '${env:SES_SOURCE_EMAIL_ADDRESS, ""}'
             - Ref: AWS::NoValue
         Schema:
           - Name: given_name
