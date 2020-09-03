@@ -16,7 +16,7 @@ jobs:
       - run:
           name: Check branch name is a legal serverless stage name
           command: |
-            if [[ ! $CIRCLE_BRANCH =~ ^[a-zA-Z0-9-]*$ ]] || [[ ${#CIRCLE_BRANCH} -gt 128 ]]; then
+            if [[ ! $CIRCLE_BRANCH =~ ^[a-zA-Z][a-zA-Z0-9-]*$ ]] || [[ ${#CIRCLE_BRANCH} -gt 128 ]]; then
               echo """
                 ------------------------------------------------------------------------------------------------------------------------------
                 ERROR:  Please read below
@@ -32,7 +32,7 @@ jobs:
                   A service name should only contain alphanumeric (case sensitive) and hyphens. It should start with an alphabetic character and shouldnt exceed 128 characters.
 
                 For CircleCI support, please push your code to a new branch with a name that meets Serverless' service name requirements.
-                So, make a new branch with a name that is made up of only letters, numbers, and hyphens... then delete this branch.
+                So, make a new branch with a name that begins with a letter and is made up of only letters, numbers, and hyphens... then delete this branch.
                 ------------------------------------------------------------------------------------------------------------------------------
               """
               exit 1
@@ -68,7 +68,7 @@ jobs:
       - run: sudo npm install -g serverless
       - run:
           name: deploy
-          no_output_timeout: 30m
+          no_output_timeout: 60m
           command: |
             # When deploying multiple copies of this quickstart to the same AWS Account (not ideal), a prefix helps prevent stepping on each other.
             # This can optionally be set as an environment variable in the CircleCI Project Settings

@@ -26,12 +26,12 @@ resources:
       Fn::Not:
         - Fn::Equals:
           - ""
-          - ${env:SES_SOURCE_EMAIL_ARN, ""}
+          - ${env:SES_SOURCE_EMAIL_ADDRESS, ""}
     CreatePermissionsBoundary:
       Fn::Not:
         - Fn::Equals:
           - ""
-          - ${env:IAM_PERMISSIONS_BOUNDARY_ARN, ""}
+          - ${env:IAM_PERMISSIONS_BOUNDARY_POLICY, ""}
   Resources:
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
@@ -45,7 +45,14 @@ resources:
           Fn::If:
             - CreateEmailConfiguration
             - EmailSendingAccount: DEVELOPER
-              SourceArn: ${env:SES_SOURCE_EMAIL_ARN, ""}
+              SourceArn:
+                Fn::Join:
+                  - ''
+                  -
+                    - 'arn:aws:ses:us-east-1:'
+                    - Ref: AWS::AccountId
+                    - ':identity/'
+                    - '${env:SES_SOURCE_EMAIL_ADDRESS, ""}'
             - Ref: AWS::NoValue
         Schema:
           - Name: given_name
@@ -97,7 +104,13 @@ resources:
         PermissionsBoundary:
           Fn::If:
             - CreatePermissionsBoundary
-            - ${env:IAM_PERMISSIONS_BOUNDARY_ARN, ""}
+            - Fn::Join:
+              - ''
+              -
+                - 'arn:aws:iam::'
+                - Ref: AWS::AccountId
+                - ':policy'
+                - '${env:IAM_PERMISSIONS_BOUNDARY_POLICY, ""}'
             - Ref: AWS::NoValue
         AssumeRolePolicyDocument:
           Version: '2012-10-17'
