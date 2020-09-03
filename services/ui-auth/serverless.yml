@@ -11,6 +11,7 @@ custom:
   stage: ${opt:stage, self:provider.stage}
   attachments_bucket_arn: ${cf:uploads-${self:custom.stage}.AttachmentsBucketArn}
   api_gateway_rest_api_name: ${cf:app-api-${self:custom.stage}.ApiGatewayRestApiName}
+  iamPath: ${env:IAM_PATH, "/"}
 
 # The `provider` block defines where your service will be deployed
 provider:
@@ -26,7 +27,11 @@ resources:
         - Fn::Equals:
           - ""
           - ${env:SES_SOURCE_EMAIL_ARN, ""}
-
+    CreatePermissionsBoundary:
+      Fn::Not:
+        - Fn::Equals:
+          - ""
+          - ${env:IAM_PERMISSIONS_BOUNDARY_ARN, ""}
   Resources:
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
@@ -88,7 +93,12 @@ resources:
     CognitoAuthRole:
       Type: AWS::IAM::Role
       Properties:
-        Path: /
+        Path: ${self:custom.iamPath}
+        PermissionsBoundary:
+          Fn::If:
+            - CreatePermissionsBoundary
+            - ${env:IAM_PERMISSIONS_BOUNDARY_ARN, ""}
+            - Ref: AWS::NoValue
         AssumeRolePolicyDocument:
           Version: '2012-10-17'
           Statement:

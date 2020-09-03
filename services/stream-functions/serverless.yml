@@ -16,6 +16,7 @@ custom:
   elasticSearchDomainArn: ${cf:elasticsearch-${self:custom.stage}.ElasticSearchDomainArn}
   emailSource: ${opt:emailSource, env:SES_SOURCE_EMAIL_ADDRESS, "admin@example.com"}
   reviewerEmail: ${opt:reviewTeamEmail, env:SES_REVIEW_TEAM_EMAIL_ADDRESS, "reviewteam@example.com"}
+  iamPath: ${env:IAM_PATH, "/"}
 
 provider:
   name: aws
@@ -62,6 +63,12 @@ functions:
     maximumRetryAttempts: 2
 
 resources:
+  Conditions:
+    CreatePermissionsBoundary:
+      Fn::Not:
+        - Fn::Equals:
+          - ""
+          - ${env:IAM_PERMISSIONS_BOUNDARY_ARN, ""}
   Resources:
     LambdaElasticSearchIndexerRole: # Why isn't this with the function as an iamRoleStatements?  https://github.com/serverless/serverless/issues/6485
       Type: 'AWS::IAM::Role'
@@ -73,7 +80,12 @@ resources:
             Principal:
               Service: 'lambda.amazonaws.com'
             Action: 'sts:AssumeRole'
-        Path: '/'
+        Path: ${self:custom.iamPath}
+        PermissionsBoundary:
+          Fn::If:
+            - CreatePermissionsBoundary
+            - ${env:IAM_PERMISSIONS_BOUNDARY_ARN, ""}
+            - Ref: AWS::NoValue
         Policies:
           - PolicyName: 'LambdaRolePolicy'
             PolicyDocument:
@@ -106,7 +118,12 @@ resources:
             Principal:
               Service: 'lambda.amazonaws.com'
             Action: 'sts:AssumeRole'
-        Path: '/'
+        Path: ${self:custom.iamPath}
+        PermissionsBoundary:
+          Fn::If:
+            - CreatePermissionsBoundary
+            - ${env:IAM_PERMISSIONS_BOUNDARY_ARN, ""}
+            - Ref: AWS::NoValue
         Policies:
           - PolicyName: 'LambdaRolePolicy'
             PolicyDocument:

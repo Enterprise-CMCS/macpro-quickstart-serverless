@@ -6,6 +6,7 @@ package:
 
 custom:
   stage: ${opt:stage, self:provider.stage}
+  iamPath: ${env:IAM_PATH, "/"}
 
 provider:
   name: aws
@@ -20,7 +21,11 @@ resources:
         - Fn::Equals:
           - ""
           - ${env:SES_SOURCE_EMAIL_ARN, ""}
-
+    CreatePermissionsBoundary:
+      Fn::Not:
+        - Fn::Equals:
+          - ""
+          - ${env:IAM_PERMISSIONS_BOUNDARY_ARN, ""}
   Resources:
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
@@ -40,7 +45,12 @@ resources:
     CognitoUserPoolDomain:
       Type: AWS::Cognito::UserPoolDomain
       Properties:
-        Domain: ${self:custom.stage}-elasticsearch-user-pool
+        Domain:
+          Fn::Join:
+            - "-"
+            -
+              - !Ref "AWS::AccountId"
+              - ${self:custom.stage}-elasticsearch-user-pool
         UserPoolId:
           Ref: CognitoUserPool
 
@@ -77,7 +87,12 @@ resources:
     CognitoAuthRole:
       Type: AWS::IAM::Role
       Properties:
-        Path: /
+        Path: ${self:custom.iamPath}
+        PermissionsBoundary:
+          Fn::If:
+            - CreatePermissionsBoundary
+            - ${env:IAM_PERMISSIONS_BOUNDARY_ARN, ""}
+            - Ref: AWS::NoValue
         AssumeRolePolicyDocument:
           Version: '2012-10-17'
           Statement:
