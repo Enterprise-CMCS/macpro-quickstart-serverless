@@ -40,7 +40,7 @@ functions:
     role: LambdaEsConfigRole
     environment:
       ES_ENDPOINT: ${self:custom.elasticSearchDomainEndpoint}
-      INDEX: amendmentss
+      INDEX: amendments
     package:
       include:
         - ./mappings/amendments.json
