@@ -9,6 +9,7 @@
     "serverless": "^1.80.0",
     "serverless-bundle": "^3.0.0",
     "serverless-dotenv-plugin": "^3.0.0",
-    "serverless-offline": "^6.7.0"
+    "serverless-offline": "^6.7.0",
+    "serverless-plugin-scripts": "^1.0.2"
   }
 }

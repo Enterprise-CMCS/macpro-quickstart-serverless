@@ -5,12 +5,20 @@ plugins:
   - serverless-bundle
   - serverless-offline
   - serverless-dotenv-plugin
+  - serverless-plugin-scripts
 
 custom:
   stage: ${opt:stage, self:provider.stage}
   elasticSearchDomainEndpoint: ${cf:elasticsearch-${self:custom.stage}.ElasticSearchDomainEndpoint}
   elasticSearchDomainArn: ${cf:elasticsearch-${self:custom.stage}.ElasticSearchDomainArn}
   iamPath: ${env:IAM_PATH, "/"}
+
+  scripts:
+    hooks:
+      # Create and configure indices
+      deploy:finalize: |
+        serverless invoke --stage ${self:custom.stage} --function createIndex
+        serverless invoke --stage ${self:custom.stage} --function createMapping
 
 provider:
   name: aws
