@@ -11,7 +11,8 @@ A serverless form submission application built and deployed to AWS with the Serv
 
 See master build [here](https://circleci.west.cms.gov/gh/CMSgov/workflows/macpro-quickstart-serverless/tree/master)  (Be advised:  This is currently on a CircleCI behind a VPN and EUA)
 
-CircleCI support in the .circleci folder.
+
+To get going with CircleCI, see the comments at the top of [.circleci/config.yml](.circleci/config.yml)
 
 
 Want to deploy from your Mac?
