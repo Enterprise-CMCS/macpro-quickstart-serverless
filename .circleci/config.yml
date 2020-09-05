@@ -86,12 +86,9 @@ jobs:
           TERM: xterm
     steps:
       - checkout
-      - run:
-          name: Combine package-lock.json files to single file
-          command: find . -name package-lock.json | xargs cat > combined-package-lock.txt
       - restore_cache:
           keys:
-            - npm-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
+            - npm-root-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
       - run:
           name: install root dependencies
           command: |
@@ -99,6 +96,16 @@ jobs:
               npm ci
             fi
             echo "export PATH=$(pwd)/node_modules/.bin:\$PATH" >> $BASH_ENV
+      - save_cache:
+          key: npm-root-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+      - run:
+          name: Combine package-lock.json files to single file
+          command: find . -not -path ./package-lock.json -name package-lock.json | xargs cat > combined-package-lock.txt
+      - restore_cache:
+          keys:
+            - npm-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
       - run:
           name: set environment for deploy
           command: |
@@ -135,7 +142,6 @@ jobs:
             - services/ui-auth/node_modules
             - services/ui/node_modules
             - services/ui-src/node_modules
-            - node_modules
   test:
     docker:
       - image: circleci/node:12-browsers
@@ -143,12 +149,9 @@ jobs:
           TERM: xterm
     steps:
       - checkout
-      - run:
-          name: Combine package-lock.json files to single file
-          command: find . -name package-lock.json | xargs cat > combined-package-lock.txt
       - restore_cache:
           keys:
-            - npm-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
+            - npm-root-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
       - run:
           name: install root dependencies
           command: |
@@ -156,6 +159,10 @@ jobs:
               npm ci
             fi
             echo "export PATH=$(pwd)/node_modules/.bin:\$PATH" >> $BASH_ENV
+      - save_cache:
+          key: npm-root-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
       - run: ./.circleci/ctkey.sh
       - run:
           name: Run TestCafe suite
