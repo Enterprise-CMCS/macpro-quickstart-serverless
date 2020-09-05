@@ -6,10 +6,5 @@
     "dynamo-to-elasticsearch-nodejs": "^1.0.5",
     "dynamodb-stream-elasticsearch": "^2.11.1"
   },
-  "devDependencies": {
-    "serverless": "^1.78.1",
-    "serverless-bundle": "^3.0.0",
-    "serverless-dotenv-plugin": "^3.0.0",
-    "serverless-offline": "^6.5.0"
-  }
+  "devDependencies": {}
 }

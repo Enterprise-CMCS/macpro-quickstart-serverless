@@ -20,6 +20,12 @@
   },
   "homepage": "https://github.com/CMSgov/macpro-quickstart-serverless#readme",
   "devDependencies": {
-    "serverless-dotenv-plugin": "^3.0.0"
+    "serverless-bundle": "^3.0.0",
+    "serverless-cloudfront-invalidate": "^1.5.0",
+    "serverless-dotenv-plugin": "^3.0.0",
+    "serverless-offline": "^6.7.0",
+    "serverless-plugin-scripts": "^1.0.2",
+    "serverless-plugin-warmup": "^4.9.0",
+    "serverless-s3-sync": "^1.14.4"
   }
 }
