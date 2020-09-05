@@ -93,7 +93,7 @@ jobs:
           keys:
             - npm-cache-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
       - run:
-          name: install serverless
+          name: install root dependencies
           command: |
             if [ ! -d node_modules ]; then
               npm ci
@@ -111,7 +111,6 @@ jobs:
             echo "export INFRASTRUCTURE_TYPE=\$${CIRCLE_BRANCH//-/_}_INFRASTRUCTURE_TYPE" >> $BASH_ENV
             cat $BASH_ENV
             ls -la node_modules
-      # - run: sudo npm install -g serverless
       - run: ./.circleci/ctkey.sh
       - run:
           name: deploy
@@ -145,6 +144,16 @@ jobs:
           TERM: xterm
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - npm-cache-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
+      - run:
+          name: install root dependencies
+          command: |
+            if [ ! -d node_modules ]; then
+              npm ci
+            fi
+            echo "export PATH=$(pwd)/node_modules/.bin:\$PATH" >> $BASH_ENV
       - run: ./.circleci/ctkey.sh
       - run:
           name: Run TestCafe suite
