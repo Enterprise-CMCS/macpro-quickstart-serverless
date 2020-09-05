@@ -20,12 +20,12 @@ services=(
 deploy() {
   service=$1
   pushd services/$service
-  npm install
+  npm ci
   serverless deploy  --stage $stage
   popd
 }
-rm -rf services/app-api/node_modules
-npm install
+
+npm ci
 
 for i in "${services[@]}"
 do
