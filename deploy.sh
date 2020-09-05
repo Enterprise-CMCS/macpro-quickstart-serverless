@@ -24,7 +24,7 @@ deploy() {
   serverless deploy  --stage $stage
   popd
 }
-
+rm -rf services/app-api/node_modules
 npm install
 
 for i in "${services[@]}"
