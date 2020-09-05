@@ -91,7 +91,7 @@ jobs:
           command: find . -name package-lock.json | xargs cat > combined-package-lock.txt
       - restore_cache:
           keys:
-            - npm-cache-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
+            - npm-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
       - run:
           name: install root dependencies
           command: |
@@ -123,7 +123,7 @@ jobs:
             cd services
             ./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$CIRCLE_BRANCH
       - save_cache:
-          key: npm-cache-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
+          key: npm-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
           paths:
             - services/database/node_modules
             - services/uploads/node_modules
@@ -145,7 +145,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - npm-cache-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
+            - npm-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
       - run:
           name: install root dependencies
           command: |
