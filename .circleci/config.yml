@@ -102,9 +102,9 @@ jobs:
             echo "export CLOUDFRONT_CERTIFICATE_ARN=\$${CIRCLE_BRANCH//-/_}_CLOUDFRONT_CERTIFICATE_ARN" >> $BASH_ENV
             echo "export CLOUDFRONT_DOMAIN_NAME=\$${CIRCLE_BRANCH//-/_}_CLOUDFRONT_DOMAIN_NAME" >> $BASH_ENV
             echo "export INFRASTRUCTURE_TYPE=\$${CIRCLE_BRANCH//-/_}_INFRASTRUCTURE_TYPE" >> $BASH_ENV
-            echo "export alias serverless=$(pwd)/node_modules/.bin/serverless" >> $BASH_ENV
+            echo "alias serverless=$(pwd)/node_modules/.bin/serverless" >> $BASH_ENV
             cat $BASH_ENV
-      - run: sudo npm install -g serverless
+      # - run: sudo npm install -g serverless
       - run: ./.circleci/ctkey.sh
       - run:
           name: deploy
