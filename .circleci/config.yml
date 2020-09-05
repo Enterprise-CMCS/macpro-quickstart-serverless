@@ -88,21 +88,23 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - npm-root-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - npm-tools-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "./.circleci/package-lock.json" }}
       - run:
-          name: install root dependencies
+          name: install tools
           command: |
-            if [ ! -d node_modules ]; then
-              npm ci
-            fi
-            echo "export PATH=$(pwd)/node_modules/.bin:\$PATH" >> $BASH_ENV
+            pushd .circleci
+              if [ ! -d node_modules ]; then
+                npm ci
+              fi
+            popd
+            echo "export PATH=$(pwd)/.circleci/node_modules/.bin:\$PATH" >> $BASH_ENV
       - save_cache:
-          key: npm-root-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          key: npm-tools-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "./.circleci/package-lock.json" }}
           paths:
-            - node_modules
+            - ./.circleci/node_modules
       - run:
           name: Combine package-lock.json files to single file
-          command: find . -not -path ./package-lock.json -name package-lock.json | xargs cat > combined-package-lock.txt
+          command: find . -not -path ./.circleci/package-lock.json -name package-lock.json | xargs cat > combined-package-lock.txt
       - restore_cache:
           keys:
             - npm-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
@@ -151,18 +153,20 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - npm-root-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
+            - npm-tools-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "./.circleci/package-lock.json" }}
       - run:
-          name: install root dependencies
+          name: install tools
           command: |
-            if [ ! -d node_modules ]; then
-              npm ci
-            fi
-            echo "export PATH=$(pwd)/node_modules/.bin:\$PATH" >> $BASH_ENV
+            pushd .circleci
+              if [ ! -d node_modules ]; then
+                npm ci
+              fi
+            popd
+            echo "export PATH=$(pwd)/.circleci/node_modules/.bin:\$PATH" >> $BASH_ENV
       - save_cache:
-          key: npm-root-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "package-lock.json" }}
+          key: npm-tools-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "./.circleci/package-lock.json" }}
           paths:
-            - node_modules
+            - ./.circleci/node_modules
       - run: ./.circleci/ctkey.sh
       - run:
           name: Run TestCafe suite
