@@ -25,6 +25,8 @@ deploy() {
   popd
 }
 
+npm install
+
 for i in "${services[@]}"
 do
 	deploy $i
