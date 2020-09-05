@@ -6,7 +6,6 @@ package:
 
 plugins:
   - serverless-bundle
-  - serverless-offline
   - serverless-dotenv-plugin
 
 custom:

@@ -86,6 +86,28 @@ jobs:
           TERM: xterm
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - npm-tools-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "./.circleci/package-lock.json" }}
+      - run:
+          name: install tools
+          command: |
+            pushd .circleci
+              if [ ! -d node_modules ]; then
+                npm ci
+              fi
+            popd
+            echo "export PATH=$(pwd)/.circleci/node_modules/.bin:\$PATH" >> $BASH_ENV
+      - save_cache:
+          key: npm-tools-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "./.circleci/package-lock.json" }}
+          paths:
+            - ./.circleci/node_modules
+      - run:
+          name: Combine package-lock.json files to single file
+          command: find . -not -path ./.circleci/package-lock.json -name package-lock.json | xargs cat > combined-package-lock.txt
+      - restore_cache:
+          keys:
+            - npm-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
       - run:
           name: set environment for deploy
           command: |
@@ -96,7 +118,6 @@ jobs:
             echo "export CLOUDFRONT_CERTIFICATE_ARN=\$${CIRCLE_BRANCH//-/_}_CLOUDFRONT_CERTIFICATE_ARN" >> $BASH_ENV
             echo "export CLOUDFRONT_DOMAIN_NAME=\$${CIRCLE_BRANCH//-/_}_CLOUDFRONT_DOMAIN_NAME" >> $BASH_ENV
             echo "export INFRASTRUCTURE_TYPE=\$${CIRCLE_BRANCH//-/_}_INFRASTRUCTURE_TYPE" >> $BASH_ENV
-      - run: sudo npm install -g serverless
       - run: ./.circleci/ctkey.sh
       - run:
           name: deploy
@@ -110,6 +131,20 @@ jobs:
           command: |
             cd services
             ./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$CIRCLE_BRANCH
+      - save_cache:
+          key: npm-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
+          paths:
+            - services/database/node_modules
+            - services/uploads/node_modules
+            - services/app-api/node_modules
+            - services/elasticsearch-auth/node_modules
+            - services/elasticsearch/node_modules
+            - services/elasticsearch-config/node_modules
+            - services/stream-functions/node_modules
+            - services/ui-auth/node_modules
+            - services/ui/node_modules
+            - services/ui-src/node_modules
+            - node_modules
   test:
     docker:
       - image: circleci/node:12-browsers
@@ -117,11 +152,26 @@ jobs:
           TERM: xterm
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - npm-tools-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "./.circleci/package-lock.json" }}
+      - run:
+          name: install tools
+          command: |
+            pushd .circleci
+              if [ ! -d node_modules ]; then
+                npm ci
+              fi
+            popd
+            echo "export PATH=$(pwd)/.circleci/node_modules/.bin:\$PATH" >> $BASH_ENV
+      - save_cache:
+          key: npm-tools-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "./.circleci/package-lock.json" }}
+          paths:
+            - ./.circleci/node_modules
       - run: ./.circleci/ctkey.sh
       - run:
           name: Run TestCafe suite
           command: |
-            sudo npm install -g testcafe serverless
             pushd services
             export APPLICATION_ENDPOINT=`./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$CIRCLE_BRANCH`
             popd
@@ -137,11 +187,11 @@ workflows:
           <<: *ignore_branches_that_begin_with_skipci
       - lock:
           requires:
-            - verify_branch
           <<: *ignore_branches_that_begin_with_skipci
       - deploy:
           requires:
             - lock
+            - verify_branch
           <<: *ignore_branches_that_begin_with_skipci
       - test:
           requires:

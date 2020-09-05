@@ -20,7 +20,9 @@ services=(
 deploy() {
   service=$1
   pushd services/$service
-  npm install
+  if [ -f "package-lock.json" ] && [ ! -d "node_modules" ]; then
+    npm ci
+  fi
   serverless deploy  --stage $stage
   popd
 }
