@@ -20,12 +20,12 @@ services=(
 deploy() {
   service=$1
   pushd services/$service
-  npm ci
+  if [ -f "package-lock.json" ]; then
+    npm ci
+  fi
   serverless deploy  --stage $stage
   popd
 }
-
-npm ci
 
 for i in "${services[@]}"
 do

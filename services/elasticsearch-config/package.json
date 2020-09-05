@@ -5,5 +5,9 @@
   "dependencies": {
     "dynamodb-stream-elasticsearch": "^2.11.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "serverless-bundle": "^3.0.0",
+    "serverless-dotenv-plugin": "^3.0.0",
+    "serverless-plugin-scripts": "^1.0.2"
+  }
 }
