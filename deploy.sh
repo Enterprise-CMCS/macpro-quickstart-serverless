@@ -20,7 +20,7 @@ services=(
 deploy() {
   service=$1
   pushd services/$service
-  if [ -f "package-lock.json" ]; then
+  if [ -f "package-lock.json" ] && [ ! -d "node_modules" ]; then
     npm ci
   fi
   serverless deploy  --stage $stage

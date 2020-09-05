@@ -87,6 +87,12 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Combine package-lock.json files to single file
+          command: find . -name package-lock.json | xargs cat > combined-package-lock.json
+      - restore_cache:
+          keys:
+            - npm-cache-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
+      - run:
           name: set environment for deploy
           command: |
             # Environment variable names cannot contain hyphens
@@ -110,6 +116,19 @@ jobs:
           command: |
             cd services
             ./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$CIRCLE_BRANCH
+      - save_cache:
+          key: npm-cache-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
+          paths:
+            - services/database/node_modules
+            - services/uploads/node_modules
+            - services/app-api/node_modules
+            - services/elasticsearch-auth/node_modules
+            - services/elasticsearch/node_modules
+            - services/elasticsearch-config/node_modules
+            - services/stream-functions/node_modules
+            - services/ui-auth/node_modules
+            - services/ui/node_modules
+            - services/ui-src/node_modules
   test:
     docker:
       - image: circleci/node:12-browsers
