@@ -88,7 +88,7 @@ jobs:
       - checkout
       - run:
           name: Combine package-lock.json files to single file
-          command: find . -name package-lock.json | xargs cat > combined-package-lock.json
+          command: find . -name package-lock.json | xargs cat > combined-package-lock.txt
       - restore_cache:
           keys:
             - npm-cache-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
