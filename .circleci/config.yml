@@ -182,11 +182,11 @@ workflows:
           <<: *ignore_branches_that_begin_with_skipci
       - lock:
           requires:
-            - verify_branch
           <<: *ignore_branches_that_begin_with_skipci
       - deploy:
           requires:
             - lock
+            - verify_branch
           <<: *ignore_branches_that_begin_with_skipci
       - test:
           requires:
