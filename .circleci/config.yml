@@ -143,6 +143,9 @@ jobs:
           TERM: xterm
     steps:
       - checkout
+      - run:
+          name: Combine package-lock.json files to single file
+          command: find . -name package-lock.json | xargs cat > combined-package-lock.txt
       - restore_cache:
           keys:
             - npm-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
