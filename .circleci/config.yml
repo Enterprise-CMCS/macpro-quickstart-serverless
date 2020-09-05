@@ -98,7 +98,7 @@ jobs:
             if [ ! -d node_modules ]; then
               npm ci
             fi
-            echo "alias serverless=$(pwd)/node_modules/.bin/serverless" >> $BASH_ENV
+            echo "export PATH=$(pwd)/node_modules/.bin:\$PATH" >> $BASH_ENV
       - run:
           name: set environment for deploy
           command: |
