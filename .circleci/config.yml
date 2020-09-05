@@ -108,16 +108,6 @@ jobs:
       - restore_cache:
           keys:
             - npm-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
-<<<<<<< HEAD
-=======
-      - run:
-          name: install root dependencies
-          command: |
-            if [ ! -d node_modules ]; then
-              npm ci
-            fi
-            echo "export PATH=$(pwd)/node_modules/.bin:\$PATH" >> $BASH_ENV
->>>>>>> faster
       - run:
           name: set environment for deploy
           command: |
@@ -162,7 +152,6 @@ jobs:
           TERM: xterm
     steps:
       - checkout
-<<<<<<< HEAD
       - restore_cache:
           keys:
             - npm-tools-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "./.circleci/package-lock.json" }}
@@ -179,21 +168,6 @@ jobs:
           key: npm-tools-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "./.circleci/package-lock.json" }}
           paths:
             - ./.circleci/node_modules
-=======
-      - run:
-          name: Combine package-lock.json files to single file
-          command: find . -name package-lock.json | xargs cat > combined-package-lock.txt
-      - restore_cache:
-          keys:
-            - npm-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
-      - run:
-          name: install root dependencies
-          command: |
-            if [ ! -d node_modules ]; then
-              npm ci
-            fi
-            echo "export PATH=$(pwd)/node_modules/.bin:\$PATH" >> $BASH_ENV
->>>>>>> faster
       - run: ./.circleci/ctkey.sh
       - run:
           name: Run TestCafe suite
