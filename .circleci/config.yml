@@ -110,6 +110,7 @@ jobs:
             echo "export CLOUDFRONT_DOMAIN_NAME=\$${CIRCLE_BRANCH//-/_}_CLOUDFRONT_DOMAIN_NAME" >> $BASH_ENV
             echo "export INFRASTRUCTURE_TYPE=\$${CIRCLE_BRANCH//-/_}_INFRASTRUCTURE_TYPE" >> $BASH_ENV
             cat $BASH_ENV
+            ls -la node_modules
       # - run: sudo npm install -g serverless
       - run: ./.circleci/ctkey.sh
       - run:
