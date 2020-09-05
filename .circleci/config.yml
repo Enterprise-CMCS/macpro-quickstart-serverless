@@ -109,8 +109,6 @@ jobs:
             echo "export CLOUDFRONT_CERTIFICATE_ARN=\$${CIRCLE_BRANCH//-/_}_CLOUDFRONT_CERTIFICATE_ARN" >> $BASH_ENV
             echo "export CLOUDFRONT_DOMAIN_NAME=\$${CIRCLE_BRANCH//-/_}_CLOUDFRONT_DOMAIN_NAME" >> $BASH_ENV
             echo "export INFRASTRUCTURE_TYPE=\$${CIRCLE_BRANCH//-/_}_INFRASTRUCTURE_TYPE" >> $BASH_ENV
-            cat $BASH_ENV
-            ls -la node_modules
       - run: ./.circleci/ctkey.sh
       - run:
           name: deploy
@@ -137,6 +135,7 @@ jobs:
             - services/ui-auth/node_modules
             - services/ui/node_modules
             - services/ui-src/node_modules
+            - node_modules
   test:
     docker:
       - image: circleci/node:12-browsers
@@ -158,7 +157,6 @@ jobs:
       - run:
           name: Run TestCafe suite
           command: |
-            sudo npm install -g testcafe serverless
             pushd services
             export APPLICATION_ENDPOINT=`./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$CIRCLE_BRANCH`
             popd
