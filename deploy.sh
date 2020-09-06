@@ -17,15 +17,25 @@ services=(
   'ui-src'
 )
 
+install_deps() {
+  if [ "$CI" == "true" ]; then # If we're in a CI system
+    if [ ! -d "node_modules" ]; then # If we don't have any node_modules (CircleCI cache miss scenario), run npm ci.  Otherwise, we're all set, do nothing.
+      npm ci
+    fi
+  else # We're not in a CI system, let's npm install
+    npm install
+  fi
+}
+
 deploy() {
   service=$1
   pushd services/$service
-  if [ -f "package-lock.json" ] && [ ! -d "node_modules" ]; then
-    npm ci
-  fi
+  install_deps
   serverless deploy  --stage $stage
   popd
 }
+
+install_deps
 
 for i in "${services[@]}"
 do
