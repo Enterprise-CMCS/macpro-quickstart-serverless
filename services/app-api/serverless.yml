@@ -232,7 +232,7 @@ resources:
             VisibilityConfig:
               SampledRequestsEnabled: true
               CloudWatchMetricsEnabled: true
-              MetricName: CloudFrontWebAcl
+              MetricName: WafWebAcl
         Scope: REGIONAL
         VisibilityConfig:
           CloudWatchMetricsEnabled: true

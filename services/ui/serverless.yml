@@ -80,7 +80,7 @@ resources:
             VisibilityConfig:
               SampledRequestsEnabled: true
               CloudWatchMetricsEnabled: true
-              MetricName: CloudFrontWebAcl
+              MetricName: WafWebAcl
         Scope: CLOUDFRONT
         VisibilityConfig:
           CloudWatchMetricsEnabled: true
