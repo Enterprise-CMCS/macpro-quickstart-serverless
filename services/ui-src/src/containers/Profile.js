@@ -5,8 +5,8 @@ import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import "./Profile.css";
 import { Auth } from "aws-amplify"
-import 'react-phone-number-input/style.css'
-import PhoneInput from 'react-phone-number-input'
+import PhoneInput from 'react-phone-input-2'
+import 'react-phone-input-2/lib/style.css'
 
 export default function Profile() {
     const history = useHistory();
@@ -31,7 +31,7 @@ export default function Profile() {
                 setEmail(userInfo.attributes.email);
                 setFirstName(capitalize(userInfo.attributes.given_name));
                 setLastName(capitalize(userInfo.attributes.family_name));
-                setPhoneNumber(capitalize(userInfo.attributes.phone_number));
+                setPhoneNumber(formatPhoneNumberForForm(userInfo.attributes.phone_number));
             } catch (e) {
                 onError(e);
             }
@@ -40,25 +40,37 @@ export default function Profile() {
         onLoad();
     }, []);
 
+    function validatePhoneNumber(phone) {
+        if ( phone === "1" || phone === "" ) return true;
+        return phone.length === 11;
+    }
     function validateForm() {
-        return email.length > 0 && firstName.length > 0 && lastName.length;
+        return email.length > 0 && firstName.length > 0 && lastName.length && validatePhoneNumber(phoneNumber);
     }
 
     function saveProfile(user, userAttributes) {
         return Auth.updateUserAttributes(user, userAttributes);
     }
 
+    function formatPhoneNumberForForm(phone) {
+        if ( phone == null ) return ""
+        return phone.replace('+', '')
+    }
+
+    function formatPhoneNumberForSubmission(phone) {
+        if (phone === "1" || phone === "" || phone == null ) return ""
+        return "+" + phone.replace('+', '')
+    }
     async function handleSubmit(event) {
 
         event.preventDefault();
-
         setIsLoading(true);
         let user = await Auth.currentAuthenticatedUser();
         try {
             await saveProfile(user, {
                 "given_name": firstName,
                 "family_name": lastName,
-                "phone_number": phoneNumber
+                "phone_number": formatPhoneNumberForSubmission(phoneNumber)
             });
             history.push("/");
         } catch (e) {
@@ -94,9 +106,12 @@ export default function Profile() {
                 <FormGroup controlId="phoneNumber">
                     <ControlLabel>Phone</ControlLabel>
                     <PhoneInput
-                        defaultCountry="US"
                         value={phoneNumber}
-                        onChange={e => setPhoneNumber(e || "")}
+                        country="us"
+                        countryCodeEditable={false}
+                        disableDropdown={true}
+                        enableAreaCodes={false}
+                        onChange={e => setPhoneNumber(e || "" )}
                     />
                 </FormGroup>
                 <LoaderButton
