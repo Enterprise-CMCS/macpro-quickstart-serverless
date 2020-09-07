@@ -5,13 +5,15 @@ import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import "./Profile.css";
 import { Auth } from "aws-amplify"
-
+import 'react-phone-number-input/style.css'
+import PhoneInput from 'react-phone-number-input'
 
 export default function Profile() {
     const history = useHistory();
     const [email, setEmail] = useState("");
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
+    const [phoneNumber, setPhoneNumber] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const capitalize = (s) => {
         if (typeof s !== 'string') return ''
@@ -29,6 +31,7 @@ export default function Profile() {
                 setEmail(userInfo.attributes.email);
                 setFirstName(capitalize(userInfo.attributes.given_name));
                 setLastName(capitalize(userInfo.attributes.family_name));
+                setPhoneNumber(capitalize(userInfo.attributes.phone_number));
             } catch (e) {
                 onError(e);
             }
@@ -54,7 +57,8 @@ export default function Profile() {
         try {
             await saveProfile(user, {
                 "given_name": firstName,
-                "family_name": lastName
+                "family_name": lastName,
+                "phone_number": phoneNumber
             });
             history.push("/");
         } catch (e) {
@@ -85,6 +89,14 @@ export default function Profile() {
                     <FormControl
                         value={lastName}
                         onChange={e => setLastName(e.target.value)}
+                    />
+                </FormGroup>
+                <FormGroup controlId="phoneNumber">
+                    <ControlLabel>Phone</ControlLabel>
+                    <PhoneInput
+                        defaultCountry="US"
+                        value={phoneNumber}
+                        onChange={e => setPhoneNumber(e || "")}
                     />
                 </FormGroup>
                 <LoaderButton
