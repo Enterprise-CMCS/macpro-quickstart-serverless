@@ -209,6 +209,51 @@ resources:
         ResponseType: DEFAULT_5XX
         RestApiId:
           Ref: 'ApiGatewayRestApi'
+    ApiGwWebAcl:
+      Type: AWS::WAFv2::WebACL
+      Properties:
+        Name: ${self:custom.stage}-ApiGwWebAcl
+        DefaultAction:
+          Block: {}
+        Rules:
+          - Action:
+              Allow: {}
+            Name: ${self:custom.stage}-allow-usa-plus-territories
+            Priority: 0
+            Statement:
+              GeoMatchStatement:
+                CountryCodes:
+                  - GU # Guam
+                  - PR # Puerto Rico
+                  - US # USA
+                  - UM # US Minor Outlying Islands
+                  - VI # US Virgin Islands
+                  - MP # Northern Mariana Islands
+            VisibilityConfig:
+              SampledRequestsEnabled: true
+              CloudWatchMetricsEnabled: true
+              MetricName: CloudFrontWebAcl
+        Scope: REGIONAL
+        VisibilityConfig:
+          CloudWatchMetricsEnabled: true
+          SampledRequestsEnabled: true
+          MetricName: ${self:custom.stage}-webacl
+    ApiGwWebAclAssociation:
+      Type: AWS::WAFv2::WebACLAssociation
+      Properties:
+        ResourceArn:
+          Fn::Join:
+            - ""
+            -
+              - 'arn:aws:apigateway:'
+              - Ref: AWS::Region
+              - '::/restapis/'
+              - Ref: ApiGatewayRestApi
+              - '/stages/${self:custom.stage}'
+        WebACLArn:
+          Fn::GetAtt:
+            - ApiGwWebAcl
+            - Arn
   Outputs:
     ApiGatewayRestApiName:
       Value:
