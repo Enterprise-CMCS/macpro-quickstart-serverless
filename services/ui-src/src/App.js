@@ -52,6 +52,9 @@ function App() {
                         <Nav pullRight>
                             {isAuthenticated ? (
                                 <>
+                                    <LinkContainer to="/profile">
+                                        <NavItem>Profile</NavItem>
+                                    </LinkContainer>
                                     <NavItem onClick={handleLogout}>Logout</NavItem>
                                 </>
                             ) : (
