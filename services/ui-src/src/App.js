@@ -1,7 +1,7 @@
 import { LinkContainer } from "react-router-bootstrap";
 import React, { useState, useEffect } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { Nav, Navbar, NavItem } from "react-bootstrap";
+import { Nav, Navbar, NavItem, NavDropdown } from "react-bootstrap";
 import "./App.css";
 import Routes from "./Routes";
 import { AppContext } from "./libs/contextLib";
@@ -11,6 +11,7 @@ import { onError } from "./libs/errorLib";
 function App() {
     const [isAuthenticating, setIsAuthenticating] = useState(true);
     const [isAuthenticated, userHasAuthenticated] = useState(false);
+    const [email, setEmail] = useState(false);
     const history = useHistory();
 
     useEffect(() => {
@@ -21,6 +22,8 @@ function App() {
         try {
             await Auth.currentSession();
             userHasAuthenticated(true);
+            const userInfo = await Auth.currentUserInfo();
+            setEmail(userInfo.attributes.email);
         }
         catch(e) {
             if (e !== 'No current user') {
@@ -52,10 +55,14 @@ function App() {
                         <Nav pullRight>
                             {isAuthenticated ? (
                                 <>
-                                    <LinkContainer to="/profile">
-                                        <NavItem>Profile</NavItem>
-                                    </LinkContainer>
-                                    <NavItem onClick={handleLogout}>Logout</NavItem>
+                                    <NavDropdown
+                                        id="User"
+                                        title={email}  >
+                                        <LinkContainer to="/profile">
+                                            <NavItem>User Profile</NavItem>
+                                        </LinkContainer>
+                                        <NavItem onClick={handleLogout}>Logout</NavItem>
+                                    </NavDropdown>
                                 </>
                             ) : (
                                 <>
