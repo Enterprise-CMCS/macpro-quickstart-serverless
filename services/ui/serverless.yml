@@ -58,7 +58,34 @@ resources:
                   - CloudFrontOriginAccessIdentity
                   - S3CanonicalUserId
         Bucket: !Ref S3Bucket
-
+    CloudFrontWebAcl:
+      Type: AWS::WAFv2::WebACL
+      Properties:
+        DefaultAction:
+          Block: {}
+        Rules:
+          - Action:
+              Allow: {}
+            Name: ${self:custom.stage}-allow-usa-plus-territories
+            Priority: 0
+            Statement:
+              GeoMatchStatement:
+                CountryCodes:
+                  - GU # Guam
+                  - PR # Puerto Rico
+                  - US # USA
+                  - UM # US Minor Outlying Islands
+                  - VI # US Virgin Islands
+                  - MP # Northern Mariana Islands
+            VisibilityConfig:
+              SampledRequestsEnabled: true
+              CloudWatchMetricsEnabled: true
+              MetricName: CloudFrontWebAcl
+        Scope: CLOUDFRONT
+        VisibilityConfig:
+          CloudWatchMetricsEnabled: true
+          SampledRequestsEnabled: true
+          MetricName: ${self:custom.stage}-webacl
     CloudFrontOriginAccessIdentity:
       Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
       Properties:
@@ -113,6 +140,10 @@ resources:
             - ErrorCode: 403
               ResponseCode: 403
               ResponsePagePath: /index.html
+          WebACLId:
+            Fn::GetAtt:
+              - CloudFrontWebAcl
+              - Arn
 
     Route53DnsRecord:
       Type: AWS::Route53::RecordSet
