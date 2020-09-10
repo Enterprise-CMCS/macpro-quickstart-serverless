@@ -10,7 +10,6 @@ services=(
   'app-api'
   'elasticsearch-auth'
   'elasticsearch'
-  'elasticsearch-config'
   'stream-functions'
   'ui-auth'
   'ui'
