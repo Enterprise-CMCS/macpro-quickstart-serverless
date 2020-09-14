@@ -25,7 +25,7 @@ provider:
 
 functions:
   elasticsearchIndexer:
-    handler: indexer.handler
+    handler: handlers/elasticsearchIndexer.handler
     events:
       - stream:
           arn: ${self:custom.tableStreamArn}
@@ -38,7 +38,7 @@ functions:
       TYPE: json
     maximumRetryAttempts: 2
   emailSubmitter:
-    handler: emailSubmitter.handler
+    handler: handlers/emailSubmitter.handler
     events:
       - stream:
           arn: ${self:custom.tableStreamArn}
@@ -49,7 +49,7 @@ functions:
       emailSource: ${self:custom.emailSource}
     maximumRetryAttempts: 2
   emailReviewer:
-    handler: emailReviewer.handler
+    handler: handlers/emailReviewer.handler
     events:
       - stream:
           arn: ${self:custom.tableStreamArn}
