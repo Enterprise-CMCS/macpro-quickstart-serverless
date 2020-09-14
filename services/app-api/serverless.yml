@@ -41,7 +41,7 @@ provider:
 
 functions:
   create:
-    handler: create.main
+    handler: handlers/create.main
     role: LambdaApiRole
     events:
       - http:
@@ -51,7 +51,7 @@ functions:
           authorizer: aws_iam
 
   get:
-    handler: get.main
+    handler: handlers/get.main
     role: LambdaApiRole
     events:
       - http:
@@ -61,7 +61,7 @@ functions:
           authorizer: aws_iam
 
   list:
-    handler: list.main
+    handler: handlers/list.main
     role: LambdaApiRole
     events:
       - http:
@@ -71,7 +71,7 @@ functions:
           authorizer: aws_iam
 
   update:
-    handler: update.main
+    handler: handlers/update.main
     role: LambdaApiRole
     events:
       - http:
@@ -81,7 +81,7 @@ functions:
           authorizer: aws_iam
 
   delete:
-    handler: delete.main
+    handler: handlers/delete.main
     role: LambdaApiRole
     events:
       - http:
