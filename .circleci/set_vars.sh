@@ -13,6 +13,8 @@ branch_specific_vars=(
   'CTKEY_PASSWORD'
   'CTKEY_ACCOUNT_ID'
   'CTKEY_IAM_ROLE'
+  'AWS_ACCESS_KEY_ID'
+  'AWS_SECRET_ACCESS_KEY'
 )
 
 override_var_if_set() {
