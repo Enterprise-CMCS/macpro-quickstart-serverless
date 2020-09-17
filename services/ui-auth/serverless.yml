@@ -78,6 +78,20 @@ resources:
           - ADMIN_NO_SRP_AUTH
         GenerateSecret: false
 
+    CognitoUserPoolIdentityProvider:
+      Type: AWS::Cognito::UserPoolIdentityProvider
+      Properties:
+        AttributeMapping:
+          email: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress
+        IdpIdentifiers:
+          - IdpIdentifier
+        ProviderDetails:
+          MetadataURL: https://collabralinkmacpro.okta.com/app/exkzpic5qdiSbhYnx4x6/sso/saml/metadata
+        ProviderName: Okta
+        ProviderType: SAML
+        UserPoolId:
+          Ref: CognitoUserPool
+
     CognitoIdentityPool:
       Type: AWS::Cognito::IdentityPool
       Properties:
