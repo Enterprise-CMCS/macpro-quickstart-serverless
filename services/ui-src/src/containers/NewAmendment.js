@@ -28,8 +28,8 @@ export default function NewAmendment() {
     }
 
     async function populateUserInfo() {
-      const userInfo = await Auth.currentAuthenticatedUser();
-      setEmail(userInfo.username.replace(/^Okta_/g,''));
+      const userInfo = await Auth.currentSession();
+      setEmail(userInfo.idToken.payload.email);
     }
 
     populateUserInfo();

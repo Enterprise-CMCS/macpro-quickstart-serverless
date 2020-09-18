@@ -20,10 +20,9 @@ function App() {
 
     async function onLoad() {
         try {
-            await Auth.currentSession();
+            const userInfo = await Auth.currentSession();
             userHasAuthenticated(true);
-            const userInfo = await Auth.currentAuthenticatedUser();
-            setEmail(userInfo.username.replace(/^Okta_/g,''));
+            setEmail(userInfo.idToken.payload.email);
         }
         catch(e) {
             if (e !== 'No current user') {
