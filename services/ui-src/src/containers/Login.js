@@ -15,9 +15,9 @@ export default function Login() {
         password: ""
     });
 
-    function validateForm() {
-        return fields.email.length > 0 && fields.password.length > 0;
-    }
+    // function validateForm() {
+    //     return fields.email.length > 0 && fields.password.length > 0;
+    // }
 
     async function handleSubmit(event) {
         event.preventDefault();
