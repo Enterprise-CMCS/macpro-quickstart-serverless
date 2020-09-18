@@ -24,7 +24,6 @@ export default function Login() {
       const {
         domain,
         redirectSignIn,
-        redirectSignOut,
         responseType
       } = authConfig.oauth;
       const clientId = authConfig.userPoolWebClientId;
