@@ -19,17 +19,26 @@ export default function Login() {
     //     return fields.email.length > 0 && fields.password.length > 0;
     // }
 
+    function signInWithOkta() {
+      const authConfig = Auth.configure();
+      const {
+        domain,
+        redirectSignIn,
+        redirectSignOut,
+        responseType
+      } = authConfig.oauth;
+      const clientId = authConfig.userPoolWebClientId;
+      const url = `https://${domain}/oauth2/authorize?identity_provider=Okta&redirect_uri=${redirectSignIn}&response_type=${responseType}&client_id=${clientId}`;
+      window.location.assign(url);
+    }
+
     async function handleSubmit(event) {
         event.preventDefault();
 
         setIsLoading(true);
 
         try {
-            //await Auth.signIn(fields.email, fields.password);
-            await Auth.federatedSignIn({
-              customProvider: 'OktaWebFlow'
-            });
-            userHasAuthenticated(true);
+            signInWithOkta();
         } catch (e) {
             onError(e);
             setIsLoading(false);
