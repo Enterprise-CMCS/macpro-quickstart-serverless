@@ -15,9 +15,9 @@ export default function Login() {
         password: ""
     });
 
-    // function validateForm() {
-    //     return fields.email.length > 0 && fields.password.length > 0;
-    // }
+    function validateForm() {
+        return fields.email.length > 0 && fields.password.length > 0;
+    }
 
     function signInWithOkta() {
       const authConfig = Auth.configure();
@@ -32,13 +32,27 @@ export default function Login() {
       window.location.assign(url);
     }
 
-    async function handleSubmit(event) {
+    async function handleSubmitOkta(event) {
         event.preventDefault();
 
         setIsLoading(true);
 
         try {
             signInWithOkta();
+        } catch (e) {
+            onError(e);
+            setIsLoading(false);
+        }
+    }
+
+    async function handleSubmit(event) {
+        event.preventDefault();
+
+        setIsLoading(true);
+
+        try {
+            await Auth.signIn(fields.email, fields.password);
+            userHasAuthenticated(true);
         } catch (e) {
             onError(e);
             setIsLoading(false);
@@ -70,8 +84,19 @@ export default function Login() {
                     type="submit"
                     bsSize="large"
                     isLoading={isLoading}
+                    disabled={!validateForm()}
                 >
                     Login
+                </LoaderButton>
+            </form>
+            <form onSubmit={handleSubmitOkta}>
+                <LoaderButton
+                    block
+                    type="submit"
+                    bsSize="large"
+                    isLoading={isLoading}
+                >
+                    Login with Okta
                 </LoaderButton>
             </form>
         </div>
