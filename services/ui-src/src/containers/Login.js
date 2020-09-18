@@ -28,7 +28,8 @@ export default function Login() {
             //await Auth.signIn(fields.email, fields.password);
             await Auth.federatedSignIn({
               customProvider: 'OktaWebFlow'
-            }).then(userHasAuthenticated(true));
+            });
+            userHasAuthenticated(true);
         } catch (e) {
             onError(e);
             setIsLoading(false);
