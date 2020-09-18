@@ -28,11 +28,8 @@ export default function NewAmendment() {
     }
 
     async function populateUserInfo() {
-        var userInfo = await Auth.currentUserInfo();
-        setEmail(userInfo.attributes.email);
-        setFirstName(capitalize(userInfo.attributes.given_name));
-        setLastName(capitalize(userInfo.attributes.family_name));
-        return userInfo.attributes.email;
+      const userInfo = await Auth.currentAuthenticatedUser();
+      setEmail(userInfo.username.replace(/^Okta_/g,''));
     }
 
     populateUserInfo();
@@ -90,16 +87,16 @@ export default function NewAmendment() {
                     <ControlLabel>First Name</ControlLabel>
                     <FormControl
                         value={firstName}
-                        disabled={true}
-                        onChange={e => setFirstName(e.target.value)}
+                        disabled={false}
+                        onChange={e => setFirstName(capitalize(e.target.value))}
                     />
                 </FormGroup>
                 <FormGroup controlId="lastName">
                     <ControlLabel>Last Name</ControlLabel>
                     <FormControl
                         value={lastName}
-                        disabled={true}
-                        onChange={e => setLastName(e.target.value)}
+                        disabled={false}
+                        onChange={e => setLastName(capitalize(e.target.value))}
                     />
                 </FormGroup>
                 <FormGroup controlId="territory">
