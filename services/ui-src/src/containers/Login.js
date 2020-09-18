@@ -25,8 +25,10 @@ export default function Login() {
         setIsLoading(true);
 
         try {
-            await Auth.signIn(fields.email, fields.password);
-            userHasAuthenticated(true);
+            //await Auth.signIn(fields.email, fields.password);
+            await Auth.federatedSignIn({
+              customProvider: 'OktaWebFlow'
+            }).then(userHasAuthenticated(true));
         } catch (e) {
             onError(e);
             setIsLoading(false);
@@ -58,7 +60,6 @@ export default function Login() {
                     type="submit"
                     bsSize="large"
                     isLoading={isLoading}
-                    disabled={!validateForm()}
                 >
                     Login
                 </LoaderButton>
