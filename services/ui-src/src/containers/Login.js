@@ -10,6 +10,7 @@ import "./Login.css";
 export default function Login() {
     const { userHasAuthenticated } = useAppContext();
     const [isLoading, setIsLoading] = useState(false);
+    const [isLoadingOkta, setIsLoadingOkta] = useState(false);
     const [fields, handleFieldChange] = useFormFields({
         email: "",
         password: ""
@@ -34,13 +35,13 @@ export default function Login() {
     async function handleSubmitOkta(event) {
         event.preventDefault();
 
-        setIsLoading(true);
+        setIsLoadingOkta(true);
 
         try {
             signInWithOkta();
         } catch (e) {
             onError(e);
-            setIsLoading(false);
+            setIsLoadingOkta(false);
         }
     }
 
@@ -93,7 +94,7 @@ export default function Login() {
                     block
                     type="submit"
                     bsSize="large"
-                    isLoading={isLoading}
+                    isLoading={isLoadingOkta}
                 >
                     Login with Okta
                 </LoaderButton>
