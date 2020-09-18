@@ -11,8 +11,8 @@ services=(
   'elasticsearch-auth'
   'elasticsearch'
   'stream-functions'
-  'ui-auth'
   'ui'
+  'ui-auth'
   'ui-src'
 )
 

@@ -11,6 +11,8 @@ custom:
   stage: ${opt:stage, self:provider.stage}
   attachments_bucket_arn: ${cf:uploads-${self:custom.stage}.AttachmentsBucketArn}
   api_gateway_rest_api_name: ${cf:app-api-${self:custom.stage}.ApiGatewayRestApiName}
+  application_endpoint_url: ${cf:ui-${self:custom.stage}.ApplicationEndpointUrl}
+  okta_metadata_url: ${env:OKTA_METADATA_URL}
   iamPath: ${env:IAM_PATH, "/"}
 
 # The `provider` block defines where your service will be deployed
@@ -72,11 +74,39 @@ resources:
       Type: AWS::Cognito::UserPoolClient
       Properties:
         ClientName: ${self:custom.stage}-user-pool-client
-        UserPoolId:
-          Ref: CognitoUserPool
+        AllowedOAuthFlows:
+          - implicit
+        AllowedOAuthFlowsUserPoolClient: true
+        AllowedOAuthScopes:
+          - email
+          - openid
+        CallbackURLs:
+          - ${self:custom.application_endpoint_url}
+          - http://localhost:3000/
+        DefaultRedirectURI: ${self:custom.application_endpoint_url}
         ExplicitAuthFlows:
           - ADMIN_NO_SRP_AUTH
         GenerateSecret: false
+        LogoutURLs:
+          - ${self:custom.application_endpoint_url}
+          - http://localhost:3000/
+        SupportedIdentityProviders:
+          - Okta
+        UserPoolId:
+          Ref: CognitoUserPool
+      DependsOn: CognitoUserPoolIdentityProvider
+
+    UserPoolDomain:
+      Type: AWS::Cognito::UserPoolDomain
+      Properties:
+        Domain:
+          Fn::Join:
+            - ''
+            -
+              - ${self:custom.stage}-login-
+              - Ref: CognitoUserPoolClient
+        UserPoolId:
+          Ref: CognitoUserPool
 
     CognitoUserPoolIdentityProvider:
       Type: AWS::Cognito::UserPoolIdentityProvider
@@ -86,7 +116,7 @@ resources:
         IdpIdentifiers:
           - IdpIdentifier
         ProviderDetails:
-          MetadataURL: https://collabralinkmacpro.okta.com/app/exkzpic5qdiSbhYnx4x6/sso/saml/metadata
+          MetadataURL: ${self:custom.okta_metadata_url}
         ProviderName: Okta
         ProviderType: SAML
         UserPoolId:
@@ -186,6 +216,15 @@ resources:
     UserPoolClientId:
       Value:
         Ref: CognitoUserPoolClient
+    UserPoolClientDomain:
+      Value:
+        Fn::Join:
+          - ''
+          -
+            - Ref: UserPoolDomain
+            - .auth.
+            - Ref: AWS::Region
+            - .amazoncognito.com
     IdentityPoolId:
       Value:
         Ref: CognitoIdentityPool

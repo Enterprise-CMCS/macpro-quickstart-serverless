@@ -15,9 +15,9 @@ Amplify.configure({
         identityPoolId: config.cognito.IDENTITY_POOL_ID,
         userPoolWebClientId: config.cognito.APP_CLIENT_ID,
         oauth: {
-          domain: 'asdfasdfdev.auth.us-east-1.amazoncognito.com',
-          redirectSignIn: 'http://localhost:3000/',
-          redirectSignOut: 'http://localhost:3000/',
+          domain: config.cognito.APP_CLIENT_DOMAIN,
+          redirectSignIn: config.cognito.REDIRECT_SIGNIN,
+          redirectSignOut: config.cognito.REDIRECT_SIGNOUT,
           scope: ['email', 'openid'],
           responseType: 'token'
         }

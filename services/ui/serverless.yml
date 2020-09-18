@@ -160,6 +160,23 @@ resources:
           EvaluateTargetHealth: false
         Type: A
 
+    ApplicationEndpointUrl:
+      Type: AWS::SSM::Parameter
+      Properties:
+        Name: /${self:custom.stage}/ui/application_endpoint
+        Type: String
+        Value:
+          Fn::If:
+            - CreateCustomCloudFrontDomain
+            - https://${env:CLOUDFRONT_DOMAIN_NAME, ""}/
+            - Fn::Join:
+                - ''
+                -
+                  - https://
+                  - Fn::GetAtt:
+                    - CloudFrontDistribution
+                    - DomainName
+                  - '/'
 
   Outputs:
     S3BucketName:
@@ -177,3 +194,5 @@ resources:
             - Fn::GetAtt:
               - CloudFrontDistribution
               - DomainName
+    ApplicationEndpointUrl:
+      Value: !GetAtt ApplicationEndpointUrl.Value
