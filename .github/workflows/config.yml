@@ -12,12 +12,12 @@ jobs:
 
     strategy:
       max-parallel: 2
-      
+
     container:
       image:  circleci/node:12
 
     steps:
     - uses: actions/checkout@v1
 
-    - run: sleep 180
+    - run: ls -la
       working-directory: .
