@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
-      max-parallel: 1
+      max-parallel: 0
 
     container:
       image:  circleci/node:12
@@ -19,5 +19,5 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - run: ls -la
+    - run: sleep 180
       working-directory: .
