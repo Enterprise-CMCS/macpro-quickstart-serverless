@@ -5,7 +5,6 @@ on:
     branches:
       - gha*
 
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
