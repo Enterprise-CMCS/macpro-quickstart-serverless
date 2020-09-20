@@ -1,0 +1,19 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - gha*
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    container:
+      image:  circleci/node:12
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - run: ls -la
+      working-directory: .
