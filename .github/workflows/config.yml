@@ -23,5 +23,4 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       working-directory: .
 
-    - run: sleep 300
-      working-directory: .
+    - run: ls -la
