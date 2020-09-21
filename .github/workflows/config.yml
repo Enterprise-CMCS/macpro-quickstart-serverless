@@ -39,6 +39,9 @@ jobs:
         run: ./.github/github-lock.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '14.x'
       - name: install tools
         run: |
           cd .github
