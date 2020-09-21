@@ -6,7 +6,7 @@ on:
       - gha*
 
 jobs:
-  verify_branch:
+  deploy:
     runs-on: ubuntu-latest
     container:
       image:  circleci/node:12
@@ -34,23 +34,9 @@ jobs:
             """
             exit 1
           fi
-
-  lock:
-    runs-on: ubuntu-latest
-    container:
-      image:  circleci/node:12
-    steps:
       - uses: actions/checkout@v1
       - name: lock this branch to prevent concurrent builds
         run: ./.github/github-lock.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  deploy:
-    needs: [verify_branch, lock]
-    runs-on: ubuntu-latest
-    container:
-      image:  circleci/node:12
-    steps:
-    - uses: actions/checkout@v1
-    - run: ls -la
+      - run: ls -la
