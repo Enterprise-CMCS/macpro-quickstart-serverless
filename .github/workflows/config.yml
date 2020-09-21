@@ -6,41 +6,51 @@ on:
       - gha*
 
 jobs:
-  deploy:
+  verify_branch:
     runs-on: ubuntu-latest
-
     container:
       image:  circleci/node:12
+    steps:
+      - name: Check branch name is a legal serverless stage name
+        run: |
+          if [[ ! ${GITHUB_REF#refs/heads/} =~ ^[a-zA-Z][a-zA-Z0-9-]*$ ]] || [[ ${GITHUB_REF#refs/heads/} -gt 128 ]]; then
+            echo """
+              ------------------------------------------------------------------------------------------------------------------------------
+              ERROR:  Please read below
+              ------------------------------------------------------------------------------------------------------------------------------
+              Bad branch name detected; cannot continue.
 
+              The Serverless Application Framework has a concept of stages that facilitate multiple deployments of the same service.
+              In this setup, the git branch name gets passed to Serverless to serve as the stage name.
+              The stage name (branch name in this case) is tacked onto the end of the service name by Serverless.
+              Therefore, the branch name must be a valid service name.
+
+              From Serverless:
+                A service name should only contain alphanumeric (case sensitive) and hyphens. It should start with an alphabetic character and shouldnt exceed 128 characters.
+
+              For Github Actions support, please push your code to a new branch with a name that meets Serverless' service name requirements.
+              So, make a new branch with a name that begins with a letter and is made up of only letters, numbers, and hyphens... then delete this branch.
+              ------------------------------------------------------------------------------------------------------------------------------
+            """
+            exit 1
+          fi
+
+  lock:
+    runs-on: ubuntu-latest
+    container:
+      image:  circleci/node:12
+    steps:
+      - uses: actions/checkout@v1
+      - name: lock this branch to prevent concurrent builds
+        run: ./.github/github-lock.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy:
+    needs: [verify_branch, lock]
+    runs-on: ubuntu-latest
+    container:
+      image:  circleci/node:12
     steps:
     - uses: actions/checkout@v1
-
-    - name: Check branch name is a legal serverless stage name
-      run: |
-        if [[ ! ${GITHUB_REF#refs/heads/} =~ ^[a-zA-Z][a-zA-Z0-9-]*$ ]] || [[ ${GITHUB_REF#refs/heads/} -gt 128 ]]; then
-          echo """
-            ------------------------------------------------------------------------------------------------------------------------------
-            ERROR:  Please read below
-            ------------------------------------------------------------------------------------------------------------------------------
-            Bad branch name detected; cannot continue.
-
-            The Serverless Application Framework has a concept of stages that facilitate multiple deployments of the same service.
-            In this setup, the git branch name gets passed to Serverless to serve as the stage name.
-            The stage name (branch name in this case) is tacked onto the end of the service name by Serverless.
-            Therefore, the branch name must be a valid service name.
-
-            From Serverless:
-              A service name should only contain alphanumeric (case sensitive) and hyphens. It should start with an alphabetic character and shouldnt exceed 128 characters.
-
-            For Github Actions support, please push your code to a new branch with a name that meets Serverless' service name requirements.
-            So, make a new branch with a name that begins with a letter and is made up of only letters, numbers, and hyphens... then delete this branch.
-            ------------------------------------------------------------------------------------------------------------------------------
-          """
-          exit 1
-        fi
-    - name: lock this branch to prevent concurrent builds
-      run: ./.github/github-lock.sh
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
     - run: ls -la
