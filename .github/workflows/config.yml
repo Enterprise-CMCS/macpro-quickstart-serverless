@@ -9,9 +9,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    strategy:
-      max-parallel: 0
-
     container:
       image:  circleci/node:12
 
