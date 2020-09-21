@@ -7,8 +7,6 @@ set -e -o xtrace -o errexit -o pipefail -o nounset -u
 # It prevents conurrent deployments on the same branch
 ########################################################################################
 
-GITHUB_BRANCH=${GITHUB_REF#refs/heads/}
-
 branch=${GITHUB_REF#refs/heads/}
 rest=()
 github_base_url="api.github.com"
