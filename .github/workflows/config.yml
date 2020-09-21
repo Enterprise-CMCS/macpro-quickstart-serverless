@@ -18,7 +18,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - run: ./github/github-lock.sh
+    - run: ./.github/github-lock.sh
       working-directory: .
 
     - run: sleep 300
