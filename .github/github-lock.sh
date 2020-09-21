@@ -4,8 +4,7 @@ set -e -o xtrace -o errexit -o pipefail -o nounset -u
 
 ########################################################################################
 # This is a dumbed down version of circle-lock for github
-# A user and api token must be added to github to authenticate calls to the api
-# The access token doesn't need any permissions; it's just used to authenticate
+# It prevents conurrent deployments on the same branch
 ########################################################################################
 
 GITHUB_BRANCH=${GITHUB_REF#refs/heads/}
@@ -23,7 +22,7 @@ echo "Checking for running builds..."
 set +e
 consecutive_failures=0
 while true;  do
-    builds=$(curl -u $GH_USERNAME:$GH_ACCESS_TOKEN --fail --silent --connect-timeout 5 --max-time 10 -H "Accept: application/vnd.github.v3+json" "$api_url" | jq "$jq_prog")
+    builds=$(curl --fail --silent --connect-timeout 5 --max-time 10 -H "authorization: Bearer $GITHUB_TOKEN" -H "Accept: application/vnd.github.v3+json" "$api_url" | jq "$jq_prog")
 
 
     if [[ $? -ne 0 ]]; then
