@@ -39,4 +39,11 @@ jobs:
         run: ./.github/github-lock.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: ls -la
+      - name: install tools
+        run: |
+          pushd .circleci
+            if [ ! -d node_modules ]; then
+              npm ci
+            fi
+          popd
+          echo "export PATH=$(pwd)/.circleci/node_modules/.bin:\$PATH" >> $BASH_ENV
