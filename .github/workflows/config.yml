@@ -24,6 +24,7 @@ jobs:
           cat isthishidden.txt
         env:
           MY_VAR_NAME: ${{ secrets.TEST_NOT_REAL_SECRET }}
+          DOES_NOT_EXIST: ${{ secrets.DOES_NOT_EXIST }}
       - name: Check branch name is a legal serverless stage name
         run: |
           if [[ ! $branch_name =~ ^[a-zA-Z][a-zA-Z0-9-]*$ ]] || [[ $branch_name -gt 128 ]]; then
