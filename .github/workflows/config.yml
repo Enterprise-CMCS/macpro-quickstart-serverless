@@ -8,9 +8,6 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      asdf: ${{ runner.os }}
-      onetwothree: ${{ env.asdf }}
     steps:
       - run: |
           echo $asdf
