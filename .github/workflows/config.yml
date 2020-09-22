@@ -35,7 +35,7 @@ jobs:
         env:
           # These values will apply to all branches/environments
           INFRASTRUCTURE_TYPE: ${{ secrets[env.BRANCH_SPECIFIC_INFRASTRUCTURE_TYPE_NAME] }} || development
-          SES_SOURCE_EMAIL_ADDRESS: ${{ secrets[env.BRANCH_SPECIFIC_SES_SOURCE_EMAIL_ADDRESS_NAME] }} || ${{ secrets.SES_SOURCE_EMAIL_ADDRESS }}
+          SES_SOURCE_EMAIL_ADDRESS: ${{ secrets[env.BRANCH_SPECIFIC_SES_SOURCE_EMAIL_ADDRESS_NAME] || secrets.SES_SOURCE_EMAIL_ADDRESS }}
           SES_REVIEW_TEAM_EMAIL_ADDRESS: ${{ secrets.SES_REVIEW_TEAM_EMAIL_ADDRESS }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
