@@ -9,9 +9,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Set branch base name
+      - name: set branch name
         run: echo "::set-env name=branch_name::${GITHUB_REF#refs/heads/}"
-      - name: test_env_injection_options
+      - name: test env injection options
         run: |
           echo "LOOK HERE"
           echo $branch_name
@@ -19,7 +19,7 @@ jobs:
         #   MY_ENV_VAR: ${{ secrets.${{  }} }}
       - name: Check branch name is a legal serverless stage name
         run: |
-          if [[ ! ${GITHUB_REF#refs/heads/} =~ ^[a-zA-Z][a-zA-Z0-9-]*$ ]] || [[ ${GITHUB_REF#refs/heads/} -gt 128 ]]; then
+          if [[ ! $branch_name =~ ^[a-zA-Z][a-zA-Z0-9-]*$ ]] || [[ $branch_name -gt 128 ]]; then
             echo """
               ------------------------------------------------------------------------------------------------------------------------------
               ERROR:  Please read below
@@ -87,7 +87,7 @@ jobs:
           # When deploying multiple copies of this quickstart to the same AWS Account (not ideal), a prefix helps prevent stepping on each other.
           # This can optionally be set as an environment variable in the CircleCI Project Settings
           source set.env.sh
-          ./deploy.sh $STAGE_PREFIX${GITHUB_REF#refs/heads/}
+          ./deploy.sh $STAGE_PREFIX$branch_name
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -96,7 +96,7 @@ jobs:
         run: |
           source set.env.sh
           cd services
-          ./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX${GITHUB_REF#refs/heads/}
+          ./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$branch_name
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -105,7 +105,7 @@ jobs:
         run: |
           source set.env.sh
           pushd services
-          export APPLICATION_ENDPOINT=`./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX${GITHUB_REF#refs/heads/}`
+          export APPLICATION_ENDPOINT=`./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$branch_name`
           popd
           ./test.sh
         env:
