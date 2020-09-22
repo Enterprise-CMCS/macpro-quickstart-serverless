@@ -28,7 +28,7 @@ Environment variable ${branch_specific_varname} has a value.
 Setting the value of ${varname} to ${branch_specific_varname}'s value'
     """
     echo "${varname}=${!branch_specific_varname}" >> set.env.sh
-  elif [ ! -z "$varname" ]; then
+  elif [ ! -z "${!varname}" ]; then
     echo "Setting $varname default"
     echo "${varname}=${!varname}" >> set.env.sh
   fi
