@@ -23,10 +23,17 @@ jobs:
           echo $MY_SECOND_VAR_NAME > isthishidden.txt
           cat isthishidden.txt
           echo "Test behavior when an env var doesn't exist"
-          echo $DOES_NOT_EXIST
+          echo """
+            $ENV_SPECIFIC_VARS
+          """ >> set.env.sh
+          cat set.env.sh
+          source set.env.sh
+          echo $MY_SPECIFIC_NAME
+          echo $MY_SPECIFIC_JOB
         env:
           MY_VAR_NAME: ${{ secrets.TEST_NOT_REAL_SECRET }}
           DOES_NOT_EXIST: ${{ secrets.DOES_NOT_EXIST }}
+          ENV_SPECIFIC_VARS: ${{ secrets.ENV_SPECIFIC_VARS }}
       - name: Check branch name is a legal serverless stage name
         run: |
           if [[ ! $branch_name =~ ^[a-zA-Z][a-zA-Z0-9-]*$ ]] || [[ $branch_name -gt 128 ]]; then
