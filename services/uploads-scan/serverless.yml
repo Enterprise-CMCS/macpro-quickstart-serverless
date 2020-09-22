@@ -1,0 +1,92 @@
+# Welcome to serverless. Read the docs
+# https://serverless.com/framework/docs/
+
+# Serverless.yml is the configuration the CLI
+# uses to deploy your code to your provider of choice
+
+# The `service` block is the name of the service
+service: uploads-scan
+
+# The `provider` block defines where your service will be deployed
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  stage: dev
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  attachments_bucket_arn: ${cf:uploads-${self:custom.stage}.AttachmentsBucketArn}
+  attachments_bucket_name: ${cf:uploads-${self:custom.stage}.AttachmentsBucketName}
+
+functions: 
+  avScan:
+    handler: scan.main
+    events:
+      - s3: 
+          bucket: ${self:custom.attachments_bucket_name}
+          event: s3:ObjectCreated:* # Triggers Lambda once per file, not once per upload
+          existing: true
+    role: BucketAVScanRole
+    timeout: 300 # 300 seconds = 5 minutes
+    memorySize: 1024
+    environment: 
+      AV_SCAN_S3_BUCKET: ${self:custom.attachments_bucket_arn}
+
+resources:
+  Resources:
+    AttachmentsBucketPolicy: 
+      Type: AWS::S3::BucketPolicy
+      Properties: 
+        Bucket: ${self:custom.attachments_bucket_name}
+        PolicyDocument: 
+          Statement: 
+            - 
+              Action: 
+                - "s3:GetObject"
+              Effect: "Deny"
+              Resource: !Join [ '/', [ '${self:custom.attachments_bucket_arn}', '*' ] ]
+              NotPrincipal:
+                AWS: 
+                  - arn:aws:iam::730373213083:user/SU0T
+                  - arn:aws:iam::730373213083:user/DONS
+                  - arn:aws:iam::730373213083:user/WOCS
+                  - arn:aws:iam::730373213083:root
+              Condition: 
+                StringNotEquals: 
+                  s3:ExistingObjectTag/av-status: 
+                    - "CLEAN"
+    BucketAVScanRole:
+      Type: 'AWS::IAM::Role'
+      Properties:
+        AssumeRolePolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: 'Allow'
+              Principal:
+                Service: 'lambda.amazonaws.com'
+              Action: 'sts:AssumeRole'
+        Policies:
+          - PolicyName: 'BucketAVScanRolePolicy'
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+              - Effect: 'Allow'
+                Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+                Resource: 'arn:aws:logs:*:*:*'
+              - Effect: 'Allow'
+                Action:
+                - s3:GetObject
+                - s3:GetObjectTagging
+                - s3:PutObject
+                - s3:PutObjectTagging
+                - s3:PutObjectVersionTagging
+                - s3:ListBucket
+                Resource: !Join [ "/", [ '${self:custom.attachments_bucket_arn}', '*'] ]
+              - Effect: 'Allow'
+                Action:
+                - s3:ListBucket
+                Resource: ${self:custom.attachments_bucket_arn}

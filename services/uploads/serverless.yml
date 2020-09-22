@@ -22,6 +22,7 @@ resources:
     AttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:
+        # BucketName: serverless-attachments-${opt:stage, self:provider.stage}
         # Set the CORS policy
         CorsConfiguration:
           CorsRules:
@@ -37,7 +38,7 @@ resources:
                 - DELETE
                 - HEAD
               MaxAge: 3000
-
+  
   # Print out the name of the bucket that is created
   Outputs:
     AttachmentsBucketName:
