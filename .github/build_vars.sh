@@ -31,8 +31,7 @@ set_value() {
 
 set_name() {
   varname=${1}
-  echo "asdf"
-  echo "::set-env name=BRANCH_SPECIFIC_$varname::${branch_name//-/_}_$varname"
+  echo "::set-env name=BRANCH_SPECIFIC_VARNAME_$varname::${branch_name//-/_}_$varname"
 }
 
 action=${1}
