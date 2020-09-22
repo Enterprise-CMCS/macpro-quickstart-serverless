@@ -40,6 +40,12 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '12.x'
+      - name: cache tools
+        uses: actions/cache@v2
+        with:
+          path: |
+            .github/node_modules
+          key: ${{ runner.os }}-${GITHUB_REF#refs/heads/}-${{ hashFiles('./.github/package-lock.json') }}
       - name: install tools
         run: |
           pushd .github
