@@ -36,7 +36,6 @@ ignore_branches_that_begin_with_skipci: &ignore_branches_that_begin_with_skipci
     branches:
       ignore:
         - /^skipci.*/ # Ignore any branch that begin with skipci
-        - /^gha.*/ # Ignore any branch that begin with gha... we're adding github actions support and dont want to build in two places
 
 jobs:
   verify_branch:
