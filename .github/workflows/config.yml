@@ -22,6 +22,8 @@ jobs:
           echo "Test if github actions will mask it if it's written to a file and catted"
           echo $MY_SECOND_VAR_NAME > isthishidden.txt
           cat isthishidden.txt
+          echo "Test behavior when an env var doesn't exist"
+          echo $DOES_NOT_EXIST
         env:
           MY_VAR_NAME: ${{ secrets.TEST_NOT_REAL_SECRET }}
           DOES_NOT_EXIST: ${{ secrets.DOES_NOT_EXIST }}
