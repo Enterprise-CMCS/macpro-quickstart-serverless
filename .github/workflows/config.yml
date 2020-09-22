@@ -9,8 +9,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      asdf: ${{ env.branch }}
-      onetwothree: ${{ env.asdf }}
+      asdf: $BRANCH
+      onetwothree: $asdf
     steps:
       - run: |
           echo $asdf
