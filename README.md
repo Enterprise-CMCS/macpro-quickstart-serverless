@@ -1,4 +1,4 @@
-# macpro-quickstart-serverless ![Build](https://github.com/CMSgov/macpro-quickstart-serverless/workflows/Build/badge.svg?branch=ghadev)[![latest release](https://img.shields.io/github/release/cmsgov/macpro-quickstart-serverless.svg)](https://github.com/cmsgov/macpro-quickstart-serverless/releases/latest)
+# macpro-quickstart-serverless ![Build](https://github.com/CMSgov/macpro-quickstart-serverless/workflows/Build/badge.svg?branch=master)[![latest release](https://img.shields.io/github/release/cmsgov/macpro-quickstart-serverless.svg)](https://github.com/cmsgov/macpro-quickstart-serverless/releases/latest)
 
 A serverless form submission application built and deployed to AWS with the Serverless Application Framework.
 
@@ -9,11 +9,11 @@ A serverless form submission application built and deployed to AWS with the Serv
 
 ## Usage
 
-See master build [here](https://github.com/CMSgov/macpro-quickstart-serverless/actions?query=branch%3Aghadev)
+See master build [here](https://github.com/CMSgov/macpro-quickstart-serverless/actions?query=branch%3Amaster)
 
-GitHub Actions and CircleCI support is included.
+This application is built and deployed via GitHub Actions.
 
-GitHub Actions is the preferred system and is encouraged.
+CircleCI support is included, but its use is discouraged unless you cannot use GitHub Actions.
 
 Want to deploy from your Mac?
 - Create an AWS account
