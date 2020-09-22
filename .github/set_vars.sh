@@ -17,7 +17,7 @@ branch_specific_vars=(
   'AWS_SECRET_ACCESS_KEY'
 )
 
-override_var_if_set() {
+set_vars_in_set_env_sh() {
   varname=${1}
   # Environment variable names cannot contain hyphens
   # So here we take the branch name, swap hyphens for underscores, and set variables if they exist.
@@ -28,12 +28,13 @@ override_var_if_set() {
 Environment variable ${branch_specific_varname} has a value.
 Setting the value of ${varname} to ${branch_specific_varname}'s value'
     """
-    echo "export ${varname}=\$${branch_specific_varname}" >> set.env.sh
+    echo "export ${varname}=${branch_specific_varname}" >> set.env.sh
+  else
+    echo "export ${varname}=${varname}" >> set.env.sh
   fi
-  # echo $var
 }
 
 for i in "${branch_specific_vars[@]}"
 do
-	override_var_if_set $i
+	set_vars_in_set_env_sh $i
 done

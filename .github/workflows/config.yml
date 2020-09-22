@@ -30,15 +30,14 @@ jobs:
           echo "::set-env name=AWS_SECRET_ACCESS_KEY_NAME::${branch_name}_AWS_SECRET_ACCESS_KEY"
           echo "::set-env name=AWS_DEFAULT_REGION_NAME::${branch_name}_AWS_DEFAULT_REGION"
       - name: test env injection options
-        run: |
-          echo """
-            $INFRASTRUCTURE_TYPE_NAME
-            $CTKEY_PASSWORD_NAME
-            """
+        run: ./.github/set_vars.sh
         env:
-          MY_VAR_NAME: ${{ secrets.TEST_NOT_REAL_SECRET }}
-          DOES_NOT_EXIST: ${{ secrets.DOES_NOT_EXIST }}
-          ENV_SPECIFIC_VARS: ${{ secrets.ENV_SPECIFIC_VARS }}
+          INFRASTRUCTURE_TYPE: development
+          SES_SOURCE_EMAIL_ADDRESS: ${{ secrets.SES_SOURCE_EMAIL_ADDRESS }}
+          SES_REVIEW_TEAM_EMAIL_ADDRESS: ${{ secrets.SES_REVIEW_TEAM_EMAIL_ADDRESS }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
       - name: Check branch name is a legal serverless stage name
         run: |
           if [[ ! $branch_name =~ ^[a-zA-Z][a-zA-Z0-9-]*$ ]] || [[ $branch_name -gt 128 ]]; then
