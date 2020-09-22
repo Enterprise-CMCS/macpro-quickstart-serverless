@@ -62,6 +62,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
       - name: Print the application endpoint
         run: |
+          source set.env.sh
           cd services
           ./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX${GITHUB_REF#refs/heads/}
         env:
