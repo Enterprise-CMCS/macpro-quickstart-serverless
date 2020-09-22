@@ -28,9 +28,9 @@ set_vars_in_set_env_sh() {
 Environment variable ${branch_specific_varname} has a value.
 Setting the value of ${varname} to ${branch_specific_varname}'s value'
     """
-    echo "export ${varname}=${branch_specific_varname}" >> set.env.sh
+    echo "export ${varname}=\$${branch_specific_varname}" >> set.env.sh
   else
-    echo "export ${varname}=${varname}" >> set.env.sh
+    echo "export ${varname}=\$${varname}" >> set.env.sh
   fi
 }
 
