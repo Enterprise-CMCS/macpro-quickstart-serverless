@@ -18,7 +18,7 @@ branch_specific_vars=(
   'AWS_DEFAULT_REGION'
 )
 
-set_vars_in_set_env_sh() {
+set_vars_for_all_steps() {
   varname=${1}
   # Environment variable names cannot contain hyphens
   # So here we take the branch name, swap hyphens for underscores, and set variables if they exist.
@@ -29,17 +29,14 @@ set_vars_in_set_env_sh() {
 Environment variable ${branch_specific_varname} has a value.
 Setting the value of ${varname} to ${branch_specific_varname}'s value'
     """
-    # echo "${varname}=${!branch_specific_varname}" >> set.env.sh
     echo "::set-env name=${branch_specific_varname}::${!branch_specific_varname}"
   elif [ ! -z "${!varname}" ]; then
     echo "Setting $varname default"
     echo "::set-env name=${varname}::${!varname}"
-    # echo "${varname}=${!varname}" >> set.env.sh
   fi
 }
 
 for i in "${branch_specific_vars[@]}"
 do
-	set_vars_in_set_env_sh $i
+	set_vars_for_all_steps $i
 done
-# cat set.env.sh
