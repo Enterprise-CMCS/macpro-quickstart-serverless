@@ -15,6 +15,7 @@ popd
 services=(
   'database'
   'uploads'
+  'uploads-scan'
   'app-api'
   'elasticsearch-auth'
   'elasticsearch'

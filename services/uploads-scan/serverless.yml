@@ -1,0 +1,177 @@
+# Welcome to serverless. Read the docs
+# https://serverless.com/framework/docs/
+
+# Serverless.yml is the configuration the CLI
+# uses to deploy your code to your provider of choice
+
+# The `service` block is the name of the service
+service: uploads-scan
+
+# The `provider` block defines where your service will be deployed
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  stage: dev
+
+plugins:
+  - serverless-plugin-scripts
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  attachments_bucket_arn: ${cf:uploads-${self:custom.stage}.AttachmentsBucketArn}
+  attachments_bucket_name: ${cf:uploads-${self:custom.stage}.AttachmentsBucketName}
+
+  scripts:
+    hooks:
+      # This script is run locally when running 'serverless deploy'
+      package:initialize: |
+        set -e
+        curl -L --output lambda_layer.zip https://github.com/sethsacher/lambda-clamav-layer/releases/download/0.5/lambda_layer.zip
+      deploy:finalize: |
+        rm lambda_layer.zip
+
+layers:
+  clamDefs:
+    package:
+      artifact: lambda_layer.zip
+
+functions: 
+  avScan:
+    handler: antivirus.lambdaHandleEvent
+    name: uploads-scan-${opt:stage, self:provider.stage}-avScan
+    events:
+      - s3: 
+          bucket: ${self:custom.attachments_bucket_name}
+          event: s3:ObjectCreated:* # Triggers Lambda once per file, not once per upload
+          existing: true
+    role: BucketAVScanRole
+    timeout: 300 # 300 seconds = 5 minutes. Average scan is 25 seconds.
+    memorySize: 3008 # Max lambda memory allocation; clamscan didn't work with 1024
+    layers:
+      - { Ref: ClamDefsLambdaLayer }
+    environment: 
+      CLAMAV_BUCKET_NAME: !Ref AVBucket
+      PATH_TO_AV_DEFINITIONS: 'lambda/s3-antivirus/av-definitions'
+  avDownloadDefinitions:
+    handler: download-definitions.lambdaHandleEvent
+    events:
+      - schedule: cron(0 */6 * * ? *)
+    role: BucketAVDownloadRole
+    timeout: 300 # 300 seconds = 5 minutes
+    memorySize: 1024
+    layers:
+      - { Ref: ClamDefsLambdaLayer }
+    environment: 
+      CLAMAV_BUCKET_NAME: !Ref AVBucket
+      PATH_TO_AV_DEFINITIONS: 'lambda/s3-antivirus/av-definitions'
+
+resources:
+  Resources:
+    AVBucket:
+      Type: AWS::S3::Bucket
+      Properties: 
+        AccessControl: PublicRead
+    AttachmentsBucketPolicy: 
+      Type: AWS::S3::BucketPolicy
+      Properties: 
+        Bucket: ${self:custom.attachments_bucket_name}
+        PolicyDocument: 
+          Statement: 
+            - 
+              Action: 
+                - "s3:GetObject"
+              Effect: "Deny"
+              Resource: !Join [ '/', [ '${self:custom.attachments_bucket_arn}', '*' ] ]
+              NotPrincipal:
+                AWS: 
+                  - Fn::Join:
+                    - ''
+                    -
+                      - 'arn:aws:iam::'
+                      - Ref: AWS::AccountId
+                      - ':root'
+                  # https://dev.to/neverendingqs/s3-bucket-policy-notprincipal-and-lambda-functions-2ndl
+                  - !GetAtt BucketAVScanRole.Arn
+                  - Fn::Join:
+                    - ''
+                    -
+                      - 'arn:aws:sts::'
+                      - Ref: AWS::AccountId
+                      - ':assumed-role/'
+                      - Ref: BucketAVScanRole
+                      - '/uploads-scan-${opt:stage, self:provider.stage}-avScan'
+              Condition: 
+                StringNotEquals: 
+                  s3:ExistingObjectTag/virusScanStatus:
+                    - "CLEAN"
+    BucketAVScanRole:
+      Type: 'AWS::IAM::Role'
+      Properties:
+        AssumeRolePolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: 'Allow'
+              Principal:
+                Service: 'lambda.amazonaws.com'
+              Action: 'sts:AssumeRole'
+        Policies:
+          - PolicyName: 'BucketAVScanRolePolicy'
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+              - Effect: 'Allow'
+                Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+                Resource: 'arn:aws:logs:*:*:*'
+              - Effect: 'Allow'
+                Action:
+                - s3:GetObject
+                - s3:GetObjectTagging
+                - s3:PutObject
+                - s3:PutObjectAcl
+                - s3:PutObjectTagging
+                - s3:PutObjectVersionTagging
+                - s3:ListBucket
+                Resource: !Join [ "/", [ '${self:custom.attachments_bucket_arn}', '*'] ]
+              - Effect: 'Allow'
+                Action:
+                - s3:ListBucket
+                Resource: ${self:custom.attachments_bucket_arn}
+    BucketAVDownloadRole:
+      Type: 'AWS::IAM::Role'
+      Properties:
+        AssumeRolePolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: 'Allow'
+              Principal:
+                Service: 'lambda.amazonaws.com'
+              Action: 'sts:AssumeRole'
+        Policies:
+          - PolicyName: 'BucketAVDownloadRolePolicy'
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+              - Effect: 'Allow'
+                Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+                Resource: 'arn:aws:logs:*:*:*'
+              - Effect: 'Allow'
+                Action:
+                - s3:GetObject
+                - s3:GetObjectTagging
+                - s3:PutObject
+                - s3:PutObjectAcl
+                - s3:PutObjectTagging
+                - s3:PutObjectVersionTagging
+                - s3:ListBucket
+                Resource: !Join [ "/", [ !GetAtt AVBucket.Arn, '*'] ]
+              - Effect: 'Allow'
+                Action:
+                - s3:ListBucket
+                Resource: !GetAtt AVBucket.Arn
