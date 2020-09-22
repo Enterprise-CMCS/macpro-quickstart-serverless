@@ -9,7 +9,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      asdf: ${{ env.asdf }}
+      asdf: ${{ runner.os }}
       onetwothree: ${{ env.asdf }}
     steps:
       - run: |
