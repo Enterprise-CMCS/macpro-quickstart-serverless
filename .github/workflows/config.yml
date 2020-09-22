@@ -9,34 +9,36 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: set branch name
-        run: echo "::set-env name=branch_name::${GITHUB_REF#refs/heads/}"
+      - name: set variable names
+        run: |
+          echo """
+            ::set-env name=branch_name::${GITHUB_REF#refs/heads/}"
+            ::set-env name=INFRASTRUCTURE_TYPE_NAME::${branch_name}_INFRASTRUCTURE_TYPE"
+            ::set-env name=ROUTE_53_HOSTED_ZONE_ID_NAME::${branch_name}_ROUTE_53_HOSTED_ZONE_ID"
+            ::set-env name=ROUTE_53_DOMAIN_NAME_NAME::${branch_name}_ROUTE_53_DOMAIN_NAME"
+            ::set-env name=CLOUDFRONT_CERTIFICATE_ARN_NAME::${branch_name}_CLOUDFRONT_CERTIFICATE_ARN"
+            ::set-env name=CLOUDFRONT_DOMAIN_NAME_NAME::${branch_name}_CLOUDFRONT_DOMAIN_NAME"
+            ::set-env name=SES_SOURCE_EMAIL_ADDRESS_NAME::${branch_name}_SES_SOURCE_EMAIL_ADDRESS"
+            ::set-env name=SES_REVIEW_TEAM_EMAIL_ADDRESS_NAME::${branch_name}_SES_REVIEW_TEAM_EMAIL_ADDRESS"
+            ::set-env name=CTKEY_URL_NAME::${branch_name}_CTKEY_URL"
+            ::set-env name=CTKEY_USERNAME_NAME::${branch_name}_CTKEY_USERNAME"
+            ::set-env name=CTKEY_PASSWORD_NAME::${branch_name}_CTKEY_PASSWORD"
+            ::set-env name=CTKEY_ACCOUNT_ID_NAME::${branch_name}_CTKEY_ACCOUNT_ID"
+            ::set-env name=AWS_SECRET_ACCESS_KEY_NAME::${branch_name}_AWS_SECRET_ACCESS_KEY"
+            ::set-env name=AWS_ACCESS_KEY_ID_NAME_NAME::${branch_name}_AWS_ACCESS_KEY_ID"
+            ::set-env name=AWS_SECRET_ACCESS_KEY_NAME::${branch_name}_AWS_SECRET_ACCESS_KEY"
+            ::set-env name=AWS_DEFAULT_REGION_NAME::${branch_name}_AWS_DEFAULT_REGION"
+          """
       - name: test env injection options
         run: |
-          echo "LOOK HERE"
-          echo "Test if github actions masks the secret"
-          echo $MY_VAR_NAME
-          echo "::set-env name=SECRET_EXPORTED_VAR::$MY_VAR_NAME"
-          echo "Test if github actions masks the value itself"
-          export MY_SECOND_VAR_NAME=$MY_VAR_NAME
-          echo $MY_SECOND_VAR_NAME
-          echo "Test if github actions will mask it if it's written to a file and catted"
-          echo $MY_SECOND_VAR_NAME > isthishidden.txt
-          cat isthishidden.txt
-          echo "Test behavior when an env var doesn't exist"
           echo """
-            $ENV_SPECIFIC_VARS
-          """ >> set.env.sh
-          cat set.env.sh
-          source set.env.sh
-          echo $MY_SPECIFIC_NAME
-          echo $MY_SPECIFIC_JOB
+            $INFRASTRUCTURE_TYPE_NAME
+            $CTKEY_PASSWORD_NAME
+          """
         env:
           MY_VAR_NAME: ${{ secrets.TEST_NOT_REAL_SECRET }}
           DOES_NOT_EXIST: ${{ secrets.DOES_NOT_EXIST }}
           ENV_SPECIFIC_VARS: ${{ secrets.ENV_SPECIFIC_VARS }}
-      - run: |
-          echo $SECRET_EXPORTED_VAR
       - name: Check branch name is a legal serverless stage name
         run: |
           if [[ ! $branch_name =~ ^[a-zA-Z][a-zA-Z0-9-]*$ ]] || [[ $branch_name -gt 128 ]]; then
