@@ -30,7 +30,7 @@ jobs:
           echo "::set-env name=AWS_SECRET_ACCESS_KEY_NAME::${branch_name}_AWS_SECRET_ACCESS_KEY"
           echo "::set-env name=AWS_DEFAULT_REGION_NAME::${branch_name}_AWS_DEFAULT_REGION"
       - name: test env injection options
-        run: ./.github/set_vars.sh
+        run: sh .github/set_vars.sh
         env:
           INFRASTRUCTURE_TYPE: development
           SES_SOURCE_EMAIL_ADDRESS: ${{ secrets.SES_SOURCE_EMAIL_ADDRESS }}
