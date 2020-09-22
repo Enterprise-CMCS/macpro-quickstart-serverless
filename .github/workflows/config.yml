@@ -53,7 +53,9 @@ jobs:
           echo "::set-env name=BRANCH_SPECIFIC_VARNAME_AWS_SECRET_ACCESS_KEY::${branch_name//-/_}_AWS_SECRET_ACCESS_KEY"
           echo "::set-env name=BRANCH_SPECIFIC_VARNAME_AWS_DEFAULT_REGION::${branch_name//-/_}_AWS_DEFAULT_REGION"
       - name: set variables for build
-        run: ./.github/set_vars.sh
+        run: |
+          echo $BRANCH_SPECIFIC_VARNAME_SES_REVIEW_TEAM_EMAIL_ADDRESS
+          ./.github/set_vars.sh
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_ACCESS_KEY_ID] || secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_SECRET_ACCESS_KEY] || secrets.AWS_SECRET_ACCESS_KEY }}
