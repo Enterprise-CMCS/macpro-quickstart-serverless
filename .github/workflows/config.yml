@@ -14,9 +14,13 @@ jobs:
       - name: test env injection options
         run: |
           echo "LOOK HERE"
-          echo $branch_name
-        # env:
-        #   MY_ENV_VAR: ${{ secrets.${{  }} }}
+          echo "Test if github actions masks the secret"
+          echo $MY_VAR_NAME
+          echo "Test if github actions masks the value itself"
+          export MY_SECOND_VAR_NAME=$MY_VAR_NAME
+          echo $MY_SECOND_VAR_NAME
+        env:
+          MY_VAR_NAME: ${{ secrets.TEST_NOT_REAL_SECRET }}
       - name: Check branch name is a legal serverless stage name
         run: |
           if [[ ! $branch_name =~ ^[a-zA-Z][a-zA-Z0-9-]*$ ]] || [[ $branch_name -gt 128 ]]; then
