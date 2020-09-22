@@ -15,8 +15,8 @@ jobs:
         run: |
           echo "LOOK HERE"
           echo $branch_name
-        env:
-          MY_ENV_VAR: ${{ secrets.${{  }} }}
+        # env:
+        #   MY_ENV_VAR: ${{ secrets.${{  }} }}
       - name: Check branch name is a legal serverless stage name
         run: |
           if [[ ! ${GITHUB_REF#refs/heads/} =~ ^[a-zA-Z][a-zA-Z0-9-]*$ ]] || [[ ${GITHUB_REF#refs/heads/} -gt 128 ]]; then
