@@ -9,10 +9,12 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: set branch_name
+        run: echo "::set-env name=branch_name::${GITHUB_REF#refs/heads/}"
+
       - name: set variable names
         run: |
-          echo "::set-env name=branch_name::${GITHUB_REF#refs/heads/}"
-          echo "::set-env name=INFRASTRUCTURE_TYPE_NAME::$branch_name_INFRASTRUCTURE_TYPE"
+          echo "::set-env name=INFRASTRUCTURE_TYPE_NAME::${branch_name}_INFRASTRUCTURE_TYPE"
           echo "::set-env name=ROUTE_53_HOSTED_ZONE_ID_NAME::${branch_name}_ROUTE_53_HOSTED_ZONE_ID"
           echo "::set-env name=ROUTE_53_DOMAIN_NAME_NAME::${branch_name}_ROUTE_53_DOMAIN_NAME"
           echo "::set-env name=CLOUDFRONT_CERTIFICATE_ARN_NAME::${branch_name}_CLOUDFRONT_CERTIFICATE_ARN"
