@@ -27,7 +27,6 @@ jobs:
         env:
           MY_VAR_NAME: ${{ secrets.TEST_NOT_REAL_SECRET }}
           DOES_NOT_EXIST: ${{ secrets.DOES_NOT_EXIST }}
-          BRANCH_SPECIFIC_VARS: ${{ secrets.{{ env.branch_name }}_BRANCH_SPECIFIC_VARS }}
       - name: Check branch name is a legal serverless stage name
         run: |
           if [[ ! $branch_name =~ ^[a-zA-Z][a-zA-Z0-9-]*$ ]] || [[ $branch_name -gt 128 ]]; then
@@ -72,7 +71,7 @@ jobs:
               npm ci
             fi
           popd
-          echo "export PATH=$(pwd)/.github/node_modules/.bin:\$PATH" >> set.env.sh
+          echo "PATH=$(pwd)/.github/node_modules/.bin:\$PATH" >> set.env.sh
       - name: Combine package-lock.json files to single file
         run: find . -not -path ./.github/package-lock.json -name package-lock.json | xargs cat > combined-package-lock.txt
       - name: cache service dependencies
