@@ -47,4 +47,4 @@ jobs:
               npm ci
             fi
           popd
-          echo "export PATH=$(pwd)/.github/node_modules/.bin:\$PATH" >> $BASH_ENV
+          echo "export PATH=$(pwd)/.github/node_modules/.bin:\$PATH" >> set.env.sh
