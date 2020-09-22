@@ -28,10 +28,12 @@ set_vars_in_set_env_sh() {
 Environment variable ${branch_specific_varname} has a value.
 Setting the value of ${varname} to ${branch_specific_varname}'s value'
     """
-    echo "${varname}=${!branch_specific_varname}" >> set.env.sh
+    # echo "${varname}=${!branch_specific_varname}" >> set.env.sh
+    echo "::set-env name=${branch_specific_varname}::${!branch_specific_varname}"
   elif [ ! -z "${!varname}" ]; then
     echo "Setting $varname default"
-    echo "${varname}=${!varname}" >> set.env.sh
+    echo "::set-env name=${varname}::${!varname}"
+    # echo "${varname}=${!varname}" >> set.env.sh
   fi
 }
 
@@ -39,4 +41,4 @@ for i in "${branch_specific_vars[@]}"
 do
 	set_vars_in_set_env_sh $i
 done
-cat set.env.sh
+# cat set.env.sh
