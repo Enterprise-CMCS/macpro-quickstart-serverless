@@ -75,4 +75,6 @@ jobs:
           pushd services
           export APPLICATION_ENDPOINT=`./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX${GITHUB_REF#refs/heads/}`
           popd
-          ./test.sh
+          echo $APPLICATION_ENDPOINT
+          echo $PATH
+          #./test.sh
