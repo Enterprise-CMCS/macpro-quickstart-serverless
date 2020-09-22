@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set branch base name
-        run: echo '::set-env name=branch_name::${GITHUB_REF#refs/heads/}'
+        run: echo "::set-env name=branch_name::${GITHUB_REF#refs/heads/}"
       - name: test_env_injection_options
         run: |
           echo "LOOK HERE"
