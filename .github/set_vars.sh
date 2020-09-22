@@ -21,15 +21,34 @@ var_list=(
   'STAGE_PREFIX'
 )
 
-set_vars_for_all_steps() {
+set_value() {
   varname=${1}
   if [ ! -z "${!varname}" ]; then
-    echo "Setting $varname default"
+    echo "Setting $varname"
     echo "::set-env name=${varname}::${!varname}"
   fi
 }
 
-for i in "${var_list[@]}"
-do
-	set_vars_for_all_steps $i
-done
+set_name() {
+  varname=${1}
+  if [ ! -z "${!varname}" ]; then
+    echo "::set-env name=BRANCH_SPECIFIC_VARNAME_$varname::${branch_name//-/_}_$varname"
+  fi
+}
+
+action=${1}
+
+case "$1" in
+set_names)
+  for i in "${var_list[@]}"
+  do
+    set_name $i
+  done
+  ;;
+set_values)
+  for i in "${var_list[@]}"
+  do
+  	set_value $i
+  done
+  ;;
+esac

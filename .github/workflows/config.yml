@@ -35,26 +35,10 @@ jobs:
             exit 1
           fi
       - uses: actions/checkout@v1
-      - name: set variable names
-        run: |
-          echo "::set-env name=BRANCH_SPECIFIC_VARNAME_INFRASTRUCTURE_TYPE::${branch_name//-/_}_INFRASTRUCTURE_TYPE"
-          echo "::set-env name=BRANCH_SPECIFIC_VARNAME_ROUTE_53_HOSTED_ZONE_ID::${branch_name//-/_}_ROUTE_53_HOSTED_ZONE_ID"
-          echo "::set-env name=BRANCH_SPECIFIC_VARNAME_ROUTE_53_DOMAIN_NAME::${branch_name//-/_}_ROUTE_53_DOMAIN_NAME"
-          echo "::set-env name=BRANCH_SPECIFIC_VARNAME_CLOUDFRONT_CERTIFICATE_ARN::${branch_name//-/_}_CLOUDFRONT_CERTIFICATE_ARN"
-          echo "::set-env name=BRANCH_SPECIFIC_VARNAME_CLOUDFRONT_DOMAIN_NAME::${branch_name//-/_}_CLOUDFRONT_DOMAIN_NAME"
-          echo "::set-env name=BRANCH_SPECIFIC_VARNAME_SES_SOURCE_EMAIL_ADDRESS::${branch_name//-/_}_SES_SOURCE_EMAIL_ADDRESS"
-          echo "::set-env name=BRANCH_SPECIFIC_VARNAME_SES_REVIEW_TEAM_EMAIL_ADDRESS::${branch_name//-/_}_SES_REVIEW_TEAM_EMAIL_ADDRESS"
-          echo "::set-env name=BRANCH_SPECIFIC_VARNAME_CTKEY_URL::${branch_name//-/_}_CTKEY_URL"
-          echo "::set-env name=BRANCH_SPECIFIC_VARNAME_CTKEY_USERNAME::${branch_name//-/_}_CTKEY_USERNAME"
-          echo "::set-env name=BRANCH_SPECIFIC_VARNAME_CTKEY_PASSWORD::${branch_name//-/_}_CTKEY_PASSWORD"
-          echo "::set-env name=BRANCH_SPECIFIC_VARNAME_CTKEY_ACCOUNT_ID::${branch_name//-/_}_CTKEY_ACCOUNT_ID"
-          echo "::set-env name=BRANCH_SPECIFIC_VARNAME_AWS_SECRET_ACCESS_KEY::${branch_name//-/_}_AWS_SECRET_ACCESS_KEY"
-          echo "::set-env name=BRANCH_SPECIFIC_VARNAME_AWS_ACCESS_KEY_ID::${branch_name//-/_}_AWS_ACCESS_KEY_ID"
-          echo "::set-env name=BRANCH_SPECIFIC_VARNAME_AWS_SECRET_ACCESS_KEY::${branch_name//-/_}_AWS_SECRET_ACCESS_KEY"
-          echo "::set-env name=BRANCH_SPECIFIC_VARNAME_AWS_DEFAULT_REGION::${branch_name//-/_}_AWS_DEFAULT_REGION"
-      - name: set variables for build
-        run: |
-          ./.github/set_vars.sh
+      - name: set branch specific variable names
+        run: ./github/set_vars.sh set_names
+      - name: set variable values
+        run: ./.github/set_vars.sh set_values
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_ACCESS_KEY_ID] || secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_SECRET_ACCESS_KEY] || secrets.AWS_SECRET_ACCESS_KEY }}
