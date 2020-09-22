@@ -29,8 +29,9 @@ jobs:
           echo "::set-env name=AWS_ACCESS_KEY_ID_NAME_NAME::${branch_name}_AWS_ACCESS_KEY_ID"
           echo "::set-env name=AWS_SECRET_ACCESS_KEY_NAME::${branch_name}_AWS_SECRET_ACCESS_KEY"
           echo "::set-env name=AWS_DEFAULT_REGION_NAME::${branch_name}_AWS_DEFAULT_REGION"
+      - uses: actions/checkout@v1
       - name: test env injection options
-        run: sh .github/set_vars.sh
+        run: ./.github/set_vars.sh
         env:
           INFRASTRUCTURE_TYPE: development
           SES_SOURCE_EMAIL_ADDRESS: ${{ secrets.SES_SOURCE_EMAIL_ADDRESS }}
@@ -61,7 +62,6 @@ jobs:
             """
             exit 1
           fi
-      - uses: actions/checkout@v1
       - name: lock this branch to prevent concurrent builds
         run: ./.github/github-lock.sh
         env:
