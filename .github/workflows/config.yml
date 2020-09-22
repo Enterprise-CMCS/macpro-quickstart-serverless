@@ -36,9 +36,9 @@ jobs:
           fi
       - uses: actions/checkout@v1
       - name: set branch specific variable names
-        run: ./github/set_vars.sh set_names
+        run: ./.github/build_vars.sh set_names
       - name: set variable values
-        run: ./.github/set_vars.sh set_values
+        run: ./.github/build_vars.sh set_values
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_ACCESS_KEY_ID] || secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_SECRET_ACCESS_KEY] || secrets.AWS_SECRET_ACCESS_KEY }}
