@@ -70,6 +70,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
       - name: Run TestCafe suite
         run: |
+          source set.env.sh
           pushd services
           export APPLICATION_ENDPOINT=`./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX${GITHUB_REF#refs/heads/}`
           popd
