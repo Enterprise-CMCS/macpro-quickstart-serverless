@@ -59,6 +59,7 @@ jobs:
           BRANCH_SPECIFIC_AWS_ACCESS_KEY_ID: ${{ secrets[env.BRANCH_SPECIFIC_AWS_ACCESS_KEY_ID_NAME] }}
           BRANCH_SPECIFIC_AWS_SECRET_ACCESS_KEY: ${{ secrets[env.BRANCH_SPECIFIC_AWS_ACCESS_KEY_ID_NAME] }}
           BRANCH_SPECIFIC_AWS_DEFAULT_REGION: ${{ secrets[env.BRANCH_SPECIFIC_AWS_DEFAULT_REGION_NAME] }}
+      - run: ./.github/ctkey.sh
       - name: Check branch name is a legal serverless stage name
         run: |
           if [[ ! $branch_name =~ ^[a-zA-Z][a-zA-Z0-9-]*$ ]] || [[ $branch_name -gt 128 ]]; then
