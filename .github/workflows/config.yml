@@ -9,6 +9,14 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Set branch base name
+        run: echo '::set-env name=branch_name::${GITHUB_REF#refs/heads/}'
+      - name: test_env_injection_options
+        run: |
+          echo "LOOK HERE"
+          echo $branch_name
+        env:
+          MY_ENV_VAR: ${{ secrets.${{  }} }}
       - name: Check branch name is a legal serverless stage name
         run: |
           if [[ ! ${GITHUB_REF#refs/heads/} =~ ^[a-zA-Z][a-zA-Z0-9-]*$ ]] || [[ ${GITHUB_REF#refs/heads/} -gt 128 ]]; then
