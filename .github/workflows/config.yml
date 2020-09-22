@@ -71,8 +71,8 @@ jobs:
           ROUTE_53_DOMAIN_NAME: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_ROUTE_53_DOMAIN_NAME] }}
           CLOUDFRONT_CERTIFICATE_ARN: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_CLOUDFRONT_CERTIFICATE_ARN] }}
           CLOUDFRONT_DOMAIN_NAME: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_CLOUDFRONT_DOMAIN_NAME] }}
-          IAM_PATH: ${{ secrets[env.IAM_PATH] }}
-          IAM_PERMISSIONS_BOUNDARY_POLICY: ${{ secrets[env.IAM_PERMISSIONS_BOUNDARY_POLICY] }}
+          IAM_PATH: ${{ secrets.IAM_PATH }}
+          IAM_PERMISSIONS_BOUNDARY_POLICY: ${{ secrets.IAM_PERMISSIONS_BOUNDARY_POLICY }}
       - run: ./.github/ctkey.sh
       - name: lock this branch to prevent concurrent builds
         run: ./.github/github-lock.sh
