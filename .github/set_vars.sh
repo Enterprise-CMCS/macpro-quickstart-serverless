@@ -30,6 +30,7 @@ Setting the value of ${varname} to ${branch_specific_varname}'s value'
     """
     echo "${varname}=\$${branch_specific_varname}" >> set.env.sh
   elif [ ! -z "${varname}" && "${varname}" != "" ]; then
+    echo "Setting $varname default"
     echo "${varname}=\$${varname}" >> set.env.sh
   fi
 }
