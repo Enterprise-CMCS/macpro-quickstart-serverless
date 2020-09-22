@@ -29,7 +29,7 @@ set_vars_for_all_steps() {
 Environment variable ${branch_specific_varname} has a value.
 Setting the value of ${varname} to ${branch_specific_varname}'s value'
     """
-    echo "::set-env name=${branch_specific_varname}::${!branch_specific_varname}"
+    echo "::set-env name=${varname}::${!branch_specific_varname}"
   elif [ ! -z "${!varname}" ]; then
     echo "Setting $varname default"
     echo "::set-env name=${varname}::${!varname}"
