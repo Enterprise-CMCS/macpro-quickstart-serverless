@@ -107,6 +107,7 @@ jobs:
           # This can optionally be set as an environment variable in the CircleCI Project Settings
           source set.env.sh
           echo $SES_SOURCE_EMAIL_ADDRESS
+          cat set.env.sh
           ./deploy.sh $STAGE_PREFIX$branch_name
       - name: Print the application endpoint
         run: |
