@@ -15,6 +15,7 @@ branch_specific_vars=(
   'CTKEY_IAM_ROLE'
   'AWS_ACCESS_KEY_ID'
   'AWS_SECRET_ACCESS_KEY'
+  'AWS_DEFAULT_REGION'
 )
 
 set_vars_in_set_env_sh() {
