@@ -29,7 +29,7 @@ Environment variable ${branch_specific_varname} has a value.
 Setting the value of ${varname} to ${branch_specific_varname}'s value'
     """
     echo "export ${varname}=\$${branch_specific_varname}" >> set.env.sh
-  else
+  elif [ ! -z "${varname}" ]; then
     echo "export ${varname}=\$${varname}" >> set.env.sh
   fi
 }
