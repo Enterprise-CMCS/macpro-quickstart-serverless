@@ -75,8 +75,6 @@ jobs:
           pushd services
           export APPLICATION_ENDPOINT=`./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX${GITHUB_REF#refs/heads/}`
           popd
-          echo $APPLICATION_ENDPOINT
-          echo $PATH
           ./test.sh
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
