@@ -42,7 +42,7 @@ jobs:
           node-version: '12.x'
       - name: install tools
         run: |
-          cd .github
+          pushd .github
             if [ ! -d node_modules ]; then
               npm ci
             fi
