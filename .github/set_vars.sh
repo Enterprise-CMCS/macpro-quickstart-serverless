@@ -22,7 +22,8 @@ set_vars_in_set_env_sh() {
   varname=${1}
   # Environment variable names cannot contain hyphens
   # So here we take the branch name, swap hyphens for underscores, and set variables if they exist.
-  branch_specific_varname=${branch_name}_${1}
+  branch_specific_varname=BRANCH_SPECIFIC_${varname}
+  echo $branch_specific_varname
   if [ ! -z "${!branch_specific_varname}" ]; then
     echo """
 Environment variable ${branch_specific_varname} has a value.

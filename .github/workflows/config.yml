@@ -14,21 +14,21 @@ jobs:
 
       - name: set variable names
         run: |
-          echo "::set-env name=INFRASTRUCTURE_TYPE_NAME::${branch_name}_INFRASTRUCTURE_TYPE"
-          echo "::set-env name=ROUTE_53_HOSTED_ZONE_ID_NAME::${branch_name}_ROUTE_53_HOSTED_ZONE_ID"
-          echo "::set-env name=ROUTE_53_DOMAIN_NAME_NAME::${branch_name}_ROUTE_53_DOMAIN_NAME"
-          echo "::set-env name=CLOUDFRONT_CERTIFICATE_ARN_NAME::${branch_name}_CLOUDFRONT_CERTIFICATE_ARN"
-          echo "::set-env name=CLOUDFRONT_DOMAIN_NAME_NAME::${branch_name}_CLOUDFRONT_DOMAIN_NAME"
-          echo "::set-env name=SES_SOURCE_EMAIL_ADDRESS_NAME::${branch_name}_SES_SOURCE_EMAIL_ADDRESS"
-          echo "::set-env name=SES_REVIEW_TEAM_EMAIL_ADDRESS_NAME::${branch_name}_SES_REVIEW_TEAM_EMAIL_ADDRESS"
-          echo "::set-env name=CTKEY_URL_NAME::${branch_name}_CTKEY_URL"
-          echo "::set-env name=CTKEY_USERNAME_NAME::${branch_name}_CTKEY_USERNAME"
-          echo "::set-env name=CTKEY_PASSWORD_NAME::${branch_name}_CTKEY_PASSWORD"
-          echo "::set-env name=CTKEY_ACCOUNT_ID_NAME::${branch_name}_CTKEY_ACCOUNT_ID"
-          echo "::set-env name=AWS_SECRET_ACCESS_KEY_NAME::${branch_name}_AWS_SECRET_ACCESS_KEY"
-          echo "::set-env name=AWS_ACCESS_KEY_ID_NAME_NAME::${branch_name}_AWS_ACCESS_KEY_ID"
-          echo "::set-env name=AWS_SECRET_ACCESS_KEY_NAME::${branch_name}_AWS_SECRET_ACCESS_KEY"
-          echo "::set-env name=AWS_DEFAULT_REGION_NAME::${branch_name}_AWS_DEFAULT_REGION"
+          echo "::set-env name=BRANCH_SPECIFIC_INFRASTRUCTURE_TYPE_NAME::${branch_name}_INFRASTRUCTURE_TYPE"
+          echo "::set-env name=BRANCH_SPECIFIC_ROUTE_53_HOSTED_ZONE_ID_NAME::${branch_name}_ROUTE_53_HOSTED_ZONE_ID"
+          echo "::set-env name=BRANCH_SPECIFIC_ROUTE_53_DOMAIN_NAME_NAME::${branch_name}_ROUTE_53_DOMAIN_NAME"
+          echo "::set-env name=BRANCH_SPECIFIC_CLOUDFRONT_CERTIFICATE_ARN_NAME::${branch_name}_CLOUDFRONT_CERTIFICATE_ARN"
+          echo "::set-env name=BRANCH_SPECIFIC_CLOUDFRONT_DOMAIN_NAME_NAME::${branch_name}_CLOUDFRONT_DOMAIN_NAME"
+          echo "::set-env name=BRANCH_SPECIFIC_SES_SOURCE_EMAIL_ADDRESS_NAME::${branch_name}_SES_SOURCE_EMAIL_ADDRESS"
+          echo "::set-env name=BRANCH_SPECIFIC_SES_REVIEW_TEAM_EMAIL_ADDRESS_NAME::${branch_name}_SES_REVIEW_TEAM_EMAIL_ADDRESS"
+          echo "::set-env name=BRANCH_SPECIFIC_CTKEY_URL_NAME::${branch_name}_CTKEY_URL"
+          echo "::set-env name=BRANCH_SPECIFIC_CTKEY_USERNAME_NAME::${branch_name}_CTKEY_USERNAME"
+          echo "::set-env name=BRANCH_SPECIFIC_CTKEY_PASSWORD_NAME::${branch_name}_CTKEY_PASSWORD"
+          echo "::set-env name=BRANCH_SPECIFIC_CTKEY_ACCOUNT_ID_NAME::${branch_name}_CTKEY_ACCOUNT_ID"
+          echo "::set-env name=BRANCH_SPECIFIC_AWS_SECRET_ACCESS_KEY_NAME::${branch_name}_AWS_SECRET_ACCESS_KEY"
+          echo "::set-env name=BRANCH_SPECIFIC_AWS_ACCESS_KEY_ID_NAME_NAME::${branch_name}_AWS_ACCESS_KEY_ID"
+          echo "::set-env name=BRANCH_SPECIFIC_AWS_SECRET_ACCESS_KEY_NAME::${branch_name}_AWS_SECRET_ACCESS_KEY"
+          echo "::set-env name=BRANCH_SPECIFIC_AWS_DEFAULT_REGION_NAME::${branch_name}_AWS_DEFAULT_REGION"
       - uses: actions/checkout@v1
       - name: test env injection options
         run: ./.github/set_vars.sh
@@ -39,6 +39,23 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+
+          BRANCH_SPECIFIC_INFRASTRUCTURE_TYPE: ${{ secrets[env.BRANCH_SPECIFIC_INFRASTRUCTURE_TYPE_NAME] }}
+          BRANCH_SPECIFIC_ROUTE_53_HOSTED_ZONE_ID: ${{ secrets[env.BRANCH_SPECIFIC_ROUTE_53_HOSTED_ZONE_ID_NAME] }}
+          BRANCH_SPECIFIC_ROUTE_53_DOMAIN_NAME: ${{ secrets[env.BRANCH_SPECIFIC_ROUTE_53_DOMAIN_NAME_NAME] }}
+          BRANCH_SPECIFIC_CLOUDFRONT_CERTIFICATE_ARN: ${{ secrets[env.BRANCH_SPECIFIC_CLOUDFRONT_CERTIFICATE_ARN_NAME] }}
+          BRANCH_SPECIFIC_CLOUDFRONT_DOMAIN_NAME: ${{ secrets[env.BRANCH_SPECIFIC_CLOUDFRONT_DOMAIN_NAME_NAME] }}
+          BRANCH_SPECIFIC_SES_SOURCE_EMAIL_ADDRESS: ${{ secrets[env.BRANCH_SPECIFIC_SES_SOURCE_EMAIL_ADDRESS_NAME] }}
+          BRANCH_SPECIFIC_SES_REVIEW_TEAM_EMAIL_ADDRESS: ${{ secrets[env.BRANCH_SPECIFIC_SES_REVIEW_TEAM_EMAIL_ADDRESS_NAME] }}
+          BRANCH_SPECIFIC_CTKEY_URL: ${{ secrets[env.BRANCH_SPECIFIC_CTKEY_URL_NAME] }}
+          BRANCH_SPECIFIC_CTKEY_USERNAME: ${{ secrets[env.BRANCH_SPECIFIC_CTKEY_USERNAME_NAME] }}
+          BRANCH_SPECIFIC_CTKEY_PASSWORD: ${{ secrets[env.BRANCH_SPECIFIC_CTKEY_PASSWORD_NAME] }}
+          BRANCH_SPECIFIC_CTKEY_ACCOUNT_ID: ${{ secrets[env.BRANCH_SPECIFIC_CTKEY_ACCOUNT_ID_NAME] }}
+          BRANCH_SPECIFIC_CTKEY_IAM_ROLE: ${{ secrets[env.BRANCH_SPECIFIC_CTKEY_IAM_ROLE_NAME] }}
+          BRANCH_SPECIFIC_AWS_ACCESS_KEY_ID: ${{ secrets[env.BRANCH_SPECIFIC_AWS_ACCESS_KEY_ID_NAME] }}
+          BRANCH_SPECIFIC_AWS_SECRET_ACCESS_KEY: ${{ secrets[env.BRANCH_SPECIFIC_AWS_ACCESS_KEY_ID_NAME] }}
+          BRANCH_SPECIFIC_AWS_DEFAULT_REGION: ${{ secrets[env.BRANCH_SPECIFIC_AWS_DEFAULT_REGION_NAME] }}
+
       - name: Check branch name is a legal serverless stage name
         run: |
           if [[ ! $branch_name =~ ^[a-zA-Z][a-zA-Z0-9-]*$ ]] || [[ $branch_name -gt 128 ]]; then
