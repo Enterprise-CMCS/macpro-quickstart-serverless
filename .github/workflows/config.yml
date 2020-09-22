@@ -55,7 +55,7 @@ jobs:
           popd
           echo "export PATH=$(pwd)/.github/node_modules/.bin:\$PATH" >> set.env.sh
       - name: Combine package-lock.json files to single file
-        run: find . -not -path ./.circleci/package-lock.json -name package-lock.json | xargs cat > combined-package-lock.txt
+        run: find . -not -path ./.github/package-lock.json -name package-lock.json | xargs cat > combined-package-lock.txt
       - name: cache service dependencies
         uses: actions/cache@v2
         with:
@@ -71,7 +71,7 @@ jobs:
             services/ui/node_modules
             services/ui-src/node_modules
             node_modules
-          key: ${{ runner.os }}-${{ hashFiles('./.github/combined-package-lock.json') }}
+          key: ${{ runner.os }}-${{ hashFiles('./.github/combined-package-lock.txt') }}
       - name: set branch specific environment variables
         run: ./.circleci/set_vars.sh
       - name: deploy
