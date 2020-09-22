@@ -18,6 +18,7 @@ var_list=(
   'CLOUDFRONT_DOMAIN_NAME'
   'IAM_PATH'
   'IAM_PERMISSIONS_BOUNDARY_POLICY'
+  'STAGE_PREFIX'
 )
 
 set_vars_for_all_steps() {
