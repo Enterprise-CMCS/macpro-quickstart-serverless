@@ -8,7 +8,13 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      asdf: ${{ env.branch }}
+      onetwothree: ${{ env.asdf }}
     steps:
+      - run: |
+          echo $asdf
+          echo $onetwothree
       - name: set branch_name
         run: echo "::set-env name=branch_name::${GITHUB_REF#refs/heads/}"
       - name: Check branch name is a legal serverless stage name
