@@ -23,13 +23,13 @@ set_vars_in_set_env_sh() {
   # So here we take the branch name, swap hyphens for underscores, and set variables if they exist.
   branch=${CIRCLE_BRANCH//-/_}
   branch_specific_varname=${branch}_${1}
-  if [ ! -z "${!branch_specific_varname}" ] && [ "${!branch_specific_varname}" != "" ]; then
+  if [ ! -z "${!branch_specific_varname}" ]; then
     echo """
 Environment variable ${branch_specific_varname} has a value.
 Setting the value of ${varname} to ${branch_specific_varname}'s value'
     """
     echo "${varname}=\$${branch_specific_varname}" >> set.env.sh
-  elif [ ! -z "${varname}" ] && [ "${varname}" != "" ]; then
+  elif [ ! -z "$varname" ]; then
     echo "Setting $varname default"
     echo "${varname}=\$${varname}" >> set.env.sh
   fi
@@ -39,3 +39,4 @@ for i in "${branch_specific_vars[@]}"
 do
 	set_vars_in_set_env_sh $i
 done
+cat set.env.sh
