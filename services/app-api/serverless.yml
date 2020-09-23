@@ -7,7 +7,7 @@ plugins:
   - serverless-bundle
   - serverless-dotenv-plugin
   - serverless-plugin-warmup
-
+  - serverless-plugin-scripts
 custom:
   stage: ${opt:stage, self:provider.stage}
   tableName: ${cf:database-${self:custom.stage}.AmendmentsTableName}
@@ -27,7 +27,16 @@ custom:
     timeout: 20
     prewarm: true
     concurrency: 5
-
+    folderName: node_modules/serverless-bundle/src/_warmup
+    cleanFolder: false
+  scripts:
+    hooks:
+      package:setupProviderConfiguration: |
+        # Remove the timestamp line from the warmup handler so a new function is uploaded
+        #   only if a configuration has truly changed.
+        set -e
+        cd node_modules/serverless-bundle/src/_warmup
+        sed '/Generated/d' index.js > index.js.sub && mv -f index.js.sub index.js
 
 provider:
   name: aws
