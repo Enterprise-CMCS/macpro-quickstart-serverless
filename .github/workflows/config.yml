@@ -106,15 +106,12 @@ jobs:
           # This can optionally be set as an environment variable in the CircleCI Project Settings
           source set.env.sh
           ./deploy.sh $STAGE_PREFIX$branch_name
-      - name: Print the application endpoint
-        run: |
-          source set.env.sh
-          cd services
-          endpoint=`./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$branch_name`
-          echo "::set-env name=APPLICATION_ENDPOINT::${endpoint}"
       - name: Run TestCafe suite
         run: |
           source set.env.sh
+          pushd services
+          export APPLICATION_ENDPOINT=`./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$branch_name`
+          popd
           ./test.sh
       - name: Store test reults
         uses: actions/upload-artifact@v2
