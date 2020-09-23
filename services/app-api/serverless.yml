@@ -35,8 +35,10 @@ custom:
         # Remove the timestamp line from the warmup handler so a new function is uploaded
         #   only if a configuration has truly changed.
         set -e
-        cd node_modules/serverless-bundle/src/_warmup
-        sed '/Generated/d' index.js > index.js.sub && mv -f index.js.sub index.js
+        if [ -d "node_modules/serverless-bundle/src/_warmup" ]; then
+          cd node_modules/serverless-bundle/src/_warmup
+          sed '/Generated/d' index.js > index.js.sub && mv -f index.js.sub index.js
+        fi
 
 provider:
   name: aws
