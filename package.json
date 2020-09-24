@@ -13,15 +13,6 @@
     "type": "git",
     "url": "git+https://github.com/CMSgov/macpro-quickstart-serverless.git"
   },
-  "devDependencies": {
-    "aws-sdk": "^2.655.0",
-    "serverless-bundle": "^3.0.0",
-    "serverless-dotenv-plugin": "^3.0.0",
-    "serverless-plugin-scripts": "^1.0.2",
-    "serverless-plugin-warmup": "^4.9.0",
-    "serverless-cloudfront-invalidate": "^1.5.0",
-    "serverless-s3-sync": "^1.14.4"
-  },
   "author": "",
   "license": "CC0-1.0",
   "bugs": {
