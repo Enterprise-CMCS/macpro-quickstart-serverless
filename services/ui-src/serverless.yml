@@ -33,7 +33,7 @@ custom:
       # Build the static archive and populate the config
       package:initialize: |
         set -e
-        npm run build
+        yarn run build
         export API_REGION=${self:custom.api_region}
         export API_URL=${self:custom.api_url}
         export COGNITO_REGION=${self:custom.cognito_region}

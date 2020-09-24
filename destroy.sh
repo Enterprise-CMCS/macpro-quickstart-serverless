@@ -29,7 +29,7 @@ services=(
 deploy() {
   service=$1
   pushd services/$service
-  npm install
+  yarn install
   serverless remove --stage $stage
   popd
 }
