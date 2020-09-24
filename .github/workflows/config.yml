@@ -78,7 +78,7 @@ jobs:
         run: |
           pushd .github
             if [ ! -d node_modules ]; then
-              npm ci
+              yarn install --froze-lockfile
             fi
           popd
           echo "PATH=$(pwd)/.github/node_modules/.bin:\$PATH" >> set.env.sh
