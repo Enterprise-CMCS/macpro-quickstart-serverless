@@ -88,7 +88,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - npm-tools-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "./.circleci/package-lock.json" }}
+            - npm-tools-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "./.circleci/yarn.lock" }}
       - run:
           name: install tools
           command: |
@@ -99,15 +99,15 @@ jobs:
             popd
             echo "export PATH=$(pwd)/.circleci/node_modules/.bin:\$PATH" >> $BASH_ENV
       - save_cache:
-          key: npm-tools-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "./.circleci/package-lock.json" }}
+          key: npm-tools-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "./.circleci/yarn.lock" }}
           paths:
             - ./.circleci/node_modules
       - run:
-          name: Combine package-lock.json files to single file
-          command: find . -not -path ./.circleci/package-lock.json -name package-lock.json | xargs cat > combined-package-lock.txt
+          name: Combine yarn.lock files to single file
+          command: find services -maxdepth 3 -name yarn.lock | xargs cat yarn.lock > combined-yarn-lock.txt
       - restore_cache:
           keys:
-            - npm-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
+            - npm-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "combined-yarn-lock.txt" }}
       - run:
           name: set branch specific environment variables
           command: ./.circleci/set_vars.sh
@@ -125,7 +125,7 @@ jobs:
             cd services
             ./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$CIRCLE_BRANCH
       - save_cache:
-          key: npm-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "combined-package-lock.txt" }}
+          key: npm-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "combined-yarn-lock.txt" }}
           paths:
             - services/database/node_modules
             - services/uploads/node_modules
@@ -147,7 +147,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - npm-tools-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "./.circleci/package-lock.json" }}
+            - npm-tools-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "./.circleci/yarn.lock" }}
       - run:
           name: install tools
           command: |
@@ -158,7 +158,7 @@ jobs:
             popd
             echo "export PATH=$(pwd)/.circleci/node_modules/.bin:\$PATH" >> $BASH_ENV
       - save_cache:
-          key: npm-tools-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "./.circleci/package-lock.json" }}
+          key: npm-tools-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "./.circleci/yarn.lock" }}
           paths:
             - ./.circleci/node_modules
       - run: ./.circleci/ctkey.sh
