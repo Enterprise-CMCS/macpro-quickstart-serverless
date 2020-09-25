@@ -19,6 +19,7 @@ Want to deploy from your Mac?
 - Create an AWS account
 - Install/configure the AWS CLI
 - npm install -g severless
+- brew install yarn
 - sh deploy.sh
 
 Building the app locally
