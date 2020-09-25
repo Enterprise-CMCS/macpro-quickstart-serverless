@@ -73,17 +73,17 @@ jobs:
         with:
           path: |
             .github/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('./.github/package-lock.json') }}
+          key: ${{ runner.os }}-${{ hashFiles('./.github/yarn.lock') }}
       - name: install tools
         run: |
           pushd .github
             if [ ! -d node_modules ]; then
-              npm ci
+              yarn install --froze-lockfile
             fi
           popd
           echo "PATH=$(pwd)/.github/node_modules/.bin:\$PATH" >> set.env.sh
       - name: Combine package-lock.json files to single file
-        run: find . -not -path ./.github/package-lock.json -name package-lock.json | xargs cat > combined-package-lock.txt
+        run: find services -maxdepth 3 -name yarn.lock | xargs cat yarn.lock > combined-yarn-lock.txt
       - name: cache service dependencies
         uses: actions/cache@v2
         with:
@@ -99,18 +99,13 @@ jobs:
             services/ui/node_modules
             services/ui-src/node_modules
             node_modules
-          key: ${{ runner.os }}-${{ hashFiles('combined-package-lock.txt') }}
+          key: ${{ runner.os }}-${{ hashFiles('combined-yarn-lock.txt') }}
       - name: deploy
         run: |
           # When deploying multiple copies of this quickstart to the same AWS Account (not ideal), a prefix helps prevent stepping on each other.
           # This can optionally be set as an environment variable in the CircleCI Project Settings
           source set.env.sh
           ./deploy.sh $STAGE_PREFIX$branch_name
-      - name: Print the application endpoint
-        run: |
-          source set.env.sh
-          cd services
-          ./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$branch_name
       - name: Run TestCafe suite
         run: |
           source set.env.sh
