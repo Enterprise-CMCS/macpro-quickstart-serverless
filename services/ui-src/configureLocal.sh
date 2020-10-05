@@ -1,14 +1,16 @@
 
 set -e
 
-api_region=`sh ../output.sh ../app-api Region`
-api_url=`sh ../output.sh ../app-api ApiGatewayRestApiUrl`
-cognito_region=`sh ../output.sh ../ui-auth Region`
-cognito_identity_pool_id=`sh ../output.sh ../ui-auth IdentityPoolId`
-cognito_user_pool_id=`sh ../output.sh ../ui-auth UserPoolId`
-cognito_client_id=`sh ../output.sh ../ui-auth UserPoolClientId`
-s3_attachments_bucket_region=`sh ../output.sh ../uploads Region`
-s3_attachements_bucket_name=`sh ../output.sh ../uploads AttachmentsBucketName`
+stage=${1:-dev}
+
+api_region=`sh ../output.sh ../app-api Region $stage`
+api_url=`sh ../output.sh ../app-api ApiGatewayRestApiUrl $stage`
+cognito_region=`sh ../output.sh ../ui-auth Region $stage`
+cognito_identity_pool_id=`sh ../output.sh ../ui-auth IdentityPoolId $stage`
+cognito_user_pool_id=`sh ../output.sh ../ui-auth UserPoolId $stage`
+cognito_client_id=`sh ../output.sh ../ui-auth UserPoolClientId $stage`
+s3_attachments_bucket_region=`sh ../output.sh ../uploads Region $stage`
+s3_attachements_bucket_name=`sh ../output.sh ../uploads AttachmentsBucketName $stage`
 
 export API_REGION=$api_region
 export API_URL=$api_url
