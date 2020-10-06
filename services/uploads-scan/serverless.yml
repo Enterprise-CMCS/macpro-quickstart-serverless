@@ -16,6 +16,7 @@ provider:
 
 plugins:
   - serverless-plugin-scripts
+  - serverless-s3-remover
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -30,6 +31,10 @@ custom:
         curl -L --output lambda_layer.zip https://github.com/sethsacher/lambda-clamav-layer/releases/download/0.5/lambda_layer.zip
       deploy:finalize: |
         rm lambda_layer.zip
+
+  remover:
+     buckets:
+       - uploads-scan-${opt:stage, self:provider.stage}-avScan
 
 layers:
   clamDefs:
@@ -71,6 +76,7 @@ resources:
     AVBucket:
       Type: AWS::S3::Bucket
       Properties: 
+        BucketName: uploads-scan-${opt:stage, self:provider.stage}-avScan
         AccessControl: PublicRead
     AttachmentsBucketPolicy: 
       Type: AWS::S3::BucketPolicy
@@ -175,3 +181,6 @@ resources:
                 Action:
                 - s3:ListBucket
                 Resource: !GetAtt AVBucket.Arn
+  Outputs: 
+    AVBucketName:
+      Value: !Ref AVBucket
