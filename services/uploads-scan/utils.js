@@ -51,7 +51,7 @@ function extractKeyFromS3Event(s3Event) {
         throw new Error("Unable to retrieve key information from the event");
     }
 
-    return key.replace(/\+/g,' ');
+    return decodeURIComponent(key).replace(/\+/g,' ');
 }
 
 /**
