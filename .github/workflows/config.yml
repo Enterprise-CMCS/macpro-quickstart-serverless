@@ -90,6 +90,7 @@ jobs:
           path: |
             services/database/node_modules
             services/uploads/node_modules
+            services/uploads-scan/node_modules
             services/app-api/node_modules
             services/elasticsearch-auth/node_modules
             services/elasticsearch/node_modules
