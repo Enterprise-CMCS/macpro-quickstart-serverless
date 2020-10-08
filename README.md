@@ -72,8 +72,10 @@ work worldwide through the CC0 1.0 Universal public domain dedication.
 
 This project made possible by the [Serverless Stack](https://serverless-stack.com/) and its authors/contributors.  The extremely detailed tutorial, code examples, and serverless pattern is where this project started.  I can't recommend this resource enough.
 
-| [![Mike Dial][dial_avatar]][dial_homepage]<br/>[Mike Dial][dial_homepage] |
-|---|
+| [![Mike Dial][dial_avatar]][dial_homepage]<br/>[Mike Dial][dial_homepage] | [![Seth Sacher][sacher_avatar]][sacher_homepage]<br/>[Seth Sacher][sacher_homepage] |
+|---|---|
 
   [dial_homepage]: https://github.com/mdial89f
   [dial_avatar]: https://avatars.githubusercontent.com/mdial89f?size=150
+  [sacher_homepage]: https://github.com/sethsacher
+  [sacher_avatar]: https://avatars.githubusercontent.com/sethsacher?size=150
