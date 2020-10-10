@@ -6,3 +6,20 @@
     height: 300px;
     font-size: 24px;
 }
+
+.Amendments button.link-lookalike {
+  background: none!important;
+  border: none;
+  padding: 0!important;
+  font-family: arial, sans-serif;
+  color: #069;
+  cursor: pointer;
+}
+
+.Amendments button.link-lookalike:hover {
+  text-decoration: underline;
+}
+
+.Amendments button.link-lookalike:hover::after {
+  text-decoration: none;
+}

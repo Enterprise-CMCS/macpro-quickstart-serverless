@@ -230,6 +230,7 @@ export default function Amendments() {
                             <ControlLabel>Attachment</ControlLabel>
                             <FormControl.Static>
                               <button
+                                class = "link-lookalike"
                                 background="none!important"
                                 type="asdfasdf"
                                 onClick={e => openAttachment(e, amendment.attachmentURL)}>
