@@ -62,12 +62,12 @@ function downloadFileFromS3(s3ObjectKey, s3ObjectBucket) {
 
 
 async function lambdaHandleEvent(event, context) {
-    utils.generateSystemMessage('Start Antivirus Lambda function')
+    utils.generateSystemMessage('Start Antivirus Lambda function');
 
     let s3ObjectKey = utils.extractKeyFromS3Event(event);
     let s3ObjectBucket = utils.extractBucketFromS3Event(event);
 
-    utils.generateSystemMessage(`S3 Bucket and Key\n ${s3ObjectBucket}\n${s3ObjectKey}`)
+    utils.generateSystemMessage(`S3 Bucket and Key\n ${s3ObjectBucket}\n${s3ObjectKey}`);
 
     let virusScanStatus;
 
@@ -75,17 +75,17 @@ async function lambdaHandleEvent(event, context) {
     //currently lambdas max out at 500MB storage.
     if(await isS3FileTooBig(s3ObjectKey, s3ObjectBucket)){
         virusScanStatus = constants.STATUS_SKIPPED_FILE;
-        utils.generateSystemMessage(`S3 File is too big. virusScanStatus=${virusScanStatus}`)
+        utils.generateSystemMessage(`S3 File is too big. virusScanStatus=${virusScanStatus}`);
     }
     else{
         //No need to act on file unless you are able to.
-        utils.generateSystemMessage('Download AV Definitions')
+        utils.generateSystemMessage('Download AV Definitions');
         await clamav.downloadAVDefinitions(constants.CLAMAV_BUCKET_NAME, constants.PATH_TO_AV_DEFINITIONS);
-        utils.generateSystemMessage('Download File from S3')
+        utils.generateSystemMessage('Download File from S3');
         await downloadFileFromS3(s3ObjectKey, s3ObjectBucket);
-        utils.generateSystemMessage('Set virusScanStatus')
+        utils.generateSystemMessage('Set virusScanStatus');
         virusScanStatus = clamav.scanLocalFile(path.basename(s3ObjectKey));
-        utils.generateSystemMessage(`virusScanStatus=${virusScanStatus}`)
+        utils.generateSystemMessage(`virusScanStatus=${virusScanStatus}`);
     }
 
     var taggingParams = {
@@ -95,7 +95,7 @@ async function lambdaHandleEvent(event, context) {
     };
 
     try {
-        let uploadResult = await s3.putObjectTagging(taggingParams).promise();
+        await s3.putObjectTagging(taggingParams).promise();
         utils.generateSystemMessage("Tagging successful");
     } catch(err) {
         console.log(err);
@@ -118,7 +118,7 @@ async function scanS3Object(s3ObjectKey, s3ObjectBucket){
     };
 
     try {
-        let uploadResult = await s3.putObjectTagging(taggingParams).promise();
+        await s3.putObjectTagging(taggingParams).promise();
         utils.generateSystemMessage("Tagging successful");
     } catch(err) {
         console.log(err);
@@ -133,4 +133,3 @@ module.exports = {
     isS3FileTooBig:      isS3FileTooBig,
     sizeOf:             sizeOf
 };
-

@@ -25,12 +25,12 @@ async function lambdaHandleEvent(event, context) {
 
         utils.generateSystemMessage("Folder content after freshclam ");
         await clamav.uploadAVDefinitions();
-    
+
         utils.generateSystemMessage(`AV definition update end time: ${new Date()}`);
 
-        return 'DEFINITION UPDATE SUCCESS'
+        return 'DEFINITION UPDATE SUCCESS';
     } else {
-        return 'DEFINITION UPDATE FAILED'
+        return 'DEFINITION UPDATE FAILED';
     }
 }
 

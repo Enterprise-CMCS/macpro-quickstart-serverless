@@ -107,7 +107,7 @@ function extractBucketFromApiEvent(s3Event) {
 function generateSystemMessage(systemMessage) {
     let finalMessage = `--- ${systemMessage} ---`;
     console.log(finalMessage);
-    return finalMessage
+    return finalMessage;
 }
 
 module.exports = {
