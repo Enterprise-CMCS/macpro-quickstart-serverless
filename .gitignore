@@ -2,3 +2,4 @@
 .infra
 node_modules
 testcafe_results
+.DS_Store
