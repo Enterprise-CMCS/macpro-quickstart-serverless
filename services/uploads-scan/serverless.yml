@@ -14,9 +14,13 @@ provider:
   region: us-east-1
   stage: dev
 
+package:
+  individually: true
+
 plugins:
   - serverless-plugin-scripts
   - serverless-s3-remover
+  - serverless-bundle
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -41,12 +45,12 @@ layers:
     package:
       artifact: lambda_layer.zip
 
-functions: 
+functions:
   avScan:
     handler: antivirus.lambdaHandleEvent
     name: uploads-scan-${opt:stage, self:provider.stage}-avScan
     events:
-      - s3: 
+      - s3:
           bucket: ${self:custom.attachments_bucket_name}
           event: s3:ObjectCreated:* # Triggers Lambda once per file, not once per upload
           existing: true
@@ -55,7 +59,7 @@ functions:
     memorySize: 3008 # Max lambda memory allocation; clamscan didn't work with 1024
     layers:
       - { Ref: ClamDefsLambdaLayer }
-    environment: 
+    environment:
       CLAMAV_BUCKET_NAME: !Ref AVBucket
       PATH_TO_AV_DEFINITIONS: 'lambda/s3-antivirus/av-definitions'
   avDownloadDefinitions:
@@ -67,7 +71,7 @@ functions:
     memorySize: 1024
     layers:
       - { Ref: ClamDefsLambdaLayer }
-    environment: 
+    environment:
       CLAMAV_BUCKET_NAME: !Ref AVBucket
       PATH_TO_AV_DEFINITIONS: 'lambda/s3-antivirus/av-definitions'
 
@@ -75,22 +79,22 @@ resources:
   Resources:
     AVBucket:
       Type: AWS::S3::Bucket
-      Properties: 
+      Properties:
         BucketName: uploads-scan-${opt:stage, self:provider.stage}-avscan
         AccessControl: PublicRead
-    AttachmentsBucketPolicy: 
+    AttachmentsBucketPolicy:
       Type: AWS::S3::BucketPolicy
-      Properties: 
+      Properties:
         Bucket: ${self:custom.attachments_bucket_name}
-        PolicyDocument: 
-          Statement: 
-            - 
-              Action: 
+        PolicyDocument:
+          Statement:
+            -
+              Action:
                 - "s3:GetObject"
               Effect: "Deny"
               Resource: !Join [ '/', [ '${self:custom.attachments_bucket_arn}', '*' ] ]
               NotPrincipal:
-                AWS: 
+                AWS:
                   - Fn::Join:
                     - ''
                     -
@@ -107,8 +111,8 @@ resources:
                       - ':assumed-role/'
                       - Ref: BucketAVScanRole
                       - '/uploads-scan-${opt:stage, self:provider.stage}-avScan'
-              Condition: 
-                StringNotEquals: 
+              Condition:
+                StringNotEquals:
                   s3:ExistingObjectTag/virusScanStatus:
                     - "CLEAN"
     BucketAVScanRole:
@@ -181,6 +185,6 @@ resources:
                 Action:
                 - s3:ListBucket
                 Resource: !GetAtt AVBucket.Arn
-  Outputs: 
+  Outputs:
     AVBucketName:
       Value: !Ref AVBucket

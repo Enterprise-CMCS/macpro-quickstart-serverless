@@ -15,7 +15,7 @@ const S3 = new AWS.S3();
 function updateAVDefinitonsWithFreshclam() {
     try {
         let executionResult = execSync(`${constants.PATH_TO_FRESHCLAM} --config-file=${constants.FRESHCLAM_CONFIG} --datadir=${constants.FRESHCLAM_WORK_DIR}`);
-        
+
         utils.generateSystemMessage('Update message');
         console.log(executionResult.toString());
 
@@ -113,7 +113,7 @@ async function uploadAVDefinitions() {
  */
 function scanLocalFile(pathToFile) {
     try {
-        let result = execSync(`${constants.PATH_TO_CLAMAV} -v -a --stdout -d /tmp/ '/tmp/download/${pathToFile}'`);
+        execSync(`${constants.PATH_TO_CLAMAV} -v -a --stdout -d /tmp/ '/tmp/download/${pathToFile}'`);
 
         utils.generateSystemMessage('SUCCESSFUL SCAN, FILE CLEAN');
 
