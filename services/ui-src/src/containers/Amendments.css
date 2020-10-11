@@ -23,3 +23,7 @@
 .Amendments button.link-lookalike:hover::after {
   text-decoration: none;
 }
+
+.Amendments button.link-lookalike:focus {
+  outline: none;
+}
