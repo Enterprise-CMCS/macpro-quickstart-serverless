@@ -14,13 +14,9 @@ provider:
   region: us-east-1
   stage: dev
 
-package:
-  individually: true
-
 plugins:
   - serverless-plugin-scripts
   - serverless-s3-remover
-  - serverless-bundle
 
 custom:
   stage: ${opt:stage, self:provider.stage}
