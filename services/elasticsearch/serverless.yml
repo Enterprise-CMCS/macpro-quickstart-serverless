@@ -39,8 +39,12 @@ resources:
         ElasticsearchClusterConfig:
           Fn::If:
             - BuildProdInfrastructure
-            - InstanceType: m5.large.elasticsearch
-              InstanceCount: 3
+            # - InstanceType: m5.large.elasticsearch
+            #   InstanceCount: 3
+            # To save on infra costs for the quickstart project, we will deploy a cheaper elasticsearch cluster for production
+            # To deploy a more powerful cluster for 'production' envs, uncomment the lines above and comment the lines above
+            - InstanceType: t2.small.elasticsearch
+              InstanceCount: 1
               DedicatedMasterEnabled: false
             - InstanceType: t2.small.elasticsearch
               InstanceCount: 1
