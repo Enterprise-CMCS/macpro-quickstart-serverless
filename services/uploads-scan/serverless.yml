@@ -31,6 +31,7 @@ custom:
         curl -L --output lambda_layer.zip https://github.com/CMSgov/lambda-clamav-layer/releases/download/0.5/lambda_layer.zip
       deploy:finalize: |
         rm lambda_layer.zip
+        serverless invoke --stage ${self:custom.stage} --function avDownloadDefinitions -t Event
 
   remover:
      buckets:
