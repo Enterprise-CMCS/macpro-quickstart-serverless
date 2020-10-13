@@ -52,12 +52,14 @@ resources:
         EncryptionAtRestOptions:
           Fn::If:
             - BuildProdInfrastructure
-            - Enabled: true
+            # - Enabled: true
+            - Enabled: false
             - Enabled: false
         NodeToNodeEncryptionOptions:
           Fn::If:
             - BuildProdInfrastructure
-            - Enabled: true
+            # - Enabled: true
+            - Enabled: false
             - Enabled: false
         ElasticsearchVersion: 7.7
         DomainEndpointOptions:
