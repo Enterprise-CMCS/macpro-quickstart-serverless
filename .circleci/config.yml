@@ -4,19 +4,10 @@
 #
 # The following should be set for any and all installations using this quickstart.
 #   - CIRCLE_TOKEN:  Create a CircleCI project token with full permissions, and set the value to this value.  See https://circleci.com/docs/2.0/managing-api-tokens/
-#   - AWS_DEFAULT_REGION: Default region when interacting with AWS programmatically.  ex:  us-east-1
-#   - SES_SOURCE_EMAIL_ADDRESS: Email that has been verified in SES for sending notifications..  If you don't set this, email notifications won't work.  ex. myemail@collabralink.com
-#
-# If using cloudtamer.io and CTKey for AWS authentication, set all of the following:
-#   - CTKEY_URL: The url to the cloudtamer installation against which to authenticate; no trailing slash please.  ex. https://cloudtamer.abc.gov
-#   - CTKEY_USERNAME: The cloudtamer username for the deployment user.
-#   - CTKEY_PASSWORD: The password for the CTKEY_USERNAME user.
-#   - CTKEY_ACCOUNT_ID: The account number of the target AWS account.  ex:  1234566789
-#   - CTKEY_IAM_ROLE: The role the deployment user should ask to assume using CTKey.  ex:  ct-abcd-dev-admin
-#
-# If not using cloudtamer, and instead using AWS credentials directly, set all of the following:
 #   - AWS_ACCESS_KEY_ID
 #   - AWS_SECRET_ACCESS_KEY
+#   - AWS_DEFAULT_REGION: Default region when interacting with AWS programmatically.  ex:  us-east-1
+#   - SES_SOURCE_EMAIL_ADDRESS: Email that has been verified in SES for sending notifications..  If you don't set this, email notifications won't work.  ex. myemail@collabralink.com
 #
 # If the deployment user is restricted to a certain path in IAM, set all of the following.  This is not typically required, but is in Greenfield:
 #   - IAM_PATH: The IAM path in which to create all IAM objects; include trailing slash.  ex:  /my/allowed/path/
@@ -111,7 +102,6 @@ jobs:
       - run:
           name: set branch specific environment variables
           command: ./.circleci/set_vars.sh
-      - run: ./.circleci/ctkey.sh
       - run:
           name: deploy
           no_output_timeout: 60m
@@ -162,7 +152,6 @@ jobs:
           key: npm-tools-cache3-{{ arch }}-{{ .Branch }}-{{ checksum "./.circleci/yarn.lock" }}
           paths:
             - ./.circleci/node_modules
-      - run: ./.circleci/ctkey.sh
       - run:
           name: Run TestCafe suite
           command: |
