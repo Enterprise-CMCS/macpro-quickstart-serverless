@@ -8,7 +8,11 @@ fi
 stage=$1
 
 echo "\nCollecting information on stage $stage before attempting a destroy... This can take a minute or two..."
+
 # Find buckets associated with stage
+# Unfortunately, I can't get all buckets and all associaged tags in a single CLI call (that I know of)
+# So this can be pretty slow, depending on how many buckets exist in the account
+# We get all bucket names, then find associated tags for each one-by-one
 bucketList=(`aws s3api list-buckets --output text --query 'Buckets[*].Name'` )
 filteredBucketList=()
 for i in "${bucketList[@]}"
