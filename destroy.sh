@@ -15,13 +15,15 @@ echo "\nCollecting information on stage $stage before attempting a destroy... Th
 # We get all bucket names, then find associated tags for each one-by-one
 bucketList=(`aws s3api list-buckets --output text --query 'Buckets[*].Name'` )
 filteredBucketList=()
+set +e
 for i in "${bucketList[@]}"
 do
-  stage_tag=`aws s3api get-bucket-tagging --bucket $i --output text --query 'TagSet[?Key==\`STAGE\`].Value'`
+  stage_tag=`aws s3api get-bucket-tagging --bucket $i --output text --query 'TagSet[?Key==\`STAGE\`].Value' 2>/dev/null`
   if [ "$stage_tag" == "$stage" ]; then
     filteredBucketList+=($i)
   fi
 done
+set -e
 
 # Find cloudformation stacks associated with stage
 filteredStackList=(`aws cloudformation describe-stacks | jq -r ".Stacks[] | select(.Tags[] | select(.Key==\"STAGE\") | select(.Value==\"$stage\")) | .StackName"`)
