@@ -46,15 +46,15 @@ echo """
 - Scroll up and check carefully -
 ********************************************************************************
 """
-
-read -p "Do you wish to continue?  Re-enter the stage name to continue:  " -r
-echo
-if [[ ! $REPLY == "$stage" ]]
-then
-    echo "Stage name not re-entered.  Doing nothing and exiting."
-    exit 1
+if [ "$CI" != "true" ]; then
+  read -p "Do you wish to continue?  Re-enter the stage name to continue:  " -r
+  echo
+  if [[ ! $REPLY == "$stage" ]]
+  then
+      echo "Stage name not re-entered.  Doing nothing and exiting."
+      exit 1
+  fi
 fi
-
 
 for i in "${filteredBucketList[@]}"
 do
