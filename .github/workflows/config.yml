@@ -1,5 +1,5 @@
 
-name: Deploy
+name: Build
 
 on:
   push:
