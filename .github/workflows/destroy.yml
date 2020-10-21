@@ -19,11 +19,6 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_ACCESS_KEY_ID] || secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_SECRET_ACCESS_KEY] || secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_DEFAULT_REGION] || secrets.AWS_DEFAULT_REGION }}
-          CTKEY_URL: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_CTKEY_URL] || secrets.CTKEY_URL }}
-          CTKEY_USERNAME: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_CTKEY_USERNAME] || secrets.CTKEY_USERNAME }}
-          CTKEY_PASSWORD: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_CTKEY_PASSWORD] || secrets.CTKEY_PASSWORD }}
-          CTKEY_ACCOUNT_ID: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_CTKEY_ACCOUNT_ID] || secrets.CTKEY_ACCOUNT_ID }}
-          CTKEY_IAM_ROLE: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_CTKEY_IAM_ROLE] || secrets.CTKEY_IAM_ROLE }}
           STAGE_PREFIX: ${{ secrets.STAGE_PREFIX }}
       - run: ./.github/ctkey.sh
       - name: lock this branch to prevent concurrent builds
