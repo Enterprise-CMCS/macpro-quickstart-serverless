@@ -76,7 +76,7 @@ jobs:
             fi
           popd
           echo "PATH=$(pwd)/.github/node_modules/.bin:\$PATH" >> set.env.sh
-      - name: Combine package-lock.json files to single file
+      - name: Combine yarn.lock files to single file
         run: find services -maxdepth 3 -name yarn.lock | xargs cat yarn.lock > combined-yarn-lock.txt
       - name: cache service dependencies
         uses: actions/cache@v2
@@ -98,7 +98,7 @@ jobs:
       - name: deploy
         run: |
           # When deploying multiple copies of this quickstart to the same AWS Account (not ideal), a prefix helps prevent stepping on each other.
-          # This can optionally be set as an environment variable in the CircleCI Project Settings
+          # This can optionally be set as an GitHub Actions Secret
           source set.env.sh
           ./deploy.sh $STAGE_PREFIX$branch_name
       - name: Run TestCafe suite
