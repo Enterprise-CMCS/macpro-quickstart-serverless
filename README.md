@@ -13,8 +13,6 @@ See master build [here](https://github.com/CMSgov/macpro-quickstart-serverless/a
 
 This application is built and deployed via GitHub Actions.
 
-CircleCI support is included, but its use is discouraged unless you cannot use GitHub Actions.
-
 Want to deploy from your Mac?
 - Create an AWS account
 - Install/configure the AWS CLI
