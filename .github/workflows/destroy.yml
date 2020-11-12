@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: set branch_name
-        run: echo "::set-env name=branch_name::${{ github.event.ref }}"
+        run: echo "branch_name=${{ github.event.ref }}" >> $GITHUB_ENV
       - uses: actions/checkout@v1
       - name: set branch specific variable names
         run: ./.github/build_vars.sh set_names
