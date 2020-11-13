@@ -20,13 +20,13 @@ set_value() {
   varname=${1}
   if [ ! -z "${!varname}" ]; then
     echo "Setting $varname"
-    echo "::set-env name=${varname}::${!varname}"
+    echo "${varname}=${!varname}" >> $GITHUB_ENV
   fi
 }
 
 set_name() {
   varname=${1}
-  echo "::set-env name=BRANCH_SPECIFIC_VARNAME_$varname::${branch_name//-/_}_$varname"
+  echo "BRANCH_SPECIFIC_VARNAME_$varname=${branch_name//-/_}_$varname" >> $GITHUB_ENV
 }
 
 action=${1}

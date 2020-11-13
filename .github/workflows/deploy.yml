@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: set branch_name
-        run: echo "::set-env name=branch_name::${GITHUB_REF#refs/heads/}"
+        run: echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
       - name: Check branch name is a legal serverless stage name
         run: |
           if [[ ! $branch_name =~ ^[a-zA-Z][a-zA-Z0-9-]*$ ]] || [[ $branch_name -gt 128 ]]; then
