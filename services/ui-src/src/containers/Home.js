@@ -56,8 +56,8 @@ export default function Home() {
     function renderLander() {
         return (
             <div className="lander">
-                <h1>APS Submission App</h1>
-                <p>ACME's Amendment to Planned Settlement (APS) submission application</p>
+                <h1>MCRRS Submission App</h1>
+                <p>MCRRS Amendment to Planned Settlement (MCRRS) submission application</p>
             </div>
         );
     }

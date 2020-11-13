@@ -8,6 +8,7 @@ plugins:
   - serverless-dotenv-plugin
   - serverless-plugin-warmup
   - serverless-plugin-scripts
+  - serverless-offline
 custom:
   stage: ${opt:stage, self:provider.stage}
   tableName: ${cf:database-${self:custom.stage}.AmendmentsTableName}

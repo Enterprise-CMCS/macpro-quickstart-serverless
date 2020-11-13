@@ -9,11 +9,8 @@ export const main = handler(async (event, context) => {
     return null;
   }
   const data = JSON.parse(event.body);
-  console.log(JSON.stringify(event, null, 2));
 
-  var atomicCounter = require( 'dynamodb-atomic-counter' );
-  atomicCounter.config.update({ region: 'us-east-1' });
-  const nextValue = await atomicCounter.increment(data.territory, { tableName: process.env.atomicCounterTableName}).done(function (value) {
+  const nextValue = await dynamoDb.increment(data.territory).done(function (value) {
   }).fail(function (error) {
     console.log(error);
   });

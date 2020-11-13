@@ -7,6 +7,12 @@ A serverless form submission application built and deployed to AWS with the Serv
 
 ![Architecture Diagram](./.images/architecture.png?raw=true)
 
+## Local Dev
+
+Local dev is enabled by the script dev.ts
+
+* `tsc dev.ts && node dev.js` to standup all the servies locally.
+
 ## Usage
 
 See master build [here](https://github.com/CMSgov/macpro-quickstart-serverless/actions?query=branch%3Amaster)

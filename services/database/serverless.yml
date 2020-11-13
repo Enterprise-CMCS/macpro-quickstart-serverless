@@ -7,9 +7,19 @@
 # The `service` block is the name of the service
 service: database
 
+plugins:
+  - serverless-dynamodb-local
+
 custom:
   stage: ${opt:stage, self:provider.stage}
   tableName: ${self:custom.stage}-amendments
+  dynamodb:
+    stages:
+      - main 
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
 
 # The `provider` block defines where your service will be deployed
 provider:

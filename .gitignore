@@ -1,5 +1,7 @@
 .idea/
 .infra
+.dynamodb
 node_modules
 testcafe_results
 .DS_Store
+dev.js
