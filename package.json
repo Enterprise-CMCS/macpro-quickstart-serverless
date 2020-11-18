@@ -1,4 +1,5 @@
 {
+{
   "name": "macpro-quickstart-serverless",
   "version": "1.0.0",
   "description": "",
@@ -19,7 +20,7 @@
     "url": "https://github.com/CMSgov/macpro-quickstart-serverless/issues"
   },
   "homepage": "https://github.com/CMSgov/macpro-quickstart-serverless#readme"
-},
+}
 
 
 {
@@ -36,4 +37,5 @@
     "chromedriver": "^86.0.0",
     "nightwatch": "^1.5.1"
   }
+}
 }
