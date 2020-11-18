@@ -9,7 +9,8 @@
   "dependencies": {},
   "devDependencies": {
     "serverless": "^1.82.0",
-    "testcafe": "^1.8.5"
+    "chromedriver": "^86.0.0",
+    "nightwatch": "^1.5.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
