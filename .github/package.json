@@ -13,14 +13,14 @@
     "nightwatch": "^1.5.1"
   },
   "scripts": {
-    "test": "nightwatch"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/CMSgov/macpro-quickstart-serverless.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "CC0-1.0",
   "bugs": {
     "url": "https://github.com/CMSgov/macpro-quickstart-serverless/issues"
   },
