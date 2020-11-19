@@ -1,5 +1,4 @@
 {
-{
   "name": "macpro-quickstart-serverless",
   "version": "1.0.0",
   "description": "",
@@ -19,23 +18,8 @@
   "bugs": {
     "url": "https://github.com/CMSgov/macpro-quickstart-serverless/issues"
   },
-  "homepage": "https://github.com/CMSgov/macpro-quickstart-serverless#readme"
-}
-
-
-{
-  "name": "intro-nightwatch",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "nightwatch"
-  },
-  "author": "",
-  "license": "ISC",
+  "homepage": "https://github.com/CMSgov/macpro-quickstart-serverless#readme",
   "devDependencies": {
-    "chromedriver": "^86.0.0",
     "nightwatch": "^1.5.1"
   }
-}
 }

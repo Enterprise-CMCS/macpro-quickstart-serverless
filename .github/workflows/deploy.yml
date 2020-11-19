@@ -101,15 +101,10 @@ jobs:
           # This can optionally be set as an GitHub Actions Secret
           source set.env.sh
           ./deploy.sh $STAGE_PREFIX$branch_name
-      - name: Run TestCafe suite
+      - name: Run Nightwatch suite
         run: |
           source set.env.sh
           pushd services
           export APPLICATION_ENDPOINT=`./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$branch_name`
           popd
           ./test.sh
-      - name: Store test reults
-        uses: actions/upload-artifact@v2
-        with:
-          name: test_results
-          path: tests/testcafe/testcafe_results
