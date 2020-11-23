@@ -57,19 +57,7 @@ module.exports = {
 
     },
 
-    safari: {
-      desiredCapabilities : {
-        browserName : 'safari',
-        alwaysMatch: {
-          acceptInsecureCerts: false
-        }
-      },
-      webdriver: {
-        port: 4445,
-        start_process: true,
-        server_path: '/usr/bin/safaridriver'
-      }
-    },
+
 
     firefox: {
       desiredCapabilities : {
