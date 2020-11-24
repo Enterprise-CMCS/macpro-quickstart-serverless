@@ -84,7 +84,7 @@ jobs:
           key: ${{ runner.os }}-${{ hashFiles('combined-yarn-lock.txt') }}
       - name: set path
         run: |
-          echo "PATH=$(pwd)/node_modules/.bin/:\$PATH" >> $GITHUB_ENV
+          echo "PATH=$(pwd)/node_modules/.bin/:$PATH" >> $GITHUB_ENV
           cat $GITHUB_ENV
       - name: deploy
         run: |
