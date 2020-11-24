@@ -12,7 +12,7 @@ install_deps() {
   fi
 }
 
-pushd nightwatch-test
+cd nightwatch-test
 install_deps
 PATH=$(pwd)/node_modules/.bin/:$PATH nightwatch --env chrome --headless
-popd
+cd ..
