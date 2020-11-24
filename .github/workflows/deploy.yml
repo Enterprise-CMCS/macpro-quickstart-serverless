@@ -80,7 +80,7 @@ jobs:
             services/ui/node_modules
             services/ui-src/node_modules
             node_modules
-            tests/nightwatch-test/node_modules
+            tests/nightwatch/node_modules
           key: ${{ runner.os }}-${{ hashFiles('combined-yarn-lock.txt') }}
       - name: set path
         run: |
@@ -100,4 +100,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: test_results
-          path: tests/nightwatch-test/test_outputs
+          path: tests/nightwatch/tests_output
