@@ -18,5 +18,10 @@
   "bugs": {
     "url": "https://github.com/CMSgov/macpro-quickstart-serverless/issues"
   },
-  "homepage": "https://github.com/CMSgov/macpro-quickstart-serverless#readme"
+  "homepage": "https://github.com/CMSgov/macpro-quickstart-serverless#readme",
+  "devDependencies": {
+    "serverless": "^1.82.0",
+    "chromedriver": "^86.0.0",
+    "nightwatch": "^1.5.1"
+  }
 }
