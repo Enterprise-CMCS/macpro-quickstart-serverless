@@ -35,14 +35,8 @@ module.exports = {
       desiredCapabilities: {
         browserName : 'chrome',
         chromeOptions : {
-          // This tells Chromedriver to run using the legacy JSONWire protocol (not required in Chrome 78)
-          // w3c: false,
-          // More info on Chromedriver: https://sites.google.com/a/chromium.org/chromedriver/
           args: [
-            //'--no-sandbox',
-            //'--ignore-certificate-errors',
-            //'--allow-insecure-localhost',
-            '--headless'
+            //'-headless',
           ]
         }
       },
@@ -56,8 +50,6 @@ module.exports = {
         }
 
     },
-
-
 
     firefox: {
       desiredCapabilities : {
@@ -88,14 +80,11 @@ module.exports = {
       desiredCapabilities : {
         browserName : 'chrome',
         chromeOptions : {
-          // This tells Chromedriver to run using the legacy JSONWire protocol (not required in Chrome 78)
-          // w3c: false,
-          // More info on Chromedriver: https://sites.google.com/a/chromium.org/chromedriver/
           args: [
             //'--no-sandbox',
             //'--ignore-certificate-errors',
             //'--allow-insecure-localhost',
-            '--headless'
+            //'--headless'
           ]
         }
       },
@@ -108,70 +97,6 @@ module.exports = {
           ]
         }
 
-    },
-
-    //////////////////////////////////////////////////////////////////////////////////
-    // Configuration for when using the browserstack.com cloud service               |
-    //                                                                               |
-    // Please set the username and access key by setting the environment variables:  |
-    // - BROWSERSTACK_USER                                                           |
-    // - BROWSERSTACK_KEY                                                            |
-    // .env files are supported                                                      |
-    //////////////////////////////////////////////////////////////////////////////////
-    browserstack: {
-      selenium: {
-        host: 'hub-cloud.browserstack.com',
-        port: 443
-      },
-      // More info on configuring capabilities can be found on:
-      // https://www.browserstack.com/automate/capabilities?tag=selenium-4
-      desiredCapabilities: {
-        'bstack:options' : {
-          local: 'false',
-          userName: '${BROWSERSTACK_USER}',
-          accessKey: '${BROWSERSTACK_KEY}',
-        }
-      },
-
-      disable_error_log: true,
-      webdriver: {
-        keep_alive: true,
-        start_process: false
-      }
-    },
-
-    'browserstack.chrome': {
-      extends: 'browserstack',
-      desiredCapabilities: {
-        browserName: 'chrome',
-        chromeOptions : {
-          // This tells Chromedriver to run using the legacy JSONWire protocol
-          // More info on Chromedriver: https://sites.google.com/a/chromium.org/chromedriver/
-          w3c: false
-        }
-      }
-    },
-
-    'browserstack.firefox': {
-      extends: 'browserstack',
-      desiredCapabilities: {
-        browserName: 'firefox'
-      }
-    },
-
-    'browserstack.ie': {
-      extends: 'browserstack',
-      desiredCapabilities: {
-        browserName: 'IE',
-        browserVersion: '11.0',
-        'bstack:options' : {
-          os: 'Windows',
-          osVersion: '10',
-          local: 'false',
-          seleniumVersion: '3.5.2',
-          resolution: '1366x768'
-        }
-      }
     },
 
     //////////////////////////////////////////////////////////////////////////////////

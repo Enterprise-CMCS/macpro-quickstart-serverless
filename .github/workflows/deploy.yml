@@ -108,3 +108,8 @@ jobs:
           export APPLICATION_ENDPOINT=`./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$branch_name`
           popd
           ./test.sh
+      - name: Store test reults
+        uses: actions/upload-artifact@v2
+        with:
+          name: test_results
+          path: tests/nightwatch-test/test_outputs
