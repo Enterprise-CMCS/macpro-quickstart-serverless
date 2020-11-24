@@ -3,5 +3,5 @@
 set -e
 
 pushd tests
-sh test.sh
+./test.sh
 popd
