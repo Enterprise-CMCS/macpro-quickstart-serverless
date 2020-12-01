@@ -1,5 +1,6 @@
 .idea/
 .infra
+.github/CODEOWNERS
 node_modules
 testcafe_results
 .DS_Store
