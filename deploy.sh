@@ -36,6 +36,7 @@ deploy() {
 }
 
 install_deps
+export PATH=$(pwd)/node_modules/.bin/:$PATH
 
 for i in "${services[@]}"
 do
