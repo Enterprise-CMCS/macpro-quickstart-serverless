@@ -15,7 +15,7 @@ custom:
   tableName: ${self:custom.stage}-amendments
   dynamodb:
     stages:
-      - main 
+      - local 
     start:
       port: 8000
       inMemory: true

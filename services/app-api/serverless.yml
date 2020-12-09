@@ -11,10 +11,10 @@ plugins:
   - serverless-offline
 custom:
   stage: ${opt:stage, self:provider.stage}
-  tableName: ${cf:database-${self:custom.stage}.AmendmentsTableName}
-  tableArn: ${cf:database-${self:custom.stage}.AmendmentsTableArn}
-  atomicCounterTableName: ${cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableName}
-  atomicCounterTableArn: ${cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableArn}
+  tableName: ${env:AMENDMENTS_TABLE_NAME, cf:database-${self:custom.stage}.AmendmentsTableName}
+  tableArn: ${env:AMENDMENTS_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsTableArn}
+  atomicCounterTableName: ${env:AMENDMENTS_COUNTER_TABLE_NAME, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableName}
+  atomicCounterTableArn: ${env:AMENDMENTS_COUNTER_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableArn}
   iamPath: ${env:IAM_PATH, "/"}
   warmupEnabled:
     production: true

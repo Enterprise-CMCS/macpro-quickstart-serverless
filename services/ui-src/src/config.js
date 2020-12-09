@@ -1,6 +1,8 @@
 export default {
     MAX_ATTACHMENT_SIZE: 5000000,
+    LOCAL_LOGIN: window._env_.LOCAL_LOGIN,
     s3: {
+        LOCAL_ENDPOINT: window._env_.S3_LOCAL_ENDPOINT,
         REGION: window._env_.S3_ATTACHMENTS_BUCKET_REGION,
         BUCKET: window._env_.S3_ATTACHMENTS_BUCKET_NAME
     },

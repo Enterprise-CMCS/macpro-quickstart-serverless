@@ -7,6 +7,9 @@
 # The `service` block is the name of the service
 service: uploads
 
+plugins:
+  - serverless-s3-local
+
 # The `provider` block defines where your service will be deployed
 provider:
   name: aws
@@ -16,6 +19,13 @@ provider:
 
 custom:
   stage: ${opt:stage, self:provider.stage}
+  s3:
+    directory: ./local_buckets
+    cors: ./local_cors.xml
+    buckets:
+      - local-uploads # This is a little silly, but I've spent enough time on it. 
+                              # the serverless-s3-local plugin starts any bucket with a BucketName
+                              # the attachments bucket has no name, so we need to make one up on our own
 
 resources:
   Resources:

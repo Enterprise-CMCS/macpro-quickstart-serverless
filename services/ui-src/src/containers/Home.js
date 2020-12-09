@@ -3,7 +3,7 @@ import { PageHeader, ListGroup, ListGroupItem } from "react-bootstrap";
 import { useAppContext } from "../libs/contextLib";
 import { onError } from "../libs/errorLib";
 import "./Home.css";
-import { API } from "aws-amplify";
+import { listAmendments } from "../libs/api";
 import { LinkContainer } from "react-router-bootstrap";
 
 export default function Home() {
@@ -30,7 +30,7 @@ export default function Home() {
     }, [isAuthenticated]);
 
     function loadAmendments() {
-        return API.get("amendments", "/amendments");
+        return listAmendments()
     }
 
     function renderAmendmentsList(amendments) {
