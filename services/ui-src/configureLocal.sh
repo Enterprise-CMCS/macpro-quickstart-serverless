@@ -12,9 +12,8 @@ cognito_client_id=`sh ../output.sh ../ui-auth UserPoolClientId $stage`
 s3_attachments_bucket_region=`sh ../output.sh ../uploads Region $stage`
 s3_attachements_bucket_name=`sh ../output.sh ../uploads AttachmentsBucketName $stage`
 
-[[ -z $API_URL ]] && export API_URL=$api_url
-
 export API_REGION=$api_region
+export API_URL=$api_url
 export COGNITO_REGION=$cognito_region
 export COGNITO_IDENTITY_POOL_ID=$cognito_identity_pool_id
 export COGNITO_USER_POOL_ID=$cognito_user_pool_id

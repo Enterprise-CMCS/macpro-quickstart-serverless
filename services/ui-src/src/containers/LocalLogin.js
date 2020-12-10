@@ -23,7 +23,7 @@ export default function Login() {
 	return (
 		<div className="Login">
 			<p>Login locally here:</p>
-			<Button onClick={ loginUser } >Local Login</Button>
+			<Button onClick={ loginUser } >Login as Alice</Button>
 		</div>
 	);
 }

@@ -1,9 +1,13 @@
 import { spawn } from 'child_process'
 
+// LabeledProcessRunner is a command runner that interleaves the output from different
+// calls to run_command_and_output each with their own prefix
 export default class LabeledProcessRunner {
 	private prefixColors: Record<string, string> = {}
 	private colors = ['1', '2', '3', '4', '5', '6', '9', '10', '11', '12', '13', '14']
 
+	// formattedPrefix pads the prefix for a given process so that all prefixes are
+	// right aligned in your terminal.
 	private formattedPrefix(prefix: string): string {
 		let color: string
 
@@ -16,7 +20,6 @@ export default class LabeledProcessRunner {
 				this.colors.push(color)
 				this.prefixColors[prefix] = color
 			} else {
-				console.log("BAD NEWS BEARS")
 				throw('dev.ts programming error')
 			}
 		}
@@ -31,6 +34,13 @@ export default class LabeledProcessRunner {
 		return `\x1b[38;5;${color}m ${prefix.padStart(maxLength)}|\x1b[0m`
 	}
 
+	// run_command_and_output runs the given shell command and interleaves its output with all
+	// other commands run via this method. 
+	//
+	// prefix: the prefix to display at the start of every line printed by this command
+	// cmd: an array containing the command and all arguments to the command to be run
+	// cwd: optional directory to change into before running the command
+	// returns a promise that errors if the command exits error and resolves on success
 	async run_command_and_output(prefix: string, cmd: string[], cwd: string | null) {
 
 		const proc_opts: Record<string, any> = {}
