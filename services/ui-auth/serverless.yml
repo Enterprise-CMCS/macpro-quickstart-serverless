@@ -9,9 +9,11 @@ service: ui-auth
 
 custom:
   stage: ${opt:stage, self:provider.stage}
+  iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true}
+  iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissions_boundary_policy~true, ssm:/configuration/default/iam/permissions_boundary_policy~true, ""}
+  sesSourceEmailAddress: ${ssm:/configuration/${self:custom.stage}/sesSourceEmailAddress, ssm:/configuration/default/sesSourceEmailAddress, ""}
   attachments_bucket_arn: ${cf:uploads-${self:custom.stage}.AttachmentsBucketArn}
   api_gateway_rest_api_name: ${cf:app-api-${self:custom.stage}.ApiGatewayRestApiName}
-  iamPath: ${env:IAM_PATH, "/"}
 
 # The `provider` block defines where your service will be deployed
 provider:
@@ -26,12 +28,12 @@ resources:
       Fn::Not:
         - Fn::Equals:
           - ""
-          - ${env:SES_SOURCE_EMAIL_ADDRESS, ""}
+          - ${self:custom.sesSourceEmailAddress}
     CreatePermissionsBoundary:
       Fn::Not:
         - Fn::Equals:
           - ""
-          - ${env:IAM_PERMISSIONS_BOUNDARY_POLICY, ""}
+          - ${self:custom.iamPermissionsBoundaryPolicy}
   Resources:
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
@@ -52,7 +54,7 @@ resources:
                     - 'arn:aws:ses:us-east-1:'
                     - Ref: AWS::AccountId
                     - ':identity/'
-                    - '${env:SES_SOURCE_EMAIL_ADDRESS, ""}'
+                    - '${self:custom.sesSourceEmailAddress}'
             - Ref: AWS::NoValue
         Schema:
           - Name: given_name
@@ -110,7 +112,7 @@ resources:
                 - 'arn:aws:iam::'
                 - Ref: AWS::AccountId
                 - ':policy'
-                - '${env:IAM_PERMISSIONS_BOUNDARY_POLICY, ""}'
+                - '${self:custom.iamPermissionsBoundaryPolicy}'
             - Ref: AWS::NoValue
         AssumeRolePolicyDocument:
           Version: '2012-10-17'

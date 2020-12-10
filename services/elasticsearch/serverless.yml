@@ -6,10 +6,12 @@ package:
 
 custom:
   stage: ${opt:stage, self:provider.stage}
+  iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true}
+  iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissions_boundary_policy~true, ssm:/configuration/default/iam/permissions_boundary_policy~true, ""}
+  infrastructureType: ${ssm:/configuration/${self:custom.stage}/infrastucture/type~true, ssm:/configuration/default/infrastucture/type~true, "development"}
   cognito_identity_pool_id: ${cf:elasticsearch-auth-${self:custom.stage}.IdentityPoolId}
   cognito_identity_pool_authenticated_role_arn: ${cf:elasticsearch-auth-${self:custom.stage}.IdentityPoolAuthenticatedRoleArn}
   cognito_user_pool_id: ${cf:elasticsearch-auth-${self:custom.stage}.UserPoolId}
-  iamPath: ${env:IAM_PATH, "/"}
 
 provider:
   name: aws
@@ -21,13 +23,13 @@ resources:
   Conditions:
     BuildProdInfrastructure:
       Fn::Equals:
-        - ${env:INFRASTRUCTURE_TYPE, ""}
+        - ${self:custom.infrastructureType}
         - "production"
     CreatePermissionsBoundary:
       Fn::Not:
         - Fn::Equals:
           - ""
-          - ${env:IAM_PERMISSIONS_BOUNDARY_POLICY, ""}
+          - ${self:custom.iamPermissionsBoundaryPolicy}
   Resources:
     ElasticSearchInstance:
       Type: AWS::Elasticsearch::Domain
@@ -95,7 +97,7 @@ resources:
                 - 'arn:aws:iam::'
                 - Ref: AWS::AccountId
                 - ':policy'
-                - '${env:IAM_PERMISSIONS_BOUNDARY_POLICY, ""}'
+                - '${self:custom.iamPermissionsBoundaryPolicy}'
             - Ref: AWS::NoValue
         AssumeRolePolicyDocument:
           Version: '2012-10-17'
