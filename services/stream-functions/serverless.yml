@@ -10,7 +10,7 @@ plugins:
 
 custom:
   stage: ${opt:stage, self:provider.stage}
-  iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true}
+  iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
   iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissions_boundary_policy~true, ssm:/configuration/default/iam/permissions_boundary_policy~true, ""}
   tableStreamArn: ${cf:database-${self:custom.stage}.AmendmentsTableStreamArn}
   elasticSearchDomainEndpoint: ${cf:elasticsearch-${self:custom.stage}.ElasticSearchDomainEndpoint}

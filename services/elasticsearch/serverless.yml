@@ -6,7 +6,7 @@ package:
 
 custom:
   stage: ${opt:stage, self:provider.stage}
-  iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true}
+  iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
   iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissions_boundary_policy~true, ssm:/configuration/default/iam/permissions_boundary_policy~true, ""}
   infrastructureType: ${ssm:/configuration/${self:custom.stage}/infrastucture/type~true, ssm:/configuration/default/infrastucture/type~true, "development"}
   cognito_identity_pool_id: ${cf:elasticsearch-auth-${self:custom.stage}.IdentityPoolId}
