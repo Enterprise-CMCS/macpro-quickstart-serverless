@@ -10,12 +10,13 @@ plugins:
 
 custom:
   stage: ${opt:stage, self:provider.stage}
+  iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
+  iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
   tableStreamArn: ${cf:database-${self:custom.stage}.AmendmentsTableStreamArn}
   elasticSearchDomainEndpoint: ${cf:elasticsearch-${self:custom.stage}.ElasticSearchDomainEndpoint}
   elasticSearchDomainArn: ${cf:elasticsearch-${self:custom.stage}.ElasticSearchDomainArn}
-  emailSource: ${opt:emailSource, env:SES_SOURCE_EMAIL_ADDRESS, "admin@example.com"}
-  reviewerEmail: ${opt:reviewTeamEmail, env:SES_REVIEW_TEAM_EMAIL_ADDRESS, "reviewteam@example.com"}
-  iamPath: ${env:IAM_PATH, "/"}
+  sesSourceEmailAddress: ${ssm:/configuration/${self:custom.stage}/sesSourceEmailAddress~true, ssm:/configuration/default/sesSourceEmailAddress~true, "admin@example.com"}
+  reviewerEmailAddress: ${ssm:/configuration/${self:custom.stage}/reviewerEmailAddress~true, ssm:/configuration/default/reviewerEmailAddress~true, "reviewteam@example.com"}
 
 provider:
   name: aws
@@ -46,7 +47,7 @@ functions:
           maximumRetryAttempts: 2
     role: LambdaEmailerRole
     environment:
-      emailSource: ${self:custom.emailSource}
+      emailSource: ${self:custom.sesSourceEmailAddress}
     maximumRetryAttempts: 2
   emailReviewer:
     handler: handlers/emailReviewer.handler
@@ -57,8 +58,8 @@ functions:
           maximumRetryAttempts: 2
     role: LambdaEmailerRole
     environment:
-      emailSource: ${self:custom.emailSource}
-      reviewerEmail: ${self:custom.reviewerEmail}
+      emailSource: ${self:custom.sesSourceEmailAddress}
+      reviewerEmail: ${self:custom.reviewerEmailAddress}
     maximumRetryAttempts: 2
 
 resources:
@@ -67,7 +68,7 @@ resources:
       Fn::Not:
         - Fn::Equals:
           - ""
-          - ${env:IAM_PERMISSIONS_BOUNDARY_POLICY, ""}
+          - ${self:custom.iamPermissionsBoundaryPolicy}
   Resources:
     LambdaElasticSearchIndexerRole: # Why isn't this with the function as an iamRoleStatements?  https://github.com/serverless/serverless/issues/6485
       Type: 'AWS::IAM::Role'
@@ -89,7 +90,7 @@ resources:
                 - 'arn:aws:iam::'
                 - Ref: AWS::AccountId
                 - ':policy'
-                - '${env:IAM_PERMISSIONS_BOUNDARY_POLICY, ""}'
+                - '${self:custom.iamPermissionsBoundaryPolicy}'
             - Ref: AWS::NoValue
         Policies:
           - PolicyName: 'LambdaRolePolicy'
@@ -133,7 +134,7 @@ resources:
                 - 'arn:aws:iam::'
                 - Ref: AWS::AccountId
                 - ':policy'
-                - '${env:IAM_PERMISSIONS_BOUNDARY_POLICY, ""}'
+                - '${self:custom.iamPermissionsBoundaryPolicy}'
             - Ref: AWS::NoValue
         Policies:
           - PolicyName: 'LambdaRolePolicy'

@@ -10,16 +10,18 @@ plugins:
   - serverless-plugin-scripts
 custom:
   stage: ${opt:stage, self:provider.stage}
+  iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
+  iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
+  infrastructureType: ${ssm:/configuration/${self:custom.stage}/infrastucture/type~true, ssm:/configuration/default/infrastucture/type~true, "development"}
   tableName: ${cf:database-${self:custom.stage}.AmendmentsTableName}
   tableArn: ${cf:database-${self:custom.stage}.AmendmentsTableArn}
   atomicCounterTableName: ${cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableName}
   atomicCounterTableArn: ${cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableArn}
-  iamPath: ${env:IAM_PATH, "/"}
   warmupEnabled:
     production: true
     development: false
   warmup:
-    enabled: ${self:custom.warmupEnabled.${env:INFRASTRUCTURE_TYPE, "development"}}
+    enabled: ${self:custom.warmupEnabled.${self:custom.infrastructureType}}
     role: LambdaWarmupRole
     vpc: false
     events:
@@ -107,7 +109,7 @@ resources:
       Fn::Not:
         - Fn::Equals:
           - ""
-          - ${env:IAM_PERMISSIONS_BOUNDARY_POLICY, ""}
+          - ${self:custom.iamPermissionsBoundaryPolicy}
   Resources:
     LambdaApiRole: # Why isn't this with the function as an iamRoleStatements?  https://github.com/serverless/serverless/issues/6485
       Type: 'AWS::IAM::Role'
@@ -129,7 +131,7 @@ resources:
                 - 'arn:aws:iam::'
                 - Ref: AWS::AccountId
                 - ':policy'
-                - '${env:IAM_PERMISSIONS_BOUNDARY_POLICY, ""}'
+                - '${self:custom.iamPermissionsBoundaryPolicy}'
             - Ref: AWS::NoValue
         ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
@@ -185,7 +187,7 @@ resources:
                 - 'arn:aws:iam::'
                 - Ref: AWS::AccountId
                 - ':policy'
-                - '${env:IAM_PERMISSIONS_BOUNDARY_POLICY, ""}'
+                - '${self:custom.iamPermissionsBoundaryPolicy}'
             - Ref: AWS::NoValue
         Policies:
           - PolicyName: 'Warmup'

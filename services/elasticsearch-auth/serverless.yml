@@ -6,7 +6,9 @@ package:
 
 custom:
   stage: ${opt:stage, self:provider.stage}
-  iamPath: ${env:IAM_PATH, "/"}
+  iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
+  iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
+  sesSourceEmailAddress: ${ssm:/configuration/${self:custom.stage}/sesSourceEmailAddress~true, ssm:/configuration/default/sesSourceEmailAddress~true, ""}
 
 provider:
   name: aws
@@ -20,12 +22,12 @@ resources:
       Fn::Not:
         - Fn::Equals:
           - ""
-          - ${env:SES_SOURCE_EMAIL_ADDRESS, ""}
+          - ${self:custom.sesSourceEmailAddress}
     CreatePermissionsBoundary:
       Fn::Not:
         - Fn::Equals:
           - ""
-          - ${env:IAM_PERMISSIONS_BOUNDARY_POLICY, ""}
+          - ${self:custom.iamPermissionsBoundaryPolicy}
   Resources:
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
@@ -46,7 +48,7 @@ resources:
                     - 'arn:aws:ses:us-east-1:'
                     - Ref: AWS::AccountId
                     - ':identity/'
-                    - '${env:SES_SOURCE_EMAIL_ADDRESS, ""}'
+                    - '${self:custom.sesSourceEmailAddress}'
             - Ref: AWS::NoValue
 
     CognitoUserPoolDomain:
@@ -104,7 +106,7 @@ resources:
                 - 'arn:aws:iam::'
                 - Ref: AWS::AccountId
                 - ':policy'
-                - '${env:IAM_PERMISSIONS_BOUNDARY_POLICY, ""}'
+                - '${self:custom.iamPermissionsBoundaryPolicy}'
             - Ref: AWS::NoValue
         AssumeRolePolicyDocument:
           Version: '2012-10-17'
