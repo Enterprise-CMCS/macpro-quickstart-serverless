@@ -84,13 +84,7 @@ resources:
         PermissionsBoundary:
           Fn::If:
             - CreatePermissionsBoundary
-            - Fn::Join:
-              - ''
-              -
-                - 'arn:aws:iam::'
-                - Ref: AWS::AccountId
-                - ':policy'
-                - '${self:custom.iamPermissionsBoundaryPolicy}'
+            - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
             - Ref: AWS::NoValue
         Policies:
           - PolicyName: 'LambdaRolePolicy'
@@ -128,13 +122,7 @@ resources:
         PermissionsBoundary:
           Fn::If:
             - CreatePermissionsBoundary
-            - Fn::Join:
-              - ''
-              -
-                - 'arn:aws:iam::'
-                - Ref: AWS::AccountId
-                - ':policy'
-                - '${self:custom.iamPermissionsBoundaryPolicy}'
+            - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
             - Ref: AWS::NoValue
         Policies:
           - PolicyName: 'LambdaRolePolicy'
