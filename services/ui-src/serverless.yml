@@ -15,6 +15,7 @@ provider:
 
 custom:
   stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
   api_region: ${cf:app-api-${self:custom.stage}.Region}
   api_url: ${cf:app-api-${self:custom.stage}.ApiGatewayRestApiUrl}
   cognito_region: ${cf:ui-auth-${self:custom.stage}.Region}

@@ -14,6 +14,7 @@ provider:
 
 custom:
   stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
   attachments_bucket_arn: ${cf:uploads-${self:custom.stage}.AttachmentsBucketArn}
   attachments_bucket_name: ${cf:uploads-${self:custom.stage}.AttachmentsBucketName}
 

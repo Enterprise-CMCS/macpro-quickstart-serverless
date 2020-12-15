@@ -10,6 +10,7 @@ provider:
 
 custom:
   stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
   tableName: ${self:custom.stage}-amendments
 
 resources:
