@@ -7,6 +7,7 @@ plugins:
   - serverless-plugin-scripts
   - serverless-s3-sync
   - serverless-cloudfront-invalidate
+
 custom:
   stage: ${opt:stage, self:provider.stage}
   api_region: ${cf:app-api-${self:custom.stage}.Region}

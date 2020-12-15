@@ -3,16 +3,16 @@ service: uploads-scan
 
 frameworkVersion: '2'
 
+plugins:
+  - serverless-plugin-scripts
+  - serverless-s3-remover
+
 # The `provider` block defines where your service will be deployed
 provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
   stage: dev
-
-plugins:
-  - serverless-plugin-scripts
-  - serverless-s3-remover
 
 custom:
   stage: ${opt:stage, self:provider.stage}

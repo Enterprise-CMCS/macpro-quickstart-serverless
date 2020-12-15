@@ -11,6 +11,7 @@ plugins:
   - serverless-dotenv-plugin
   - serverless-plugin-warmup
   - serverless-plugin-scripts
+
 custom:
   stage: ${opt:stage, self:provider.stage}
   iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
