@@ -95,20 +95,20 @@ resources:
               Statement:
               - Effect: 'Allow'
                 Action:
-                - logs:CreateLogGroup
-                - logs:CreateLogStream
-                - logs:PutLogEvents
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
                 Resource: 'arn:aws:logs:*:*:*'
               - Effect: 'Allow'
                 Action:
-                - dynamodb:DescribeStream
-                - dynamodb:GetRecords
-                - dynamodb:GetShardIterator
-                - dynamodb:ListStreams
+                  - dynamodb:DescribeStream
+                  - dynamodb:GetRecords
+                  - dynamodb:GetShardIterator
+                  - dynamodb:ListStreams
                 Resource: ${self:custom.tableStreamArn}
               - Effect: 'Allow'
                 Action:
-                - es:ESHttp*
+                  - es:ESHttp*
                 Resource: ${self:custom.elasticSearchDomainArn}/*
     LambdaEmailerRole: # Why isn't this with the function as an iamRoleStatements?  https://github.com/serverless/serverless/issues/6485
       Type: 'AWS::IAM::Role'
@@ -133,19 +133,19 @@ resources:
               Statement:
               - Effect: 'Allow'
                 Action:
-                - logs:CreateLogGroup
-                - logs:CreateLogStream
-                - logs:PutLogEvents
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
                 Resource: 'arn:aws:logs:*:*:*'
               - Effect: 'Allow'
                 Action:
-                - dynamodb:DescribeStream
-                - dynamodb:GetRecords
-                - dynamodb:GetShardIterator
-                - dynamodb:ListStreams
+                  - dynamodb:DescribeStream
+                  - dynamodb:GetRecords
+                  - dynamodb:GetShardIterator
+                  - dynamodb:ListStreams
                 Resource: ${self:custom.tableStreamArn}
               - Effect: 'Allow'
                 Action:
-                - ses:SendEmail
-                - ses:SendRawEmail
+                  - ses:SendEmail
+                  - ses:SendRawEmail
                 Resource: '*'
