@@ -133,14 +133,10 @@ resources:
                         - '{cognito-identity.amazonaws.com:sub}/*'
   Outputs:
     UserPoolId:
-      Value:
-        Ref: CognitoUserPool
+      Value: !Ref CognitoUserPool
     UserPoolClientId:
-      Value:
-        Ref: CognitoUserPoolClient
+      Value: !Ref CognitoUserPoolClient
     IdentityPoolId:
-      Value:
-        Ref: CognitoIdentityPool
+      Value: !Ref CognitoIdentityPool
     Region:
-      Value:
-        Ref: AWS::Region
+      Value: !Sub ${AWS::Region}

@@ -146,10 +146,8 @@ resources:
         Type: A
   Outputs:
     S3BucketName:
-      Value:
-        Ref: S3Bucket
+      Value: !Ref S3Bucket
     CloudFrontDistributionId:
-      Value:
-        Ref: CloudFrontDistribution
+      Value: !Ref CloudFrontDistribution
     CloudFrontEndpointUrl:
       Value: !Sub https://${CloudFrontDistribution.DomainName}

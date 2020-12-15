@@ -45,17 +45,14 @@ resources:
         BillingMode: PAY_PER_REQUEST # Set the capacity to auto-scale
   Outputs:
     AmendmentsTableName:
-      Value:
-        Ref: AmendmentsTable
+      Value: !Ref AmendmentsTable
     AmendmentsTableArn:
       Value: !GetAtt AmendmentsTable.Arn
     AmendmentsTableStreamArn:
       Value: !GetAtt AmendmentsTable.StreamArn
     AmendmentsAtomicCounterTableName:
-      Value:
-        Ref: AmendmentsAtomicCounterTable
+      Value: !Ref AmendmentsAtomicCounterTable
     AmendmentsAtomicCounterTableArn:
       Value: !GetAtt AmendmentsAtomicCounterTable.Arn
     Region:
-      Value:
-        Ref: AWS::Region
+      Value: !Sub ${AWS::Region}

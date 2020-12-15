@@ -241,10 +241,8 @@ resources:
         WebACLArn: !GetAtt ApiGwWebAcl.Arn
   Outputs:
     ApiGatewayRestApiName:
-      Value:
-        Ref: ApiGatewayRestApi
+      Value: !Ref ApiGatewayRestApi
     ApiGatewayRestApiUrl:
       Value: !Sub https://${ApiGatewayRestApi}.execute-api.${self:provider.region}.amazonaws.com/${self:custom.stage}
     Region:
-      Value:
-        Ref: AWS::Region
+      Value: !Sub ${AWS::Region}

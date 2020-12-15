@@ -117,16 +117,12 @@ resources:
                   Resource: '*'
   Outputs:
     UserPoolId:
-      Value:
-        Ref: CognitoUserPool
+      Value: !Ref CognitoUserPool
     UserPoolClientId:
-      Value:
-        Ref: CognitoUserPoolClient
+      Value: !Ref CognitoUserPoolClient
     IdentityPoolId:
-      Value:
-        Ref: CognitoIdentityPool
+      Value: !Ref CognitoIdentityPool
     IdentityPoolAuthenticatedRoleArn:
       Value: !GetAtt CognitoAuthRole.Arn
     Region:
-      Value:
-        Ref: AWS::Region
+      Value: !Sub ${AWS::Region}
