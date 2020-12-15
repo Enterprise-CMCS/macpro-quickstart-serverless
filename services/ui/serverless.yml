@@ -1,4 +1,7 @@
+
 service: ui
+
+frameworkVersion: '2'
 
 custom:
   stage: ${opt:stage, self:provider.stage}

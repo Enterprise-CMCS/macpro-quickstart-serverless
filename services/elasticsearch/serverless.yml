@@ -1,6 +1,8 @@
 
 service: elasticsearch
 
+frameworkVersion: '2'
+
 package:
   individually: true
 

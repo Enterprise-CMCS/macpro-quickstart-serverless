@@ -1,4 +1,7 @@
+
 service: app-api
+
+frameworkVersion: '2'
 
 package:
   individually: true
