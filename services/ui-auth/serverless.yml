@@ -61,8 +61,7 @@ resources:
       Type: AWS::Cognito::UserPoolClient
       Properties:
         ClientName: ${self:custom.stage}-user-pool-client
-        UserPoolId:
-          Ref: CognitoUserPool
+        UserPoolId: !Ref CognitoUserPool
         ExplicitAuthFlows:
           - ADMIN_NO_SRP_AUTH
         GenerateSecret: false
@@ -72,14 +71,12 @@ resources:
         IdentityPoolName: ${self:custom.stage}IdentityPool
         AllowUnauthenticatedIdentities: false
         CognitoIdentityProviders:
-          - ClientId:
-              Ref: CognitoUserPoolClient
+          - ClientId: !Ref CognitoUserPoolClient
             ProviderName: !GetAtt CognitoUserPool.ProviderName
     CognitoIdentityPoolRoles:
       Type: AWS::Cognito::IdentityPoolRoleAttachment
       Properties:
-        IdentityPoolId:
-          Ref: CognitoIdentityPool
+        IdentityPoolId: !Ref CognitoIdentityPool
         Roles:
           authenticated: !GetAtt CognitoAuthRole.Arn
     CognitoAuthRole:
@@ -101,8 +98,7 @@ resources:
                 - 'sts:AssumeRoleWithWebIdentity'
               Condition:
                 StringEquals:
-                  'cognito-identity.amazonaws.com:aud':
-                    Ref: CognitoIdentityPool
+                  'cognito-identity.amazonaws.com:aud': !Ref CognitoIdentityPool
                 'ForAnyValue:StringLike':
                   'cognito-identity.amazonaws.com:amr': authenticated
         Policies:
