@@ -47,7 +47,7 @@ resources:
           Fn::If:
             - CreateEmailConfiguration
             - EmailSendingAccount: DEVELOPER
-              SourceArn: arn:aws:ses:us-east-1:${AWS::AccountId}:identity/${self:custom.sesSourceEmailAddress}
+              SourceArn: !Sub arn:aws:ses:us-east-1:${AWS::AccountId}:identity/${self:custom.sesSourceEmailAddress}
             - Ref: AWS::NoValue
         Schema:
           - Name: given_name
@@ -127,12 +127,18 @@ resources:
                 - Effect: 'Allow'
                   Action:
                     - 'execute-api:Invoke'
-                  Resource: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${self:custom.api_gateway_rest_api_name}/*
+                  Resource: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${self:custom.api_gateway_rest_api_name}/*
                 - Effect: 'Allow'
                   Action:
                     - 's3:*'
-                  Resource: !Sub ${self:custom.attachments_bucket_arn}/private/\${cognito-identity.amazonaws.com:sub}/*
-
+                  Resource:
+                    # Must use Join here.  See: https://github.com/serverless/serverless/issues/3565
+                    - Fn::Join:
+                      - ''
+                      -
+                        - ${self:custom.attachments_bucket_arn}/private/
+                        - '$'
+                        - '{cognito-identity.amazonaws.com:sub}/*'
   Outputs:
     UserPoolId:
       Value:

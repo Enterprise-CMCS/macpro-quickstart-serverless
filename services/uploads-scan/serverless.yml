@@ -95,7 +95,7 @@ resources:
                   - !Sub arn:aws:iam::${AWS::AccountId}:root
                   # https://dev.to/neverendingqs/s3-bucket-policy-notprincipal-and-lambda-functions-2ndl
                   - !GetAtt BucketAVScanRole.Arn
-                  - !Sub arn:aws:sts::${AWS::AccountId}:assumed-role/${BucketAVScanRole}/uploads-scan-${custom.provider.stage}-avScan
+                  - !Sub arn:aws:sts::${AWS::AccountId}:assumed-role/${BucketAVScanRole}/uploads-scan-${self:custom.stage}-avScan
               Condition:
                 StringNotEquals:
                   s3:ExistingObjectTag/virusScanStatus:
