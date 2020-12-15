@@ -17,7 +17,6 @@ custom:
   region: ${opt:region, self:provider.region}
   attachments_bucket_arn: ${cf:uploads-${self:custom.stage}.AttachmentsBucketArn}
   attachments_bucket_name: ${cf:uploads-${self:custom.stage}.AttachmentsBucketName}
-
   scripts:
     hooks:
       # This script is run locally when running 'serverless deploy'
@@ -27,11 +26,9 @@ custom:
       deploy:finalize: |
         rm lambda_layer.zip
         serverless invoke --stage ${self:custom.stage} --function avDownloadDefinitions -t Event
-
   remover:
      buckets:
        - uploads-scan-${opt:stage, self:provider.stage}-avscan
-
 layers:
   clamDefs:
     package:

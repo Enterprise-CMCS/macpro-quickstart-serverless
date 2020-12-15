@@ -57,7 +57,6 @@ resources:
             AttributeDataType: String
             Mutable: true
             Required: false
-
     CognitoUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
       Properties:
@@ -67,7 +66,6 @@ resources:
         ExplicitAuthFlows:
           - ADMIN_NO_SRP_AUTH
         GenerateSecret: false
-
     CognitoIdentityPool:
       Type: AWS::Cognito::IdentityPool
       Properties:
@@ -84,7 +82,6 @@ resources:
           Ref: CognitoIdentityPool
         Roles:
           authenticated: !GetAtt CognitoAuthRole.Arn
-
     CognitoAuthRole:
       Type: AWS::IAM::Role
       Properties:

@@ -45,14 +45,12 @@ resources:
             - EmailSendingAccount: DEVELOPER
               SourceArn: !Sub arn:aws:ses:us-east-1:${AWS::AccountId}:identity/${self:custom.sesSourceEmailAddress}
             - Ref: AWS::NoValue
-
     CognitoUserPoolDomain:
       Type: AWS::Cognito::UserPoolDomain
       Properties:
         Domain: !Sub ${AWS::AccountId}-${self:custom.stage}-elasticsearch-user-pool
         UserPoolId:
           Ref: CognitoUserPool
-
     CognitoUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
       Properties:
@@ -62,7 +60,6 @@ resources:
         ExplicitAuthFlows:
           - ADMIN_NO_SRP_AUTH
         GenerateSecret: false
-
     CognitoIdentityPool:
       Type: AWS::Cognito::IdentityPool
       Properties:
@@ -72,7 +69,6 @@ resources:
           - ClientId:
               Ref: CognitoUserPoolClient
             ProviderName: !GetAtt CognitoUserPool.ProviderName
-
     CognitoIdentityPoolRoles:
       Type: AWS::Cognito::IdentityPoolRoleAttachment
       Properties:
@@ -80,7 +76,6 @@ resources:
           Ref: CognitoIdentityPool
         Roles:
           authenticated: !GetAtt CognitoAuthRole.Arn
-
     CognitoAuthRole:
       Type: AWS::IAM::Role
       Properties:
@@ -120,7 +115,6 @@ resources:
                     - 'cognito-sync:*'
                     - 'cognito-identity:*'
                   Resource: '*'
-
   Outputs:
     UserPoolId:
       Value:

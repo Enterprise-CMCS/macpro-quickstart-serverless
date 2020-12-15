@@ -31,8 +31,7 @@ resources:
             KeyType: HASH
           - AttributeName: amendmentId
             KeyType: RANGE
-        # Set the capacity to auto-scale
-        BillingMode: PAY_PER_REQUEST
+        BillingMode: PAY_PER_REQUEST # Set the capacity to auto-scale
     AmendmentsAtomicCounterTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -43,8 +42,7 @@ resources:
         KeySchema:
           - AttributeName: id
             KeyType: HASH
-        # Set the capacity to auto-scale
-        BillingMode: PAY_PER_REQUEST
+        BillingMode: PAY_PER_REQUEST # Set the capacity to auto-scale
   Outputs:
     AmendmentsTableName:
       Value:

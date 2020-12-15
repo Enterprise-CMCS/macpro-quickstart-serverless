@@ -128,7 +128,6 @@ resources:
                   Condition:
                     'StringLike':
                       'iam:PassedToService': cognito-identity.amazonaws.com
-
   Outputs:
     ElasticSearchDomainArn:
       Value: !GetAtt ElasticSearchInstance.Arn

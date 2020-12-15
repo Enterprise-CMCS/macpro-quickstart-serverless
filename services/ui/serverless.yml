@@ -91,7 +91,6 @@ resources:
       Properties:
         CloudFrontOriginAccessIdentityConfig:
           Comment: OAI to prevent direct public access to the bucket
-
     CloudFrontDistribution:
       Type: AWS::CloudFront::Distribution
       Properties:
@@ -134,7 +133,6 @@ resources:
               ResponseCode: 403
               ResponsePagePath: /index.html
           WebACLId: !GetAtt CloudFrontWebAcl.Arn
-
     Route53DnsRecord:
       Type: AWS::Route53::RecordSet
       Condition: CreateDnsRecord
@@ -146,8 +144,6 @@ resources:
           HostedZoneId: Z2FDTNDATAQYW2
           EvaluateTargetHealth: false
         Type: A
-
-
   Outputs:
     S3BucketName:
       Value:
