@@ -87,7 +87,7 @@ resources:
           Fn::If:
             - CreatePermissionsBoundary
             - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
-            - Ref: AWS::NoValue
+            - !Ref AWS::NoValue
         Policies:
           - PolicyName: 'LambdaRolePolicy'
             PolicyDocument:
@@ -125,7 +125,7 @@ resources:
           Fn::If:
             - CreatePermissionsBoundary
             - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
-            - Ref: AWS::NoValue
+            - !Ref AWS::NoValue
         Policies:
           - PolicyName: 'LambdaRolePolicy'
             PolicyDocument:

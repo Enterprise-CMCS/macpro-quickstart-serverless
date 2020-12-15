@@ -101,7 +101,7 @@ resources:
               - CreateCustomCloudFrontDomain
               -
                 - ${self:custom.cloudfrontDomainName}
-              - Ref: AWS::NoValue
+              - !Ref AWS::NoValue
           Origins:
           - DomainName: !GetAtt S3Bucket.DomainName
             Id: S3Origin

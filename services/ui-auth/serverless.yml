@@ -43,7 +43,7 @@ resources:
             - CreateEmailConfiguration
             - EmailSendingAccount: DEVELOPER
               SourceArn: !Sub arn:aws:ses:us-east-1:${AWS::AccountId}:identity/${self:custom.sesSourceEmailAddress}
-            - Ref: AWS::NoValue
+            - !Ref AWS::NoValue
         Schema:
           - Name: given_name
             AttributeDataType: String
@@ -87,7 +87,7 @@ resources:
           Fn::If:
             - CreatePermissionsBoundary
             - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
-            - Ref: AWS::NoValue
+            - !Ref AWS::NoValue
         AssumeRolePolicyDocument:
           Version: '2012-10-17'
           Statement:

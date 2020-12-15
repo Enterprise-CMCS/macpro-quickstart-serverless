@@ -125,7 +125,7 @@ resources:
           Fn::If:
             - CreatePermissionsBoundary
             - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
-            - Ref: AWS::NoValue
+            - !Ref AWS::NoValue
         ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
         Policies:
@@ -171,7 +171,7 @@ resources:
           Fn::If:
             - CreatePermissionsBoundary
             - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
-            - Ref: AWS::NoValue
+            - !Ref AWS::NoValue
         Policies:
           - PolicyName: 'Warmup'
             PolicyDocument:

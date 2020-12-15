@@ -47,7 +47,7 @@ functions:
     timeout: 300 # 300 seconds = 5 minutes. Average scan is 25 seconds.
     memorySize: 3008 # Max lambda memory allocation; clamscan didn't work with 1024
     layers:
-      - Ref: ClamDefsLambdaLayer
+      - !Ref ClamDefsLambdaLayer
     environment:
       CLAMAV_BUCKET_NAME: !Ref AVBucket
       PATH_TO_AV_DEFINITIONS: 'lambda/s3-antivirus/av-definitions'
@@ -59,7 +59,7 @@ functions:
     timeout: 300 # 300 seconds = 5 minutes
     memorySize: 1024
     layers:
-      - Ref: ClamDefsLambdaLayer
+      - !Ref ClamDefsLambdaLayer
     environment:
       CLAMAV_BUCKET_NAME: !Ref AVBucket
       PATH_TO_AV_DEFINITIONS: 'lambda/s3-antivirus/av-definitions'
