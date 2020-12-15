@@ -8,6 +8,11 @@ plugins:
   - serverless-s3-sync
   - serverless-cloudfront-invalidate
 
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+
 custom:
   stage: ${opt:stage, self:provider.stage}
   api_region: ${cf:app-api-${self:custom.stage}.Region}
@@ -47,10 +52,3 @@ custom:
         export S3_ATTACHMENTS_BUCKET_NAME=${self:custom.s3_attachments_bucket_name}
         ./env.sh
         cp public/env-config.js build/env-config.js
-
-# The `provider` block defines where your service will be deployed
-provider:
-  name: aws
-  runtime: nodejs12.x
-  region: us-east-1
-  stage: dev

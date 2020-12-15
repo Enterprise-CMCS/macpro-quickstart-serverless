@@ -6,6 +6,11 @@ frameworkVersion: '2'
 package:
   individually: true
 
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+
 custom:
   stage: ${opt:stage, self:provider.stage}
   iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
@@ -14,12 +19,6 @@ custom:
   cognito_identity_pool_id: ${cf:elasticsearch-auth-${self:custom.stage}.IdentityPoolId}
   cognito_identity_pool_authenticated_role_arn: ${cf:elasticsearch-auth-${self:custom.stage}.IdentityPoolAuthenticatedRoleArn}
   cognito_user_pool_id: ${cf:elasticsearch-auth-${self:custom.stage}.UserPoolId}
-
-provider:
-  name: aws
-  runtime: nodejs12.x
-  region: us-east-1
-  stage: dev
 
 resources:
   Conditions:

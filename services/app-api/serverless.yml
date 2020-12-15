@@ -12,6 +12,11 @@ plugins:
   - serverless-plugin-warmup
   - serverless-plugin-scripts
 
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+
 custom:
   stage: ${opt:stage, self:provider.stage}
   iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
@@ -45,12 +50,6 @@ custom:
           cd node_modules/serverless-bundle/src/_warmup
           sed '/Generated/d' index.js > index.js.sub && mv -f index.js.sub index.js
         fi
-
-provider:
-  name: aws
-  runtime: nodejs12.x
-  region: us-east-1
-  stage: dev
 
   environment:
     tableName: ${self:custom.tableName}

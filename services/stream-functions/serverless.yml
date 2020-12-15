@@ -10,6 +10,11 @@ plugins:
   - serverless-bundle
   - serverless-dotenv-plugin
 
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+
 custom:
   stage: ${opt:stage, self:provider.stage}
   iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
@@ -19,12 +24,6 @@ custom:
   elasticSearchDomainArn: ${cf:elasticsearch-${self:custom.stage}.ElasticSearchDomainArn}
   sesSourceEmailAddress: ${ssm:/configuration/${self:custom.stage}/sesSourceEmailAddress~true, ssm:/configuration/default/sesSourceEmailAddress~true, "admin@example.com"}
   reviewerEmailAddress: ${ssm:/configuration/${self:custom.stage}/reviewerEmailAddress~true, ssm:/configuration/default/reviewerEmailAddress~true, "reviewteam@example.com"}
-
-provider:
-  name: aws
-  runtime: nodejs12.x
-  region: us-east-1
-  stage: dev
 
 functions:
   elasticsearchIndexer:

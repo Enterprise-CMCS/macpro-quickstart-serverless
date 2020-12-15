@@ -3,12 +3,10 @@ service: uploads
 
 frameworkVersion: '2'
 
-# The `provider` block defines where your service will be deployed
 provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
-  stage: dev
 
 custom:
   stage: ${opt:stage, self:provider.stage}

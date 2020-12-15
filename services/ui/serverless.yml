@@ -3,18 +3,17 @@ service: ui
 
 frameworkVersion: '2'
 
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+
 custom:
   stage: ${opt:stage, self:provider.stage}
   route53HostedZoneId: ${ssm:/configuration/${self:custom.stage}/route53/hostedZoneId~true, ssm:/configuration/default/route53/hostedZoneId~true, ""}
   route53DomainName: ${ssm:/configuration/${self:custom.stage}/route53/domainName~true, ""}
   cloudfrontCertificateArn: ${ssm:/configuration/${self:custom.stage}/cloudfront/certificateArn~true, ssm:/configuration/default/cloudfront/certificateArn~true, ""}
   cloudfrontDomainName: ${ssm:/configuration/${self:custom.stage}/cloudfront/domainName~true, ""}
-
-provider:
-  name: aws
-  runtime: nodejs12.x
-  region: us-east-1
-  stage: dev
 
 resources:
   Conditions:
