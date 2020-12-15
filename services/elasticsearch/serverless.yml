@@ -70,8 +70,7 @@ resources:
         CognitoOptions:
           Enabled: true
           IdentityPoolId: ${self:custom.cognito_identity_pool_id}
-          RoleArn:
-            Fn::GetAtt: [ "EsCognitoRole", "Arn" ]
+          RoleArn: !GetAtt EsCognitoRole.Arn
           UserPoolId: ${self:custom.cognito_user_pool_id}
         AccessPolicies:
           Version: '2012-10-17'
@@ -134,11 +133,4 @@ resources:
     ElasticSearchDomainEndpoint:
       Value: !GetAtt ElasticSearchInstance.DomainEndpoint
     ElasticSearchDomainEndpointUrl:
-      Value:
-        Fn::Join:
-          - ''
-          -
-            - https://
-            - Fn::GetAtt:
-              - ElasticSearchInstance
-              - DomainEndpoint
+      Value: !Sub https://${ElasticSearchInstance.DomainEndpoint}

@@ -51,16 +51,9 @@ resources:
           Statement:
             - Effect: Allow
               Action: 's3:GetObject'
-              Resource: !Join
-                - ''
-                - - 'arn:aws:s3:::'
-                  - !Ref S3Bucket
-                  - /*
+              Resource: !Sub arn:aws:s3:::${S3Bucket}/*
               Principal:
-                CanonicalUser:
-                  Fn::GetAtt:
-                  - CloudFrontOriginAccessIdentity
-                  - S3CanonicalUserId
+                CanonicalUser: !GetAtt CloudFrontOriginAccessIdentity.S3CanonicalUserId
         Bucket: !Ref S3Bucket
     CloudFrontWebAcl:
       Type: AWS::WAFv2::WebACL
@@ -108,17 +101,10 @@ resources:
                 - ${self:custom.cloudfrontDomainName}
               - Ref: AWS::NoValue
           Origins:
-          - DomainName:
-              Fn::GetAtt:
-                - S3Bucket
-                - DomainName
+          - DomainName: !GetAtt S3Bucket.DomainName
             Id: S3Origin
             S3OriginConfig:
-              OriginAccessIdentity:
-                Fn::Join:
-                - ''
-                - - origin-access-identity/cloudfront/
-                  - Ref: CloudFrontOriginAccessIdentity
+              OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
           Enabled: true
           HttpVersion: 'http2'
           DefaultRootObject: index.html
@@ -144,10 +130,7 @@ resources:
             - ErrorCode: 403
               ResponseCode: 403
               ResponsePagePath: /index.html
-          WebACLId:
-            Fn::GetAtt:
-              - CloudFrontWebAcl
-              - Arn
+          WebACLId: !GetAtt CloudFrontWebAcl.Arn
 
     Route53DnsRecord:
       Type: AWS::Route53::RecordSet
@@ -156,10 +139,7 @@ resources:
         HostedZoneId: ${self:custom.route53HostedZoneId}
         Name: ${self:custom.route53DomainName}
         AliasTarget:
-          DNSName:
-            Fn::GetAtt:
-              - CloudFrontDistribution
-              - DomainName
+          DNSName: !GetAtt CloudFrontDistribution.DomainName
           HostedZoneId: Z2FDTNDATAQYW2
           EvaluateTargetHealth: false
         Type: A
@@ -173,11 +153,4 @@ resources:
       Value:
         Ref: CloudFrontDistribution
     CloudFrontEndpointUrl:
-      Value:
-        Fn::Join:
-          - ''
-          -
-            - https://
-            - Fn::GetAtt:
-              - CloudFrontDistribution
-              - DomainName
+      Value: !Sub https://${CloudFrontDistribution.DomainName}
