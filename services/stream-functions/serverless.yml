@@ -1,6 +1,8 @@
 
 service: stream-functions
 
+frameworkVersion: '2'
+
 package:
   individually: true
 
@@ -8,8 +10,14 @@ plugins:
   - serverless-bundle
   - serverless-dotenv-plugin
 
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+
 custom:
   stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
   iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
   iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
   tableStreamArn: ${cf:database-${self:custom.stage}.AmendmentsTableStreamArn}
@@ -17,12 +25,6 @@ custom:
   elasticSearchDomainArn: ${cf:elasticsearch-${self:custom.stage}.ElasticSearchDomainArn}
   sesSourceEmailAddress: ${ssm:/configuration/${self:custom.stage}/sesSourceEmailAddress~true, ssm:/configuration/default/sesSourceEmailAddress~true, "admin@example.com"}
   reviewerEmailAddress: ${ssm:/configuration/${self:custom.stage}/reviewerEmailAddress~true, ssm:/configuration/default/reviewerEmailAddress~true, "reviewteam@example.com"}
-
-provider:
-  name: aws
-  runtime: nodejs12.x
-  region: us-east-1
-  stage: dev
 
 functions:
   elasticsearchIndexer:
@@ -84,14 +86,8 @@ resources:
         PermissionsBoundary:
           Fn::If:
             - CreatePermissionsBoundary
-            - Fn::Join:
-              - ''
-              -
-                - 'arn:aws:iam::'
-                - Ref: AWS::AccountId
-                - ':policy'
-                - '${self:custom.iamPermissionsBoundaryPolicy}'
-            - Ref: AWS::NoValue
+            - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
+            - !Ref AWS::NoValue
         Policies:
           - PolicyName: 'LambdaRolePolicy'
             PolicyDocument:
@@ -99,20 +95,20 @@ resources:
               Statement:
               - Effect: 'Allow'
                 Action:
-                - logs:CreateLogGroup
-                - logs:CreateLogStream
-                - logs:PutLogEvents
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
                 Resource: 'arn:aws:logs:*:*:*'
               - Effect: 'Allow'
                 Action:
-                - dynamodb:DescribeStream
-                - dynamodb:GetRecords
-                - dynamodb:GetShardIterator
-                - dynamodb:ListStreams
+                  - dynamodb:DescribeStream
+                  - dynamodb:GetRecords
+                  - dynamodb:GetShardIterator
+                  - dynamodb:ListStreams
                 Resource: ${self:custom.tableStreamArn}
               - Effect: 'Allow'
                 Action:
-                - es:ESHttp*
+                  - es:ESHttp*
                 Resource: ${self:custom.elasticSearchDomainArn}/*
     LambdaEmailerRole: # Why isn't this with the function as an iamRoleStatements?  https://github.com/serverless/serverless/issues/6485
       Type: 'AWS::IAM::Role'
@@ -128,14 +124,8 @@ resources:
         PermissionsBoundary:
           Fn::If:
             - CreatePermissionsBoundary
-            - Fn::Join:
-              - ''
-              -
-                - 'arn:aws:iam::'
-                - Ref: AWS::AccountId
-                - ':policy'
-                - '${self:custom.iamPermissionsBoundaryPolicy}'
-            - Ref: AWS::NoValue
+            - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
+            - !Ref AWS::NoValue
         Policies:
           - PolicyName: 'LambdaRolePolicy'
             PolicyDocument:
@@ -143,19 +133,19 @@ resources:
               Statement:
               - Effect: 'Allow'
                 Action:
-                - logs:CreateLogGroup
-                - logs:CreateLogStream
-                - logs:PutLogEvents
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
                 Resource: 'arn:aws:logs:*:*:*'
               - Effect: 'Allow'
                 Action:
-                - dynamodb:DescribeStream
-                - dynamodb:GetRecords
-                - dynamodb:GetShardIterator
-                - dynamodb:ListStreams
+                  - dynamodb:DescribeStream
+                  - dynamodb:GetRecords
+                  - dynamodb:GetShardIterator
+                  - dynamodb:ListStreams
                 Resource: ${self:custom.tableStreamArn}
               - Effect: 'Allow'
                 Action:
-                - ses:SendEmail
-                - ses:SendRawEmail
+                  - ses:SendEmail
+                  - ses:SendRawEmail
                 Resource: '*'

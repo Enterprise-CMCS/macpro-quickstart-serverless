@@ -1,4 +1,7 @@
+
 service: app-api
+
+frameworkVersion: '2'
 
 package:
   individually: true
@@ -8,8 +11,10 @@ plugins:
   - serverless-dotenv-plugin
   - serverless-plugin-warmup
   - serverless-plugin-scripts
+
 custom:
   stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
   iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
   iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
   infrastructureType: ${ssm:/configuration/${self:custom.stage}/infrastucture/type~true, ssm:/configuration/default/infrastucture/type~true, "development"}
@@ -46,8 +51,6 @@ provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
-  stage: dev
-
   environment:
     tableName: ${self:custom.tableName}
     atomicCounterTableName: ${self:custom.atomicCounterTableName}
@@ -62,7 +65,6 @@ functions:
           method: post
           cors: true
           authorizer: aws_iam
-
   get:
     handler: handlers/get.main
     role: LambdaApiRole
@@ -72,7 +74,6 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
-
   list:
     handler: handlers/list.main
     role: LambdaApiRole
@@ -82,7 +83,6 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
-
   update:
     handler: handlers/update.main
     role: LambdaApiRole
@@ -92,7 +92,6 @@ functions:
           method: put
           cors: true
           authorizer: aws_iam
-
   delete:
     handler: handlers/delete.main
     role: LambdaApiRole
@@ -125,14 +124,8 @@ resources:
         PermissionsBoundary:
           Fn::If:
             - CreatePermissionsBoundary
-            - Fn::Join:
-              - ''
-              -
-                - 'arn:aws:iam::'
-                - Ref: AWS::AccountId
-                - ':policy'
-                - '${self:custom.iamPermissionsBoundaryPolicy}'
-            - Ref: AWS::NoValue
+            - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
+            - !Ref AWS::NoValue
         ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
         Policies:
@@ -162,11 +155,7 @@ resources:
                 Action:
                   - logs:CreateLogStream
                   - logs:CreateLogGroup
-                Resource:
-                  - Fn::Join:
-                    - "/"
-                    -
-                      - Fn::Join: [":", ["arn:aws:execute-api", {"Ref": "AWS::Region"}, {"Ref":"AWS::AccountId"}, {"Ref": "ApiGatewayRestApi"}]]
+                Resource: !Sub /arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}
     LambdaWarmupRole:
       Type: 'AWS::IAM::Role'
       Properties:
@@ -181,14 +170,8 @@ resources:
         PermissionsBoundary:
           Fn::If:
             - CreatePermissionsBoundary
-            - Fn::Join:
-              - ''
-              -
-                - 'arn:aws:iam::'
-                - Ref: AWS::AccountId
-                - ':policy'
-                - '${self:custom.iamPermissionsBoundaryPolicy}'
-            - Ref: AWS::NoValue
+            - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
+            - !Ref AWS::NoValue
         Policies:
           - PolicyName: 'Warmup'
             PolicyDocument:
@@ -211,8 +194,7 @@ resources:
            gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
            gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
         ResponseType: DEFAULT_4XX
-        RestApiId:
-          Ref: 'ApiGatewayRestApi'
+        RestApiId: !Ref ApiGatewayRestApi
     GatewayResponseDefault5XX:
       Type: 'AWS::ApiGateway::GatewayResponse'
       Properties:
@@ -220,8 +202,7 @@ resources:
            gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
            gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
         ResponseType: DEFAULT_5XX
-        RestApiId:
-          Ref: 'ApiGatewayRestApi'
+        RestApiId: !Ref ApiGatewayRestApi
     ApiGwWebAcl:
       Type: AWS::WAFv2::WebACL
       Properties:
@@ -254,30 +235,12 @@ resources:
     ApiGwWebAclAssociation:
       Type: AWS::WAFv2::WebACLAssociation
       Properties:
-        ResourceArn:
-          Fn::Join:
-            - ""
-            -
-              - 'arn:aws:apigateway:'
-              - Ref: AWS::Region
-              - '::/restapis/'
-              - Ref: ApiGatewayRestApi
-              - '/stages/${self:custom.stage}'
-        WebACLArn:
-          Fn::GetAtt:
-            - ApiGwWebAcl
-            - Arn
+        ResourceArn: !Sub arn:aws:apigateway:${AWS::Region}::/restapis/${ApiGatewayRestApi}/stages/${self:custom.stage}
+        WebACLArn: !GetAtt ApiGwWebAcl.Arn
   Outputs:
     ApiGatewayRestApiName:
-      Value:
-        Ref: ApiGatewayRestApi
+      Value: !Ref ApiGatewayRestApi
     ApiGatewayRestApiUrl:
-      Value:
-        Fn::Join:
-          - ""
-          - - "https://"
-            - Ref: ApiGatewayRestApi
-            - ".execute-api.${self:provider.region}.amazonaws.com/${self:custom.stage}"
+      Value: !Sub https://${ApiGatewayRestApi}.execute-api.${self:provider.region}.amazonaws.com/${self:custom.stage}
     Region:
-      Value:
-        Ref: AWS::Region
+      Value: !Sub ${AWS::Region}

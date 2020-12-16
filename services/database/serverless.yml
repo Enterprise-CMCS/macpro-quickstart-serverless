@@ -1,21 +1,17 @@
-# Welcome to serverless. Read the docs
-# https://serverless.com/framework/docs/
 
-# Serverless.yml is the configuration the CLI
-# uses to deploy your code to your provider of choice
-
-# The `service` block is the name of the service
 service: database
 
-custom:
-  stage: ${opt:stage, self:provider.stage}
-  tableName: ${self:custom.stage}-amendments
+frameworkVersion: '2'
 
-# The `provider` block defines where your service will be deployed
 provider:
   name: aws
   runtime: nodejs12.x
-  stage: dev
+  region: us-east-1
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
+  tableName: ${self:custom.stage}-amendments
 
 resources:
   Resources:
@@ -35,8 +31,7 @@ resources:
             KeyType: HASH
           - AttributeName: amendmentId
             KeyType: RANGE
-        # Set the capacity to auto-scale
-        BillingMode: PAY_PER_REQUEST
+        BillingMode: PAY_PER_REQUEST # Set the capacity to auto-scale
     AmendmentsAtomicCounterTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -47,21 +42,17 @@ resources:
         KeySchema:
           - AttributeName: id
             KeyType: HASH
-        # Set the capacity to auto-scale
-        BillingMode: PAY_PER_REQUEST
+        BillingMode: PAY_PER_REQUEST # Set the capacity to auto-scale
   Outputs:
     AmendmentsTableName:
-      Value:
-        Ref: AmendmentsTable
+      Value: !Ref AmendmentsTable
     AmendmentsTableArn:
       Value: !GetAtt AmendmentsTable.Arn
     AmendmentsTableStreamArn:
       Value: !GetAtt AmendmentsTable.StreamArn
     AmendmentsAtomicCounterTableName:
-      Value:
-        Ref: AmendmentsAtomicCounterTable
+      Value: !Ref AmendmentsAtomicCounterTable
     AmendmentsAtomicCounterTableArn:
       Value: !GetAtt AmendmentsAtomicCounterTable.Arn
     Region:
-      Value:
-        Ref: AWS::Region
+      Value: !Sub ${AWS::Region}

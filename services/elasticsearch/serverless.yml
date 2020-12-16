@@ -1,23 +1,25 @@
 
 service: elasticsearch
 
+frameworkVersion: '2'
+
 package:
   individually: true
 
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+
 custom:
   stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
   iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
   iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
   infrastructureType: ${ssm:/configuration/${self:custom.stage}/infrastucture/type~true, ssm:/configuration/default/infrastucture/type~true, "development"}
   cognito_identity_pool_id: ${cf:elasticsearch-auth-${self:custom.stage}.IdentityPoolId}
   cognito_identity_pool_authenticated_role_arn: ${cf:elasticsearch-auth-${self:custom.stage}.IdentityPoolAuthenticatedRoleArn}
   cognito_user_pool_id: ${cf:elasticsearch-auth-${self:custom.stage}.UserPoolId}
-
-provider:
-  name: aws
-  runtime: nodejs12.x
-  region: us-east-1
-  stage: dev
 
 resources:
   Conditions:
@@ -70,8 +72,7 @@ resources:
         CognitoOptions:
           Enabled: true
           IdentityPoolId: ${self:custom.cognito_identity_pool_id}
-          RoleArn:
-            Fn::GetAtt: [ "EsCognitoRole", "Arn" ]
+          RoleArn: !GetAtt EsCognitoRole.Arn
           UserPoolId: ${self:custom.cognito_user_pool_id}
         AccessPolicies:
           Version: '2012-10-17'
@@ -91,14 +92,8 @@ resources:
         PermissionsBoundary:
           Fn::If:
             - CreatePermissionsBoundary
-            - Fn::Join:
-              - ''
-              -
-                - 'arn:aws:iam::'
-                - Ref: AWS::AccountId
-                - ':policy'
-                - '${self:custom.iamPermissionsBoundaryPolicy}'
-            - Ref: AWS::NoValue
+            - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
+            - !Ref AWS::NoValue
         AssumeRolePolicyDocument:
           Version: '2012-10-17'
           Statement:
@@ -133,18 +128,10 @@ resources:
                   Condition:
                     'StringLike':
                       'iam:PassedToService': cognito-identity.amazonaws.com
-
   Outputs:
     ElasticSearchDomainArn:
       Value: !GetAtt ElasticSearchInstance.Arn
     ElasticSearchDomainEndpoint:
       Value: !GetAtt ElasticSearchInstance.DomainEndpoint
     ElasticSearchDomainEndpointUrl:
-      Value:
-        Fn::Join:
-          - ''
-          -
-            - https://
-            - Fn::GetAtt:
-              - ElasticSearchInstance
-              - DomainEndpoint
+      Value: !Sub https://${ElasticSearchInstance.DomainEndpoint}
