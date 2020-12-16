@@ -7,6 +7,26 @@ if [[ $1 == "" ]] ; then
 fi
 stage=$1
 
+# A list of names commonly used for protected/important branches/environments/stages.
+# Update as appropriate.
+protected_stage_regex="(^develop$|^master$|^main$|^val$|^impl$|^production$|^prod$|prod)"
+if [[ $stage =~ $protected_stage_regex ]] ; then
+    echo """
+      ---------------------------------------------------------------------------------------------
+      ERROR:  Please read below
+      ---------------------------------------------------------------------------------------------
+      The regex used to denote protected stages matched the stage name you passed.
+      The regex holds names commonly used for important branches/environments/stages.
+      This indicates you're trying to destroy a stage that you likely don't really want to destroy.
+      Out of caution, this script will not continue.
+
+      If you really do want to destroy $stage, modify this script as necessary and run again.
+
+      Be careful.
+      ---------------------------------------------------------------------------------------------
+    """
+    exit 1
+fi
 echo "\nCollecting information on stage $stage before attempting a destroy... This can take a minute or two..."
 
 # Find buckets associated with stage

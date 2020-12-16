@@ -1,18 +1,22 @@
 
 service: elasticsearch-auth
 
+frameworkVersion: '2'
+
 package:
   individually: true
-
-custom:
-  stage: ${opt:stage, self:provider.stage}
-  iamPath: ${env:IAM_PATH, "/"}
 
 provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
-  stage: dev
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
+  iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
+  iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
+  sesSourceEmailAddress: ${ssm:/configuration/${self:custom.stage}/sesSourceEmailAddress~true, ssm:/configuration/default/sesSourceEmailAddress~true, ""}
 
 resources:
   Conditions:
@@ -20,12 +24,12 @@ resources:
       Fn::Not:
         - Fn::Equals:
           - ""
-          - ${env:SES_SOURCE_EMAIL_ADDRESS, ""}
+          - ${self:custom.sesSourceEmailAddress}
     CreatePermissionsBoundary:
       Fn::Not:
         - Fn::Equals:
           - ""
-          - ${env:IAM_PERMISSIONS_BOUNDARY_POLICY, ""}
+          - ${self:custom.iamPermissionsBoundaryPolicy}
   Resources:
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
@@ -39,58 +43,35 @@ resources:
           Fn::If:
             - CreateEmailConfiguration
             - EmailSendingAccount: DEVELOPER
-              SourceArn:
-                Fn::Join:
-                  - ''
-                  -
-                    - 'arn:aws:ses:us-east-1:'
-                    - Ref: AWS::AccountId
-                    - ':identity/'
-                    - '${env:SES_SOURCE_EMAIL_ADDRESS, ""}'
-            - Ref: AWS::NoValue
-
+              SourceArn: !Sub arn:aws:ses:us-east-1:${AWS::AccountId}:identity/${self:custom.sesSourceEmailAddress}
+            - !Ref AWS::NoValue
     CognitoUserPoolDomain:
       Type: AWS::Cognito::UserPoolDomain
       Properties:
-        Domain:
-          Fn::Join:
-            - "-"
-            -
-              - !Ref "AWS::AccountId"
-              - ${self:custom.stage}-elasticsearch-user-pool
-        UserPoolId:
-          Ref: CognitoUserPool
-
+        Domain: !Sub ${AWS::AccountId}-${self:custom.stage}-elasticsearch-user-pool
+        UserPoolId: !Ref CognitoUserPool
     CognitoUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
       Properties:
         ClientName: ${self:custom.stage}-elasticsearch-user-pool-client
-        UserPoolId:
-          Ref: CognitoUserPool
+        UserPoolId: !Ref CognitoUserPool
         ExplicitAuthFlows:
           - ADMIN_NO_SRP_AUTH
         GenerateSecret: false
-
     CognitoIdentityPool:
       Type: AWS::Cognito::IdentityPool
       Properties:
         IdentityPoolName: ${self:custom.stage}ElasticSearchIdentityPool
         AllowUnauthenticatedIdentities: false
         CognitoIdentityProviders:
-          - ClientId:
-              Ref: CognitoUserPoolClient
-            ProviderName:
-              Fn::GetAtt: [ "CognitoUserPool", "ProviderName" ]
-
+          - ClientId: !Ref CognitoUserPoolClient
+            ProviderName: !GetAtt CognitoUserPool.ProviderName
     CognitoIdentityPoolRoles:
       Type: AWS::Cognito::IdentityPoolRoleAttachment
       Properties:
-        IdentityPoolId:
-          Ref: CognitoIdentityPool
+        IdentityPoolId: !Ref CognitoIdentityPool
         Roles:
-          authenticated:
-            Fn::GetAtt: [CognitoAuthRole, Arn]
-
+          authenticated: !GetAtt CognitoAuthRole.Arn
     CognitoAuthRole:
       Type: AWS::IAM::Role
       Properties:
@@ -98,14 +79,8 @@ resources:
         PermissionsBoundary:
           Fn::If:
             - CreatePermissionsBoundary
-            - Fn::Join:
-              - ''
-              -
-                - 'arn:aws:iam::'
-                - Ref: AWS::AccountId
-                - ':policy'
-                - '${env:IAM_PERMISSIONS_BOUNDARY_POLICY, ""}'
-            - Ref: AWS::NoValue
+            - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
+            - !Ref AWS::NoValue
         AssumeRolePolicyDocument:
           Version: '2012-10-17'
           Statement:
@@ -116,8 +91,7 @@ resources:
                 - 'sts:AssumeRoleWithWebIdentity'
               Condition:
                 StringEquals:
-                  'cognito-identity.amazonaws.com:aud':
-                    Ref: CognitoIdentityPool
+                  'cognito-identity.amazonaws.com:aud': !Ref CognitoIdentityPool
                 'ForAnyValue:StringLike':
                   'cognito-identity.amazonaws.com:amr': authenticated
             - Effect: 'Allow'
@@ -136,19 +110,14 @@ resources:
                     - 'cognito-sync:*'
                     - 'cognito-identity:*'
                   Resource: '*'
-
   Outputs:
     UserPoolId:
-      Value:
-        Ref: CognitoUserPool
+      Value: !Ref CognitoUserPool
     UserPoolClientId:
-      Value:
-        Ref: CognitoUserPoolClient
+      Value: !Ref CognitoUserPoolClient
     IdentityPoolId:
-      Value:
-        Ref: CognitoIdentityPool
+      Value: !Ref CognitoIdentityPool
     IdentityPoolAuthenticatedRoleArn:
       Value: !GetAtt CognitoAuthRole.Arn
     Region:
-      Value:
-        Ref: AWS::Region
+      Value: !Sub ${AWS::Region}

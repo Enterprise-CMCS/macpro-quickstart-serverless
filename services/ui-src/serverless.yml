@@ -1,12 +1,21 @@
 
 service: ui-src
 
+frameworkVersion: '2'
+
 plugins:
   - serverless-plugin-scripts
   - serverless-s3-sync
   - serverless-cloudfront-invalidate
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+
 custom:
   stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
   api_region: ${cf:app-api-${self:custom.stage}.Region}
   api_url: ${cf:app-api-${self:custom.stage}.ApiGatewayRestApiUrl}
   cognito_region: ${cf:ui-auth-${self:custom.stage}.Region}
@@ -17,17 +26,14 @@ custom:
   s3_attachments_bucket_name: ${cf:uploads-${self:custom.stage}.AttachmentsBucketName}
   ui_s3_bucket_name: ${cf:ui-${self:custom.stage}.S3BucketName}
   ui_cloudfront_distribution_id: ${cf:ui-${self:custom.stage}.CloudFrontDistributionId}
-
   s3Sync:
     - bucketName: ${self:custom.ui_s3_bucket_name}
       localDir: ./build
       deleteRemoved: true
-
   cloudfrontInvalidate:
     distributionId: ${self:custom.ui_cloudfront_distribution_id}
     items:
       - "/*"
-
   scripts:
     hooks:
       # Build the static archive and populate the config
@@ -44,10 +50,3 @@ custom:
         export S3_ATTACHMENTS_BUCKET_NAME=${self:custom.s3_attachments_bucket_name}
         ./env.sh
         cp public/env-config.js build/env-config.js
-
-# The `provider` block defines where your service will be deployed
-provider:
-  name: aws
-  runtime: nodejs12.x
-  region: us-east-1
-  stage: dev

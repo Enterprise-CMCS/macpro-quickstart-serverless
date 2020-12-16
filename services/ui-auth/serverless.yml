@@ -1,24 +1,21 @@
-# Welcome to serverless. Read the docs
-# https://serverless.com/framework/docs/
 
-# Serverless.yml is the configuration the CLI
-# uses to deploy your code to your provider of choice
-
-# The `service` block is the name of the service
 service: ui-auth
 
-custom:
-  stage: ${opt:stage, self:provider.stage}
-  attachments_bucket_arn: ${cf:uploads-${self:custom.stage}.AttachmentsBucketArn}
-  api_gateway_rest_api_name: ${cf:app-api-${self:custom.stage}.ApiGatewayRestApiName}
-  iamPath: ${env:IAM_PATH, "/"}
+frameworkVersion: '2'
 
-# The `provider` block defines where your service will be deployed
 provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
-  stage: dev
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
+  iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
+  iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
+  sesSourceEmailAddress: ${ssm:/configuration/${self:custom.stage}/sesSourceEmailAddress~true, ssm:/configuration/default/sesSourceEmailAddress~true, ""}
+  attachments_bucket_arn: ${cf:uploads-${self:custom.stage}.AttachmentsBucketArn}
+  api_gateway_rest_api_name: ${cf:app-api-${self:custom.stage}.ApiGatewayRestApiName}
 
 resources:
   Conditions:
@@ -26,12 +23,12 @@ resources:
       Fn::Not:
         - Fn::Equals:
           - ""
-          - ${env:SES_SOURCE_EMAIL_ADDRESS, ""}
+          - ${self:custom.sesSourceEmailAddress}
     CreatePermissionsBoundary:
       Fn::Not:
         - Fn::Equals:
           - ""
-          - ${env:IAM_PERMISSIONS_BOUNDARY_POLICY, ""}
+          - ${self:custom.iamPermissionsBoundaryPolicy}
   Resources:
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
@@ -45,15 +42,8 @@ resources:
           Fn::If:
             - CreateEmailConfiguration
             - EmailSendingAccount: DEVELOPER
-              SourceArn:
-                Fn::Join:
-                  - ''
-                  -
-                    - 'arn:aws:ses:us-east-1:'
-                    - Ref: AWS::AccountId
-                    - ':identity/'
-                    - '${env:SES_SOURCE_EMAIL_ADDRESS, ""}'
-            - Ref: AWS::NoValue
+              SourceArn: !Sub arn:aws:ses:us-east-1:${AWS::AccountId}:identity/${self:custom.sesSourceEmailAddress}
+            - !Ref AWS::NoValue
         Schema:
           - Name: given_name
             AttributeDataType: String
@@ -67,36 +57,28 @@ resources:
             AttributeDataType: String
             Mutable: true
             Required: false
-
     CognitoUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
       Properties:
         ClientName: ${self:custom.stage}-user-pool-client
-        UserPoolId:
-          Ref: CognitoUserPool
+        UserPoolId: !Ref CognitoUserPool
         ExplicitAuthFlows:
           - ADMIN_NO_SRP_AUTH
         GenerateSecret: false
-
     CognitoIdentityPool:
       Type: AWS::Cognito::IdentityPool
       Properties:
         IdentityPoolName: ${self:custom.stage}IdentityPool
         AllowUnauthenticatedIdentities: false
         CognitoIdentityProviders:
-          - ClientId:
-              Ref: CognitoUserPoolClient
-            ProviderName:
-              Fn::GetAtt: [ "CognitoUserPool", "ProviderName" ]
+          - ClientId: !Ref CognitoUserPoolClient
+            ProviderName: !GetAtt CognitoUserPool.ProviderName
     CognitoIdentityPoolRoles:
       Type: AWS::Cognito::IdentityPoolRoleAttachment
       Properties:
-        IdentityPoolId:
-          Ref: CognitoIdentityPool
+        IdentityPoolId: !Ref CognitoIdentityPool
         Roles:
-          authenticated:
-            Fn::GetAtt: [CognitoAuthRole, Arn]
-
+          authenticated: !GetAtt CognitoAuthRole.Arn
     CognitoAuthRole:
       Type: AWS::IAM::Role
       Properties:
@@ -104,14 +86,8 @@ resources:
         PermissionsBoundary:
           Fn::If:
             - CreatePermissionsBoundary
-            - Fn::Join:
-              - ''
-              -
-                - 'arn:aws:iam::'
-                - Ref: AWS::AccountId
-                - ':policy'
-                - '${env:IAM_PERMISSIONS_BOUNDARY_POLICY, ""}'
-            - Ref: AWS::NoValue
+            - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
+            - !Ref AWS::NoValue
         AssumeRolePolicyDocument:
           Version: '2012-10-17'
           Statement:
@@ -122,8 +98,7 @@ resources:
                 - 'sts:AssumeRoleWithWebIdentity'
               Condition:
                 StringEquals:
-                  'cognito-identity.amazonaws.com:aud':
-                    Ref: CognitoIdentityPool
+                  'cognito-identity.amazonaws.com:aud': !Ref CognitoIdentityPool
                 'ForAnyValue:StringLike':
                   'cognito-identity.amazonaws.com:amr': authenticated
         Policies:
@@ -137,44 +112,27 @@ resources:
                     - 'cognito-sync:*'
                     - 'cognito-identity:*'
                   Resource: '*'
-
                 - Effect: 'Allow'
                   Action:
                     - 'execute-api:Invoke'
-                  Resource:
-                    Fn::Join:
-                      - ''
-                      -
-                        - 'arn:aws:execute-api:'
-                        - Ref: AWS::Region
-                        - ':'
-                        - Ref: AWS::AccountId
-                        - ':'
-                        - ${self:custom.api_gateway_rest_api_name}
-                        - '/*'
-
+                  Resource: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${self:custom.api_gateway_rest_api_name}/*
                 - Effect: 'Allow'
                   Action:
                     - 's3:*'
                   Resource:
+                    # Must use Join here.  See: https://github.com/serverless/serverless/issues/3565
                     - Fn::Join:
                       - ''
                       -
-                        - ${self:custom.attachments_bucket_arn}
-                        - '/private/'
+                        - ${self:custom.attachments_bucket_arn}/private/
                         - '$'
                         - '{cognito-identity.amazonaws.com:sub}/*'
-
   Outputs:
     UserPoolId:
-      Value:
-        Ref: CognitoUserPool
+      Value: !Ref CognitoUserPool
     UserPoolClientId:
-      Value:
-        Ref: CognitoUserPoolClient
+      Value: !Ref CognitoUserPoolClient
     IdentityPoolId:
-      Value:
-        Ref: CognitoIdentityPool
+      Value: !Ref CognitoIdentityPool
     Region:
-      Value:
-        Ref: AWS::Region
+      Value: !Sub ${AWS::Region}

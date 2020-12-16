@@ -1,29 +1,24 @@
-# Welcome to serverless. Read the docs
-# https://serverless.com/framework/docs/
 
-# Serverless.yml is the configuration the CLI
-# uses to deploy your code to your provider of choice
-
-# The `service` block is the name of the service
 service: uploads
+
+frameworkVersion: '2'
 
 plugins:
   - serverless-s3-local
 
-# The `provider` block defines where your service will be deployed
 provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
-  stage: dev
 
 custom:
   stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
   s3:
     directory: ./local_buckets
     cors: ./local_cors.xml
     buckets:
-      - local-uploads # This is a little silly, but I've spent enough time on it. 
+      - local-uploads # This is a little silly, but I've spent enough time on it.
                               # the serverless-s3-local plugin starts any bucket with a BucketName
                               # the attachments bucket has no name, so we need to make one up on our own
 
@@ -32,8 +27,7 @@ resources:
     AttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:
-        # Set the CORS policy
-        CorsConfiguration:
+        CorsConfiguration: # Set the CORS policy
           CorsRules:
             -
               AllowedOrigins:
@@ -47,14 +41,10 @@ resources:
                 - DELETE
                 - HEAD
               MaxAge: 3000
-
-  # Print out the name of the bucket that is created
   Outputs:
-    AttachmentsBucketName:
-      Value:
-        Ref: AttachmentsBucket
+    AttachmentsBucketName: # Print out the name of the bucket that is created
+      Value: !Ref AttachmentsBucket
     AttachmentsBucketArn:
       Value: !GetAtt AttachmentsBucket.Arn
     Region:
-      Value:
-        Ref: AWS::Region
+      Value: !Sub ${AWS::Region}
