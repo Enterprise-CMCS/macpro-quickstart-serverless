@@ -50,9 +50,12 @@ jobs:
         run: ./.github/github-lock.sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: read .nvmrc
+        id: node_version
+        run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
       - uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: ${{ steps.node_version.outputs.NODE_VERSION }}
       - name: Combine yarn.lock files to single file
         run: find services -maxdepth 3 -name yarn.lock | xargs cat yarn.lock > combined-yarn-lock.txt
       - name: cache dependencies
