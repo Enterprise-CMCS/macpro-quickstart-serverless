@@ -14,7 +14,7 @@ function requestOptions() {
 		}
 		return options
 	} else {
-		return null;
+		return {};
 	}
 }
 
