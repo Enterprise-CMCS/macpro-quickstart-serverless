@@ -25,7 +25,7 @@ export default function Routes() {
     const localEndpoint = config.s3.LOCAL_ENDPOINT;
     let s3Upload = s3AmplifyUpload;
     let s3URLResolver = s3AmplifyGetURL;
-    if (localEndpoint !== '') {
+    if (localLogin && localEndpoint !== '') {
         // Amplify doesn't allow you to configure the AWS Endpoint, so for local dev we need our own S3Client configured.
         let s3Client = new AWS.S3({
             s3ForcePathStyle: true,
