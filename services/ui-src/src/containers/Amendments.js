@@ -41,7 +41,9 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
                 const amendment = await loadAmendment();
                 const { email, firstName, lastName, territory, transmittalNumber, urgent, comments, attachment } = amendment;
                 if (attachment) {
-                    amendment.attachmentURL = fileURLResolver(attachment);
+                    console.log(fileURLResolver);
+                    // We must await the url.  Otherwise, the attachmentURL is a Promise.
+                    amendment.attachmentURL = await fileURLResolver(attachment);
                 }
                 setEmail(email);
                 setFirstName(capitalize(firstName));
