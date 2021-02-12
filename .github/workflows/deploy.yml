@@ -92,3 +92,11 @@ jobs:
         with:
           name: test_results
           path: tests/nightwatch/tests_output
+      - name: Slack notification
+        if: always()
+        uses: ravsamhq/notify-slack-action@master
+        with:
+          status: ${{ job.status }}
+          notify_when: 'success,failure'                    # default is 'success,failure,warnings'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
