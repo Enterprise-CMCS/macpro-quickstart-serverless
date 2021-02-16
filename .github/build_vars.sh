@@ -6,7 +6,7 @@ var_list=(
   'AWS_DEFAULT_REGION'
   'STAGE_PREFIX'
   'SLACK_INTEGRATION'
-  'SLACK_WEBHOOK_URL'
+  'SLACK_WEBHOOK'
 )
 
 set_value() {
