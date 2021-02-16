@@ -95,10 +95,6 @@ jobs:
           path: tests/nightwatch/tests_output
       - name: Slack notification
         if: env.SLACK_INTEGRATION == 'yes'
-        uses: ravsamhq/notify-slack-action@master
-        with:
-          status: ${{ job.status }}
-          notify_when: 'success,failure'                    # default is 'success,failure,warnings'
+        uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        if: always()   
