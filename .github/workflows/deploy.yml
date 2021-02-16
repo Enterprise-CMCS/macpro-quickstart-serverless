@@ -94,7 +94,7 @@ jobs:
           name: test_results
           path: tests/nightwatch/tests_output
       - name: Slack notification
-        if: env.SLACK_INTEGRATION == 'yes' && 'failure'
+        if: env.SLACK_INTEGRATION == 'yes' && always ()
       #  if: always ()
         uses: rtCamp/action-slack-notify@v2
         env:
