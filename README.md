@@ -77,3 +77,8 @@ This project made possible by the [Serverless Stack](https://serverless-stack.co
   [dial_avatar]: https://avatars.githubusercontent.com/mdial89f?size=150
   [sacher_homepage]: https://github.com/sethsacher
   [sacher_avatar]: https://avatars.githubusercontent.com/sethsacher?size=150
+
+### Slack channel for build status
+
+Please join the slack channel to get all build status and also contribute to any ongoing discussions.
+Join here: https://join.slack.com/t/macproquickst-ugp3045/shared_invite/zt-mdxpbtkk-SrLRi_yzJrXX3uYgvrbjlg
