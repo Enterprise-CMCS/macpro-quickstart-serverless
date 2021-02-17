@@ -43,7 +43,7 @@ functions:
     layers:
       - !Ref ClamDefsLambdaLayer
     environment:
-      CLAMAV_BUCKET_NAME: !Ref AVBucket
+      CLAMAV_BUCKET_NAME: !Ref ClamDefsBucket
       PATH_TO_AV_DEFINITIONS: 'lambda/s3-antivirus/av-definitions'
   avDownloadDefinitions:
     handler: src/download-definitions.lambdaHandleEvent
@@ -55,7 +55,7 @@ functions:
     layers:
       - !Ref ClamDefsLambdaLayer
     environment:
-      CLAMAV_BUCKET_NAME: !Ref AVBucket
+      CLAMAV_BUCKET_NAME: !Ref ClamDefsBucket
       PATH_TO_AV_DEFINITIONS: 'lambda/s3-antivirus/av-definitions'
 
 resources:
@@ -114,11 +114,11 @@ resources:
         Principal: s3.amazonaws.com
         SourceAccount: !Sub ${AWS::AccountId}
         SourceArn: !Sub arn:aws:s3:::${self:service.name}-${self:custom.stage}-attachments-${AWS::AccountId}
-    AVBucket:
+    ClamDefsBucket:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: !Sub ${self:service.name}-${self:custom.stage}-avscan-${AWS::AccountId}
-        AccessControl: PublicRead
+        AccessControl: Private
     BucketAVScanRole:
       Type: 'AWS::IAM::Role'
       Properties:
@@ -160,6 +160,10 @@ resources:
                 Action:
                 - s3:ListBucket
                 Resource: !Sub arn:aws:s3:::${self:service.name}-${self:custom.stage}-attachments-${AWS::AccountId}
+              - Effect: 'Allow'
+                Action:
+                - s3:GetObject
+                Resource: !Sub ${ClamDefsBucket.Arn}/*
     BucketAVDownloadRole:
       Type: 'AWS::IAM::Role'
       Properties:
@@ -196,11 +200,11 @@ resources:
                 - s3:PutObjectTagging
                 - s3:PutObjectVersionTagging
                 - s3:ListBucket
-                Resource: !Sub ${AVBucket.Arn}/*
+                Resource: !Sub ${ClamDefsBucket.Arn}/*
               - Effect: 'Allow'
                 Action:
                 - s3:ListBucket
-                Resource: !GetAtt AVBucket.Arn
+                Resource: !GetAtt ClamDefsBucket.Arn
   Outputs:
     AttachmentsBucketName: # Print out the name of the bucket that is created
       Value: !Ref AttachmentsBucket
