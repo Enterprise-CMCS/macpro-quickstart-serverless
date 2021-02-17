@@ -89,27 +89,23 @@ resources:
             - Event: s3:ObjectCreated:Put
               Function: !GetAtt AvScanLambdaFunction.Arn
       DependsOn: LambdaInvokePermission
-    # AttachmentsBucketPolicy:
-    #   Type: AWS::S3::BucketPolicy
-    #   Properties:
-    #     Bucket: !Ref AttachmentsBucket
-    #     PolicyDocument:
-    #       Statement:
-    #         -
-    #           Action:
-    #             - "s3:GetObject"
-    #           Effect: "Deny"
-    #           Resource: !Sub ${AttachmentsBucket.Arn}/*
-    #           NotPrincipal:
-    #             AWS:
-    #               - !Sub arn:aws:iam::${AWS::AccountId}:root
-    #               # https://dev.to/neverendingqs/s3-bucket-policy-notprincipal-and-lambda-functions-2ndl
-    #               - !GetAtt BucketAVScanRole.Arn
-    #               - !Sub arn:aws:sts::${AWS::AccountId}:assumed-role/${BucketAVScanRole}/${self:service.name}-${self:custom.stage}-avScan
-    #           Condition:
-    #             StringNotEquals:
-    #               s3:ExistingObjectTag/virusScanStatus:
-    #                 - "CLEAN"
+    AttachmentsBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref AttachmentsBucket
+        PolicyDocument:
+          Statement:
+            -
+              Action:
+                - "s3:GetObject"
+              Effect: "Deny"
+              Resource: !Sub ${AttachmentsBucket.Arn}/*
+              Principal: '*'
+              Condition:
+                StringNotEquals:
+                  s3:ExistingObjectTag/virusScanStatus:
+                    - "CLEAN"
+                  aws:PrincipalArn: !GetAtt BucketAVScanRole.Arn
     LambdaInvokePermission:
       Type: AWS::Lambda::Permission
       Properties:
