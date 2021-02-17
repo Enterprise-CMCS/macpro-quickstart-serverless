@@ -52,6 +52,7 @@ To contribute:
 
 Pull requests are being accepted.
 
+
 ## License
 
 [![License](https://img.shields.io/badge/License-CC0--1.0--Universal-blue.svg)](https://creativecommons.org/publicdomain/zero/1.0/legalcode)
@@ -66,6 +67,12 @@ Additionally, we waive copyright and related rights in the
 work worldwide through the CC0 1.0 Universal public domain dedication.
 ```
 
+## Slack channel 
+To enable slack integration, go to the deploy.yml file and set SLACK_INTEGRATION to yes. You will also need to set SLACK_WEBHOOK_URL in github secrets.
+
+Please join the slack channel to get all build status and also contribute to any ongoing discussions.
+Join here: https://join.slack.com/t/macproquickst-ugp3045/shared_invite/zt-mdxpbtkk-SrLRi_yzJrXX3uYgvrbjlg
+
 ### Contributors
 
 This project made possible by the [Serverless Stack](https://serverless-stack.com/) and its authors/contributors.  The extremely detailed tutorial, code examples, and serverless pattern is where this project started.  I can't recommend this resource enough.
@@ -77,8 +84,3 @@ This project made possible by the [Serverless Stack](https://serverless-stack.co
   [dial_avatar]: https://avatars.githubusercontent.com/mdial89f?size=150
   [sacher_homepage]: https://github.com/sethsacher
   [sacher_avatar]: https://avatars.githubusercontent.com/sethsacher?size=150
-
-### Slack channel for build status
-
-Please join the slack channel to get all build status and also contribute to any ongoing discussions.
-Join here: https://join.slack.com/t/macproquickst-ugp3045/shared_invite/zt-mdxpbtkk-SrLRi_yzJrXX3uYgvrbjlg
