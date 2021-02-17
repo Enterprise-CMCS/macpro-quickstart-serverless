@@ -35,7 +35,7 @@ layers:
       artifact: lambda_layer.zip
 functions:
   avScan:
-    handler: antivirus.lambdaHandleEvent
+    handler: src/antivirus.lambdaHandleEvent
     name: ${self:service.name}-${self:custom.stage}-avScan
     role: BucketAVScanRole
     timeout: 300 # 300 seconds = 5 minutes. Average scan is 25 seconds.
@@ -46,7 +46,7 @@ functions:
       CLAMAV_BUCKET_NAME: !Ref AVBucket
       PATH_TO_AV_DEFINITIONS: 'lambda/s3-antivirus/av-definitions'
   avDownloadDefinitions:
-    handler: download-definitions.lambdaHandleEvent
+    handler: src/download-definitions.lambdaHandleEvent
     events:
       - schedule: cron(0 */6 * * ? *)
     role: BucketAVDownloadRole
