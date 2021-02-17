@@ -37,7 +37,7 @@ functions:
     name: ${self:service.name}-${self:custom.stage}-avScan
     role: BucketAVScanRole
     timeout: 300 # 300 seconds = 5 minutes. Average scan is 25 seconds.
-    memorySize: 3008 # Max lambda memory allocation; clamscan didn't work with 1024
+    memorySize: 3008
     layers:
       - !Ref ClamDefsLambdaLayer
     environment:
