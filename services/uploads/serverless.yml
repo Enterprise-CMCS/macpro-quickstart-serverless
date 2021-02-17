@@ -5,7 +5,6 @@ frameworkVersion: '2'
 
 plugins:
   - serverless-plugin-scripts
-  - serverless-s3-remover
 
 provider:
   name: aws
@@ -26,13 +25,12 @@ custom:
       deploy:finalize: |
         rm lambda_layer.zip
         serverless invoke --stage ${self:custom.stage} --function avDownloadDefinitions -t Event
-  remover:
-     buckets:
-       - ${self:service.name}-${self:custom.stage}-avscan
+
 layers:
   clamDefs:
     package:
       artifact: lambda_layer.zip
+
 functions:
   avScan:
     handler: src/antivirus.lambdaHandleEvent
