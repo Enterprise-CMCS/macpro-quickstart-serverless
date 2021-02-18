@@ -17,6 +17,12 @@ const constants = require('./constants');
  * @return {int} Length of S3 object in bytes.
  */
 async function sizeOf(key, bucket) {
+    console.log("key: "+key);
+    console.log("bucket: "+bucket);
+    var sts = new AWS.STS();
+    var params = {
+ };
+
     let res = await s3.headObject({ Key: key, Bucket: bucket }).promise();
     return res.ContentLength;
 }

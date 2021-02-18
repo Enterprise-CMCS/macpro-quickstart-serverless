@@ -4,6 +4,7 @@ service: uploads
 frameworkVersion: '2'
 
 plugins:
+  - serverless-plugin-scripts
   - serverless-s3-local
 
 provider:
@@ -14,6 +15,17 @@ provider:
 custom:
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
+  iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
+  iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
+  scripts:
+    hooks:
+      # This script is run locally when running 'serverless deploy'
+      package:initialize: |
+        set -e
+        curl -L --output lambda_layer.zip https://github.com/CMSgov/lambda-clamav-layer/releases/download/0.5/lambda_layer.zip
+      deploy:finalize: |
+        rm lambda_layer.zip
+        serverless invoke --stage ${self:custom.stage} --function avDownloadDefinitions -t Event
   s3:
     directory: ./local_buckets
     cors: ./local_cors.xml
@@ -21,12 +33,48 @@ custom:
       - local-uploads # This is a little silly, but I've spent enough time on it.
                               # the serverless-s3-local plugin starts any bucket with a BucketName
                               # the attachments bucket has no name, so we need to make one up on our own
+layers:
+  clamDefs:
+    package:
+      artifact: lambda_layer.zip
+
+functions:
+  avScan:
+    handler: src/antivirus.lambdaHandleEvent
+    name: ${self:service.name}-${self:custom.stage}-avScan
+    role: BucketAVScanRole
+    timeout: 300 # 300 seconds = 5 minutes. Average scan is 25 seconds.
+    memorySize: 3008
+    layers:
+      - !Ref ClamDefsLambdaLayer
+    environment:
+      CLAMAV_BUCKET_NAME: !Ref ClamDefsBucket
+      PATH_TO_AV_DEFINITIONS: 'lambda/s3-antivirus/av-definitions'
+  avDownloadDefinitions:
+    handler: src/download-definitions.lambdaHandleEvent
+    events:
+      - schedule: cron(0 */6 * * ? *)
+    role: BucketAVDownloadRole
+    timeout: 300 # 300 seconds = 5 minutes
+    memorySize: 1024
+    layers:
+      - !Ref ClamDefsLambdaLayer
+    environment:
+      CLAMAV_BUCKET_NAME: !Ref ClamDefsBucket
+      PATH_TO_AV_DEFINITIONS: 'lambda/s3-antivirus/av-definitions'
 
 resources:
+  Conditions:
+    CreatePermissionsBoundary:
+      Fn::Not:
+        - Fn::Equals:
+          - ""
+          - ${self:custom.iamPermissionsBoundaryPolicy}
   Resources:
     AttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:
+        BucketName: !Sub ${self:service.name}-${self:custom.stage}-attachments-${AWS::AccountId}
         CorsConfiguration: # Set the CORS policy
           CorsRules:
             -
@@ -41,6 +89,127 @@ resources:
                 - DELETE
                 - HEAD
               MaxAge: 3000
+        NotificationConfiguration:
+          LambdaConfigurations:
+            - Event: s3:ObjectCreated:Put
+              Function: !GetAtt AvScanLambdaFunction.Arn
+      DependsOn: LambdaInvokePermission
+    AttachmentsBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref AttachmentsBucket
+        PolicyDocument:
+          Statement:
+            -
+              Action:
+                - "s3:GetObject"
+              Effect: "Deny"
+              Resource: !Sub ${AttachmentsBucket.Arn}/*
+              Principal: '*'
+              Condition:
+                StringNotEquals:
+                  s3:ExistingObjectTag/virusScanStatus:
+                    - "CLEAN"
+                  aws:PrincipalArn: !GetAtt BucketAVScanRole.Arn
+    LambdaInvokePermission:
+      Type: AWS::Lambda::Permission
+      Properties:
+        FunctionName: !GetAtt AvScanLambdaFunction.Arn
+        Action: lambda:InvokeFunction
+        Principal: s3.amazonaws.com
+        SourceAccount: !Sub ${AWS::AccountId}
+        SourceArn: !Sub arn:aws:s3:::${self:service.name}-${self:custom.stage}-attachments-${AWS::AccountId}
+    ClamDefsBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: !Sub ${self:service.name}-${self:custom.stage}-avscan-${AWS::AccountId}
+        AccessControl: Private
+    BucketAVScanRole:
+      Type: 'AWS::IAM::Role'
+      Properties:
+        AssumeRolePolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: 'Allow'
+              Principal:
+                Service: 'lambda.amazonaws.com'
+              Action: 'sts:AssumeRole'
+        Path: ${self:custom.iamPath}
+        PermissionsBoundary:
+          Fn::If:
+            - CreatePermissionsBoundary
+            - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
+            - !Ref AWS::NoValue
+        Policies:
+          - PolicyName: 'BucketAVScanRolePolicy'
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+              - Effect: 'Allow'
+                Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+                Resource: 'arn:aws:logs:*:*:*'
+              - Effect: 'Allow'
+                Action:
+                - s3:GetObject
+                - s3:GetObjectTagging
+                - s3:PutObject
+                - s3:PutObjectAcl
+                - s3:PutObjectTagging
+                - s3:PutObjectVersionTagging
+                - s3:ListBucket
+                Resource: !Sub arn:aws:s3:::${self:service.name}-${self:custom.stage}-attachments-${AWS::AccountId}/*
+              - Effect: 'Allow'
+                Action:
+                - s3:ListBucket
+                Resource: !Sub arn:aws:s3:::${self:service.name}-${self:custom.stage}-attachments-${AWS::AccountId}
+              - Effect: 'Allow'
+                Action:
+                - s3:GetObject
+                Resource: !Sub ${ClamDefsBucket.Arn}/*
+    BucketAVDownloadRole:
+      Type: 'AWS::IAM::Role'
+      Properties:
+        AssumeRolePolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: 'Allow'
+              Principal:
+                Service: 'lambda.amazonaws.com'
+              Action: 'sts:AssumeRole'
+        Path: ${self:custom.iamPath}
+        PermissionsBoundary:
+          Fn::If:
+            - CreatePermissionsBoundary
+            - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
+            - !Ref AWS::NoValue
+        Policies:
+          - PolicyName: 'BucketAVDownloadRolePolicy'
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+              - Effect: 'Allow'
+                Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+                Resource: 'arn:aws:logs:*:*:*'
+              - Effect: 'Allow'
+                Action:
+                - s3:GetObject
+                - s3:GetObjectTagging
+                - s3:PutObject
+                - s3:PutObjectAcl
+                - s3:PutObjectTagging
+                - s3:PutObjectVersionTagging
+                - s3:ListBucket
+                Resource: !Sub ${ClamDefsBucket.Arn}/*
+              - Effect: 'Allow'
+                Action:
+                - s3:ListBucket
+                Resource: !GetAtt ClamDefsBucket.Arn
   Outputs:
     AttachmentsBucketName: # Print out the name of the bucket that is created
       Value: !Ref AttachmentsBucket

@@ -11,6 +11,7 @@ plugins:
   - serverless-dotenv-plugin
   - serverless-plugin-warmup
   - serverless-plugin-scripts
+  - serverless-associate-waf
   - serverless-offline
 
 custom:
@@ -55,6 +56,10 @@ provider:
   environment:
     tableName: ${self:custom.tableName}
     atomicCounterTableName: ${self:custom.atomicCounterTableName}
+
+associateWaf:
+  name: ${self:service.name}-${self:custom.stage}-WebACLAssociation
+  version: V2
 
 functions:
   create:
@@ -233,11 +238,6 @@ resources:
           CloudWatchMetricsEnabled: true
           SampledRequestsEnabled: true
           MetricName: ${self:custom.stage}-webacl
-    ApiGwWebAclAssociation:
-      Type: AWS::WAFv2::WebACLAssociation
-      Properties:
-        ResourceArn: !Sub arn:aws:apigateway:${AWS::Region}::/restapis/${ApiGatewayRestApi}/stages/${self:custom.stage}
-        WebACLArn: !GetAtt ApiGwWebAcl.Arn
   Outputs:
     ApiGatewayRestApiName:
       Value: !Ref ApiGatewayRestApi

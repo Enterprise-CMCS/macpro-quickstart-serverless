@@ -7525,6 +7525,13 @@ serialize-javascript@^5.0.1:
   dependencies:
     randombytes "^2.1.0"
 
+serverless-associate-waf@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/serverless-associate-waf/-/serverless-associate-waf-1.2.1.tgz#30efcfe94038a34fba6a00a954df43e176b8ccc9"
+  integrity sha512-84FIjRsNJ4im+Q1rmlwc+7ofyZXB6D0AZr9tfbBCfh25/qwv/8Q9h78/aDrR7LZT5XAZzrM6qAbwHFyUD5wd+A==
+  dependencies:
+    chalk "^2.4.2"
+
 serverless-bundle@^3.0.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/serverless-bundle/-/serverless-bundle-3.1.0.tgz#2d0e6acae400956ea87d57b5a10ea7cf50cca432"
