@@ -9,6 +9,7 @@
   "author": "",
   "license": "CC0-1.0",
   "devDependencies": {
-    "serverless-dynamodb-local": "^0.2.39"
+    "serverless-dynamodb-local": "^0.2.39",
+    "serverless-stack-termination-protection": "^1.0.4"
   }
 }
