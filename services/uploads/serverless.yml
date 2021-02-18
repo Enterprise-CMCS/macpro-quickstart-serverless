@@ -1,7 +1,6 @@
-
 service: uploads
 
-frameworkVersion: '2'
+frameworkVersion: "2"
 
 plugins:
   - serverless-plugin-scripts
@@ -31,8 +30,8 @@ custom:
     cors: ./local_cors.xml
     buckets:
       - local-uploads # This is a little silly, but I've spent enough time on it.
-                              # the serverless-s3-local plugin starts any bucket with a BucketName
-                              # the attachments bucket has no name, so we need to make one up on our own
+        # the serverless-s3-local plugin starts any bucket with a BucketName
+        # the attachments bucket has no name, so we need to make one up on our own
 layers:
   clamDefs:
     package:
@@ -49,7 +48,7 @@ functions:
       - !Ref ClamDefsLambdaLayer
     environment:
       CLAMAV_BUCKET_NAME: !Ref ClamDefsBucket
-      PATH_TO_AV_DEFINITIONS: 'lambda/s3-antivirus/av-definitions'
+      PATH_TO_AV_DEFINITIONS: "lambda/s3-antivirus/av-definitions"
   avDownloadDefinitions:
     handler: src/download-definitions.lambdaHandleEvent
     events:
@@ -61,15 +60,15 @@ functions:
       - !Ref ClamDefsLambdaLayer
     environment:
       CLAMAV_BUCKET_NAME: !Ref ClamDefsBucket
-      PATH_TO_AV_DEFINITIONS: 'lambda/s3-antivirus/av-definitions'
+      PATH_TO_AV_DEFINITIONS: "lambda/s3-antivirus/av-definitions"
 
 resources:
   Conditions:
     CreatePermissionsBoundary:
       Fn::Not:
         - Fn::Equals:
-          - ""
-          - ${self:custom.iamPermissionsBoundaryPolicy}
+            - ""
+            - ${self:custom.iamPermissionsBoundaryPolicy}
   Resources:
     AttachmentsBucket:
       Type: AWS::S3::Bucket
@@ -77,11 +76,10 @@ resources:
         BucketName: !Sub ${self:service.name}-${self:custom.stage}-attachments-${AWS::AccountId}
         CorsConfiguration: # Set the CORS policy
           CorsRules:
-            -
-              AllowedOrigins:
-                - '*'
+            - AllowedOrigins:
+                - "*"
               AllowedHeaders:
-                - '*'
+                - "*"
               AllowedMethods:
                 - GET
                 - PUT
@@ -100,12 +98,11 @@ resources:
         Bucket: !Ref AttachmentsBucket
         PolicyDocument:
           Statement:
-            -
-              Action:
+            - Action:
                 - "s3:GetObject"
               Effect: "Deny"
               Resource: !Sub ${AttachmentsBucket.Arn}/*
-              Principal: '*'
+              Principal: "*"
               Condition:
                 StringNotEquals:
                   s3:ExistingObjectTag/virusScanStatus:
@@ -125,15 +122,15 @@ resources:
         BucketName: !Sub ${self:service.name}-${self:custom.stage}-avscan-${AWS::AccountId}
         AccessControl: Private
     BucketAVScanRole:
-      Type: 'AWS::IAM::Role'
+      Type: "AWS::IAM::Role"
       Properties:
         AssumeRolePolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-            - Effect: 'Allow'
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
               Principal:
-                Service: 'lambda.amazonaws.com'
-              Action: 'sts:AssumeRole'
+                Service: "lambda.amazonaws.com"
+              Action: "sts:AssumeRole"
         Path: ${self:custom.iamPath}
         PermissionsBoundary:
           Fn::If:
@@ -141,44 +138,44 @@ resources:
             - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
             - !Ref AWS::NoValue
         Policies:
-          - PolicyName: 'BucketAVScanRolePolicy'
+          - PolicyName: "BucketAVScanRolePolicy"
             PolicyDocument:
-              Version: '2012-10-17'
+              Version: "2012-10-17"
               Statement:
-              - Effect: 'Allow'
-                Action:
-                - logs:CreateLogGroup
-                - logs:CreateLogStream
-                - logs:PutLogEvents
-                Resource: 'arn:aws:logs:*:*:*'
-              - Effect: 'Allow'
-                Action:
-                - s3:GetObject
-                - s3:GetObjectTagging
-                - s3:PutObject
-                - s3:PutObjectAcl
-                - s3:PutObjectTagging
-                - s3:PutObjectVersionTagging
-                - s3:ListBucket
-                Resource: !Sub arn:aws:s3:::${self:service.name}-${self:custom.stage}-attachments-${AWS::AccountId}/*
-              - Effect: 'Allow'
-                Action:
-                - s3:ListBucket
-                Resource: !Sub arn:aws:s3:::${self:service.name}-${self:custom.stage}-attachments-${AWS::AccountId}
-              - Effect: 'Allow'
-                Action:
-                - s3:GetObject
-                Resource: !Sub ${ClamDefsBucket.Arn}/*
+                - Effect: "Allow"
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                  Resource: "arn:aws:logs:*:*:*"
+                - Effect: "Allow"
+                  Action:
+                    - s3:GetObject
+                    - s3:GetObjectTagging
+                    - s3:PutObject
+                    - s3:PutObjectAcl
+                    - s3:PutObjectTagging
+                    - s3:PutObjectVersionTagging
+                    - s3:ListBucket
+                  Resource: !Sub arn:aws:s3:::${self:service.name}-${self:custom.stage}-attachments-${AWS::AccountId}/*
+                - Effect: "Allow"
+                  Action:
+                    - s3:ListBucket
+                  Resource: !Sub arn:aws:s3:::${self:service.name}-${self:custom.stage}-attachments-${AWS::AccountId}
+                - Effect: "Allow"
+                  Action:
+                    - s3:GetObject
+                  Resource: !Sub ${ClamDefsBucket.Arn}/*
     BucketAVDownloadRole:
-      Type: 'AWS::IAM::Role'
+      Type: "AWS::IAM::Role"
       Properties:
         AssumeRolePolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-            - Effect: 'Allow'
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
               Principal:
-                Service: 'lambda.amazonaws.com'
-              Action: 'sts:AssumeRole'
+                Service: "lambda.amazonaws.com"
+              Action: "sts:AssumeRole"
         Path: ${self:custom.iamPath}
         PermissionsBoundary:
           Fn::If:
@@ -186,30 +183,30 @@ resources:
             - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
             - !Ref AWS::NoValue
         Policies:
-          - PolicyName: 'BucketAVDownloadRolePolicy'
+          - PolicyName: "BucketAVDownloadRolePolicy"
             PolicyDocument:
-              Version: '2012-10-17'
+              Version: "2012-10-17"
               Statement:
-              - Effect: 'Allow'
-                Action:
-                - logs:CreateLogGroup
-                - logs:CreateLogStream
-                - logs:PutLogEvents
-                Resource: 'arn:aws:logs:*:*:*'
-              - Effect: 'Allow'
-                Action:
-                - s3:GetObject
-                - s3:GetObjectTagging
-                - s3:PutObject
-                - s3:PutObjectAcl
-                - s3:PutObjectTagging
-                - s3:PutObjectVersionTagging
-                - s3:ListBucket
-                Resource: !Sub ${ClamDefsBucket.Arn}/*
-              - Effect: 'Allow'
-                Action:
-                - s3:ListBucket
-                Resource: !GetAtt ClamDefsBucket.Arn
+                - Effect: "Allow"
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                  Resource: "arn:aws:logs:*:*:*"
+                - Effect: "Allow"
+                  Action:
+                    - s3:GetObject
+                    - s3:GetObjectTagging
+                    - s3:PutObject
+                    - s3:PutObjectAcl
+                    - s3:PutObjectTagging
+                    - s3:PutObjectVersionTagging
+                    - s3:ListBucket
+                  Resource: !Sub ${ClamDefsBucket.Arn}/*
+                - Effect: "Allow"
+                  Action:
+                    - s3:ListBucket
+                  Resource: !GetAtt ClamDefsBucket.Arn
   Outputs:
     AttachmentsBucketName: # Print out the name of the bucket that is created
       Value: !Ref AttachmentsBucket

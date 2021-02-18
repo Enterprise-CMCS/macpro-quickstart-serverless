@@ -1,7 +1,6 @@
-
 service: ui-src
 
-frameworkVersion: '2'
+frameworkVersion: "2"
 
 plugins:
   - serverless-plugin-scripts

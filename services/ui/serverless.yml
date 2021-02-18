@@ -1,7 +1,6 @@
-
 service: ui
 
-frameworkVersion: '2'
+frameworkVersion: "2"
 
 provider:
   name: aws
@@ -21,23 +20,23 @@ resources:
     CreateDnsRecord:
       Fn::And:
         - Fn::Not:
-          - Fn::Equals:
-            - ""
-            - ${self:custom.route53HostedZoneId}
+            - Fn::Equals:
+                - ""
+                - ${self:custom.route53HostedZoneId}
         - Fn::Not:
-          - Fn::Equals:
-            - ""
-            - ${self:custom.route53DomainName}
+            - Fn::Equals:
+                - ""
+                - ${self:custom.route53DomainName}
     CreateCustomCloudFrontDomain:
       Fn::And:
         - Fn::Not:
-          - Fn::Equals:
-            - ""
-            - ${self:custom.cloudfrontCertificateArn}
+            - Fn::Equals:
+                - ""
+                - ${self:custom.cloudfrontCertificateArn}
         - Fn::Not:
-          - Fn::Equals:
-            - ""
-            - ${self:custom.cloudfrontDomainName}
+            - Fn::Equals:
+                - ""
+                - ${self:custom.cloudfrontDomainName}
   Resources:
     S3Bucket:
       Type: AWS::S3::Bucket
@@ -50,10 +49,10 @@ resources:
       Type: AWS::S3::BucketPolicy
       Properties:
         PolicyDocument:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
             - Effect: Allow
-              Action: 's3:GetObject'
+              Action: "s3:GetObject"
               Resource: !Sub arn:aws:s3:::${S3Bucket}/*
               Principal:
                 CanonicalUser: !GetAtt CloudFrontOriginAccessIdentity.S3CanonicalUserId
@@ -99,21 +98,20 @@ resources:
           Aliases:
             Fn::If:
               - CreateCustomCloudFrontDomain
-              -
-                - ${self:custom.cloudfrontDomainName}
+              - - ${self:custom.cloudfrontDomainName}
               - !Ref AWS::NoValue
           Origins:
-          - DomainName: !GetAtt S3Bucket.DomainName
-            Id: S3Origin
-            S3OriginConfig:
-              OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
+            - DomainName: !GetAtt S3Bucket.DomainName
+              Id: S3Origin
+              S3OriginConfig:
+                OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
           Enabled: true
-          HttpVersion: 'http2'
+          HttpVersion: "http2"
           DefaultRootObject: index.html
           DefaultCacheBehavior:
             AllowedMethods:
-            - GET
-            - HEAD
+              - GET
+              - HEAD
             Compress: true
             TargetOriginId: S3Origin
             ForwardedValues:

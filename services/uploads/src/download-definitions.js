@@ -2,8 +2,8 @@
  * Lambda function handler that will update the definitions stored in S3.
  */
 
-const clamav = require('./clamav');
-const utils = require('./utils');
+const clamav = require("./clamav");
+const utils = require("./utils");
 
 /**
  * This function will do the following
@@ -17,24 +17,23 @@ const utils = require('./utils');
  * @param context
  */
 async function lambdaHandleEvent(event, context) {
-    utils.generateSystemMessage(`AV definition update start time: ${new Date()}`);
+  utils.generateSystemMessage(`AV definition update start time: ${new Date()}`);
 
-    await utils.cleanupFolder('/tmp/');
+  await utils.cleanupFolder("/tmp/");
 
-    if (await clamav.updateAVDefinitonsWithFreshclam()) {
+  if (await clamav.updateAVDefinitonsWithFreshclam()) {
+    utils.generateSystemMessage("Folder content after freshclam ");
+    await clamav.uploadAVDefinitions();
 
-        utils.generateSystemMessage("Folder content after freshclam ");
-        await clamav.uploadAVDefinitions();
+    utils.generateSystemMessage(`AV definition update end time: ${new Date()}`);
 
-        utils.generateSystemMessage(`AV definition update end time: ${new Date()}`);
-
-        return 'DEFINITION UPDATE SUCCESS';
-    } else {
-        return 'DEFINITION UPDATE FAILED';
-    }
+    return "DEFINITION UPDATE SUCCESS";
+  } else {
+    return "DEFINITION UPDATE FAILED";
+  }
 }
 
 // Export for AWS Lambda
 module.exports = {
-    lambdaHandleEvent: lambdaHandleEvent
+  lambdaHandleEvent: lambdaHandleEvent,
 };

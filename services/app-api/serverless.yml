@@ -1,7 +1,6 @@
-
 service: app-api
 
-frameworkVersion: '2'
+frameworkVersion: "2"
 
 package:
   individually: true
@@ -113,19 +112,19 @@ resources:
     CreatePermissionsBoundary:
       Fn::Not:
         - Fn::Equals:
-          - ""
-          - ${self:custom.iamPermissionsBoundaryPolicy}
+            - ""
+            - ${self:custom.iamPermissionsBoundaryPolicy}
   Resources:
     LambdaApiRole: # Why isn't this with the function as an iamRoleStatements?  https://github.com/serverless/serverless/issues/6485
-      Type: 'AWS::IAM::Role'
+      Type: "AWS::IAM::Role"
       Properties:
         AssumeRolePolicyDocument:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
-          - Effect: 'Allow'
-            Principal:
-              Service: 'lambda.amazonaws.com'
-            Action: 'sts:AssumeRole'
+            - Effect: "Allow"
+              Principal:
+                Service: "lambda.amazonaws.com"
+              Action: "sts:AssumeRole"
         Path: ${self:custom.iamPath}
         PermissionsBoundary:
           Fn::If:
@@ -133,45 +132,45 @@ resources:
             - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
             - !Ref AWS::NoValue
         ManagedPolicyArns:
-        - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+          - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
         Policies:
-          - PolicyName: 'LambdaApiRolePolicy'
+          - PolicyName: "LambdaApiRolePolicy"
             PolicyDocument:
-              Version: '2012-10-17'
+              Version: "2012-10-17"
               Statement:
-              - Effect: 'Allow'
-                Action:
-                  - logs:CreateLogGroup
-                  - logs:CreateLogStream
-                  - logs:PutLogEvents
-                Resource: 'arn:aws:logs:*:*:*'
-              - Effect: 'Allow'
-                Action:
-                  - dynamodb:DescribeTable
-                  - dynamodb:Query
-                  - dynamodb:Scan
-                  - dynamodb:GetItem
-                  - dynamodb:PutItem
-                  - dynamodb:UpdateItem
-                  - dynamodb:DeleteItem
-                Resource:
-                  - ${self:custom.tableArn}
-                  - ${self:custom.atomicCounterTableArn}
-              - Effect: 'Allow'
-                Action:
-                  - logs:CreateLogStream
-                  - logs:CreateLogGroup
-                Resource: !Sub /arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}
+                - Effect: "Allow"
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                  Resource: "arn:aws:logs:*:*:*"
+                - Effect: "Allow"
+                  Action:
+                    - dynamodb:DescribeTable
+                    - dynamodb:Query
+                    - dynamodb:Scan
+                    - dynamodb:GetItem
+                    - dynamodb:PutItem
+                    - dynamodb:UpdateItem
+                    - dynamodb:DeleteItem
+                  Resource:
+                    - ${self:custom.tableArn}
+                    - ${self:custom.atomicCounterTableArn}
+                - Effect: "Allow"
+                  Action:
+                    - logs:CreateLogStream
+                    - logs:CreateLogGroup
+                  Resource: !Sub /arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}
     LambdaWarmupRole:
-      Type: 'AWS::IAM::Role'
+      Type: "AWS::IAM::Role"
       Properties:
         AssumeRolePolicyDocument:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
-            - Effect: 'Allow'
+            - Effect: "Allow"
               Principal:
-                Service: 'lambda.amazonaws.com'
-              Action: 'sts:AssumeRole'
+                Service: "lambda.amazonaws.com"
+              Action: "sts:AssumeRole"
         Path: ${self:custom.iamPath}
         PermissionsBoundary:
           Fn::If:
@@ -179,34 +178,34 @@ resources:
             - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
             - !Ref AWS::NoValue
         Policies:
-          - PolicyName: 'Warmup'
+          - PolicyName: "Warmup"
             PolicyDocument:
-              Version: '2012-10-17'
+              Version: "2012-10-17"
               Statement:
-                - Effect: 'Allow'
+                - Effect: "Allow"
                   Action:
                     - logs:CreateLogGroup
                     - logs:CreateLogStream
                     - logs:PutLogEvents
-                  Resource: 'arn:aws:logs:*:*:*'
-                - Effect: 'Allow'
+                  Resource: "arn:aws:logs:*:*:*"
+                - Effect: "Allow"
                   Action:
                     - lambda:InvokeFunction
-                  Resource: '*'
+                  Resource: "*"
     GatewayResponseDefault4XX:
-      Type: 'AWS::ApiGateway::GatewayResponse'
+      Type: "AWS::ApiGateway::GatewayResponse"
       Properties:
         ResponseParameters:
-           gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-           gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
         ResponseType: DEFAULT_4XX
         RestApiId: !Ref ApiGatewayRestApi
     GatewayResponseDefault5XX:
-      Type: 'AWS::ApiGateway::GatewayResponse'
+      Type: "AWS::ApiGateway::GatewayResponse"
       Properties:
         ResponseParameters:
-           gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-           gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
+          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
         ResponseType: DEFAULT_5XX
         RestApiId: !Ref ApiGatewayRestApi
     ApiGwWebAcl:
