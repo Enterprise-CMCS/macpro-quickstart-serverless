@@ -1,16 +1,16 @@
 .Amendments form {
-    padding-bottom: 15px;
+  padding-bottom: 15px;
 }
 
 .Amendments form textarea {
-    height: 300px;
-    font-size: 24px;
+  height: 300px;
+  font-size: 24px;
 }
 
 .Amendments button.link-lookalike {
-  background: none!important;
+  background: none !important;
   border: none;
-  padding: 0!important;
+  padding: 0 !important;
   font-family: arial, sans-serif;
   color: #069;
   cursor: pointer;

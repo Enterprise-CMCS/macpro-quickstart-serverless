@@ -1,11 +1,10 @@
-
 name: Deploy
 
 on:
   push:
     branches:
-      - '*'
-      - '!skipci*'
+      - "*"
+      - "!skipci*"
 
 jobs:
   deploy:

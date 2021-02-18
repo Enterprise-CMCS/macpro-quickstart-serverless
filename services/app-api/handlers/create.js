@@ -4,17 +4,19 @@ import dynamoDb from "./../libs/dynamodb-lib";
 
 export const main = handler(async (event, context) => {
   // If this invokation is a prewarm, do nothing and return.
-  if(event.source == "serverless-plugin-warmup" ) {
+  if (event.source == "serverless-plugin-warmup") {
     console.log("Warmed up!");
     return null;
   }
   const data = JSON.parse(event.body);
   console.log(JSON.stringify(event, null, 2));
 
-  const nextValue = await dynamoDb.increment(data.territory).done(function (value) {
-  }).fail(function (error) {
-    console.log(error);
-  });
+  const nextValue = await dynamoDb
+    .increment(data.territory)
+    .done(function (value) {})
+    .fail(function (error) {
+      console.log(error);
+    });
 
   const params = {
     TableName: process.env.tableName,
@@ -25,13 +27,13 @@ export const main = handler(async (event, context) => {
       email: data.email,
       firstName: data.firstName,
       lastName: data.lastName,
-      transmittalNumber: data.territory + '-' + ("000" + nextValue).slice(-4),
+      transmittalNumber: data.territory + "-" + ("000" + nextValue).slice(-4),
       territory: data.territory,
       urgent: data.urgent,
       comments: data.comments,
       attachment: data.attachment,
-      createdAt: Date.now()
-    }
+      createdAt: Date.now(),
+    },
   };
 
   await dynamoDb.put(params);

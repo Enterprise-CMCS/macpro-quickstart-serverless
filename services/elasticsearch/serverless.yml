@@ -1,7 +1,6 @@
-
 service: elasticsearch
 
-frameworkVersion: '2'
+frameworkVersion: "2"
 
 package:
   individually: true
@@ -30,8 +29,8 @@ resources:
     CreatePermissionsBoundary:
       Fn::Not:
         - Fn::Equals:
-          - ""
-          - ${self:custom.iamPermissionsBoundaryPolicy}
+            - ""
+            - ${self:custom.iamPermissionsBoundaryPolicy}
   Resources:
     ElasticSearchInstance:
       Type: AWS::Elasticsearch::Domain
@@ -75,15 +74,15 @@ resources:
           RoleArn: !GetAtt EsCognitoRole.Arn
           UserPoolId: ${self:custom.cognito_user_pool_id}
         AccessPolicies:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
-            - Effect: 'Allow'
+            - Effect: "Allow"
               Principal:
                 AWS: ${self:custom.cognito_identity_pool_authenticated_role_arn}
-              Action: 'es:ESHttp*'
-              Resource: '*'
+              Action: "es:ESHttp*"
+              Resource: "*"
         AdvancedOptions:
-          rest.action.multi.allow_explicit_index: 'true'
+          rest.action.multi.allow_explicit_index: "true"
 
     EsCognitoRole:
       Type: AWS::IAM::Role
@@ -95,39 +94,39 @@ resources:
             - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
             - !Ref AWS::NoValue
         AssumeRolePolicyDocument:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
-            - Effect: 'Allow'
+            - Effect: "Allow"
               Principal:
-                Service: 'es.amazonaws.com'
+                Service: "es.amazonaws.com"
               Action:
-                - 'sts:AssumeRole'
+                - "sts:AssumeRole"
         Policies:
-          - PolicyName: 'CognitoAuthorizedPolicy'
+          - PolicyName: "CognitoAuthorizedPolicy"
             PolicyDocument:
-              Version: '2012-10-17'
+              Version: "2012-10-17"
               Statement:
-                - Effect: 'Allow'
+                - Effect: "Allow"
                   Action:
-                    - 'cognito-idp:DescribeUserPool'
-                    - 'cognito-idp:CreateUserPoolClient'
-                    - 'cognito-idp:DeleteUserPoolClient'
-                    - 'cognito-idp:DescribeUserPoolClient'
-                    - 'cognito-idp:AdminInitiateAuth'
-                    - 'cognito-idp:AdminUserGlobalSignOut'
-                    - 'cognito-idp:ListUserPoolClients'
-                    - 'cognito-identity:DescribeIdentityPool'
-                    - 'cognito-identity:UpdateIdentityPool'
-                    - 'cognito-identity:SetIdentityPoolRoles'
-                    - 'cognito-identity:GetIdentityPoolRoles'
-                  Resource: '*'
-                - Effect: 'Allow'
+                    - "cognito-idp:DescribeUserPool"
+                    - "cognito-idp:CreateUserPoolClient"
+                    - "cognito-idp:DeleteUserPoolClient"
+                    - "cognito-idp:DescribeUserPoolClient"
+                    - "cognito-idp:AdminInitiateAuth"
+                    - "cognito-idp:AdminUserGlobalSignOut"
+                    - "cognito-idp:ListUserPoolClients"
+                    - "cognito-identity:DescribeIdentityPool"
+                    - "cognito-identity:UpdateIdentityPool"
+                    - "cognito-identity:SetIdentityPoolRoles"
+                    - "cognito-identity:GetIdentityPoolRoles"
+                  Resource: "*"
+                - Effect: "Allow"
                   Action:
-                    - 'iam:PassRole'
-                  Resource: '*'
+                    - "iam:PassRole"
+                  Resource: "*"
                   Condition:
-                    'StringLike':
-                      'iam:PassedToService': cognito-identity.amazonaws.com
+                    "StringLike":
+                      "iam:PassedToService": cognito-identity.amazonaws.com
   Outputs:
     ElasticSearchDomainArn:
       Value: !GetAtt ElasticSearchInstance.Arn

@@ -1,7 +1,6 @@
-
 service: elasticsearch-auth
 
-frameworkVersion: '2'
+frameworkVersion: "2"
 
 package:
   individually: true
@@ -23,13 +22,13 @@ resources:
     CreateEmailConfiguration:
       Fn::Not:
         - Fn::Equals:
-          - ""
-          - ${self:custom.sesSourceEmailAddress}
+            - ""
+            - ${self:custom.sesSourceEmailAddress}
     CreatePermissionsBoundary:
       Fn::Not:
         - Fn::Equals:
-          - ""
-          - ${self:custom.iamPermissionsBoundaryPolicy}
+            - ""
+            - ${self:custom.iamPermissionsBoundaryPolicy}
   Resources:
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
@@ -82,34 +81,34 @@ resources:
             - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
             - !Ref AWS::NoValue
         AssumeRolePolicyDocument:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
-            - Effect: 'Allow'
+            - Effect: "Allow"
               Principal:
-                Federated: 'cognito-identity.amazonaws.com'
+                Federated: "cognito-identity.amazonaws.com"
               Action:
-                - 'sts:AssumeRoleWithWebIdentity'
+                - "sts:AssumeRoleWithWebIdentity"
               Condition:
                 StringEquals:
-                  'cognito-identity.amazonaws.com:aud': !Ref CognitoIdentityPool
-                'ForAnyValue:StringLike':
-                  'cognito-identity.amazonaws.com:amr': authenticated
-            - Effect: 'Allow'
+                  "cognito-identity.amazonaws.com:aud": !Ref CognitoIdentityPool
+                "ForAnyValue:StringLike":
+                  "cognito-identity.amazonaws.com:amr": authenticated
+            - Effect: "Allow"
               Principal:
-                Service: 'es.amazonaws.com'
+                Service: "es.amazonaws.com"
               Action:
-                - 'sts:AssumeRole'
+                - "sts:AssumeRole"
         Policies:
-          - PolicyName: 'CognitoAuthorizedPolicy'
+          - PolicyName: "CognitoAuthorizedPolicy"
             PolicyDocument:
-              Version: '2012-10-17'
+              Version: "2012-10-17"
               Statement:
-                - Effect: 'Allow'
+                - Effect: "Allow"
                   Action:
-                    - 'mobileanalytics:PutEvents'
-                    - 'cognito-sync:*'
-                    - 'cognito-identity:*'
-                  Resource: '*'
+                    - "mobileanalytics:PutEvents"
+                    - "cognito-sync:*"
+                    - "cognito-identity:*"
+                  Resource: "*"
   Outputs:
     UserPoolId:
       Value: !Ref CognitoUserPool
