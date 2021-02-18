@@ -55,25 +55,10 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ steps.node_version.outputs.NODE_VERSION }}
-      - name: Combine yarn.lock files to single file
-        run: find services -maxdepth 3 -name yarn.lock | xargs cat yarn.lock > combined-yarn-lock.txt
-      - name: cache dependencies
-        uses: actions/cache@v2
+      - uses: actions/cache@v2
         with:
-          path: |
-            services/database/node_modules
-            services/uploads/node_modules
-            services/app-api/node_modules
-            services/elasticsearch-auth/node_modules
-            services/elasticsearch/node_modules
-            services/elasticsearch-config/node_modules
-            services/stream-functions/node_modules
-            services/ui-auth/node_modules
-            services/ui/node_modules
-            services/ui-src/node_modules
-            node_modules
-            tests/nightwatch/node_modules
-          key: ${{ runner.os }}-${{ hashFiles('combined-yarn-lock.txt') }}
+          path: "**/node_modules"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
       - name: set path
         run: |
           echo "PATH=$(pwd)/node_modules/.bin/:$PATH" >> $GITHUB_ENV
