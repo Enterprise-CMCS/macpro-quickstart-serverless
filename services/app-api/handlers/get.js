@@ -24,6 +24,7 @@ export const main = handler(async (event, context) => {
     throw new Error("Item not found.");
   }
   console.log('Sending back result:', JSON.stringify(result,null,2));
+
   // Return the retrieved item
   return result.Item;
 });

@@ -3,15 +3,25 @@ service: database
 
 frameworkVersion: '2'
 
-provider:
-  name: aws
-  runtime: nodejs12.x
-  region: us-east-1
+plugins:
+  - serverless-dynamodb-local
 
 custom:
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
   tableName: ${self:custom.stage}-amendments
+  dynamodb:
+    stages:
+      - local
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
 
 resources:
   Resources:

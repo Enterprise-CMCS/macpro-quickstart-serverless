@@ -1,7 +1,13 @@
 .idea/
 .infra
+.dynamodb
+.yarn_install
 node_modules
 testcafe_results
 .DS_Store
+build_dev
+tsconfig.tsbuildinfo
+services/uploads/local_buckets
+/.env
 tests_output
 *.log

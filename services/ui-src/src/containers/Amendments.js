@@ -1,19 +1,18 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import { API, Storage } from "aws-amplify";
 import { onError } from "../libs/errorLib";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import config from "../config";
 import "./Amendments.css";
-import { s3Upload } from "../libs/awsLib";
 import Select from 'react-select';
 import Switch from "react-ios-switch";
 import { territoryList } from '../libs/territoryLib';
 import * as url from 'url';
+import { getAmendment, updateAmendment, deleteAmendment } from "../libs/api";
 
 
-export default function Amendments() {
+export default function Amendments({ fileUpload, fileURLResolver }) {
     const file = useRef(null);
     const { id } = useParams();
     const history = useHistory();
@@ -34,7 +33,7 @@ export default function Amendments() {
 
     useEffect(() => {
         function loadAmendment() {
-            return API.get("amendments", `/amendments/${id}`);
+            return getAmendment(id)
         }
 
         async function onLoad() {
@@ -42,7 +41,9 @@ export default function Amendments() {
                 const amendment = await loadAmendment();
                 const { email, firstName, lastName, territory, transmittalNumber, urgent, comments, attachment } = amendment;
                 if (attachment) {
-                    amendment.attachmentURL = await Storage.vault.get(attachment);
+                    console.log(fileURLResolver);
+                    // We must await the url.  Otherwise, the attachmentURL is a Promise.
+                    amendment.attachmentURL = await fileURLResolver(attachment);
                 }
                 setEmail(email);
                 setFirstName(capitalize(firstName));
@@ -58,7 +59,7 @@ export default function Amendments() {
         }
 
         onLoad();
-    }, [id]);
+    }, [id, fileURLResolver]);
 
     function validateForm() {
         return email.length > 0 && firstName.length > 0 && lastName.length > 0 && territory.length > 0;
@@ -73,9 +74,7 @@ export default function Amendments() {
     }
 
     function saveAmendment(amendment) {
-        return API.put("amendments", `/amendments/${id}`, {
-            body: amendment
-        });
+        return updateAmendment(id, amendment)
     }
 
     async function handleSubmit(event) {
@@ -96,7 +95,7 @@ export default function Amendments() {
 
         try {
             if (file.current) {
-                attachment = await s3Upload(file.current);
+                attachment = await fileUpload(file.current);
             }
             await saveAmendment({
                 email,
@@ -115,10 +114,6 @@ export default function Amendments() {
         }
     }
 
-    function deleteAmendment() {
-        return API.del("amendments", `/amendments/${id}`);
-    }
-
     async function handleDelete(event) {
         event.preventDefault();
 
@@ -133,7 +128,7 @@ export default function Amendments() {
         setIsDeleting(true);
 
         try {
-            await deleteAmendment();
+            await deleteAmendment(id);
             history.push("/");
         } catch (e) {
             onError(e);
@@ -230,7 +225,7 @@ export default function Amendments() {
                             <ControlLabel>Attachment</ControlLabel>
                             <FormControl.Static>
                               <button
-                                class = "link-lookalike"
+                                className = "link-lookalike"
                                 onClick={e => openAttachment(e, amendment.attachmentURL)}>
                                 {formatFilename(amendment.attachment)}
                               </button>

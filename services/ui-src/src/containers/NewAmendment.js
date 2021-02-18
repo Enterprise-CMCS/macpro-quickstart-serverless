@@ -5,14 +5,13 @@ import LoaderButton from "../components/LoaderButton";
 import { onError } from "../libs/errorLib";
 import config from "../config";
 import "./NewAmendment.css";
-import { API } from "aws-amplify";
-import { s3Upload } from "../libs/awsLib";
-import { Auth } from "aws-amplify"
+import { createAmendment } from "../libs/api";
+import { currentUserInfo } from "../libs/user";
 import Select from 'react-select';
 import Switch from 'react-ios-switch';
 import { territoryList } from '../libs/territoryLib';
 
-export default function NewAmendment() {
+export default function NewAmendment({ fileUpload }) {
     const file = useRef(null);
     const history = useHistory();
     const [email, setEmail] = useState("");
@@ -28,7 +27,7 @@ export default function NewAmendment() {
     }
 
     async function populateUserInfo() {
-        var userInfo = await Auth.currentUserInfo();
+        var userInfo = await currentUserInfo();
         setEmail(userInfo.attributes.email);
         setFirstName(capitalize(userInfo.attributes.given_name));
         setLastName(capitalize(userInfo.attributes.family_name));
@@ -60,19 +59,13 @@ export default function NewAmendment() {
         setIsLoading(true);
 
         try {
-            const attachment = file.current ? await s3Upload(file.current) : null;
+            const attachment = file.current ? await fileUpload(file.current) : null;
             await createAmendment({ email, firstName, lastName, territory, urgent, comments, attachment });
             history.push("/");
         } catch (e) {
             onError(e);
             setIsLoading(false);
         }
-    }
-
-    function createAmendment(amendment) {
-        return API.post("amendments", "/amendments", {
-            body: amendment
-        });
     }
 
     return (
