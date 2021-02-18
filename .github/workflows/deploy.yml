@@ -47,7 +47,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_DEFAULT_REGION] || secrets.AWS_DEFAULT_REGION }}
           STAGE_PREFIX: ${{ secrets.STAGE_PREFIX }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_INTEGRATION: yes   # if you want slack integration, set to yes otherwise set to no
+  #        SLACK_INTEGRATION: yes   # if you want slack integration, set to yes otherwise set to no
       - name: lock this branch to prevent concurrent builds
         run: ./.github/github-lock.sh
         env:
@@ -95,8 +95,8 @@ jobs:
           name: test_results
           path: tests/nightwatch/tests_output
       - name: Slack notification
-        if: env.SLACK_INTEGRATION == 'yes' && always ()
+        if: env.SLACK_WEBHOOK_URL != '' && contains(fromJson('["develop", "main", "master", "impl", "val", "prod", "production"]'), env.branch_name) && always ()
+    #    if: env.SLACK_INTEGRATION == 'yes' && always ()
         uses: ravsamhq/notify-slack-action@master
         with:
           status: ${{ job.status }}
-          
