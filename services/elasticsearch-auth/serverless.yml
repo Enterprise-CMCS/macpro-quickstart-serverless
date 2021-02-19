@@ -1,7 +1,6 @@
-
 service: elasticsearch-auth
 
-frameworkVersion: '2'
+frameworkVersion: "2"
 
 package:
   individually: true
@@ -11,11 +10,24 @@ provider:
   runtime: nodejs12.x
   region: us-east-1
 
+plugins:
+  - serverless-stack-termination-protection
+
 custom:
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
   iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
   iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
+  serverlessTerminationProtection:
+    stages: # This is a list of common names for important envs that should not be destroyed.  You can remove the stage names your project doesn't use; this list is meant to be inclusive.
+      - master
+      - val
+      - production
+      - develop
+      - main
+      - impl
+      - val
+      - prod
   sesSourceEmailAddress: ${ssm:/configuration/${self:custom.stage}/sesSourceEmailAddress~true, ssm:/configuration/default/sesSourceEmailAddress~true, ""}
 
 resources:
@@ -23,13 +35,13 @@ resources:
     CreateEmailConfiguration:
       Fn::Not:
         - Fn::Equals:
-          - ""
-          - ${self:custom.sesSourceEmailAddress}
+            - ""
+            - ${self:custom.sesSourceEmailAddress}
     CreatePermissionsBoundary:
       Fn::Not:
         - Fn::Equals:
-          - ""
-          - ${self:custom.iamPermissionsBoundaryPolicy}
+            - ""
+            - ${self:custom.iamPermissionsBoundaryPolicy}
   Resources:
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
@@ -82,34 +94,34 @@ resources:
             - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
             - !Ref AWS::NoValue
         AssumeRolePolicyDocument:
-          Version: '2012-10-17'
+          Version: "2012-10-17"
           Statement:
-            - Effect: 'Allow'
+            - Effect: "Allow"
               Principal:
-                Federated: 'cognito-identity.amazonaws.com'
+                Federated: "cognito-identity.amazonaws.com"
               Action:
-                - 'sts:AssumeRoleWithWebIdentity'
+                - "sts:AssumeRoleWithWebIdentity"
               Condition:
                 StringEquals:
-                  'cognito-identity.amazonaws.com:aud': !Ref CognitoIdentityPool
-                'ForAnyValue:StringLike':
-                  'cognito-identity.amazonaws.com:amr': authenticated
-            - Effect: 'Allow'
+                  "cognito-identity.amazonaws.com:aud": !Ref CognitoIdentityPool
+                "ForAnyValue:StringLike":
+                  "cognito-identity.amazonaws.com:amr": authenticated
+            - Effect: "Allow"
               Principal:
-                Service: 'es.amazonaws.com'
+                Service: "es.amazonaws.com"
               Action:
-                - 'sts:AssumeRole'
+                - "sts:AssumeRole"
         Policies:
-          - PolicyName: 'CognitoAuthorizedPolicy'
+          - PolicyName: "CognitoAuthorizedPolicy"
             PolicyDocument:
-              Version: '2012-10-17'
+              Version: "2012-10-17"
               Statement:
-                - Effect: 'Allow'
+                - Effect: "Allow"
                   Action:
-                    - 'mobileanalytics:PutEvents'
-                    - 'cognito-sync:*'
-                    - 'cognito-identity:*'
-                  Resource: '*'
+                    - "mobileanalytics:PutEvents"
+                    - "cognito-sync:*"
+                    - "cognito-identity:*"
+                  Resource: "*"
   Outputs:
     UserPoolId:
       Value: !Ref CognitoUserPool

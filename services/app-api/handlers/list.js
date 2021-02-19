@@ -3,7 +3,7 @@ import dynamoDb from "./../libs/dynamodb-lib";
 
 export const main = handler(async (event, context) => {
   // If this invokation is a prewarm, do nothing and return.
-  if(event.source == "serverless-plugin-warmup" ) {
+  if (event.source == "serverless-plugin-warmup") {
     console.log("Warmed up!");
     return null;
   }
@@ -17,8 +17,8 @@ export const main = handler(async (event, context) => {
     //   of the authenticated user
     KeyConditionExpression: "userId = :userId",
     ExpressionAttributeValues: {
-      ":userId": event.requestContext.identity.cognitoIdentityId
-    }
+      ":userId": event.requestContext.identity.cognitoIdentityId,
+    },
   };
 
   const result = await dynamoDb.query(params);

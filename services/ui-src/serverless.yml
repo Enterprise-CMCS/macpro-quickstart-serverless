@@ -1,12 +1,12 @@
-
 service: ui-src
 
-frameworkVersion: '2'
+frameworkVersion: "2"
 
 plugins:
   - serverless-plugin-scripts
   - serverless-s3-sync
   - serverless-cloudfront-invalidate
+  - serverless-stack-termination-protection
 
 provider:
   name: aws
@@ -16,6 +16,16 @@ provider:
 custom:
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
+  serverlessTerminationProtection:
+    stages: # This is a list of common names for important envs that should not be destroyed.  You can remove the stage names your project doesn't use; this list is meant to be inclusive.
+      - master
+      - val
+      - production
+      - develop
+      - main
+      - impl
+      - val
+      - prod
   api_region: ${cf:app-api-${self:custom.stage}.Region}
   api_url: ${cf:app-api-${self:custom.stage}.ApiGatewayRestApiUrl}
   cognito_region: ${cf:ui-auth-${self:custom.stage}.Region}
@@ -48,5 +58,6 @@ custom:
         export COGNITO_CLIENT_ID=${self:custom.cognito_client_id}
         export S3_ATTACHMENTS_BUCKET_REGION=${self:custom.s3_attachments_bucket_region}
         export S3_ATTACHMENTS_BUCKET_NAME=${self:custom.s3_attachments_bucket_name}
+        export LOCAL_LOGIN=false
         ./env.sh
         cp public/env-config.js build/env-config.js
