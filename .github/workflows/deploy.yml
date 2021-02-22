@@ -73,14 +73,14 @@ jobs:
           pushd services
           export APPLICATION_ENDPOINT=`./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$branch_name`
           popd
-          ./test.sh
+          ./test1.sh
       - name: Store test reults
         uses: actions/upload-artifact@v2
         with:
           name: test_results
           path: tests/nightwatch/tests_output
       - name: Slack notification
-        if: env.SLACK_WEBHOOK_URL != '' && !contains(fromJson('["develop", "main", "master", "impl", "val", "prod", "production"]'), env.branch_name) && always ()
+        if: env.SLACK_WEBHOOK_URL != '' && contains(fromJson('["develop", "main", "master", "impl", "val", "prod", "production"]'), env.branch_name) && always ()
         uses: ravsamhq/notify-slack-action@master
         with:
           status: ${{ job.status }}
