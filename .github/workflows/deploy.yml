@@ -84,4 +84,4 @@ jobs:
         uses: ravsamhq/notify-slack-action@master
         with:
           status: ${{ job.status }}
-          notify_when: 'failure' # default is 'success,failure,warnings'
+          notify_when: 'failure' 

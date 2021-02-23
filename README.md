@@ -68,16 +68,15 @@ work worldwide through the CC0 1.0 Universal public domain dedication.
 ```
 
 ## Slack channel
+
 To enable slack integration, set a value for SLACK_WEBHOOK_URL in github actions secret.
 
 To set the SLACK_WEBHOOK_URL:
 
-1. Go to https://api.slack.com/apps
-2. Create new app : fill in the information
-3. Add features and funtionality----Incoming webhooks--- activative incoming webooks--- Add new webhook to workspace.
-4. copy new webhook url and set it as SLACK_WEBHOOK_URL in github actions secret.
-
-
+- Go to https://api.slack.com/apps
+- Create new app : fill in the information
+- Add features and funtionality----Incoming webhooks--- activative incoming webooks--- Add new webhook to workspace.
+- copy new webhook url and set it as SLACK_WEBHOOK_URL in github actions secret.
 
 Please join the macpro-quickstart-serverless slack channel to get all build status and also contribute to any ongoing discussions.
 Join here: https://join.slack.com/t/macproquickst-ugp3045/shared_invite/zt-mdxpbtkk-SrLRi_yzJrXX3uYgvrbjlg
