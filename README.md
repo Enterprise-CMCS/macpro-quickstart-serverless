@@ -2,7 +2,6 @@
 
 A serverless form submission application built and deployed to AWS with the Serverless Application Framework.
 
-
 ## Architecture
 
 ![Architecture Diagram](./.images/architecture.png?raw=true)
@@ -14,6 +13,7 @@ See master build [here](https://github.com/CMSgov/macpro-quickstart-serverless/a
 This application is built and deployed via GitHub Actions.
 
 Want to deploy from your Mac?
+
 - Create an AWS account
 - Install/configure the AWS CLI
 - npm install -g severless
@@ -21,22 +21,25 @@ Want to deploy from your Mac?
 - sh deploy.sh
 
 Building the app locally
+
 - todo
 
 Running tests locally
+
 - todo
 
 ## Requirements
 
 NodeJS and Serverless - Get help installing both at the [Serverless Getting Started page](https://www.serverless.com/framework/docs/providers/aws/guide/installation/)
 
-AWS Account:  You'll need an AWS account with appropriate IAM permissions (admin recommended) to build this app in Amazon.
+AWS Account: You'll need an AWS account with appropriate IAM permissions (admin recommended) to build this app in Amazon.
 
 ## Dependencies
 
 None.
 
 ## Examples
+
 None.
 
 ## Contributing / To-Do
@@ -46,12 +49,12 @@ See current open [issues](https://github.com/mdial89f/quickstart-serverless/issu
 Please feel free to open new issues for defects or enhancements.
 
 To contribute:
+
 - Fork this repository
 - Make changes in your fork
 - Open a pull request targetting this repository
 
 Pull requests are being accepted.
-
 
 ## License
 
@@ -83,12 +86,12 @@ Join here: https://join.slack.com/t/macproquickst-ugp3045/shared_invite/zt-mdxpb
 
 ### Contributors
 
-This project made possible by the [Serverless Stack](https://serverless-stack.com/) and its authors/contributors.  The extremely detailed tutorial, code examples, and serverless pattern is where this project started.  I can't recommend this resource enough.
+This project made possible by the [Serverless Stack](https://serverless-stack.com/) and its authors/contributors. The extremely detailed tutorial, code examples, and serverless pattern is where this project started. I can't recommend this resource enough.
 
 | [![Mike Dial][dial_avatar]][dial_homepage]<br/>[Mike Dial][dial_homepage] | [![Seth Sacher][sacher_avatar]][sacher_homepage]<br/>[Seth Sacher][sacher_homepage] |
-|---|---|
+| ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 
-  [dial_homepage]: https://github.com/mdial89f
-  [dial_avatar]: https://avatars.githubusercontent.com/mdial89f?size=150
-  [sacher_homepage]: https://github.com/sethsacher
-  [sacher_avatar]: https://avatars.githubusercontent.com/sethsacher?size=150
+[dial_homepage]: https://github.com/mdial89f
+[dial_avatar]: https://avatars.githubusercontent.com/mdial89f?size=150
+[sacher_homepage]: https://github.com/sethsacher
+[sacher_avatar]: https://avatars.githubusercontent.com/sethsacher?size=150
