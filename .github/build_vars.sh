@@ -5,6 +5,7 @@ var_list=(
   'AWS_SECRET_ACCESS_KEY'
   'AWS_DEFAULT_REGION'
   'STAGE_PREFIX'
+  'SLACK_WEBHOOK_URL'
 )
 
 set_value() {
