@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+
+# Prowler - the handy cloud security tool (copyright 2018) by Toni de la Fuente
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy
+# of the License at http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed
+# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+# CONDITIONS OF ANY KIND, either express or implied. See the License for the
+# specific language governing permissions and limitations under the License.
+CHECK_ID_extra75="7.5"
+CHECK_TITLE_extra75="[extra75] Ensure there are no Security Groups not being used (Not Scored) (Not part of CIS benchmark)"
+CHECK_SCORED_extra75="NOT_SCORED"
+CHECK_TYPE_extra75="EXTRA"
+CHECK_SEVERITY_extra75="Informational"
+CHECK_ASFF_RESOURCE_TYPE_extra75="AwsEc2SecurityGroup"
+CHECK_ALTERNATE_extra705="extra75"
+CHECK_ALTERNATE_check75="extra75"
+CHECK_ALTERNATE_check705="extra75"
+CHECK_ASFF_COMPLIANCE_TYPE_extra75="ens-mp.com.4.aws.sg.3"
+CHECK_SERVICENAME_extra75="ec2"
+
+extra75(){
+  # "Ensure there are no Security Groups not being used (Not Scored) (Not part of CIS benchmark)"
+  textInfo "Looking for Security Groups in all regions...  "
+
+  for regx in $REGIONS; do
+    SECURITYGROUPS=$($AWSCLI ec2 describe-security-groups $PROFILE_OPT --region $regx --max-items $MAXITEMS --output json | jq '.SecurityGroups|map({(.GroupId): (.GroupName)})|add')
+    if [[ $SECURITYGROUPS == "null" ]];
+    then
+      continue
+    fi
+    LIST_OF_SECURITYGROUPS=$(echo $SECURITYGROUPS|jq -r 'to_entries|sort_by(.key)|.[]|.key')
+    for SG_ID in $LIST_OF_SECURITYGROUPS; do
+      SG_NOT_USED=$($AWSCLI ec2 describe-network-interfaces $PROFILE_OPT --region $regx --filters "Name=group-id,Values=$SG_ID" --query "length(NetworkInterfaces)" --output text)
+      # Default security groups can not be deleted, so draw attention to them
+      if [[ $SG_NOT_USED -eq 0 ]];then
+        GROUP_NAME=$(echo $SECURITYGROUPS | jq -r --arg id $SG_ID '.[$id]')
+        if [[ $GROUP_NAME != "default" ]];
+        then
+          textFail "$regx: $SG_ID is not being used!" "$regx"
+        else
+          textInfo "$regx: $SG_ID is not being used - default security group" "$regx"
+        fi
+      else
+        textPass "$regx: $SG_ID is being used" "$regx"
+      fi
+    done
+  done
+}

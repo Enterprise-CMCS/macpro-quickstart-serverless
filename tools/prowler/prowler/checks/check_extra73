@@ -1,0 +1,156 @@
+#!/usr/bin/env bash
+
+# Prowler - the handy cloud security tool (copyright 2018) by Toni de la Fuente
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may not
+# use this file except in compliance with the License. You may obtain a copy
+# of the License at http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software distributed
+# under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+# CONDITIONS OF ANY KIND, either express or implied. See the License for the
+# specific language governing permissions and limitations under the License.
+
+CHECK_ID_extra73="7.3"
+CHECK_TITLE_extra73="[extra73] Ensure there are no S3 buckets open to Everyone or Any AWS user (Not Scored) (Not part of CIS benchmark)"
+CHECK_SCORED_extra73="NOT_SCORED"
+CHECK_TYPE_extra73="EXTRA"
+CHECK_SEVERITY_extra73="Critical"
+CHECK_ASFF_RESOURCE_TYPE_extra73="AwsS3Bucket"
+CHECK_ALTERNATE_extra703="extra73"
+CHECK_ALTERNATE_check73="extra73"
+CHECK_ALTERNATE_check703="extra73"
+CHECK_SERVICENAME_extra73="s3"
+
+# Verified with AWS support that if get-bucket-acl doesn't return a grant
+# for All and get-bucket-policy-status returns IsPublic false or bad request
+# (no policy) then the bucket can be considered not public - though
+# individual objects may still be. If in addition put-public-access-block is
+# used to set IgnorePublicAcls and RestrictPublicBuckets to true then that
+# causes Amazon S3 to ignore all public ACLs on a bucket and any objects that
+# it contains.
+#
+# This check does not address legacy ACLs or policies that would give
+# public access if not blocked at account or bucket level, instead it tries
+# to reward the use of more broadly restrictive controls with quicker and less
+# computational intensive checks.
+#
+# If we are assembling an inventory then maybe that is not what we want but
+# for day to day usage that is probably desirable.
+
+extra73(){
+  textInfo "Looking for open S3 Buckets (ACLs and Policies) in all regions...  "
+
+  #
+  # If public ACLs disabled at account level then look no further
+  #
+  ACCOUNT_PUBLIC_ACCESS_BLOCK=$($AWSCLI s3control get-public-access-block $PROFILE_OPT --region $REGION --account-id $ACCOUNT_NUM --output json 2>&1)
+  if [[ $(echo "$ACCOUNT_PUBLIC_ACCESS_BLOCK" | grep AccessDenied) ]]; then
+    textFail "Access Denied getting PublicAccessBlock configuration for AWS account"
+    return
+  fi
+  if [[ $(echo "$ACCOUNT_PUBLIC_ACCESS_BLOCK" | grep NoSuchPublicAccessBlockConfiguration) ]]; then
+    ACCOUNTIGNOREPUBLICACLS=""
+    ACCOUNTRESTRICTPUBLICBUCKETS=""
+  else
+    ACCOUNTIGNOREPUBLICACLS=$(echo "$ACCOUNT_PUBLIC_ACCESS_BLOCK" | jq -r '.PublicAccessBlockConfiguration.IgnorePublicAcls')
+    ACCOUNTRESTRICTPUBLICBUCKETS=$(echo "$ACCOUNT_PUBLIC_ACCESS_BLOCK" | jq -r '.PublicAccessBlockConfiguration.RestrictPublicBuckets')
+  fi
+  if [[ $ACCOUNTIGNOREPUBLICACLS == "true" && $ACCOUNTRESTRICTPUBLICBUCKETS == "true" ]]; then
+    textPass "All S3 public access blocked at account level"
+    return
+  fi
+
+  #
+  # Otherwise start to iterate bucket
+  #
+  ALL_BUCKETS_LIST=$($AWSCLI s3api list-buckets --query 'Buckets[*].{Name:Name}' $PROFILE_OPT --output text 2>&1)
+  if [[ $(echo "$ALL_BUCKETS_LIST" | grep AccessDenied) ]]; then
+    textFail "Access Denied Trying to List Buckets"
+    return
+  fi
+  if [[ "$ALL_BUCKETS_LIST" == "" ]]; then
+    textInfo "No buckets found"
+    return
+  fi
+
+  for bucket in $ALL_BUCKETS_LIST; do
+
+    #
+    # LOCATION - requests referencing buckets created after March 20, 2019
+    # must be made to S3 endpoints in the same region as the bucket was
+    # created.
+    #
+    BUCKET_LOCATION=$($AWSCLI s3api get-bucket-location $PROFILE_OPT --region $REGION --bucket $bucket --output text 2>&1)
+    if [[ $(echo "$BUCKET_LOCATION" | grep AccessDenied) ]]; then
+      textFail "Access Denied Trying to Get Bucket Location for $bucket"
+      continue
+    fi
+    if [[ $BUCKET_LOCATION == "None" ]]; then
+      BUCKET_LOCATION="us-east-1"
+    fi
+    if [[ $BUCKET_LOCATION == "EU" ]]; then
+      BUCKET_LOCATION="eu-west-1"
+    fi
+    #
+    # If public ACLs disabled at bucket level then look no further
+    #
+    BUCKET_PUBLIC_ACCESS_BLOCK=$($AWSCLI s3api get-public-access-block $PROFILE_OPT --region $BUCKET_LOCATION --bucket $bucket --output json 2>&1)
+    if [[ $(echo "$BUCKET_PUBLIC_ACCESS_BLOCK" | grep AccessDenied) ]]; then
+      textFail "Access Denied Trying to Get Public Access Block for $bucket"
+      continue
+    fi
+    if [[ $(echo "$BUCKET_PUBLIC_ACCESS_BLOCK" | grep NoSuchPublicAccessBlockConfiguration) ]]; then
+      BUCKETIGNOREPUBLICACLS=""
+      BUCKETRESTRICTPUBLICBUCKETS=""
+    else
+      BUCKETIGNOREPUBLICACLS=$(echo "$BUCKET_PUBLIC_ACCESS_BLOCK" | jq -r '.PublicAccessBlockConfiguration.IgnorePublicAcls')
+      BUCKETRESTRICTPUBLICBUCKETS=$(echo "$BUCKET_PUBLIC_ACCESS_BLOCK" | jq -r '.PublicAccessBlockConfiguration.RestrictPublicBuckets')
+    fi
+    if [[ $BUCKETIGNOREPUBLICACLS == "true" && $BUCKETRESTRICTPUBLICBUCKETS == "true" ]]; then
+      textPass "$BUCKET_LOCATION: $bucket bucket is not Public" "$BUCKET_LOCATION"
+      continue
+    fi
+
+    #
+    # Check for public ACL grants
+    #
+    BUCKET_ACL=$($AWSCLI s3api get-bucket-acl $PROFILE_OPT --region $BUCKET_LOCATION --bucket $bucket --output json 2>&1)
+    if [[ $(echo "$BUCKET_ACL" | grep AccessDenied) ]]; then
+      textFail "Access Denied Trying to Get Bucket Acl for $bucket"
+      continue
+    fi
+
+    ALLUSERS_ACL=$(echo "$BUCKET_ACL" | jq '.Grants[]|select(.Grantee.URI != null)|select(.Grantee.URI | endswith("/AllUsers"))')
+    if [[ $ALLUSERS_ACL != "" ]]; then
+      textFail "$BUCKET_LOCATION: $bucket bucket is Public!" "$BUCKET_LOCATION"
+      continue
+    fi
+
+    AUTHENTICATEDUSERS_ACL=$(echo "$BUCKET_ACL" | jq '.Grants[]|select(.Grantee.URI != null)|select(.Grantee.URI | endswith("/AuthenticatedUsers"))')
+    if [[ $AUTHENTICATEDUSERS_ACL != "" ]]; then
+      textFail "$BUCKET_LOCATION: $bucket bucket is Public!" "$BUCKET_LOCATION"
+      continue
+    fi
+
+    #
+    # Check for public access in policy
+    #
+    BUCKET_POLICY_STATUS=$($AWSCLI s3api get-bucket-policy-status $PROFILE_OPT --region $BUCKET_LOCATION --bucket $bucket --query PolicyStatus.IsPublic --output text 2>&1)
+    if [[ $(echo "$BUCKET_POLICY_STATUS" | grep AccessDenied) ]]; then
+      textFail "Access Denied Trying to Get Bucket Policy Status for $bucket"
+      continue
+    fi
+    if [[ $(echo "$BUCKET_POLICY_STATUS" | grep NoSuchBucketPolicy) ]]; then
+      BUCKET_POLICY_STATUS="False"
+    fi
+
+    if [[ $BUCKET_POLICY_STATUS != "" && $BUCKET_POLICY_STATUS != "False" ]]; then
+      textFail "$BUCKET_LOCATION: $bucket bucket is Public!" "$BUCKET_LOCATION"
+      continue
+    fi
+
+    textPass "$BUCKET_LOCATION: $bucket bucket is not Public" "$BUCKET_LOCATION"
+
+  done
+}

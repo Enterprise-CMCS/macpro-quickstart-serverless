@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+# Prowler - the handy cloud security tool (c) by Toni de la Fuente
+#
+# This Prowler check is licensed under a
+# Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+#
+# You should have received a copy of the license along with this
+# work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
+#
+# Remediation:
+#
+#   https://d1.awsstatic.com/whitepapers/compliance/AWS_CIS_Foundations_Benchmark.pdf
+#
+#   aws logs put-metric-filter \
+#     --region us-east-1 \
+#     --log-group-name CloudTrail/MyCloudTrailLG \
+#     --filter-name AWSConsoleSignInFailures \
+#     --filter-pattern '{ ($.eventName = ConsoleLogin) && ($.errorMessage = "Failed authentication") }' \
+#     --metric-transformations metricName=ConsoleSigninFailureCount,metricNamespace=CloudTrailMetrics,metricValue=1
+#
+#   aws cloudwatch put-metric-alarm \
+#     --region us-east-1 \
+#     --alarm-name "Console Sign-in Failures" \
+#     --alarm-description "AWS Management Console Sign-in Failure Alarm." \
+#     --metric-name ConsoleSigninFailureCount \
+#     --namespace CloudTrailMetrics \
+#     --statistic Sum \
+#     --comparison-operator GreaterThanOrEqualToThreshold \
+#     --evaluation-periods 1 \
+#     --period 300 \
+#     --threshold 3 \
+#     --actions-enabled \
+#     --alarm-actions arn:aws:sns:us-east-1:123456789012:CloudWatchAlarmTopic
+
+CHECK_ID_check36="3.6"
+CHECK_TITLE_check36="[check36] Ensure a log metric filter and alarm exist for AWS Management Console authentication failures (Scored)"
+CHECK_SCORED_check36="SCORED"
+CHECK_TYPE_check36="LEVEL2"
+CHECK_SEVERITY_check36="Medium"
+CHECK_ASFF_TYPE_check36="Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark"
+CHECK_ASFF_RESOURCE_TYPE_check36="AwsCloudTrailTrail"
+CHECK_ALTERNATE_check306="check36"
+CHECK_ASFF_COMPLIANCE_TYPE_check36="ens-op.exp.8.aws.trail.3"
+CHECK_SERVICENAME_check36="iam"
+
+check36(){
+  check3x '\$\.eventName\s*=\s*ConsoleLogin.+\$\.errorMessage\s*=\s*"Failed authentication"'
+}

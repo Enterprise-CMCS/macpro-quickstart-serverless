@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+# Prowler - the handy cloud security tool (c) by Toni de la Fuente
+#
+# This Prowler check is licensed under a
+# Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+#
+# You should have received a copy of the license along with this
+# work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
+#
+# Remediation:
+#
+#   https://d1.awsstatic.com/whitepapers/compliance/AWS_CIS_Foundations_Benchmark.pdf
+#
+#   aws logs put-metric-filter \
+#     --region us-east-1 \
+#     --log-group-name CloudTrail/MyCloudTrailLG \
+#     --filter-name AWSAuthorizationFailures \
+#     --filter-pattern '{ $.errorCode = "*UnauthorizedOperation" || $.errorCode = "AccessDenied*" }' \
+#     --metric-transformations metricName=AuthorizationFailureCount,metricNamespace=CloudTrailMetrics,metricValue=1
+#
+#   aws cloudwatch put-metric-alarm \
+#     --region us-east-1 \
+#     --alarm-name "Authorization Failures" \
+#     --alarm-description "Alarm triggered when unauthorized API calls are made" \
+#     --metric-name AuthorizationFailureCount \
+#     --namespace CloudTrailMetrics \
+#     --statistic Sum \
+#     --comparison-operator GreaterThanOrEqualToThreshold \
+#     --evaluation-periods 1 \
+#     --period 300 \
+#     --threshold 1 \
+#     --actions-enabled \
+#     --alarm-actions arn:aws:sns:us-east-1:123456789012:CloudWatchAlarmTopic
+
+CHECK_ID_check31="3.1"
+CHECK_TITLE_check31="[check31] Ensure a log metric filter and alarm exist for unauthorized API calls (Scored)"
+CHECK_SCORED_check31="SCORED"
+CHECK_TYPE_check31="LEVEL1"
+CHECK_SEVERITY_check31="Medium"
+CHECK_ASFF_TYPE_check31="Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark"
+CHECK_ASFF_RESOURCE_TYPE_check31="AwsCloudTrailTrail"
+CHECK_ALTERNATE_check301="check31"
+CHECK_ASFF_COMPLIANCE_TYPE_check31="ens-op.exp.8.aws.trail.2"
+CHECK_SERVICENAME_check31="iam"
+
+check31(){
+  check3x '\$\.errorCode\s*=\s*"\*UnauthorizedOperation".+\$\.errorCode\s*=\s*"AccessDenied\*"'
+}

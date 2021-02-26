@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+# Prowler - the handy cloud security tool (c) by Toni de la Fuente
+#
+# This Prowler check is licensed under a
+# Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+#
+# You should have received a copy of the license along with this
+# work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
+
+CHECK_ID_check120="1.20"
+CHECK_TITLE_check120="[check120] Ensure a support role has been created to manage incidents with AWS Support (Scored)"
+CHECK_SCORED_check120="SCORED"
+CHECK_TYPE_check120="LEVEL1"
+CHECK_SEVERITY_check120="Medium"
+CHECK_ASFF_TYPE_check120="Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark"
+CHECK_ASFF_RESOURCE_TYPE_check120="AwsIamRole"
+CHECK_ALTERNATE_check120="check120"
+CHECK_ASFF_COMPLIANCE_TYPE_check120="ens-op.acc.1.aws.iam.4"
+CHECK_SERVICENAME_check120="iam"
+
+check120(){
+  # "Ensure a support role has been created to manage incidents with AWS Support (Scored)"
+  SUPPORTPOLICYARN=$($AWSCLI iam list-policies --query "Policies[?PolicyName == 'AWSSupportAccess'].Arn" $PROFILE_OPT --region $REGION --output text)
+  if [[ $SUPPORTPOLICYARN ]];then
+    for policyarn in $SUPPORTPOLICYARN;do
+      POLICYROLES=$($AWSCLI iam list-entities-for-policy --policy-arn $SUPPORTPOLICYARN $PROFILE_OPT --region $REGION --output text | awk -F$'\t' '{ print $3 }')
+      if [[ $POLICYROLES ]];then
+        for name in $POLICYROLES; do
+          textPass "Support Policy attached to $name"
+        done
+        # for user in $(echo "$POLICYUSERS" | grep UserName | cut -d'"' -f4) ; do
+        #   textInfo "User $user has support access via $policyarn"
+        # done
+      else
+        textFail "Support Policy not applied to any Role"
+      fi
+    done
+  else
+    textFail "No Support Policy found"
+  fi
+}

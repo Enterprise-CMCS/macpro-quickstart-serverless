@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+# Prowler - the handy cloud security tool (c) by Toni de la Fuente
+#
+# This Prowler check is licensed under a
+# Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+#
+# You should have received a copy of the license along with this
+# work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
+#
+# Remediation:
+#
+#   https://d1.awsstatic.com/whitepapers/compliance/AWS_CIS_Foundations_Benchmark.pdf
+#
+#   aws logs put-metric-filter \
+#     --region us-east-1 \
+#     --log-group-name CloudTrail/MyCloudTrailLG \
+#     --filter-name AWSCloudTrailChanges \
+#     --filter-pattern '{ ($.eventName = CreateTrail) || ($.eventName = UpdateTrail) || ($.eventName = DeleteTrail) || ($.eventName = StartLogging) || ($.eventName = StopLogging) }' \
+#     --metric-transformations metricName=CloudTrailEventCount,metricNamespace=CloudTrailMetrics,metricValue=1
+#
+#   aws cloudwatch put-metric-alarm \
+#     --region us-east-1 \
+#     --alarm-name "CloudTrail Changes" \
+#     --alarm-description "Triggered by AWS CloudTrail configuration changes." \
+#     --metric-name CloudTrailEventCount \
+#     --namespace CloudTrailMetrics \
+#     --statistic Sum \
+#     --comparison-operator GreaterThanOrEqualToThreshold \
+#     --evaluation-periods 1 \
+#     --period 300 \
+#     --threshold 1 \
+#     --actions-enabled \
+#     --alarm-actions arn:aws:sns:us-east-1:123456789012:CloudWatchAlarmTopic
+
+CHECK_ID_check35="3.5"
+CHECK_TITLE_check35="[check35] Ensure a log metric filter and alarm exist for CloudTrail configuration changes (Scored)"
+CHECK_SCORED_check35="SCORED"
+CHECK_TYPE_check35="LEVEL1"
+CHECK_SEVERITY_check35="Medium"
+CHECK_ASFF_TYPE_check35="Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark"
+CHECK_ASFF_RESOURCE_TYPE_check35="AwsCloudTrailTrail"
+CHECK_ALTERNATE_check305="check35"
+CHECK_ASFF_COMPLIANCE_TYPE_check35="ens-op.exp.8.aws.trail.1"
+CHECK_SERVICENAME_check35="cloudtrail"
+
+check35(){
+  check3x '\$\.eventName\s*=\s*CreateTrail.+\$\.eventName\s*=\s*UpdateTrail.+\$\.eventName\s*=\s*DeleteTrail.+\$\.eventName\s*=\s*StartLogging.+\$\.eventName\s*=\s*StopLogging'
+}

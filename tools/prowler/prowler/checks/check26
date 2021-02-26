@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+
+# Prowler - the handy cloud security tool (c) by Toni de la Fuente
+#
+# This Prowler check is licensed under a
+# Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+#
+# You should have received a copy of the license along with this
+# work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
+
+CHECK_ID_check26="2.6"
+CHECK_TITLE_check26="[check26] Ensure S3 bucket access logging is enabled on the CloudTrail S3 bucket (Scored)"
+CHECK_SCORED_check26="SCORED"
+CHECK_TYPE_check26="LEVEL1"
+CHECK_SEVERITY_check26="Medium"
+CHECK_ASFF_TYPE_check26="Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark"
+CHECK_ASFF_RESOURCE_TYPE_check26="AwsS3Bucket"
+CHECK_ALTERNATE_check206="check26"
+CHECK_SERVICENAME_check26="s3"
+
+check26(){
+  trail_count=0
+  # "Ensure S3 bucket access logging is enabled on the CloudTrail S3 bucket (Scored)"
+  for regx in $REGIONS; do
+    TRAILS_AND_REGIONS=$($AWSCLI cloudtrail describe-trails $PROFILE_OPT --region $regx --query 'trailList[*].{Name:TrailARN, HomeRegion:HomeRegion}' --output text 2>&1 | tr "	" ',')
+    if [[ $(echo "$TRAILS_AND_REGIONS" | grep AccessDenied) ]]; then
+      textFail "Access Denied trying to describe trails in $regx"
+      continue
+    fi
+    if [[ $TRAILS_AND_REGIONS ]]; then
+      for reg_trail in $TRAILS_AND_REGIONS; do
+        TRAIL_REGION=$(echo $reg_trail | cut -d',' -f1)
+        if [ $TRAIL_REGION != $regx ]; then # Only report trails once in home region
+          continue
+        fi
+        trail=$(echo $reg_trail | cut -d',' -f2)
+        trail_count=$((trail_count + 1))
+
+        CLOUDTRAILBUCKET=$($AWSCLI cloudtrail describe-trails $PROFILE_OPT --region $TRAIL_REGION --query 'trailList[*].[S3BucketName]' --output text --trail-name-list $trail)
+        if [[ -z $CLOUDTRAILBUCKET ]]; then
+          textFail "Trail $trail in $TRAIL_REGION does not publish to S3"
+          continue
+        fi
+
+        CLOUDTRAIL_ACCOUNT_ID=$(echo $trail | awk -F: '{ print $5 }')
+        if [ "$CLOUDTRAIL_ACCOUNT_ID" != "$ACCOUNT_NUM" ]; then
+          textInfo "Trail $trail in $TRAIL_REGION S3 logging bucket $CLOUDTRAILBUCKET is not in current account"
+          continue
+        fi
+
+        #
+        # LOCATION - requests referencing buckets created after March 20, 2019
+        # must be made to S3 endpoints in the same region as the bucket was
+        # created.
+        #
+        BUCKET_LOCATION=$($AWSCLI s3api get-bucket-location $PROFILE_OPT --region $regx --bucket $CLOUDTRAILBUCKET --output text 2>&1)
+        if [[ $(echo "$BUCKET_LOCATION" | grep AccessDenied) ]]; then
+          textFail "Trail $trail in $TRAIL_REGION Access Denied getting bucket location for $CLOUDTRAILBUCKET"
+          continue
+        fi
+        if [[ $BUCKET_LOCATION == "None" ]]; then
+          BUCKET_LOCATION="us-east-1"
+        fi
+        if [[ $BUCKET_LOCATION == "EU" ]]; then
+          BUCKET_LOCATION="eu-west-1"
+        fi
+
+        CLOUDTRAILBUCKET_LOGENABLED=$($AWSCLI s3api get-bucket-logging --bucket $CLOUDTRAILBUCKET $PROFILE_OPT --region $BUCKET_LOCATION --query 'LoggingEnabled.TargetBucket' --output text 2>&1)
+        if [[ $(echo "$CLOUDTRAILBUCKET_LOGENABLED" | grep AccessDenied) ]]; then
+          textInfo "Trail $trail in $TRAIL_REGION Access Denied getting bucket logging for $CLOUDTRAILBUCKET"
+          continue
+        fi
+
+        if [[ $CLOUDTRAILBUCKET_LOGENABLED != "None" ]]; then
+          textPass "Trail $trail in $TRAIL_REGION S3 bucket access logging is enabled for $CLOUDTRAILBUCKET"
+        else
+          textFail "Trail $trail in $TRAIL_REGION S3 bucket access logging is not enabled for $CLOUDTRAILBUCKET"
+        fi
+
+      done
+    fi
+  done
+  if [[ $trail_count == 0 ]]; then
+    textFail "No CloudTrail trails were found in the account"
+  fi
+}

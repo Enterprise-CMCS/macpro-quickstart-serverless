@@ -1,0 +1,19 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "dax:ListTables",
+                "ds:ListAuthorizedApplications",
+                "ds:DescribeRoles",
+                "ec2:GetEbsEncryptionByDefault",
+                "ecr:Describe*",
+                "support:Describe*",
+                "tag:GetTagKeys"
+            ],
+            "Resource": "*",
+            "Effect": "Allow",
+            "Sid": "AllowMoreReadForProwler"
+        }
+    ]
+}

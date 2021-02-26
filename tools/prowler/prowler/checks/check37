@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+# Prowler - the handy cloud security tool (c) by Toni de la Fuente
+#
+# This Prowler check is licensed under a
+# Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+#
+# You should have received a copy of the license along with this
+# work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
+#
+# Remediation:
+#
+#   https://d1.awsstatic.com/whitepapers/compliance/AWS_CIS_Foundations_Benchmark.pdf
+#
+#   aws logs put-metric-filter \
+#     --region us-east-1 \
+#     --log-group-name CloudTrail/CloudWatchLogGroup \
+#     --filter-name AWSCMKChanges \
+#     --filter-pattern '{ ($.eventSource = kms.amazonaws.com) && (($.eventName = DisableKey) || ($.eventName = ScheduleKeyDeletion)) }' \
+#     --metric-transformations metricName=CMKEventCount,metricNamespace=CloudTrailMetrics,metricValue=1
+#
+#   aws cloudwatch put-metric-alarm \
+#     --region us-east-1 \
+#     --alarm-name AWSCMKChangesAlarm \
+#     --alarm-description "Triggered by AWS CMK changes." \
+#     --metric-name CMKEventCount \
+#     --namespace CloudTrailMetrics \
+#     --statistic Sum \
+#     --comparison-operator GreaterThanOrEqualToThreshold \
+#     --evaluation-periods 1 \
+#     --period 300 \
+#     --threshold 1 \
+#     --actions-enabled \
+#     --alarm-actions arn:aws:sns:us-east-1:123456789012:CloudWatchAlarmTopic
+
+CHECK_ID_check37="3.7"
+CHECK_TITLE_check37="[check37] Ensure a log metric filter and alarm exist for disabling or scheduled deletion of customer created KMS CMKs (Scored)"
+CHECK_SCORED_check37="SCORED"
+CHECK_TYPE_check37="LEVEL2"
+CHECK_SEVERITY_check37="Medium"
+CHECK_ASFF_TYPE_check37="Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark"
+CHECK_ASFF_RESOURCE_TYPE_check37="AwsCloudTrailTrail"
+CHECK_ALTERNATE_check307="check37"
+CHECK_ASFF_COMPLIANCE_TYPE_check37="ens-op.exp.11.aws.kms.1"
+CHECK_SERVICENAME_check37="kms"
+
+check37(){
+  check3x '\$\.eventSource\s*=\s*kms.amazonaws.com.+\$\.eventName\s*=\s*DisableKey.+\$\.eventName\s*=\s*ScheduleKeyDeletion'
+}

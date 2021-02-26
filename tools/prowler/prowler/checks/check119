@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+# Prowler - the handy cloud security tool (c) by Toni de la Fuente
+#
+# This Prowler check is licensed under a
+# Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+#
+# You should have received a copy of the license along with this
+# work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
+
+CHECK_ID_check119="1.19"
+CHECK_TITLE_check119="[check119] Ensure IAM instance roles are used for AWS resource access from instances (Not Scored)"
+CHECK_SCORED_check119="NOT_SCORED"
+CHECK_TYPE_check119="LEVEL2"
+CHECK_SEVERITY_check119="Medium"
+CHECK_ASFF_TYPE_check119="Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark"
+CHECK_ASFF_RESOURCE_TYPE_check119="AwsEc2Instance"
+CHECK_ALTERNATE_check119="check119"
+CHECK_SERVICENAME_check119="ec2"
+
+check119(){
+  for regx in $REGIONS; do
+    EC2_DATA=$($AWSCLI ec2 describe-instances $PROFILE_OPT --region $regx --query 'Reservations[].Instances[].[InstanceId, IamInstanceProfile.Arn, State.Name]' --output json)
+    EC2_DATA=$(echo $EC2_DATA | jq '.[]|{InstanceId: .[0], ProfileArn: .[1], StateName: .[2]}')
+    INSTANCE_LIST=$(echo $EC2_DATA | jq -r '.InstanceId')
+    if [[ $INSTANCE_LIST ]]; then
+      for instance in $INSTANCE_LIST; do
+        STATE_NAME=$(echo $EC2_DATA | jq -r --arg i "$instance" 'select(.InstanceId==$i)|.StateName')
+        if [[ $STATE_NAME != "terminated" && $STATE_NAME != "shutting-down" ]]; then
+          PROFILEARN=$(echo $EC2_DATA | jq -r --arg i "$instance" 'select(.InstanceId==$i)|.ProfileArn')
+          if [[ $PROFILEARN == "null" ]]; then
+            textFail "$regx: Instance $instance not associated with an instance role" $regx
+          else
+            textPass "$regx: Instance $instance associated with role ${PROFILEARN##*/}" $regx
+          fi
+        fi
+      done
+    else
+      textInfo "$regx: No EC2 instances found" $regx
+    fi
+  done
+}

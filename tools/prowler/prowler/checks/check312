@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+# Prowler - the handy cloud security tool (c) by Toni de la Fuente
+#
+# This Prowler check is licensed under a
+# Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+#
+# You should have received a copy of the license along with this
+# work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
+#
+# Remediation:
+#
+#   https://d1.awsstatic.com/whitepapers/compliance/AWS_CIS_Foundations_Benchmark.pdf
+#
+#   aws logs put-metric-filter \
+#     --region us-east-1 \
+#     --log-group-name CloudTrail/CloudWatchLogGroup \
+#     --filter-name VPCGatewayConfigChanges \
+#     --filter-pattern '{ ($.eventName = CreateCustomerGateway) || ($.eventName = DeleteCustomerGateway) || ($.eventName = AttachInternetGateway) || ($.eventName = CreateInternetGateway) || ($.eventName = DeleteInternetGateway) || ($.eventName = DetachInternetGateway) }' \
+#     --metric-transformations metricName=GatewayEventCount,metricNamespace=CloudTrailMetrics,metricValue=1
+#
+#   aws cloudwatch put-metric-alarm \
+#     --region us-east-1 \
+#     --alarm-name VPCGatewayConfigChangesAlarm \
+#     --alarm-description "Triggered by VPC Customer/Internet Gateway changes." \
+#     --metric-name GatewayEventCount \
+#     --namespace CloudTrailMetrics \
+#     --statistic Sum \
+#     --comparison-operator GreaterThanOrEqualToThreshold \
+#     --evaluation-periods 1 \
+#     --period 300 \
+#     --threshold 1 \
+#     --actions-enabled \
+#     --alarm-actions arn:aws:sns:us-east-1:123456789012:CloudWatchAlarmTopic
+
+CHECK_ID_check312="3.12"
+CHECK_TITLE_check312="[check312] Ensure a log metric filter and alarm exist for changes to network gateways (Scored)"
+CHECK_SCORED_check312="SCORED"
+CHECK_TYPE_check312="LEVEL1"
+CHECK_SEVERITY_check312="Medium"
+CHECK_ASFF_TYPE_check312="Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark"
+CHECK_ASFF_RESOURCE_TYPE_check312="AwsCloudTrailTrail"
+CHECK_ALTERNATE_check312="check312"
+CHECK_SERVICENAME_check312="vpc"
+
+check312(){
+  check3x '\$\.eventName\s*=\s*CreateCustomerGateway.+\$\.eventName\s*=\s*DeleteCustomerGateway.+\$\.eventName\s*=\s*AttachInternetGateway.+\$\.eventName\s*=\s*CreateInternetGateway.+\$\.eventName\s*=\s*DeleteInternetGateway.+\$\.eventName\s*=\s*DetachInternetGateway'
+}

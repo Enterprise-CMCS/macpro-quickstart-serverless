@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+# Prowler - the handy cloud security tool (c) by Toni de la Fuente
+#
+# This Prowler check is licensed under a
+# Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.
+#
+# You should have received a copy of the license along with this
+# work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
+
+CHECK_ID_check28="2.8"
+CHECK_TITLE_check28="[check28] Ensure rotation for customer created KMS CMKs is enabled (Scored)"
+CHECK_SCORED_check28="SCORED"
+CHECK_TYPE_check28="LEVEL2"
+CHECK_SEVERITY_check28="Medium"
+CHECK_ASFF_TYPE_check28="Software and Configuration Checks/Industry and Regulatory Standards/CIS AWS Foundations Benchmark"
+CHECK_ASFF_RESOURCE_TYPE_check28="AwsKmsKey"
+CHECK_ALTERNATE_check208="check28"
+CHECK_SERVICENAME_check28="kms"
+
+check28(){
+  # "Ensure rotation for customer created CMKs is enabled (Scored)"
+  for regx in $REGIONS; do
+    CHECK_KMS_KEYLIST=$($AWSCLI kms list-keys $PROFILE_OPT --region $regx --output text --query 'Keys[*].KeyId' --output text 2>&1)
+    if [[ $(echo "$CHECK_KMS_KEYLIST" | grep AccessDenied) ]]; then
+      textFail "Access Denied trying to list keys in $regx"
+      continue
+    fi
+    if [[ $CHECK_KMS_KEYLIST ]]; then
+      cmk_count=0
+      for key in $CHECK_KMS_KEYLIST; do
+        KMSDETAILS=$($AWSCLI kms describe-key --key-id $key $PROFILE_OPT --region $regx --query 'KeyMetadata.{key:KeyId,man:KeyManager,origin:Origin,spec:CustomerMasterKeySpec,state:KeyState}' --output text 2>&1 | grep SYMMETRIC)
+        if [[ $(echo "$KMSDETAILS" | grep AccessDenied) ]]; then
+           textFail "$regx: Key $key Access Denied describing key"
+           continue
+        fi
+
+        KEYID=$(echo $KMSDETAILS | awk '{print $1}')
+        KEYMANAGER=$(echo $KMSDETAILS | awk '{print $2}')
+        KEYORIGIN=$(echo $KMSDETAILS | awk '{print $3}')
+        KEYSTATE=$(echo $KMSDETAILS | awk '{print $5}')
+
+        if [[ "$KEYMANAGER" == "AWS" ]]; then
+          continue
+        fi
+        if [[ "$KEYSTATE" != "Enabled" ]]; then
+          continue
+        fi
+        cmk_count=$((cmk_count + 1))
+
+        if [[ "$KEYORIGIN" == "EXTERNAL" ]]; then
+          textPass "$regx: Key $key uses imported key material"
+        else
+          CHECK_KMS_KEY_ROTATION=$($AWSCLI kms get-key-rotation-status --key-id $key $PROFILE_OPT --region $regx --output text 2>&1)
+          if [[ $(echo "$CHECK_KMS_KEY_ROTATION" | grep AccessDenied) ]]; then
+            textFail "$regx: Key $key Access Denied getting key rotation status"
+            continue
+          fi
+          if [[ "$CHECK_KMS_KEY_ROTATION" == "True" ]];then
+            textPass "$regx: Key $key automatic rotation of the key material is enabled"
+          else
+            textFail "$regx: Key $key automatic rotation of the key material is disabled"
+          fi
+        fi
+      done
+      if [[ $cmk_count == 0 ]]; then
+        textInfo "$regx: This region has no customer managed keys"
+      fi
+    else
+      textInfo "$regx: This region has no KMS keys"
+    fi
+  done
+}
