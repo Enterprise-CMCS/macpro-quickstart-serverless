@@ -1,0 +1,67 @@
+name: "Prowler Deployment"
+
+on:
+  push:
+    branches:
+      - dev-prowler
+
+jobs:
+  deploy:
+    name: Prowler
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_ACCESS_KEY_ID] || secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_SECRET_ACCESS_KEY] || secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_DEFAULT_REGION] || secrets.AWS_DEFAULT_REGION }}
+
+      - name: Deploy to Cloudformation Resource
+        uses: aws-actions/aws-cloudformation-github-deploy@v1
+        with:
+          name: ProwlerRoleStack
+          template: tools/prowler/prowler-role.yml
+          capabilities: CAPABILITY_NAMED_IAM
+
+      - name: Assume Prowler Role
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_ACCESS_KEY_ID] || secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_SECRET_ACCESS_KEY] || secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_DEFAULT_REGION] || secrets.AWS_DEFAULT_REGION }}
+          role-duration-seconds: 10800
+          role-to-assume: Prowler-Role
+          role-session-name: ProwlerSession
+
+      - name: Install Requirements
+        run: |
+          pip install detect-secrets
+          sudo apt install jq
+          echo "/$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Clone Prowler Repo
+        run: |
+          git clone https://github.com/toniblyx/prowler
+
+      - name: Run Prowler
+        working-directory: prowler
+        continue-on-error: true
+        run: |
+          ./prowler -g group4 -M html
+
+      - name: Configure AWS credentials
+        if: ${{ failure() }} || ${{ success() }}
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_ACCESS_KEY_ID] || secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_SECRET_ACCESS_KEY] || secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_DEFAULT_REGION] || secrets.AWS_DEFAULT_REGION }}
+      
+      - name: Delete Cloudformation stack
+        if: ${{ failure() }} || ${{ success() }}
+        run: aws cloudformation delete-stack --stack-name ProwlerRoleStack

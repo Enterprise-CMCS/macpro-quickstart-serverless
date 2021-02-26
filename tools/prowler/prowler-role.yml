@@ -1,0 +1,61 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: IAM Prowler Role
+Parameters:
+  Username:
+    Type: String
+    Default: prowler
+Resources:
+  ProwlerRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: Prowler-Role
+      Tags:
+        - Key: App
+          Value: Prowler
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS:
+                - !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:root"
+            Action:
+              - "sts:AssumeRole"
+              - "sts:TagSession"
+            Condition:
+              StringLike:
+                "aws:PrincipalArn": !Sub "arn:${AWS::Partition}:iam::${AWS::AccountId}:user/${Username}"
+      MaxSessionDuration: 43200
+      ManagedPolicyArns:
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/SecurityAudit"
+        - !Sub "arn:${AWS::Partition}:iam::aws:policy/job-function/ViewOnlyAccess"
+      Policies:
+        - PolicyName: Prowler-Additions-Policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Sid: AllowMoreReadForProwler
+                Effect: Allow
+                Resource: "*"
+                Action:
+                  - "access-analyzer:List*"
+                  - "apigateway:Get*"
+                  - "apigatewayv2:Get*"
+                  - "aws-marketplace:ViewSubscriptions"
+                  - "dax:ListTables"
+                  - "ds:ListAuthorizedApplications"
+                  - "ds:DescribeRoles"
+                  - "ec2:GetEbsEncryptionByDefault"
+                  - "ecr:Describe*"
+                  - "lambda:GetAccountSettings"
+                  - "lambda:GetFunctionConfiguration"
+                  - "lambda:GetLayerVersionPolicy"
+                  - "lambda:GetPolicy"
+                  - "opsworks-cm:Describe*"
+                  - "opsworks:Describe*"
+                  - "secretsmanager:ListSecretVersionIds"
+                  - "sns:List*"
+                  - "sqs:ListQueueTags"
+                  - "states:ListActivities"
+                  - "support:Describe*"
+                  - "tag:GetTagKeys"
