@@ -155,6 +155,8 @@ resources:
           HostedZoneId: Z2FDTNDATAQYW2
           EvaluateTargetHealth: false
         Type: A
+
+
   Outputs:
     S3BucketName:
       Value: !Ref S3Bucket
