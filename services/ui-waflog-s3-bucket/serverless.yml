@@ -25,7 +25,6 @@ resources:
       Properties:
         BucketName: ${self:custom.stage}-waflogsbucket
 
-
   Outputs:
     WaflogsUploadBucketArn:
       Value: !GetAtt WaflogsUploadBucket.Arn

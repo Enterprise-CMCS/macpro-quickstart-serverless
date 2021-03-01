@@ -156,7 +156,6 @@ resources:
           EvaluateTargetHealth: false
         Type: A
 
-
   Outputs:
     S3BucketName:
       Value: !Ref S3Bucket
