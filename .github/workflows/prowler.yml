@@ -59,7 +59,7 @@ jobs:
         # continue-on-error: true
         run: |
           whoami
-          sudo
+          which sudo
           whoami
          # ls -al
          # ./prowler -g group4
