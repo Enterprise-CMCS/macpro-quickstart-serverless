@@ -59,8 +59,8 @@ jobs:
         working-directory: tools/prowler
         # continue-on-error: true
         run: |
+          chmod u+x prowler
           ls -al
-          chmod +u prowler
         # cat ./prowler
         # sudo ./prowler -g group4
 
