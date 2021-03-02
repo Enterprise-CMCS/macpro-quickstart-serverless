@@ -53,7 +53,7 @@ jobs:
         continue-on-error: true
         run: |
           ls -al
-          sudo ./prowler -g group4
+          ./prowler -g group4
 
       # - name: Configure AWS credentials
       #   if: ${{ failure() }} || ${{ success() }}
