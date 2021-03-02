@@ -55,13 +55,16 @@ jobs:
       #     ls -al
       #     ./prowler -g group4
 
+      - name: ID
+        run: |
+          aws sts get-caller-identity
       - name: Run Prowler
         working-directory: tools/prowler/prowler
         # continue-on-error: true
         run: |
           ls -al
+          chmod u+x prowler
           ./prowler -g group4
-        # chmod u+x prowler
         # cat ./prowler
 
       # - name: Configure AWS credentials
