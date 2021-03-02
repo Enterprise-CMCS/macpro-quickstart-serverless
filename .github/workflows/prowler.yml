@@ -44,9 +44,6 @@ jobs:
           sudo apt install jq
           echo "/$HOME/.local/bin" >> $GITHUB_PATH
 
-      - name: Clone Prowler Repo
-        run: |
-          git clone https://github.com/toniblyx/prowler
       # - name: Clone Prowler Repo
       #   run: |
       #     git clone https://github.com/toniblyx/prowler
@@ -58,7 +55,7 @@ jobs:
       #     ls -al
       #     ./prowler -g group4
       - name: Run Prowler
-        working-directory: prowler
+        working-directory: tools/prowler
         # continue-on-error: true
         run: |
           ls -al
