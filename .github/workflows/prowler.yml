@@ -61,8 +61,8 @@ jobs:
         run: |
           chmod u+x prowler
           ls -al
+          sudo ./prowler -g group4
         # cat ./prowler
-        # sudo ./prowler -g group4
 
       # - name: Configure AWS credentials
       #   if: ${{ failure() }} || ${{ success() }}
