@@ -58,7 +58,8 @@ jobs:
       #     ls -al
       #     ./prowler -g group4
       - name: Run Prowler
-        continue-on-error: true
+        working-directory: prowler
+        # continue-on-error: true
         run: |
           ls -al
           ./prowler -g group4
