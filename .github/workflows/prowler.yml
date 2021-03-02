@@ -54,8 +54,9 @@ jobs:
       #   run: |
       #     ls -al
       #     ./prowler -g group4
+
       - name: Run Prowler
-        working-directory: tools/prowler/prowler
+        working-directory: tools/prowler
         # continue-on-error: true
         run: |
           ls -al
