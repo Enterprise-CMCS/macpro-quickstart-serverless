@@ -56,12 +56,12 @@ jobs:
       #     ./prowler -g group4
 
       - name: Run Prowler
-        working-directory: tools/prowler
+        working-directory: tools/prowler/prowler
         # continue-on-error: true
         run: |
-          chmod u+x prowler
           ls -al
-          sudo ./prowler -g group4
+          ./prowler -g group4
+        # chmod u+x prowler
         # cat ./prowler
 
       # - name: Configure AWS credentials
