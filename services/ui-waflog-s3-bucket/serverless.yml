@@ -17,13 +17,18 @@ custom:
       - master
       - val
       - production
+      - develop
+      - main
+      - impl
+      - val
+      - prod
 
 resources:
   Resources:
     WaflogsUploadBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: ${self:custom.stage}-waflogsbucket
+        BucketName: !Sub ${AWS::AcountId}-${self:custom.stage}-waflogs
 
   Outputs:
     WaflogsUploadBucketArn:
