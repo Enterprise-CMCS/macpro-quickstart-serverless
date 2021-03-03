@@ -27,6 +27,7 @@ custom:
   route53DomainName: ${ssm:/configuration/${self:custom.stage}/route53/domainName~true, ""}
   cloudfrontCertificateArn: ${ssm:/configuration/${self:custom.stage}/cloudfront/certificateArn~true, ssm:/configuration/default/cloudfront/certificateArn~true, ""}
   cloudfrontDomainName: ${ssm:/configuration/${self:custom.stage}/cloudfront/domainName~true, ""}
+  wafLoggingBucket: ${cf:ui-waflog-s3-bucket-${self:custom.stage}.WaflogsUploadBucketArn}
 
 resources:
   Conditions:
