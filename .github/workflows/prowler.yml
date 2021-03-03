@@ -58,14 +58,14 @@ jobs:
       - name: ID
         run: |
           aws sts get-caller-identity
+          aws iam get-user managedcaredevops-serviceuser
       - name: Run Prowler
         working-directory: tools/prowler/prowler
-        # continue-on-error: true
+        continue-on-error: true
         run: |
           ls -al
           chmod u+x prowler
           ./prowler -g group4
-        # cat ./prowler
 
       # - name: Configure AWS credentials
       #   if: ${{ failure() }} || ${{ success() }}
