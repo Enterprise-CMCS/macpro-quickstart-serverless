@@ -57,8 +57,6 @@ jobs:
 
       - name: ID
         run: |
-          echo "***** INLINE POLICY *****"
-          aws iam list-user-policies --user-name managedcaredevops-serviceuser
           echo "***** MANAGED POLICY *****"
           aws iam list-attached-user-policies --user-name managedcaredevops-serviceuser
           # aws sts get-caller-identity
