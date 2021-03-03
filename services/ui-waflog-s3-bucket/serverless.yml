@@ -1,0 +1,35 @@
+service: ui-waflog-s3-bucket
+
+frameworkVersion: "2"
+
+plugins:
+  - serverless-stack-termination-protection
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  serverlessTerminationProtection:
+    stages:
+      - master
+      - val
+      - production
+      - develop
+      - main
+      - impl
+      - val
+      - prod
+
+resources:
+  Resources:
+    WaflogsUploadBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: !Sub ${AWS::AccountId}-${self:custom.stage}-waflogs
+
+  Outputs:
+    WaflogsUploadBucketArn:
+      Value: !GetAtt WaflogsUploadBucket.Arn

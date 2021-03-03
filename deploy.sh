@@ -11,6 +11,7 @@ services=(
   'elasticsearch-auth'
   'elasticsearch'
   'stream-functions'
+  'ui-waflog-s3-bucket'
   'ui-auth'
   'ui'
   'ui-src'
