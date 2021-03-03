@@ -58,7 +58,7 @@ jobs:
       - name: ID
         run: |
           aws sts get-caller-identity
-          aws iam get-user managedcaredevops-serviceuser
+          aws iam get-user --user-name managedcaredevops-serviceuser
       - name: Run Prowler
         working-directory: tools/prowler/prowler
         continue-on-error: true
