@@ -28,7 +28,7 @@ resources:
     WaflogsUploadBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: !Sub ${AWS::AcountId}-${self:custom.stage}-waflogs
+        BucketName: !Sub ${AWS::acountId}-${self:custom.stage}-waflogs
 
   Outputs:
     WaflogsUploadBucketArn:
