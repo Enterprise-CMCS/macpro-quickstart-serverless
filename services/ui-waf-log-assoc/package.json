@@ -1,0 +1,15 @@
+{
+  "name": "ui-waf-log-assoc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "serverless-plugin-scripts": "^1.0.2",
+    "serverless-stack-termination-protection": "^1.0.4"
+  }
+}
