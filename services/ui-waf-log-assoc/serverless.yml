@@ -3,6 +3,7 @@ service: ui-waf-log-assoc
 plugins:
   - serverless-plugin-scripts
   - serverless-stack-termination-protection
+
 provider:
   name: aws
   runtime: nodejs12.x
@@ -21,7 +22,7 @@ custom:
       - impl
       - val
       - prod
-  iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
+  iamPath: ${env:IAM_PATH, "/"}
   wafAclArn: ${cf:ui-${self:custom.stage}.CloudFrontWebAclArn}
   firehoseStreamArn: ${cf:ui-${self:custom.stage}.FirehoseArn}
   scripts:
