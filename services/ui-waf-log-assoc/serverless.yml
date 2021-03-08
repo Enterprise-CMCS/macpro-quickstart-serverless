@@ -1,0 +1,34 @@
+service: ui-waf-log-assoc
+
+plugins:
+  - serverless-plugin-scripts
+  - serverless-stack-termination-protection
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  stage: dev
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  serverlessTerminationProtection:
+    stages:
+      - master
+      - val
+      - production
+      - develop
+      - main
+      - impl
+      - val
+      - prod
+  iamPath: ${env:IAM_PATH, "/"}
+  wafAclArn: ${cf:ui-${self:custom.stage}.CloudFrontWebAclArn}
+  firehoseStreamArn: ${cf:ui-${self:custom.stage}.FirehoseArn}
+  scripts:
+    hooks:
+      # Associate the Firehose and the WAF Acl
+      deploy:finalize: |
+        aws wafv2 put-logging-configuration \
+          --logging-configuration ResourceArn=${self:custom.wafAclArn},LogDestinationConfigs=${self:custom.firehoseStreamArn} \
+          --region ${self:provider.region}

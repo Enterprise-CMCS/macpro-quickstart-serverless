@@ -14,6 +14,7 @@ services=(
   'ui-waflog-s3-bucket'
   'ui-auth'
   'ui'
+  'ui-waf-log-assoc'
   'ui-src'
 )
 
