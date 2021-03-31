@@ -49,7 +49,7 @@ custom:
       # Build the static archive and populate the config
       package:initialize: |
         set -e
-        yarn run build
+        SKIP_PREFLIGHT_CHECK=true yarn run build
         export API_REGION=${self:custom.api_region}
         export API_URL=${self:custom.api_url}
         export COGNITO_REGION=${self:custom.cognito_region}
@@ -59,6 +59,5 @@ custom:
         export S3_ATTACHMENTS_BUCKET_REGION=${self:custom.s3_attachments_bucket_region}
         export S3_ATTACHMENTS_BUCKET_NAME=${self:custom.s3_attachments_bucket_name}
         export LOCAL_LOGIN=false
-        export SKIP_PREFLIGHT_CHECK=true
         ./env.sh
         cp public/env-config.js build/env-config.js
