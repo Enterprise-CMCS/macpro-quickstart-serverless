@@ -5,7 +5,6 @@ on:
     branches:
       - "*"
       - "dependabot/**"
-      - "!dependabot"
       - "!skipci*"
 
 jobs:
@@ -14,9 +13,9 @@ jobs:
     steps:
       - name: set branch_name
         run: |
-          if [[ "$GITHUB_REF" =~ ^refs/heads/dependabot/.* ]]; then # If this is a Dependabot generated branch, set branch_name to 'dependabot'.
-            echo "branch_name=dependabot" >> $GITHUB_ENV
-          else # Else set branch_name to this branch's name, but without the refs/heads/ prefix.
+          if [[ "$GITHUB_REF" =~ ^refs/heads/dependabot/.* ]]; then # Dependabot builds very long branch names.  This is a switch to make it shorter.
+            echo "branch_name=`echo ${GITHUB_REF#refs/heads/} | md5 | head -c 10`" >> $GITHUB_ENV
+          else
             echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
           fi
       - name: Check branch name is a legal serverless stage name
