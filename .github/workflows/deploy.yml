@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - "*"
+      - "dependabot/**"
+      - "!dependabot"
       - "!skipci*"
 
 jobs:
@@ -11,7 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: set branch_name
-        run: echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+        run: |
+          if [[ "$GITHUB_REF" =~ ^refs/heads/dependabot/.* ]]; then # If this is a Dependabot generated branch, set branch_name to 'dependabot'.
+            echo "branch_name=dependabot" >> $GITHUB_ENV
+          else # Else set branch_name to this branch's name, but without the refs/heads/ prefix.
+            echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+          fi
       - name: Check branch name is a legal serverless stage name
         run: |
           if [[ ! $branch_name =~ ^[a-zA-Z][a-zA-Z0-9-]*$ ]] || [[ $branch_name -gt 128 ]]; then
