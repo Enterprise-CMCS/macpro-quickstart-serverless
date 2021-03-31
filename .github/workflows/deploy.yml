@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - "*"
+      - "dependabot/**"
       - "!skipci*"
 
 jobs:
@@ -11,7 +12,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: set branch_name
-        run: echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+        run: |
+          if [[ "$GITHUB_REF" =~ ^refs/heads/dependabot/.* ]]; then # Dependabot builds very long branch names.  This is a switch to make it shorter.
+            echo "branch_name=`echo ${GITHUB_REF#refs/heads/} | md5sum | head -c 10 | sed 's/^/x/'`" >> $GITHUB_ENV
+          else
+            echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+          fi
       - name: Check branch name is a legal serverless stage name
         run: |
           if [[ ! $branch_name =~ ^[a-zA-Z][a-zA-Z0-9-]*$ ]] || [[ $branch_name -gt 128 ]]; then
