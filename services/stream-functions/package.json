@@ -7,8 +7,5 @@
     "dynamodb-stream-elasticsearch": "^2.11.1"
   },
   "devDependencies": {
-    "serverless-bundle": "^3.0.0",
-    "serverless-dotenv-plugin": "^3.0.0",
-    "serverless-stack-termination-protection": "^1.0.4"
   }
 }
