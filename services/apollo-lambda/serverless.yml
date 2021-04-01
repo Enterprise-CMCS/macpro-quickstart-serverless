@@ -28,7 +28,7 @@ provider:
   region: us-east-1
   iam:
     role:
-      permissionBoundary: ${self:custom.iamPermissionsBoundaryPolicy}   
+      permissionBoundary: ${self:custom.iamPermissionsBoundaryPolicy}
 resources:
   Conditions:
     CreatePermissionsBoundary:
@@ -40,6 +40,16 @@ functions:
   graphql:
     # this is formatted as <FILENAME>.<HANDLER>
     handler: graphql.graphqlHandler
+    role:
+      Fn::If:
+        - CreatePermissionsBoundary
+        - Fn::Join:
+            - ""
+            - - "arn:aws:iam::"
+              - Ref: AWS::AccountId
+              - ":policy"
+              - '${self:custom.iamPermissionsBoundaryPolicy, ""}'
+        - Ref: AWS::NoValue
     events:
     - http:
         path: graphql
