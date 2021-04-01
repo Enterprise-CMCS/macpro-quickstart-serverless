@@ -41,15 +41,8 @@ functions:
     # this is formatted as <FILENAME>.<HANDLER>
     handler: graphql.graphqlHandler
     role:
-      Fn::If:
-        - CreatePermissionsBoundary
-        - Fn::Join:
-            - ""
-            - - "arn:aws:iam::"
-              - Ref: AWS::AccountId
-              - ":policy"
-              - '${self:custom.iamPermissionsBoundaryPolicy, ""}'
-        - Ref: AWS::NoValue
+      permissionBoundary: ${self:custom.iamPermissionsBoundaryPolicy}
+
     events:
     - http:
         path: graphql
