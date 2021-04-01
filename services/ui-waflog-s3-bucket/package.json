@@ -3,7 +3,5 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
-  "devDependencies": {
-    "serverless-stack-termination-protection": "^1.0.4"
-  }
+  "devDependencies": {}
 }

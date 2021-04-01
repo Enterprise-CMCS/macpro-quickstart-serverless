@@ -8,7 +8,5 @@
   },
   "author": "",
   "license": "CC0-1.0",
-  "devDependencies": {
-    "serverless-stack-termination-protection": "^1.0.4"
-  }
+  "devDependencies": {}
 }
