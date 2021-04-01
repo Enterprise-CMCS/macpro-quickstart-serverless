@@ -8,8 +8,6 @@ services=(
   'database'
   'uploads'
   'app-api'
-  'elasticsearch-auth'
-  'elasticsearch'
   'stream-functions'
   'ui-waflog-s3-bucket'
   'ui-auth'
