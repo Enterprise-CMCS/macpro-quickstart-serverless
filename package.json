@@ -33,8 +33,6 @@
     "serverless-offline": "^6.8.0",
     "serverless-plugin-scripts": "^1.0.2",
     "serverless-plugin-warmup": "^4.9.0",
-    "serverless-stack-termination-protection": "^1.0.4",
-    "chromedriver": ">=86.0.0",
-    "nightwatch": "^1.5.1"
+    "serverless-stack-termination-protection": "^1.0.4"
   }
 }
