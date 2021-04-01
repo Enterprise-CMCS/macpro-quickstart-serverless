@@ -1,0 +1,19 @@
+{
+  "name": "aws-dynamodb-graphql",
+  "version": "0.0.1",
+  "description": "aws-dynamodb-graphql",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "csp",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1.0",
+    "@aws-sdk/util-dynamodb": "^3.1.0",
+    "apollo-server": "^2.19.1",
+    "apollo-server-lambda": "^2.19.1",
+    "graphql": "^15.4.0",
+    "graphql-type-json": "^0.3.2"
+  }
+}

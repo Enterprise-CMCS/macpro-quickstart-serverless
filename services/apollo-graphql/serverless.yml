@@ -1,0 +1,41 @@
+service: apollo-lambda
+
+frameworkVersion: "2"
+
+plugins:
+  - apollo-server-lambda
+  - serverless-stack-termination-protection
+  - graphql-type-json
+  - graphql
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
+  serverlessTerminationProtection:
+    stages: # This is a list of common names for important envs that should not be destroyed.  You can remove the stage names your project doesn't use; this list is meant to be inclusive.
+      - master
+      - val
+      - production
+      - develop
+      - main
+      - impl
+      - val
+      - prod
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+functions:
+  graphql:
+    # this is formatted as <FILENAME>.<HANDLER>
+    handler: graphql.graphqlHandler
+    events:
+    - http:
+        path: graphql
+        method: post
+        cors: true
+    - http:
+        path: graphql
+        method: get
+        cors: true
