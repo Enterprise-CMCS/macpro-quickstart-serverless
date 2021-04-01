@@ -3,10 +3,8 @@ service: apollo-lambda
 frameworkVersion: "2"
 
 plugins:
-  - apollo-server-lambda
   - serverless-stack-termination-protection
-  - graphql-type-json
-  - graphql
+
 
 custom:
   stage: ${opt:stage, self:provider.stage}
