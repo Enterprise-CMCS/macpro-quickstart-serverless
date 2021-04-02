@@ -1,5 +1,3 @@
-const { pushStream } = require("dynamodb-stream-elasticsearch");
-
 const { ES_ENDPOINT_URL, INDEX, TYPE } = process.env;
 
 function myHandler(event, context, callback) {
