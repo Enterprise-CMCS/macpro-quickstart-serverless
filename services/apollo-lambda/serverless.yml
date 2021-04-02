@@ -9,10 +9,10 @@ plugins:
 custom:
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
-  tableName: ${env:AMENDMENTS_TABLE_NAME, cf:database-${self:custom.stage}.AmendmentsTableName}
-  tableArn: ${env:AMENDMENTS_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsTableArn}
-  atomicCounterTableName: ${env:AMENDMENTS_COUNTER_TABLE_NAME, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableName}
-  atomicCounterTableArn: ${env:AMENDMENTS_COUNTER_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableArn}
+  tableName: ${cf:database-${self:custom.stage}.AmendmentsTableName}
+  tableArn: ${cf:database-${self:custom.stage}.AmendmentsTableArn}
+  atomicCounterTableName: ${cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableName}
+  atomicCounterTableArn: ${cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableArn}
   noteTableName: ${cf:database-${self:custom.stage}.NoteTableName}
   noteTableArn: ${cf:database-${self:custom.stage}.NoteTableArn}
   iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
