@@ -85,5 +85,9 @@ resources:
       Value: !Ref AmendmentsAtomicCounterTable
     AmendmentsAtomicCounterTableArn:
       Value: !GetAtt AmendmentsAtomicCounterTable.Arn
+    NoteTableName:
+      Value: !Ref NoteTable
+    NoteTableArn: 
+      Value: !GetAtt NoteTable.Arn
     Region:
       Value: !Sub ${AWS::Region}
