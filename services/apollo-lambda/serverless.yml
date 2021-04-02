@@ -13,8 +13,8 @@ custom:
   tableArn: ${env:AMENDMENTS_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsTableArn}
   atomicCounterTableName: ${env:AMENDMENTS_COUNTER_TABLE_NAME, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableName}
   atomicCounterTableArn: ${env:AMENDMENTS_COUNTER_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableArn}
-  noteTableName: ${env:AMENDMENTS_NOTE_TABLE_NAME, cf:database-${self:custom.stage}.NoteTableName}
-  noteTableArn: ${env:AMENDMENTS_NOTE_TABLE_ARN, cf:database-${self:custom.stage}.NoteTableArn}
+  noteTableName: ${cf:database-${self:custom.stage}.NoteTableName}
+  noteTableArn: ${cf:database-${self:custom.stage}.NoteTableArn}
   iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
   iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
   serverlessTerminationProtection:
@@ -31,7 +31,7 @@ custom:
 provider:
   name: aws
   runtime: nodejs12.x
-  region: us-east-1  
+  region: us-east-1
 resources:
   Conditions:
     CreatePermissionsBoundary:
