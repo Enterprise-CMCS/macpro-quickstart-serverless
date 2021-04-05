@@ -4,10 +4,8 @@ frameworkVersion: "2"
 
 plugins:
   - serverless-stack-termination-protection
-  - apollo-server
   - apollo-server-lambda
-  - graphql
-  - graphql-type-json
+
 
 
 custom:
