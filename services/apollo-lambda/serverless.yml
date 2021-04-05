@@ -4,6 +4,10 @@ frameworkVersion: "2"
 
 plugins:
   - serverless-stack-termination-protection
+  - apollo-server
+  - apollo-server-lambda
+  - graphql
+  - graphql-type-json
 
 
 custom:
@@ -93,7 +97,6 @@ resources:
 
 functions:
   graphql:
-    # this is formatted as <FILENAME>.<HANDLER>
     handler: graphql.graphqlHandler
     role: LambdaApiRole
     events:
