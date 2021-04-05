@@ -8,7 +8,7 @@ services=(
   'database'
   'uploads'
   'app-api'
-  'apollo-lambda'
+  #'apollo-lambda'
   #'elasticsearch-auth'
   #'elasticsearch'
   'stream-functions'
