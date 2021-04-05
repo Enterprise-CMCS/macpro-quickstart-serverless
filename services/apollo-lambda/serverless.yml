@@ -4,10 +4,7 @@ frameworkVersion: "2"
 
 plugins:
   - serverless-stack-termination-protection
-  - apollo-server-lambda
-
-
-
+  
 custom:
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
