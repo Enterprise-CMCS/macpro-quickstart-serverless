@@ -6,7 +6,7 @@ const client = new DynamoDBClient({ region: "us-east-1" });
 
 const getQuotes = async () => {
   const params = {
-    TableName: "${self:custom.tableName}-note",
+    TableName: "Quote",
   };
 
   try {

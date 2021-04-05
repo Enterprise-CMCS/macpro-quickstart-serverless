@@ -66,7 +66,7 @@ resources:
     NoteTable:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: ${self:custom.tableName}-note
+        TableName: Quote #${self:custom.tableName}-note
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
@@ -87,7 +87,7 @@ resources:
       Value: !GetAtt AmendmentsAtomicCounterTable.Arn
     NoteTableName:
       Value: !Ref NoteTable
-    NoteTableArn: 
+    NoteTableArn:
       Value: !GetAtt NoteTable.Arn
     Region:
       Value: !Sub ${AWS::Region}
