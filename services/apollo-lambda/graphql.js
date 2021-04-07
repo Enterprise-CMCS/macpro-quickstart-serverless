@@ -12,7 +12,7 @@ const getAllAmendments = async () => {
     results.Items.forEach((item) => {
       amendments.push(unmarshall(item));
     });
-    return amendments;
+    return quotes;
   } catch (err) {
     console.error(err);
     return err;
@@ -40,12 +40,23 @@ type Query {
 
 `;
 // Provide resolver functions for your schema fields
+//const resolvers = {
+//  Query: {
+//    amendments: (_, __, { dataSources }) =>
+//      dataSources.amendmentAPI.getAllAmendments(),
+//    me: (_, __, { dataSources }) => dataSources.userAPI.findOrCreateUser()
+//  }
+
+// Provide resolver functions for your schema fields
 const resolvers = {
   Query: {
-    amendments: (_, __, { dataSources }) =>
-      dataSources.amendmentAPI.getAllAmendments(),
-    me: (_, __, { dataSources }) => dataSources.userAPI.findOrCreateUser()
-  }
+    amendments: () => {
+      return getAllAmendments();
+    },
+  },
+};
+
+
 };
 const server = new ApolloServer({
   typeDefs,
