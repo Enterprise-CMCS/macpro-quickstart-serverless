@@ -2,17 +2,17 @@ const { ApolloServer, gql } = require('apollo-server-lambda');
 const { unmarshall } = require("@aws-sdk/util-dynamodb");
 const { DynamoDBClient, ScanCommand } = require("@aws-sdk/client-dynamodb");
 const client = new DynamoDBClient({ region: "us-east-1" });
-const getQuotes = async () => {
+const getAllAmendments = async () => {
   const params = {
-    TableName: "Quote",
+    TableName: process.env.tableName,
   };
   try {
     const results = await client.send(new ScanCommand(params));
-    const quotes = [];
+    const amendments = [];
     results.Items.forEach((item) => {
-      quotes.push(unmarshall(item));
+      amendments.push(unmarshall(item));
     });
-    return quotes;
+    return amendments;
   } catch (err) {
     console.error(err);
     return err;
@@ -20,23 +20,32 @@ const getQuotes = async () => {
 };
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
-  scalar JSON
-  type Quote {
-    id: ID!
-    value: String
-    source: String
-  }
-  type Query {
-    quotes: [Quote]
-  }
+type Amendment{
+  amendmentId:  ID!
+  authProvider: String
+  comments:     String
+  email:        string
+}
+type User {
+  userId:    ID!
+  firstName: String!
+  lastName:  String!
+  email:     String!
+}
+
+type Query {
+  amendments: [Amendment]!
+  me: User
+}
+
 `;
 // Provide resolver functions for your schema fields
 const resolvers = {
   Query: {
-    quotes: () => {
-      return getQuotes();
-    },
-  },
+    amendments: (_, __, { dataSources }) =>
+      dataSources.amendmentAPI.getAllAmendments(),
+    me: (_, __, { dataSources }) => dataSources.userAPI.findOrCreateUser()
+  }
 };
 const server = new ApolloServer({
   typeDefs,

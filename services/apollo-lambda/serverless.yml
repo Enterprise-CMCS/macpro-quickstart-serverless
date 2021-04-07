@@ -31,6 +31,9 @@ provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
+  environment:
+    tableName: ${self:custom.tableName}
+    
 resources:
   Conditions:
     CreatePermissionsBoundary:
@@ -79,8 +82,8 @@ resources:
                     - dynamodb:DeleteItem
                   Resource:
                     - ${self:custom.tableArn}
-                    - ${self:custom.atomicCounterTableArn}
-                    - ${self:custom.noteTableArn}
+                  #  - ${self:custom.atomicCounterTableArn}
+                  #  - ${self:custom.noteTableArn}
                 - Effect: "Allow"
                   Action:
                     - logs:CreateLogStream
