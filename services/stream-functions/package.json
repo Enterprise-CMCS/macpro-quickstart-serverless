@@ -2,9 +2,5 @@
   "name": "stream-functions",
   "description": "",
   "version": "1.0.0",
-  "devDependencies": {
-    "serverless-bundle": "^3.0.0",
-    "serverless-dotenv-plugin": "^3.0.0",
-    "serverless-stack-termination-protection": "^1.0.4"
-  }
+  "devDependencies": {}
 }

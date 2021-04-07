@@ -40,8 +40,6 @@
   },
   "devDependencies": {
     "serverless-cloudfront-invalidate": "^1.5.0",
-    "serverless-plugin-scripts": "^1.0.2",
-    "serverless-s3-sync": "^1.14.4",
-    "serverless-stack-termination-protection": "^1.0.4"
+    "serverless-s3-sync": "^1.14.4"
   }
 }
