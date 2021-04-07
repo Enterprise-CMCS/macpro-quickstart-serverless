@@ -4,7 +4,7 @@ const { DynamoDBClient, ScanCommand } = require("@aws-sdk/client-dynamodb");
 const client = new DynamoDBClient({ region: "us-east-1" });
 const getQuotes = async () => {
   const params = {
-    TableName: "apollo-graphql-amendments",
+    TableName: "Beef",
   };
   try {
     const results = await client.send(new ScanCommand(params));
@@ -22,18 +22,15 @@ const getQuotes = async () => {
 const typeDefs = gql`
 scalar JSON
 type Quote {
-amendmentId:  ID!
-authProvider: String
 comments:     String
 email:        string
-userId:    string!
 firstName: String!
 lastName:  String!
 email:     String!
 }
 
   type Query {
-    quotes: [Amendment]
+    quotes: [Quote]
   }
 `;
 // Provide resolver functions for your schema fields
