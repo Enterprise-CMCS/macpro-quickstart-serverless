@@ -22,8 +22,7 @@ const getQuotes = async () => {
 const typeDefs = gql`
 scalar JSON
 type apollo-graphql-amendments {
-  userId: ID!
-  amendmentId: ID!
+  id: ID!
 }
 
   type Query {
