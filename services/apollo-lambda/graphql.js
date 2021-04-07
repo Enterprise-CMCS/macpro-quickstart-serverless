@@ -20,14 +20,20 @@ const getQuotes = async () => {
 };
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
-  scalar JSON
-  type Quote {
-    id: ID!
-    value: String
-    source: String
-  }
+scalar JSON
+type Amendment{
+amendmentId:  ID!
+authProvider: String
+comments:     String
+email:        string
+userId:    string!
+firstName: String!
+lastName:  String!
+email:     String!
+}
+
   type Query {
-    quotes: [Quote]
+    amendments: [Amendment]
   }
 `;
 // Provide resolver functions for your schema fields
