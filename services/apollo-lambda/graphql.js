@@ -12,14 +12,16 @@ const getAllAmendments = async () => {
     results.Items.forEach((item) => {
       amendments.push(unmarshall(item));
     });
-    return quotes;
+    return amendments;
   } catch (err) {
     console.error(err);
     return err;
   }
 };
 // Construct a schema, using GraphQL schema language
+
 const typeDefs = gql`
+scalar JSON
 type Amendment{
   amendmentId:  ID!
   authProvider: String
