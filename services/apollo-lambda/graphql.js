@@ -21,12 +21,14 @@ const getQuotes = async () => {
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
 scalar JSON
-type apollo-graphql-amendments {
-  id: ID!
+type Quote {
+  userId: ID!
 }
 
   type Query {
-    quotes: [apollo-graphql-amendments]
+    quotes: [Quote!]
+    quote(userId:ID!):Quote
+    
   }
 `;
 // Provide resolver functions for your schema fields
