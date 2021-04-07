@@ -21,13 +21,14 @@ const getQuotes = async () => {
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
 scalar JSON
-type Quote {
+type Beef {
+id:   ID!
 value: String
 source: String
 }
 
   type Query {
-    quotes: [Quote]
+    quotes: [Beef]
   }
 `;
 // Provide resolver functions for your schema fields
