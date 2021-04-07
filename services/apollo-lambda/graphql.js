@@ -27,7 +27,7 @@ const typeDefs = gql`
     source: String
   }
   type Query {
-    quotes: [Beef]
+    quotes: [Quote]
   }
 `;
 // Provide resolver functions for your schema fields
