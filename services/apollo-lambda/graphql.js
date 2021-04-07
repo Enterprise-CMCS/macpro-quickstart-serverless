@@ -22,9 +22,11 @@ const getQuotes = async () => {
 const typeDefs = gql`
 scalar JSON
 type Beef {
-id:   ID!
-value: String
-source: String
+  comments:     String
+  email:        string
+  firstName: String
+  lastName:  String
+  email:     String
 }
 
   type Query {
