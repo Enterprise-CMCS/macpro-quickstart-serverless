@@ -22,11 +22,8 @@ const getQuotes = async () => {
 const typeDefs = gql`
 scalar JSON
 type Quote {
-comments:     String
-email:        string
-firstName: String!
-lastName:  String!
-email:     String!
+value: String
+source: String
 }
 
   type Query {
