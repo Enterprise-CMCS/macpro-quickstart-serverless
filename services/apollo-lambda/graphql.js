@@ -23,22 +23,19 @@ const typeDefs = gql`
 scalar JSON
 type Quote {
   userId: ID!
-  amendmentId: ID!
   firstName:    String!
   LastName:     String!
   comments:     String
   email:        string
   email:        String
-  CreatedAt:    Boolean
   territory:    String
-  urgent:       Boolean
+
 
 }
 
   type Query {
     quotes: [Quote!]
     quote(userId:ID!):Quote
-    quoted(amendmentId:ID!):Quote
 
   }
 `;
