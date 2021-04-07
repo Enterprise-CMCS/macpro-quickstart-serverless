@@ -23,12 +23,13 @@ const typeDefs = gql`
 scalar JSON
 type Quote {
   userId: ID!
+  firstName: String!
 }
 
   type Query {
     quotes: [Quote!]
     quote(userId:ID!):Quote
-    
+
   }
 `;
 // Provide resolver functions for your schema fields
