@@ -25,9 +25,7 @@ type Quote {
   userId:       ID!
   firstName:    String!
   LastName:     String!
-  comments:     String
-  email:        string
-  territory:    String
+  email:        string!
 
 }
 
