@@ -12,3 +12,4 @@ jobs:
           node-version: "12.x"
       - name: check prettier
         run: npx prettier . -c -u
+        
