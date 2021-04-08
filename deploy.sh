@@ -1,5 +1,5 @@
 #!/bin/bash
-
+npx prettier --write .
 set -e
 
 stage=${1:-dev}
