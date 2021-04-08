@@ -101,10 +101,6 @@ resources:
                     - dynamodb:GetShardIterator
                     - dynamodb:ListStreams
                   Resource: ${self:custom.tableStreamArn}
-                - Effect: "Allow"
-                  Action:
-                    - es:ESHttp*
-                  Resource: ${self:custom.elasticSearchDomainArn}/*
     LambdaEmailerRole: # Why isn't this with the function as an iamRoleStatements?  https://github.com/serverless/serverless/issues/6485
       Type: "AWS::IAM::Role"
       Properties:
