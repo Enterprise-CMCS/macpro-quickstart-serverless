@@ -9,28 +9,6 @@
   dependencies:
     aws4 "^1.8.0"
 
-"@elastic/elasticsearch@7.7.1":
-  version "7.7.1"
-  resolved "https://registry.yarnpkg.com/@elastic/elasticsearch/-/elasticsearch-7.7.1.tgz#ad95145fcd779206d101560cb90cdeb3041d2984"
-  integrity sha512-OzCitXAMQ4pC6EwtPCO0KBygjDFcBMBrJ6pBguYuZxtMbRLOPjcS1Er31N0+J6mp2Q8pU0HGm1FAGfGe6FJReQ==
-  dependencies:
-    debug "^4.1.1"
-    decompress-response "^4.2.0"
-    ms "^2.1.1"
-    pump "^3.0.0"
-    secure-json-parse "^2.1.0"
-
-"@elastic/elasticsearch@^7.6.1":
-  version "7.9.1"
-  resolved "https://registry.yarnpkg.com/@elastic/elasticsearch/-/elasticsearch-7.9.1.tgz#40f1c38e8f70d783851c13be78a7cb346891c15e"
-  integrity sha512-NfPADbm9tRK/4ohpm9+aBtJ8WPKQqQaReyBKT225pi2oKQO1IzRlfM+OPplAvbhoH1efrSj1NKk27L+4BCrzXQ==
-  dependencies:
-    debug "^4.1.1"
-    decompress-response "^4.2.0"
-    ms "^2.1.1"
-    pump "^3.0.0"
-    secure-json-parse "^2.1.0"
-
 aws-sdk@2.693.0:
   version "2.693.0"
   resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.693.0.tgz#46363d32fb2e23c6eeda049998ce8205a4ebf463"
@@ -78,23 +56,6 @@ decompress-response@^4.2.0:
   integrity sha512-jOSne2qbyE+/r8G1VU+G/82LBs2Fs4LAsTiLSHOCOMZQl2OKZ6i8i4IyHemTe+/yIXOtTcRQMzPcgyhoFlqPkw==
   dependencies:
     mimic-response "^2.0.0"
-
-dynamo-to-elasticsearch-nodejs@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/dynamo-to-elasticsearch-nodejs/-/dynamo-to-elasticsearch-nodejs-1.0.5.tgz#d6e9daaa41c9959fb921fac776f0cb0a922c2129"
-  integrity sha512-5JxQKvonOGwyisSNLh8rabVRuFu+yM5viIV3yzKUKNMonR95ZcRR5OwehrlenynH+YMqeyzDVpwkrV6sbiuKww==
-  dependencies:
-    "@elastic/elasticsearch" "^7.6.1"
-
-dynamodb-stream-elasticsearch@^2.11.1:
-  version "2.11.1"
-  resolved "https://registry.yarnpkg.com/dynamodb-stream-elasticsearch/-/dynamodb-stream-elasticsearch-2.11.1.tgz#fd7cc5d834eaf6ecaacce255ea62e64f516e9fc9"
-  integrity sha512-Lltwj8Ie4uFeTn+3TF/vo6WbhK1mNWSq79PD53JIgsXIRBfAJu0sWPhSGrMxAwM238ZooBLn8Kr6+ExqM+0lcQ==
-  dependencies:
-    "@acuris/aws-es-connection" "1.1.0"
-    "@elastic/elasticsearch" "7.7.1"
-    aws-sdk "2.693.0"
-    lodash.flatmap "4.5.0"
 
 end-of-stream@^1.1.0:
   version "1.4.4"
