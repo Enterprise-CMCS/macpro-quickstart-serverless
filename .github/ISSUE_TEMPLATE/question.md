@@ -1,10 +1,9 @@
 ---
 name: Question
 about: Request for more information
-title: ''
+title: ""
 labels: question
-assignees: ''
-
+assignees: ""
 ---
 
 ## Type of Issue:
