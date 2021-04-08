@@ -22,14 +22,12 @@ const getQuotes = async () => {
 const typeDefs = gql`
 scalar JSON
 type Quote {
-  userId: ID!
+  userId:       ID!
   firstName:    String!
   LastName:     String!
   comments:     String
   email:        string
-  email:        String
   territory:    String
-
 
 }
 
