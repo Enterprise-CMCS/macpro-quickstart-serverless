@@ -1,10 +1,9 @@
 ---
 name: Bug
 about: Something's Broken
-title: ''
+title: ""
 labels: bug
-assignees: ''
-
+assignees: ""
 ---
 
 ## Type of Issue:

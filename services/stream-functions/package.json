@@ -2,7 +2,6 @@
   "name": "stream-functions",
   "description": "",
   "version": "1.0.0",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {}
 }
