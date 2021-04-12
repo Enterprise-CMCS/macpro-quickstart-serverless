@@ -96,7 +96,7 @@ resources:
 
     PreSignupTriggerInvokePermission:
       Type: AWS::Lambda::Permission
-  #    DependsOn: CognitoDashpreDashsignupLambdaFunction
+      DependsOn: graphqlLambdaFunction
       Properties:
         Action: lambda:InvokeFunction
         Principal: cognito-idp.amazonaws.com
