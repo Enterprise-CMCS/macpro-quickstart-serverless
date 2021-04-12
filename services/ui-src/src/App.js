@@ -22,8 +22,6 @@ function App() {
     try {
       await Auth.currentSession();
       userHasAuthenticated(true);
-      const userInfo = await Auth.currentUserInfo();
-      setEmail(userInfo.attributes.email);
     } catch (e) {
       if (e !== "No current user") {
         onError(e);
@@ -31,6 +29,11 @@ function App() {
     }
 
     setIsAuthenticating(false);
+  }
+
+  async function setEmailFromUserInfo() {
+    const userInfo = await Auth.currentUserInfo();
+    setEmail(userInfo.attributes.email);
   }
 
   async function handleLogout() {
@@ -53,14 +56,16 @@ function App() {
           <Navbar.Collapse>
             <Nav pullRight>
               {isAuthenticated ? (
-                <>
-                  <NavDropdown id="User" title={email}>
-                    <LinkContainer to="/profile">
-                      <NavItem>User Profile</NavItem>
-                    </LinkContainer>
-                    <NavItem onClick={handleLogout}>Logout</NavItem>
-                  </NavDropdown>
-                </>
+                setEmailFromUserInfo() && (
+                  <>
+                    <NavDropdown id="User" title={email}>
+                      <LinkContainer to="/profile">
+                        <NavItem>User Profile</NavItem>
+                      </LinkContainer>
+                      <NavItem onClick={handleLogout}>Logout</NavItem>
+                    </NavDropdown>
+                  </>
+                )
               ) : (
                 <>
                   <LinkContainer to="/signup">
