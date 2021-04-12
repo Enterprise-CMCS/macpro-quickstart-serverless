@@ -30,7 +30,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_DEFAULT_REGION] || secrets.AWS_DEFAULT_REGION }}
           STAGE_PREFIX: ${{ secrets.STAGE_PREFIX }}
       - name: lock this branch to prevent concurrent builds
-        run: ./.github/github-lock.sh
+        run: ./.github/github-lock.sh $branch_name
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: ./destroy.sh $STAGE_PREFIX$branch_name
