@@ -24,7 +24,7 @@ scalar JSON
 type Quote {
   userId:       ID!
   firstName:    String!
-
+          
 }
 
   type Query {
