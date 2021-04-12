@@ -1,10 +1,9 @@
 ---
 name: Enhancement
 about: New functionality or request
-title: ''
+title: ""
 labels: enhancement
-assignees: ''
-
+assignees: ""
 ---
 
 ## Type of Issue:
