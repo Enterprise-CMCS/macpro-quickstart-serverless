@@ -34,6 +34,7 @@ provider:
   region: us-east-1
   environment:
     tableName: ${self:custom.tableName}
+    userPoolArn: ${self:custom.userPoolArn}
 
 resources:
   Conditions:
@@ -93,7 +94,14 @@ resources:
 
 
 
-
+    PreSignupTriggerInvokePermission:
+      Type: AWS::Lambda::Permission
+  #    DependsOn: CognitoDashpreDashsignupLambdaFunction
+      Properties:
+        Action: lambda:InvokeFunction
+        Principal: cognito-idp.amazonaws.com
+        SourceArn: ${self:custom.userPoolArn}
+        FunctionName: ${self:service}-${self:custom.stage}-graphql
 functions:
   graphql:
     handler: graphql.graphqlHandler
@@ -103,12 +111,12 @@ functions:
         path: graphql
         method: post
         cors: true
-        authorizer:
-          ${self:custom.UserPoolArn}
+      #  authorizer:
+      #    ${self:custom.UserPoolArn}
 
     - http:
         path: graphql
         method: get
         cors: true
-        authorizer:
-          ${self:custom.UserPoolArn}
+    #    authorizer:
+    #      ${self:custom.UserPoolArn}

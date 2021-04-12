@@ -69,6 +69,10 @@ resources:
             AttributeDataType: String
             Mutable: true
             Required: false
+        LambdaConfig:
+        PreSignUp: !Sub 'arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:apollo-lambda-${self:custom.stage}-cognito-pre-signup'
+
+
     CognitoUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
       Properties:
@@ -147,5 +151,7 @@ resources:
       Value: !Ref CognitoIdentityPool
     UserPoolArn:
       Value: !GetAtt CognitoUserPool.Arn
+      Export:
+      Name: !Sub apollo-lambda-${self:custom.stage}:user-pool-arn
     Region:
       Value: !Sub ${AWS::Region}
