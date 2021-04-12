@@ -93,15 +93,6 @@ resources:
                   Resource: !Sub /arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}
 
 
-
-    PreSignupTriggerInvokePermission:
-      Type: AWS::Lambda::Permission
-      DependsOn: graphqlLambdaFunction
-      Properties:
-        Action: lambda:InvokeFunction
-        Principal: cognito-idp.amazonaws.com
-        SourceArn: ${self:custom.userPoolArn}
-        FunctionName: ${self:service}-${self:custom.stage}-graphql
 functions:
   graphql:
     handler: graphql.graphqlHandler

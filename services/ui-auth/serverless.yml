@@ -151,7 +151,7 @@ resources:
       Value: !Ref CognitoIdentityPool
     UserPoolArn:
       Value: !GetAtt CognitoUserPool.Arn
-      Export:
-      Name: !Sub apollo-lambda-${self:custom.stage}:user-pool-arn
+    #  Export:
+    #  Name: !Sub apollo-lambda-${self:custom.stage}:user-pool-arn
     Region:
       Value: !Sub ${AWS::Region}
