@@ -9,14 +9,16 @@ services=(
   'uploads'
   'app-api'
   'apollo-lambda'
-  #'elasticsearch-auth'
-  #'elasticsearch'
   'stream-functions'
   'ui-waflog-s3-bucket'
   'ui-auth'
   'ui'
   'ui-waf-log-assoc'
   'ui-src'
+
+  #'elasticsearch-auth'
+  #'elasticsearch'
+  
 )
 
 install_deps() {
