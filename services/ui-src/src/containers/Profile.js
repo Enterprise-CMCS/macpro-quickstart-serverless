@@ -69,6 +69,11 @@ export default function Profile() {
   async function handleSubmit(event) {
     event.preventDefault();
     setIsLoading(true);
+    let user = await Auth.currentAuthenticatedUser();
+    console.log("user used to be: ");
+    console.log(user);
+    console.log("user is now: ");
+    console.log(username);
     try {
       await saveProfile(userName, {
         given_name: firstName,
