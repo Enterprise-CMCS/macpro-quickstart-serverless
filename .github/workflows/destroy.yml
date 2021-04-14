@@ -13,7 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: set branch_name
-        run: echo "branch_name=${{ github.event.ref }}" >> $GITHUB_ENV
+        run: |
+          if [[ "${{ github.event.ref }}" =~ ^dependabot/.* ]]; then # Dependabot builds very long branch names.  This is a switch to make it shorter.
+            echo "branch_name=`echo ${{ github.event.ref }} | md5sum | head -c 10 | sed 's/^/x/'`" >> $GITHUB_ENV
+          else
+            echo "branch_name=${{ github.event.ref }}" >> $GITHUB_ENV
+          fi
       - uses: actions/checkout@v1
       - name: set branch specific variable names
         run: ./.github/build_vars.sh set_names
@@ -25,7 +30,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_DEFAULT_REGION] || secrets.AWS_DEFAULT_REGION }}
           STAGE_PREFIX: ${{ secrets.STAGE_PREFIX }}
       - name: lock this branch to prevent concurrent builds
-        run: ./.github/github-lock.sh
+        run: ./.github/github-lock.sh $branch_name
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: ./destroy.sh $STAGE_PREFIX$branch_name

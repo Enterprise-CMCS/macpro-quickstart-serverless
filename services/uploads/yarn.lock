@@ -2021,11 +2021,6 @@ serverless-offline@^6.5.0:
     velocityjs "^2.0.0"
     ws "^7.2.1"
 
-serverless-plugin-scripts@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/serverless-plugin-scripts/-/serverless-plugin-scripts-1.0.2.tgz#21808c3cfd0a1a84e48c0660b0f6f370b5665486"
-  integrity sha1-IYCMPP0KGoTkjAZgsPbzcLVmVIY=
-
 serverless-s3-local@^0.6.7:
   version "0.6.7"
   resolved "https://registry.yarnpkg.com/serverless-s3-local/-/serverless-s3-local-0.6.7.tgz#ee833078024d9711dacd221320d0b14facd879b2"
@@ -2038,11 +2033,6 @@ serverless-s3-local@^0.6.7:
     s3rver "^3.6.1"
     serverless-offline "^6.5.0"
     shelljs "^0.8.3"
-
-serverless-stack-termination-protection@^1.0.4:
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/serverless-stack-termination-protection/-/serverless-stack-termination-protection-1.0.4.tgz#e0430108cfc8f4d72a63138ef5781c6fe9707868"
-  integrity sha512-2uOF6/t90VXpWq8ZbWgEXMiYXA+9ZKsgm8or5jJLQYnm0Sbu2z7/EK2/ACwH4uaErFOdprI0tO9H8STdKK4TFQ==
 
 set-immediate-shim@~1.0.1:
   version "1.0.1"
