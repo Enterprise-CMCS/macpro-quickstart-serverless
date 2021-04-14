@@ -8,10 +8,7 @@ services=(
   'database'
   'uploads'
   'app-api'
-<<<<<<< HEAD
   'apollo-lambda'
-=======
->>>>>>> master
   'stream-functions'
   'ui-waflog-s3-bucket'
   'ui-auth'
@@ -21,7 +18,7 @@ services=(
 
   #'elasticsearch-auth'
   #'elasticsearch'
-  
+
 )
 
 install_deps() {
