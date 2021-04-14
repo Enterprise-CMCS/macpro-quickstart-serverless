@@ -4,12 +4,13 @@ import { onError } from "../libs/errorLib";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import "./Profile.css";
-import { Auth } from "aws-amplify";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import { currentUserInfo, updateUserAttributes } from "../libs/user";
 
 export default function Profile() {
   const history = useHistory();
+  const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -21,13 +22,10 @@ export default function Profile() {
   };
 
   useEffect(() => {
-    function loadProfile() {
-      return Auth.currentUserInfo();
-    }
-
     async function onLoad() {
       try {
-        const userInfo = await loadProfile();
+        var userInfo = await currentUserInfo();
+        setUserName(userInfo.username);
         setEmail(userInfo.attributes.email);
         setFirstName(capitalize(userInfo.attributes.given_name));
         setLastName(capitalize(userInfo.attributes.family_name));
@@ -55,8 +53,8 @@ export default function Profile() {
     );
   }
 
-  function saveProfile(user, userAttributes) {
-    return Auth.updateUserAttributes(user, userAttributes);
+  function saveProfile(userName, userAttributes) {
+    updateUserAttributes(userName, userAttributes);
   }
 
   function formatPhoneNumberForForm(phone) {
@@ -71,9 +69,8 @@ export default function Profile() {
   async function handleSubmit(event) {
     event.preventDefault();
     setIsLoading(true);
-    let user = await Auth.currentAuthenticatedUser();
     try {
-      await saveProfile(user, {
+      await saveProfile(userName, {
         given_name: firstName,
         family_name: lastName,
         phone_number: formatPhoneNumberForSubmission(phoneNumber),
