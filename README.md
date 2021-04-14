@@ -2,7 +2,6 @@
 
 A serverless form submission application built and deployed to AWS with the Serverless Application Framework.
 
-
 ## Architecture
 
 ![Architecture Diagram](./.images/architecture.png?raw=true)
