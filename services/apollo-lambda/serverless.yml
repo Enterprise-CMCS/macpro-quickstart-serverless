@@ -14,7 +14,6 @@ custom:
   atomicCounterTableArn: ${cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableArn}
   noteTableName: ${cf:database-${self:custom.stage}.NoteTableName}
   noteTableArn: ${cf:database-${self:custom.stage}.NoteTableArn}
-  userPoolArn: ${cf:ui-auth-${self:custom.stage}.UserPoolArn}
   iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
   iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
   serverlessTerminationProtection:
