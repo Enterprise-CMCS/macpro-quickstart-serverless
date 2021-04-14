@@ -92,6 +92,17 @@ resources:
                     - logs:CreateLogGroup
                   Resource: !Sub /arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}
 
+  Outputs:
+    ApiGatewayRestApiName:
+      Value: !Ref ApiGatewayRestApi
+    ApiGatewayRestApiUrl:
+      Value: !Sub https://${ApiGatewayRestApi}.execute-api.${self:provider.region}.amazonaws.com/${self:custom.stage}
+    Region:
+      Value: !Sub ${AWS::Region}
+
+
+
+
 
 functions:
   graphql:
@@ -102,10 +113,10 @@ functions:
         path: graphql
         method: post
         cors: true
-          authorizer:  ${self:custom.UserPoolArn}
+        authorizer:  aws_iam
 
     - http:
         path: graphql
         method: get
         cors: true
-          authorizer:  ${self:custom.UserPoolArn}
+        authorizer:  aws_iam
