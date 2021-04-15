@@ -10,6 +10,10 @@ export default {
     REGION: window._env_.API_REGION,
     URL: window._env_.API_URL,
   },
+  apiGraphqlGateway: {
+    REGION: window._env_.API_GRAPHQL_REGION,
+    URL: window._env_.API_GRAPHQL_URL,
+  },
   cognito: {
     REGION: window._env_.COGNITO_REGION,
     USER_POOL_ID: window._env_.COGNITO_USER_POOL_ID,
