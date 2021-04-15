@@ -4,7 +4,7 @@ A serverless form submission application built and deployed to AWS with the Serv
 
 ## Architecture
 
-![Architecture Diagram](./.images/architecture.png?raw=true)
+![Architecture Diagram](./.images/architecture.svg?raw=true)
 
 ## Local Dev
 
