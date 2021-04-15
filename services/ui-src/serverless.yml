@@ -29,7 +29,7 @@ custom:
   api_region: ${cf:app-api-${self:custom.stage}.Region}
   api_url: ${cf:app-api-${self:custom.stage}.ApiGatewayRestApiUrl}
   api_graphql_region: ${cf:apollo-lambda-${self:custom.stage}.Region}
-  api_grpahql_url: ${cf:apollo-lambda-${self:custom.stage}.ApiGatewayRestApiUrl}
+  api_graphql_url: ${cf:apollo-lambda-${self:custom.stage}.ApiGatewayRestApiUrl}
   cognito_region: ${cf:ui-auth-${self:custom.stage}.Region}
   cognito_identity_pool_id: ${cf:ui-auth-${self:custom.stage}.IdentityPoolId}
   cognito_user_pool_id: ${cf:ui-auth-${self:custom.stage}.UserPoolId}
