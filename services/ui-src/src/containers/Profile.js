@@ -22,9 +22,6 @@ export default function Profile() {
   };
 
   useEffect(() => {
-    function loadProfile() {
-      return Auth.currentUserInfo();
-    }
 
     async function onLoad() {
       try {
