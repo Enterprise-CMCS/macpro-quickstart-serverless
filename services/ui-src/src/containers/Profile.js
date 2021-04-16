@@ -4,7 +4,6 @@ import { onError } from "../libs/errorLib";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import "./Profile.css";
-import { Auth } from "aws-amplify";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { currentUserInfo, updateCurrentUserAttributes } from "../libs/user";
@@ -69,7 +68,6 @@ export default function Profile() {
   async function handleSubmit(event) {
     event.preventDefault();
     setIsLoading(true);
-    let user = await Auth.currentAuthenticatedUser();
     try {
       await saveProfile({
         given_name: firstName,
