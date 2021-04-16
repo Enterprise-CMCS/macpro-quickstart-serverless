@@ -52,10 +52,6 @@ export default function Profile() {
     );
   }
 
-  function saveProfile(userAttributes) {
-    updateCurrentUserAttributes(userAttributes);
-  }
-
   function formatPhoneNumberForForm(phone) {
     if (phone == null) return "";
     return phone.replace("+", "");
@@ -69,7 +65,7 @@ export default function Profile() {
     event.preventDefault();
     setIsLoading(true);
     try {
-      await saveProfile({
+      await updateCurrentUserAttributes({
         given_name: firstName,
         family_name: lastName,
         phone_number: formatPhoneNumberForSubmission(phoneNumber),
