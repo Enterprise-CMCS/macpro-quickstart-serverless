@@ -3,16 +3,17 @@ import config from "../config";
 
 const userKey = "userKey";
 
-export async function updateUserAttributes(user, userAttributes) {
+export async function updateCurrentUserAttributes(userAttributes) {
   const localLogin = config.LOCAL_LOGIN === "true";
   if (localLogin) {
-    return updateLocalUserAttributes(userAttributes);
+    return updateLocalCurrentUserAttributes(userAttributes);
   } else {
+    let user = await Auth.currentAuthenticatedUser();
     return Auth.updateUserAttributes(user, userAttributes);
   }
 }
 
-export function updateLocalUserAttributes(userAttributes) {
+export function updateLocalCurrentUserAttributes(userAttributes) {
   const store = window.localStorage;
   var info = JSON.parse(store.getItem(userKey));
   info.attributes = { ...info.attributes, ...userAttributes };
