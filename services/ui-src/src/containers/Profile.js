@@ -21,7 +21,6 @@ export default function Profile() {
   };
 
   useEffect(() => {
-
     async function onLoad() {
       try {
         var userInfo = await currentUserInfo();
