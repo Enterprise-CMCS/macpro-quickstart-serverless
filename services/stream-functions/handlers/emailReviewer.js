@@ -1,5 +1,4 @@
-var aws = require("aws-sdk");
-var ses = new aws.SES({ region: "us-east-1" });
+import * as ses from "./../libs/ses-lib";
 
 exports.handler = function (event, context, callback) {
   console.log("Received event:", JSON.stringify(event, null, 2));
@@ -17,16 +16,7 @@ exports.handler = function (event, context, callback) {
       }
     })(record.eventName);
 
-    ses.sendEmail(params, function (err, data) {
-      callback(null, { err: err, data: data });
-      if (err) {
-        console.log(err);
-        context.fail(err);
-      } else {
-        console.log(data);
-        context.succeed(event);
-      }
-    });
+    ses.sendEmail(params);
   });
   callback(null, "message");
 };
@@ -49,7 +39,7 @@ Details:
    State:  ${record.dynamodb.NewImage.territory.S}
    Submitter Name:  ${record.dynamodb.NewImage.firstName.S} ${record.dynamodb.NewImage.lastName.S}
    Submitter Contact Email:  ${record.dynamodb.NewImage.email.S}
-   
+
 Regards,
 APS Submission App
 
