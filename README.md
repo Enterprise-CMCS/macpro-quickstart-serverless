@@ -6,6 +6,13 @@ A serverless form submission application built and deployed to AWS with the Serv
 
 ![Architecture Diagram](./.images/architecture.svg?raw=true)
 
+## Operations
+
+Our product is promoted through branches.  Master is merged to val to affect a master release, and val is merged to production to affect a production release.  Please use the buttons below to promote/release code to higher environments.<br />
+
+[![release to val](https://img.shields.io/badge/Release-val-blue)](https://github.com/CMSgov/macpro-quickstart-serverless/compare/t128?quick_pull=1&template=PULL_REQUEST_TEMPLATE.val.md&title=Release%20to%20Val)<br />
+[![release to production](https://img.shields.io/badge/Release-production-blue)](https://github.com/CMSgov/macpro-quickstart-serverless/compare/t128?quick_pull=1&template=PULL_REQUEST_TEMPLATE.production.md&title=Release%20to%20Production)
+
 ## Local Dev
 
 Run all the services locally with the command `./dev local`
