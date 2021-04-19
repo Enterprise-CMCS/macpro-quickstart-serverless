@@ -1,6 +1,6 @@
-## Release to T128 (DEMO)
+## Release to Production
 
-This Pull Request affects a release from t128b to t128.
+This Pull Request affects a release from val to production.
 
 #### Closed Issues in this release
 
@@ -19,7 +19,7 @@ _List any notes, considerations, or comments specific to this release._
 
 ## Pre-Release Checklist for Assignee
 
-- [ ] I've met all criteria to release to val.
+- [ ] I've met all criteria to release to production.
 
 ## Post Release Checklist
 
