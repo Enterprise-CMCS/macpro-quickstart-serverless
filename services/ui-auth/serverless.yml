@@ -71,8 +71,6 @@ resources:
             Mutable: true
             Required: false
 
-
-
     CognitoUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
       Properties:
@@ -135,7 +133,7 @@ resources:
                 - Effect: "Allow"
                   Action:
                     - "execute-api:Invoke"
-                  Resource: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${self:custom.api_gateway_graphql_rest_api_name}/*  
+                  Resource: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${self:custom.api_gateway_graphql_rest_api_name}/*
                 - Effect: "Allow"
                   Action:
                     - "s3:*"
