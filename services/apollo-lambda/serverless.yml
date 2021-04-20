@@ -118,4 +118,4 @@ functions:
         path: graphql
         method: get
         cors: true
-        authorizer:  aws_iam
+      #  authorizer:  aws_iam
