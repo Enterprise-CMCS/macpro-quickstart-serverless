@@ -6,6 +6,38 @@ import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Amplify } from "aws-amplify";
 import config from "./config";
+import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { gql } from '@apollo/client';
+
+const client = new ApolloClient({
+  uri: 'config.apiGraphqlGateway.URL',
+  cache: new InMemoryCache()
+});
+
+
+client
+  .query({
+    query: gql`
+    query {
+      quotes {
+       userId
+       firstName
+      }
+    }
+    `
+  })
+  .then(result => console.log(result));
+
+
+  query {
+    quotes {
+     userId
+     firstName
+    }
+  }
+
+
+
 
 Amplify.configure({
   Auth: {

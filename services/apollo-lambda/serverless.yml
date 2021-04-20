@@ -112,7 +112,7 @@ functions:
         path: graphql
         method: post
         cors: true
-      #  authorizer:  aws_iam
+    #    authorizer:  aws_iam
 
     - http:
         path: graphql
