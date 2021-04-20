@@ -2,10 +2,6 @@
 
 This Pull Request affects a release from master to val.
 
-#### Closed Issues in this release
-
-_Links to issue(s) that were closed and will be promoted with this release._
-
 ## Notes/Considerations
 
 _List any notes, considerations, or comments specific to this release._
