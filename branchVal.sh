@@ -1,7 +1,8 @@
 #!/bin/bash
+
 set -e
 
-local_branch=$1
+local_branch="$(git rev-parse --abbrev-ref HEAD)"
 
 valid_branch_regex="^[a-z0-9_\-]+$"
 
