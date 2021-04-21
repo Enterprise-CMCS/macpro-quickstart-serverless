@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Validate branch name
         run: |
-          ./branchVal.sh
+          ./branchval.sh
       - name: set branch_name
         run: |
           if [[ "$GITHUB_REF" =~ ^refs/heads/dependabot/.* ]]; then # Dependabot builds very long branch names.  This is a switch to make it shorter.
