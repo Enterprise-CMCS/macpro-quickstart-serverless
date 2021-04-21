@@ -28,17 +28,6 @@ client
   })
   .then(result => console.log(result));
 
-
-  query {
-    quotes {
-     userId
-     firstName
-    }
-  }
-
-
-
-
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
