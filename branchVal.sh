@@ -2,7 +2,7 @@
 
 set -e
 
-local_branch="$(git rev-parse --abbrev-ref HEAD)"
+local_branch=${1}
 
 valid_branch_regex="^[a-z]+$"
 
