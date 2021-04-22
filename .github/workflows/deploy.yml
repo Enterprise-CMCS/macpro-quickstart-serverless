@@ -42,6 +42,8 @@ jobs:
             exit 1
           fi
       - uses: actions/checkout@v1
+      - name: Validate branch name
+        run: ./branchVal.sh
       - name: set branch specific variable names
         run: ./.github/build_vars.sh set_names
       - name: set variable values
@@ -56,9 +58,6 @@ jobs:
         run: ./.github/github-lock.sh $branch_name
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Validate branch name
-        working-directory: ${{github.workspace}}
-        run: ./branchval.sh
       - name: read .nvmrc
         id: node_version
         run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
