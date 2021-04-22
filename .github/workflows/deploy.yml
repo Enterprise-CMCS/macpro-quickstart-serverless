@@ -57,6 +57,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Validate branch name
+        working-directory: ${{github.workspace}}
         run: ./branchval.sh
       - name: read .nvmrc
         id: node_version
