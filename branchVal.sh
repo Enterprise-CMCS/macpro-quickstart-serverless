@@ -4,9 +4,9 @@ set -e
 
 local_branch="$(git rev-parse --abbrev-ref HEAD)"
 
-valid_branch_regex="^[a-z0-9_\-]+$"
+valid_branch_regex="^[a-z]+$"
 
-message="There is something wrong with your branch name. Branch names in this project must adhere to this contract: $valid_branch_regex. Your commit will be rejected. You should rename your branch to a valid name and try again."
+message="There is something wrong with your branch name. Branch names in this project must adhere to this contract: $valid_branch_regex, $local_branch. Your commit will be rejected. You should rename your branch to a valid name and try again."
 
 if [[ ! $local_branch =~ $valid_branch_regex ]]
 then
