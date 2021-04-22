@@ -4,7 +4,7 @@ set -e
 
 local_branch=${1}
 
-valid_branch_regex="[a-z][a-z '-])"
+valid_branch_regex="([a-z])\w+\-"
 
 
 
