@@ -35,7 +35,7 @@ const client = new ApolloClient({
    ));
  }
 
- function App() {
+ function Querry() {
    return (
      <ApolloProvider client={client}>
        <div>
@@ -78,6 +78,7 @@ Amplify.configure({
 ReactDOM.render(
   <Router>
     <App />
+    <Querry />
   </Router>,
   document.getElementById("root")
 );
