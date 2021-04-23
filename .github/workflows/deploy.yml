@@ -75,6 +75,7 @@ jobs:
           # This can optionally be set as an GitHub Actions Secret
           ./deploy.sh $STAGE_PREFIX$branch_name
       - name: Run Nightwatch suite
+        if: env.branch_name != '' && !contains(fromJson('["val", "prod", "production"]'), env.branch_name)
         run: |
           pushd services
           export APPLICATION_ENDPOINT=`./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$branch_name`
