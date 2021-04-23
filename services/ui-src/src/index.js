@@ -39,7 +39,7 @@ const client = new ApolloClient({
    return (
      <ApolloProvider client={client}>
        <div>
-         <h2>first graphql query 🚀</h2>
+         <h2>first graphql query </h2>
          <Quotes/>
        </div>
      </ApolloProvider>
