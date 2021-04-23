@@ -15,10 +15,6 @@ services=(
   'ui'
   'ui-waf-log-assoc'
   'ui-src'
-
-  #'elasticsearch-auth'
-  #'elasticsearch'
-
 )
 
 install_deps() {
