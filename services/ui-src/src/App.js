@@ -11,7 +11,6 @@ import { onError } from "./libs/errorLib";
 function App() {
   const [isAuthenticating, setIsAuthenticating] = useState(true);
   const [isAuthenticated, userHasAuthenticated] = useState(false);
-  const [email, setEmail] = useState(false);
   const history = useHistory();
 
   useEffect(() => {
@@ -22,8 +21,6 @@ function App() {
     try {
       await Auth.currentSession();
       userHasAuthenticated(true);
-      const userInfo = await Auth.currentUserInfo();
-      setEmail(userInfo.attributes.email);
     } catch (e) {
       if (e !== "No current user") {
         onError(e);
@@ -54,7 +51,7 @@ function App() {
             <Nav pullRight>
               {isAuthenticated ? (
                 <>
-                  <NavDropdown id="User" title={email}>
+                  <NavDropdown id="User" title="My Account">
                     <LinkContainer to="/profile">
                       <NavItem>User Profile</NavItem>
                     </LinkContainer>
