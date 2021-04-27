@@ -42,8 +42,6 @@ jobs:
             exit 1
           fi
       - uses: actions/checkout@v1
-      - name: Validate branch name
-        run: ./branchVal.sh $STAGE_PREFIX$branch_name
       - name: set branch specific variable names
         run: ./.github/build_vars.sh set_names
       - name: set variable values
