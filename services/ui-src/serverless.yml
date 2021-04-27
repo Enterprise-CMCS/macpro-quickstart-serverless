@@ -45,6 +45,9 @@ custom:
     items:
       - "/*"
   scripts:
+    testUnit: |
+      set -e
+      yarn run coverage
     hooks:
       # Build the static archive and populate the config
       package:initialize: |
