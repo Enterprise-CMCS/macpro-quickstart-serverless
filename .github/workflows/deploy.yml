@@ -69,6 +69,8 @@ jobs:
       - name: set path
         run: |
           echo "PATH=$(pwd)/node_modules/.bin/:$PATH" >> $GITHUB_ENV
+      - name: debug
+        run: ./test-unit.sh $STAGE_PREFIX$branch_name
       - name: unit test & publish coverage
         uses: paambaati/codeclimate-action@v2.7.5
         env:
