@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require('apollo-server-lambda');
+const { ApolloServer, gql } = require("apollo-server-lambda");
 const { unmarshall } = require("@aws-sdk/util-dynamodb");
 const { DynamoDBClient, ScanCommand } = require("@aws-sdk/client-dynamodb");
 const client = new DynamoDBClient({ region: "us-east-1" });
@@ -20,17 +20,15 @@ const getQuotes = async () => {
 };
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
-scalar JSON
-type Quote {
-  userId:       ID!
-  firstName:    String!
-          
-}
+  scalar JSON
+  type Quote {
+    userId: ID!
+    firstName: String!
+  }
 
   type Query {
     quotes: [Quote!]
-    quote(userId:ID!):Quote
-
+    quote(userId: ID!): Quote
   }
 `;
 // Provide resolver functions for your schema fields

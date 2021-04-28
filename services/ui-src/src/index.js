@@ -1,6 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { ApolloClient, InMemoryCache, ApolloProvider, useQuery, gql} from "@apollo/client";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  useQuery,
+  gql,
+} from "@apollo/client";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
@@ -8,43 +14,42 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Amplify } from "aws-amplify";
 import config from "./config";
 
-
 const client = new ApolloClient({
-   uri: 'config.apiGraphqlGateway.URL',
-   cache: new InMemoryCache()
- });
- function Quotes() {
-   const { loading, error, data } = useQuery(gql`
-     {
-       quotes {
-         userId
-         firstName
-       }
-     }
-   `);
+  uri: "config.apiGraphqlGateway.URL",
+  cache: new InMemoryCache(),
+});
+function Quotes() {
+  const { loading, error, data } = useQuery(gql`
+    {
+      quotes {
+        userId
+        firstName
+      }
+    }
+  `);
 
-   if (loading) return <p>Loading...</p>;
-   if (error) return <p>Error :(</p>;
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error :(</p>;
 
-   return data.quotes.map(({ userId, firstName }) => (
-     <div key={userId}>
-       <p>
-         {userId}: {firstName}
-       </p>
-     </div>
-   ));
- }
+  return data.quotes.map(({ userId, firstName }) => (
+    <div key={userId}>
+      <p>
+        {userId}: {firstName}
+      </p>
+    </div>
+  ));
+}
 
- function Querry() {
-   return (
-     <ApolloProvider client={client}>
-       <div>
-         <h2>first graphql query </h2>
-         <Quotes/>
-       </div>
-     </ApolloProvider>
-   );
- }
+function Querry() {
+  return (
+    <ApolloProvider client={client}>
+      <div>
+        <h2>first graphql query </h2>
+        <Quotes />
+      </div>
+    </ApolloProvider>
+  );
+}
 
 Amplify.configure({
   Auth: {

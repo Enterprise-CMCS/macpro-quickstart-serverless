@@ -16,6 +16,5 @@
     "graphql": "^15.4.0",
     "graphql-type-json": "^0.3.2",
     "serverless-stack-termination-protection": "^1.0.4"
-
   }
 }
