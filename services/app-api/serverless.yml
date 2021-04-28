@@ -34,18 +34,16 @@ custom:
   tableArn: ${env:AMENDMENTS_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsTableArn}
   atomicCounterTableName: ${env:AMENDMENTS_COUNTER_TABLE_NAME, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableName}
   atomicCounterTableArn: ${env:AMENDMENTS_COUNTER_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableArn}
-  warmupEnabled:
-    production: true
-    development: false
+
   warmup:
-    enabled: ${self:custom.warmupEnabled.${self:custom.infrastructureType}}
+    enabled: true
     role: LambdaWarmupRole
     vpc: false
     events:
-      - schedule: rate(4 minutes)
+      - schedule: ${ssm:/configuration/${self:custom.stage}/warmup/schedule~true, ssm:/configuration/default/warmup/schedule~true, rate(4 minutes)}
     timeout: 20
     prewarm: true
-    concurrency: 5
+    concurrency: ${ssm:/configuration/${self:custom.stage}/warmup/concurrency~true, ssm:/configuration/default/warmup/concurrency~true, 5}
     folderName: node_modules/serverless-bundle/src/_warmup
     cleanFolder: false
   scripts:
