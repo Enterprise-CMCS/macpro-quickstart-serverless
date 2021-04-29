@@ -97,8 +97,12 @@ resources:
         LogoutURLs:
           - ${self:custom.application_endpoint_url}
           - http://localhost:3000/
-        # SupportedIdentityProviders:
-        #   - Okta
+        SupportedIdentityProviders:
+          Fn::If:
+            - BackWithOkta
+            -
+              - Okta
+            - !Ref AWS::NoValue
       # DependsOn: CognitoUserPoolIdentityProvider
     UserPoolDomain:
       Type: AWS::Cognito::UserPoolDomain
