@@ -40,7 +40,7 @@ custom:
     role: LambdaWarmupRole
     vpc: false
     events:
-      - schedule: ${ssm:/configuration/${self:custom.stage}/warmup/schedule~true, ssm:/configuration/default/warmup/schedule~true, rate(4 minutes)}
+      - schedule: rate(${ssm:/configuration/${self:custom.stage}/warmup/schedule~true, ssm:/configuration/default/warmup/schedule~true, "4 minutes"})
     timeout: 20
     prewarm: true
     concurrency: ${ssm:/configuration/${self:custom.stage}/warmup/concurrency~true, ssm:/configuration/default/warmup/concurrency~true, 5}
