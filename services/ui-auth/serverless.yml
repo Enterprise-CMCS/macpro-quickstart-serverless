@@ -100,6 +100,17 @@ resources:
         # SupportedIdentityProviders:
         #   - Okta
       # DependsOn: CognitoUserPoolIdentityProvider
+    UserPoolDomain:
+      Type: AWS::Cognito::UserPoolDomain
+      Properties:
+        Domain:
+          Fn::Join:
+            - ''
+            -
+              - ${self:custom.stage}-login-
+              - Ref: CognitoUserPoolClient
+        UserPoolId:
+          Ref: CognitoUserPool
     CognitoIdentityPool:
       Type: AWS::Cognito::IdentityPool
       Properties:
