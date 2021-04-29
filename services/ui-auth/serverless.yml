@@ -28,6 +28,8 @@ custom:
   sesSourceEmailAddress: ${ssm:/configuration/${self:custom.stage}/sesSourceEmailAddress~true, ssm:/configuration/default/sesSourceEmailAddress~true, ""}
   attachments_bucket_arn: ${cf:uploads-${self:custom.stage}.AttachmentsBucketArn}
   api_gateway_rest_api_name: ${cf:app-api-${self:custom.stage}.ApiGatewayRestApiName}
+  okta_metadata_url: ${sssm:/configuration/${self:custom.stage}/okta_metadata_url~true, sssm:/configuration/default/okta_metadata_url~true, ""}
+  application_endpoint_url: ${cf:ui-${self:custom.stage}.ApplicationEndpointUrl}
 
 resources:
   Conditions:
@@ -41,6 +43,11 @@ resources:
         - Fn::Equals:
             - ""
             - ${self:custom.iamPermissionsBoundaryPolicy}
+    BackWithOkta:
+      Fn::Not:
+        - Fn::Equals:
+          - ""
+          - ${self.custom.okta_metadata_url}
   Resources:
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
