@@ -47,7 +47,7 @@ resources:
       Fn::Not:
         - Fn::Equals:
           - ""
-          - ${self.custom.okta_metadata_url}
+          - ${self:custom.okta_metadata_url}
   Resources:
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
