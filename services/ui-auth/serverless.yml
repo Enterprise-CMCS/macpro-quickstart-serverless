@@ -84,6 +84,22 @@ resources:
         ExplicitAuthFlows:
           - ADMIN_NO_SRP_AUTH
         GenerateSecret: false
+        AllowedOAuthFlows:
+          - implicit
+        AllowedOAuthFlowsUserPoolClient: true
+        AllowedOAuthScopes:
+          - email
+          - openid
+        CallbackURLs:
+          - ${self:custom.application_endpoint_url}
+          - http://localhost:3000/
+        DefaultRedirectURI: ${self:custom.application_endpoint_url}
+        LogoutURLs:
+          - ${self:custom.application_endpoint_url}
+          - http://localhost:3000/
+        # SupportedIdentityProviders:
+        #   - Okta
+      # DependsOn: CognitoUserPoolIdentityProvider
     CognitoIdentityPool:
       Type: AWS::Cognito::IdentityPool
       Properties:
