@@ -177,6 +177,8 @@ resources:
       Value: !Ref CognitoUserPool
     UserPoolClientId:
       Value: !Ref CognitoUserPoolClient
+    UserPoolClientDomain:
+      Value: !Sub ${UserPoolDomain}.auth.${AWS::Region}.amazoncognito.com
     IdentityPoolId:
       Value: !Ref CognitoIdentityPool
     Region:
