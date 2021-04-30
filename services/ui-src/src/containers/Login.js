@@ -6,7 +6,6 @@ import { useAppContext } from "../libs/contextLib";
 import { useFormFields } from "../libs/hooksLib";
 import { onError } from "../libs/errorLib";
 import "./Login.css";
-import config from "./../config";
 
 export default function Login() {
   const { userHasAuthenticated } = useAppContext();
