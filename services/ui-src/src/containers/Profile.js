@@ -87,14 +87,14 @@ export default function Profile() {
           <ControlLabel>First Name</ControlLabel>
           <FormControl
             value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
+            disabled={true}
           />
         </FormGroup>
         <FormGroup controlId="lastName">
           <ControlLabel>Last Name</ControlLabel>
           <FormControl
             value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
+            disabled={true}
           />
         </FormGroup>
         <FormGroup controlId="phoneNumber">
