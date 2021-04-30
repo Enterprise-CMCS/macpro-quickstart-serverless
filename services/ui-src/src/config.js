@@ -18,5 +18,6 @@ export default {
     IDENTITY_POOL_ID: window._env_.COGNITO_IDENTITY_POOL_ID,
     REDIRECT_SIGNIN: window._env_.COGNITO_REDIRECT_SIGNIN,
     REDIRECT_SIGNOUT: window._env_.COGNITO_REDIRECT_SIGNOUT,
+    BACK_WITH_OKTA: window._env_.BACK_WITH_OKTA,
   },
 };

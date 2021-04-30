@@ -6,10 +6,12 @@ import { useAppContext } from "../libs/contextLib";
 import { useFormFields } from "../libs/hooksLib";
 import { onError } from "../libs/errorLib";
 import "./Login.css";
+import config from "./../config";
 
 export default function Login() {
   const { userHasAuthenticated } = useAppContext();
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingOkta, setIsLoadingOkta] = useState(false);
   const [fields, handleFieldChange] = useFormFields({
     email: "",
     password: "",
@@ -19,11 +21,28 @@ export default function Login() {
     return fields.email.length > 0 && fields.password.length > 0;
   }
 
-  async function handleSubmit(event) {
+  function loginWithOkta(event) {
     event.preventDefault();
+    setIsLoadingOkta(true);
+    try {
+      const authConfig = Auth.configure();
+      const {
+        domain,
+        redirectSignIn,
+        responseType
+      } = authConfig.oauth;
+      const clientId = authConfig.userPoolWebClientId;
+      const url = `https://${domain}/oauth2/authorize?identity_provider=Okta&redirect_uri=${redirectSignIn}&response_type=${responseType}&client_id=${clientId}`;
+      window.location.assign(url);
+    } catch (e) {
+      onError(e);
+      setIsLoadingOkta(false);
+    }
+  }
 
+  async function login(event) {
+    event.preventDefault();
     setIsLoading(true);
-
     try {
       await Auth.signIn(fields.email, fields.password);
       userHasAuthenticated(true);
@@ -34,8 +53,30 @@ export default function Login() {
   }
 
   return (
-    <div className="Login">
-      <form onSubmit={handleSubmit}>
+    <div className="Logins">
+    <div className="LoginWithOkta"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          paddingTop: '50px',
+        }}>
+        <form onSubmit={loginWithOkta}>
+            <LoaderButton
+                style={{
+                  background: "#3CB371",
+                  color: "#FFFFFF",
+                  width: "100%"
+                }}
+                type="submit"
+                bsSize="large"
+                isLoading={isLoadingOkta}
+            >
+                Login with Okta
+            </LoaderButton>
+        </form>
+      </div>
+      <form onSubmit={login}>
         <FormGroup controlId="email" bsSize="large">
           <ControlLabel>Email</ControlLabel>
           <FormControl
