@@ -25,11 +25,7 @@ export default function Login() {
     setIsLoadingOkta(true);
     try {
       const authConfig = Auth.configure();
-      const {
-        domain,
-        redirectSignIn,
-        responseType
-      } = authConfig.oauth;
+      const { domain, redirectSignIn, responseType } = authConfig.oauth;
       const clientId = authConfig.userPoolWebClientId;
       const url = `https://${domain}/oauth2/authorize?identity_provider=Okta&redirect_uri=${redirectSignIn}&response_type=${responseType}&client_id=${clientId}`;
       window.location.assign(url);
@@ -53,35 +49,39 @@ export default function Login() {
 
   return (
     <div className="Logins">
-    <div className="LoginWithOkta"
+      <div
+        className="LoginWithOkta"
         style={{
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          paddingTop: '50px',
-        }}>
+          paddingTop: "50px",
+        }}
+      >
         <form onSubmit={loginWithOkta}>
-            <LoaderButton
-                style={{
-                  background: "#3CB371",
-                  color: "#FFFFFF",
-                  width: "100%"
-                }}
-                type="submit"
-                bsSize="large"
-                isLoading={isLoadingOkta}
-            >
-                Login with Okta
-            </LoaderButton>
+          <LoaderButton
+            style={{
+              background: "#3CB371",
+              color: "#FFFFFF",
+              width: "100%",
+            }}
+            type="submit"
+            bsSize="large"
+            isLoading={isLoadingOkta}
+          >
+            Login with Okta
+          </LoaderButton>
         </form>
       </div>
-      <div className="LoginCognito"
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            paddingTop: '50px',
-          }}>
+      <div
+        className="LoginCognito"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          paddingTop: "50px",
+        }}
+      >
         <form onSubmit={login}>
           <FormGroup controlId="email" bsSize="large">
             <ControlLabel>Email</ControlLabel>

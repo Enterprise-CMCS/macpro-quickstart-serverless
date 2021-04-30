@@ -18,9 +18,9 @@ Amplify.configure({
       domain: config.cognito.APP_CLIENT_DOMAIN,
       redirectSignIn: config.cognito.REDIRECT_SIGNIN,
       redirectSignOut: config.cognito.REDIRECT_SIGNOUT,
-      scope: ['email', 'openid'],
-      responseType: 'token'
-    }
+      scope: ["email", "openid"],
+      responseType: "token",
+    },
   },
   Storage: {
     region: config.s3.REGION,

@@ -46,8 +46,8 @@ resources:
     BackWithOkta:
       Fn::Not:
         - Fn::Equals:
-          - ""
-          - ${self:custom.okta_metadata_url}
+            - ""
+            - ${self:custom.okta_metadata_url}
   Resources:
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
@@ -94,7 +94,7 @@ resources:
         AllowedOAuthScopes:
           - email
           - openid
-          - aws.cognito.signin.user.admin	# Needed to call Auth.currentUserInfo() 
+          - aws.cognito.signin.user.admin # Needed to call Auth.currentUserInfo()
         CallbackURLs:
           - ${self:custom.application_endpoint_url}
           - http://localhost:3000/
@@ -105,17 +105,15 @@ resources:
         SupportedIdentityProviders:
           Fn::If:
             - BackWithOkta
-            -
-              - Okta
+            - - Okta
             - !Ref AWS::NoValue
     UserPoolDomain:
       Type: AWS::Cognito::UserPoolDomain
       Properties:
         Domain:
           Fn::Join:
-            - ''
-            -
-              - ${self:custom.stage}-login-
+            - ""
+            - - ${self:custom.stage}-login-
               - Ref: CognitoUserPoolClient
         UserPoolId:
           Ref: CognitoUserPool

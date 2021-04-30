@@ -242,13 +242,12 @@ resources:
             - CreateCustomCloudFrontDomain
             - https://${env:CLOUDFRONT_DOMAIN_NAME, ""}/
             - Fn::Join:
-                - ''
-                -
-                  - https://
+                - ""
+                - - https://
                   - Fn::GetAtt:
-                    - CloudFrontDistribution
-                    - DomainName
-                  - '/'
+                      - CloudFrontDistribution
+                      - DomainName
+                  - "/"
   Outputs:
     S3BucketName:
       Value: !Ref S3Bucket

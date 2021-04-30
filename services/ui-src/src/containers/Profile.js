@@ -85,17 +85,11 @@ export default function Profile() {
         </FormGroup>
         <FormGroup controlId="firstName">
           <ControlLabel>First Name</ControlLabel>
-          <FormControl
-            value={firstName}
-            disabled={true}
-          />
+          <FormControl value={firstName} disabled={true} />
         </FormGroup>
         <FormGroup controlId="lastName">
           <ControlLabel>Last Name</ControlLabel>
-          <FormControl
-            value={lastName}
-            disabled={true}
-          />
+          <FormControl value={lastName} disabled={true} />
         </FormGroup>
         <FormGroup controlId="phoneNumber">
           <ControlLabel>Phone</ControlLabel>
