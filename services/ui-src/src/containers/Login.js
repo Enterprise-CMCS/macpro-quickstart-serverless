@@ -76,34 +76,42 @@ export default function Login() {
             </LoaderButton>
         </form>
       </div>
-      <form onSubmit={login}>
-        <FormGroup controlId="email" bsSize="large">
-          <ControlLabel>Email</ControlLabel>
-          <FormControl
-            autoFocus
-            type="email"
-            value={fields.email}
-            onChange={handleFieldChange}
-          />
-        </FormGroup>
-        <FormGroup controlId="password" bsSize="large">
-          <ControlLabel>Password</ControlLabel>
-          <FormControl
-            type="password"
-            value={fields.password}
-            onChange={handleFieldChange}
-          />
-        </FormGroup>
-        <LoaderButton
-          block
-          type="submit"
-          bsSize="large"
-          isLoading={isLoading}
-          disabled={!validateForm()}
-        >
-          Login
-        </LoaderButton>
-      </form>
+      <div className="LoginCognito"
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            paddingTop: '50px',
+          }}>
+        <form onSubmit={login}>
+          <FormGroup controlId="email" bsSize="large">
+            <ControlLabel>Email</ControlLabel>
+            <FormControl
+              autoFocus
+              type="email"
+              value={fields.email}
+              onChange={handleFieldChange}
+            />
+          </FormGroup>
+          <FormGroup controlId="password" bsSize="large">
+            <ControlLabel>Password</ControlLabel>
+            <FormControl
+              type="password"
+              value={fields.password}
+              onChange={handleFieldChange}
+            />
+          </FormGroup>
+          <LoaderButton
+            block
+            type="submit"
+            bsSize="large"
+            isLoading={isLoading}
+            disabled={!validateForm()}
+          >
+            Login
+          </LoaderButton>
+        </form>
+      </div>
     </div>
   );
 }
