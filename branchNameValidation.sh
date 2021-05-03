@@ -7,7 +7,7 @@ local_branch=${1}
 valid_branch="^[a-z][a-z-0-9-]*$"
 
 
-if [[ ! $local_branch =~ $valid_branch ]]
+if [[ ! $local_branch =~ $valid_branch]] || [[ $branch_name -gt 128 ]];
 then
     echo """
      ------------------------------------------------------------------------------------------------------------------------------
