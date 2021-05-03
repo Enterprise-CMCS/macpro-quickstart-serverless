@@ -13,7 +13,7 @@ then
      ------------------------------------------------------------------------------------------------------------------------------
      ERROR:  Please read below
      ------------------------------------------------------------------------------------------------------------------------------
-    Bad branch name detected; cannot continue.
+    Bad branch name detected; cannot continue.  $local_branch
 
     The Serverless Application Framework has a concept of stages that facilitate multiple deployments of the same service.
     In this setup, the git branch name gets passed to Serverless to serve as the stage name.
