@@ -2,13 +2,12 @@
 
 set -e
 
-# local_branch=${1}
-test_branch_name ="Verify_Branch"
+local_branch=${1}
 
 valid_branch="^[a-z][a-z-0-9-]*$"
 
 
-if [[ ! $test_branch_name =~ $valid_branch ]]
+if [[ ! $local_branch =~ $valid_branch ]]
 then
     echo """
      ------------------------------------------------------------------------------------------------------------------------------
