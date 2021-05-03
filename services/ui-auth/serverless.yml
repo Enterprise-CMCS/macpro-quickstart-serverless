@@ -79,11 +79,7 @@ resources:
     CognitoUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
       Properties:
-        ClientName:
-          Fn::If: #Putting the oktauserpoolid name in the ClientName forces an implicit dependency, which we need.
-            - BackWithOkta
-            - !Sub ${self:custom.stage}-user-pool-client-${OktaUserPoolIdentityProvider}
-            - ${self:custom.stage}-user-pool-client
+        ClientName: ${self:custom.stage}-user-pool-client
         UserPoolId: !Ref CognitoUserPool
         ExplicitAuthFlows:
           - ADMIN_NO_SRP_AUTH
@@ -105,7 +101,7 @@ resources:
         SupportedIdentityProviders:
           Fn::If:
             - BackWithOkta
-            - - Okta
+            - - !Ref OktaUserPoolIdentityProvider
             - !Ref AWS::NoValue
     UserPoolDomain:
       Type: AWS::Cognito::UserPoolDomain
