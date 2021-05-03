@@ -3,9 +3,9 @@
 set -e
 
 # local_branch=${1}
-test_branch_name = "Verify_Branch"
+test_branch_name ="Verify_Branch"
 
-valid_branch="^[a-zA-Z][a-zA-Z0-9-]*$"
+valid_branch="^[a-z][a-z-0-9-]*$"
 
 
 if [[ ! $test_branch_name =~ $valid_branch ]]
