@@ -35,8 +35,22 @@ function App() {
 
     userHasAuthenticated(false);
 
-    history.push("/login");
+    history.push("/");
   }
+
+  async function handleLogin(event) {
+    event.preventDefault();
+    try {
+      const authConfig = Auth.configure();
+      const { domain, redirectSignIn, responseType } = authConfig.oauth;
+      const clientId = authConfig.userPoolWebClientId;
+      const url = `https://${domain}/oauth2/authorize?redirect_uri=${redirectSignIn}&response_type=${responseType}&client_id=${clientId}`;
+      window.location.assign(url);
+    } catch (e) {
+      onError(e);
+    }
+  }
+
   return (
     !isAuthenticating && (
       <div className="App container">
@@ -60,12 +74,7 @@ function App() {
                 </>
               ) : (
                 <>
-                  <LinkContainer to="/signup">
-                    <NavItem>Signup</NavItem>
-                  </LinkContainer>
-                  <LinkContainer to="/login">
-                    <NavItem>Login</NavItem>
-                  </LinkContainer>
+                  <NavItem onClick={handleLogin}>Login</NavItem>
                 </>
               )}
             </Nav>
