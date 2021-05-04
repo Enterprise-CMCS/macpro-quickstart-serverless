@@ -101,9 +101,9 @@ resources:
         SupportedIdentityProviders:
           - COGNITO
           - Fn::If:
-            - BackWithOkta
-            - !Ref OktaUserPoolIdentityProvider
-            - !Ref AWS::NoValue
+              - BackWithOkta
+              - !Ref OktaUserPoolIdentityProvider
+              - !Ref AWS::NoValue
     UserPoolDomain:
       Type: AWS::Cognito::UserPoolDomain
       Properties:
