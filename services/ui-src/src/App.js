@@ -39,25 +39,21 @@ function App() {
     history.push("/");
   }
 
-  function loginLocal() {
-    const alice = {
-      username: "alice",
-      attributes: {
-        given_name: "Alice",
-        family_name: "Foo",
-        email: "alice@example.com",
-      },
-    };
-    loginLocalUser(alice);
-    userHasAuthenticated(true);
-  }
-
   async function handleLogin(event) {
     event.preventDefault();
     try {
       const localLogin = config.LOCAL_LOGIN === "true";
       if (localLogin) {
-        loginLocal();
+        const alice = {
+          username: "alice",
+          attributes: {
+            given_name: "Alice",
+            family_name: "Foo",
+            email: "alice@example.com",
+          },
+        };
+        loginLocalUser(alice);
+        userHasAuthenticated(true);
       } else {
         const authConfig = Auth.configure();
         const { domain, redirectSignIn, responseType } = authConfig.oauth;
