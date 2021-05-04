@@ -38,7 +38,6 @@ custom:
   ui_s3_bucket_name: ${cf:ui-${self:custom.stage}.S3BucketName}
   ui_cloudfront_distribution_id: ${cf:ui-${self:custom.stage}.CloudFrontDistributionId}
   application_endpoint_url: ${cf:ui-${self:custom.stage}.ApplicationEndpointUrl}
-  back_with_okta: ${cf:ui-auth-${self:custom.stage}.BackWithOkta}
   s3Sync:
     - bucketName: ${self:custom.ui_s3_bucket_name}
       localDir: ./build
@@ -68,7 +67,6 @@ custom:
         export COGNITO_REDIRECT_SIGNOUT=${self:custom.application_endpoint_url}
         export S3_ATTACHMENTS_BUCKET_REGION=${self:custom.s3_attachments_bucket_region}
         export S3_ATTACHMENTS_BUCKET_NAME=${self:custom.s3_attachments_bucket_name}
-        export BACK_WITH_OKTA=${self:custom.back_with_okta}
         export LOCAL_LOGIN=false
         ./env.sh
         cp public/env-config.js build/env-config.js

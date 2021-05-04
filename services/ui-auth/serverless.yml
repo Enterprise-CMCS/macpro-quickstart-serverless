@@ -197,12 +197,6 @@ resources:
       Value: !Ref CognitoUserPoolClient
     UserPoolClientDomain:
       Value: !Sub ${UserPoolDomain}.auth.${AWS::Region}.amazoncognito.com
-    BackWithOkta:
-      Value:
-        Fn::If:
-          - BackWithOkta
-          - true
-          - false
     IdentityPoolId:
       Value: !Ref CognitoIdentityPool
     Region:
