@@ -2,7 +2,7 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 import AWS from "aws-sdk";
 import Home from "./containers/Home";
-import LocalLogin from "./containers/LocalLogin";
+// import LocalLogin from "./containers/LocalLogin";
 import NotFound from "./containers/NotFound";
 import NewAmendment from "./containers/NewAmendment";
 import Amendments from "./containers/Amendments";
