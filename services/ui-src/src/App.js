@@ -7,7 +7,8 @@ import Routes from "./Routes";
 import { AppContext } from "./libs/contextLib";
 import { Auth } from "aws-amplify";
 import { onError } from "./libs/errorLib";
-
+import { loginLocalUser } from "./libs/user";
+import config from "./config";
 function App() {
   const [isAuthenticating, setIsAuthenticating] = useState(true);
   const [isAuthenticated, userHasAuthenticated] = useState(false);
@@ -38,14 +39,32 @@ function App() {
     history.push("/");
   }
 
+  function loginLocal() {
+    const alice = {
+      username: "alice",
+      attributes: {
+        given_name: "Alice",
+        family_name: "Foo",
+        email: "alice@example.com",
+      },
+    };
+    loginLocalUser(alice);
+    userHasAuthenticated(true);
+  }
+
   async function handleLogin(event) {
     event.preventDefault();
     try {
-      const authConfig = Auth.configure();
-      const { domain, redirectSignIn, responseType } = authConfig.oauth;
-      const clientId = authConfig.userPoolWebClientId;
-      const url = `https://${domain}/oauth2/authorize?redirect_uri=${redirectSignIn}&response_type=${responseType}&client_id=${clientId}`;
-      window.location.assign(url);
+      const localLogin = config.LOCAL_LOGIN === "true";
+      if (localLogin) {
+        loginLocal();
+      } else {
+        const authConfig = Auth.configure();
+        const { domain, redirectSignIn, responseType } = authConfig.oauth;
+        const clientId = authConfig.userPoolWebClientId;
+        const url = `https://${domain}/oauth2/authorize?redirect_uri=${redirectSignIn}&response_type=${responseType}&client_id=${clientId}`;
+        window.location.assign(url);
+      }
     } catch (e) {
       onError(e);
     }
