@@ -1,3 +1,15 @@
+## set the values for the following ssm parameters in AWS SSM Parameter store for ui service. You will need to set the values and also a default value to fall to if the required value is not present.
+# 1. iamPath:  /configuration/${self:custom.stage}/iam/path    &  /configuration/default/iam/path
+# 2. iamPermissionsBoundaryPolicy:  configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy    &  /configuration/default/iam/permissionsBoundaryPolicy
+# 3. route53HostedZoneId: /configuration/${self:custom.stage}/route53/hostedZoneId     &  /configuration/default/route53/hostedZoneId
+# 4. route53DomainName: /configuration/${self:custom.stage}/route53/domainName
+# 5. cloudfrontCertificateArn: /configuration/${self:custom.stage}/cloudfront/certificateArn     &  /configuration/default/cloudfront/certificateArn
+# 6. cloudfrontDomainName: /configuration/${self:custom.stage}/cloudfront/domainName
+
+
+
+
+
 service: ui
 
 frameworkVersion: "2"
