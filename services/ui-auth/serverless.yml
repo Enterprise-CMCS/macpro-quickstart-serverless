@@ -99,9 +99,10 @@ resources:
           - ${self:custom.application_endpoint_url}
           - http://localhost:3000/
         SupportedIdentityProviders:
-          Fn::If:
+          - COGNITO
+          - Fn::If:
             - BackWithOkta
-            - - !Ref OktaUserPoolIdentityProvider
+            - !Ref OktaUserPoolIdentityProvider
             - !Ref AWS::NoValue
     UserPoolDomain:
       Type: AWS::Cognito::UserPoolDomain
