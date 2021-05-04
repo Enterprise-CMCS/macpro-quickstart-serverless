@@ -5,11 +5,6 @@
 # 4. route53DomainName: /configuration/${self:custom.stage}/route53/domainName
 # 5. cloudfrontCertificateArn: /configuration/${self:custom.stage}/cloudfront/certificateArn     &  /configuration/default/cloudfront/certificateArn
 # 6. cloudfrontDomainName: /configuration/${self:custom.stage}/cloudfront/domainName
-
-
-
-
-
 service: ui
 
 frameworkVersion: "2"

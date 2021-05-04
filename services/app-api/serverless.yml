@@ -3,7 +3,6 @@
 # 2. iamPermissionsBoundaryPolicy:  configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy    &  /configuration/default/iam/permissionsBoundaryPolicy
 # 3. infrastructureType:  /configuration/${self:custom.stage}/infrastucture/type       &  /configuration/default/iam/permissionsBoundaryPolicy
 # 4. lambda warmup schedule: /configuration/${self:custom.stage}/warmup/schedule       &  /configuration/default/warmup/schedule
-
 service: app-api
 
 frameworkVersion: "2"

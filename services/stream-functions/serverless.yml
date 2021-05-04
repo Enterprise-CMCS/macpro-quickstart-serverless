@@ -3,11 +3,6 @@
 # 2. iamPermissionsBoundaryPolicy:  configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy    &  /configuration/default/iam/permissionsBoundaryPolicy
 # 3. sesSourceEmailAddress: /configuration/${self:custom.stage}/sesSourceEmailAddress     &  /configuration/default/sesSourceEmailAddress
 # 4. reviewerEmailAddress: /configuration/${self:custom.stage}/reviewerEmailAddress     &   /configuration/default/reviewerEmailAddress
-
-
-
-
-
 service: stream-functions
 
 frameworkVersion: "2"

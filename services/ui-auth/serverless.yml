@@ -2,10 +2,6 @@
 # 1. iamPath:  /configuration/${self:custom.stage}/iam/path    &  /configuration/default/iam/path
 # 2. iamPermissionsBoundaryPolicy:  configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy    &  /configuration/default/iam/permissionsBoundaryPolicy
 # 3. sesSourceEmailAddress: /configuration/${self:custom.stage}/sesSourceEmailAddress     &  /configuration/default/sesSourceEmailAddress
-
-
-
-
 service: ui-auth
 
 frameworkVersion: "2"

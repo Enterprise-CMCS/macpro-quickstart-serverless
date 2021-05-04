@@ -1,7 +1,6 @@
 ## set the values for the following ssm parameters in AWS SSM Parameter store for uploads service. You will need to set the values and also a default value to fall to if the required value is not present.
 # 1. iamPath:  /configuration/${self:custom.stage}/iam/path    &  /configuration/default/iam/path
 # 2. iamPermissionsBoundaryPolicy:  configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy    &  /configuration/default/iam/permissionsBoundaryPolicy
-
 service: uploads
 
 frameworkVersion: "2"
