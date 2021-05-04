@@ -28,7 +28,7 @@ custom:
   sesSourceEmailAddress: ${ssm:/configuration/${self:custom.stage}/sesSourceEmailAddress~true, ssm:/configuration/default/sesSourceEmailAddress~true, ""}
   attachments_bucket_arn: ${cf:uploads-${self:custom.stage}.AttachmentsBucketArn}
   api_gateway_rest_api_name: ${cf:app-api-${self:custom.stage}.ApiGatewayRestApiName}
-  okta_metadata_url: ${ssm:/configuration/${self:custom.stage}/okta_metadata_url~true, ssm:/configuration/default/okta_metadata_url~true, ""}
+  okta_metadata_url: ${ssm:/configuration/${self:custom.stage}/okta_metadata_url~true, ""}
   application_endpoint_url: ${cf:ui-${self:custom.stage}.ApplicationEndpointUrl}
 
 resources:
