@@ -10,8 +10,8 @@ services=(
   'app-api'
   'stream-functions'
   'ui-waflog-s3-bucket'
-  'ui-auth'
   'ui'
+  'ui-auth'
   'ui-waf-log-assoc'
   'ui-src'
 )
