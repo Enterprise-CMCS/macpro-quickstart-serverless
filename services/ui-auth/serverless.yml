@@ -9,6 +9,7 @@ provider:
 
 plugins:
   - serverless-stack-termination-protection
+  - serverless-plugin-scripts
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -30,6 +31,20 @@ custom:
   api_gateway_rest_api_name: ${cf:app-api-${self:custom.stage}.ApiGatewayRestApiName}
   okta_metadata_url: ${ssm:/configuration/${self:custom.stage}/okta_metadata_url~true, ""}
   application_endpoint_url: ${cf:ui-${self:custom.stage}.ApplicationEndpointUrl}
+  bootstrapUsersEnabled: ${ssm:/configuration/${self:custom.stage}/cognito/bootstrapUsers/enabled~true, ssm:/configuration/default/cognito/bootstrapUsers/enabled~true, ""}
+  bootstrapUsersPassword: ${ssm:/configuration/${self:custom.stage}/cognito/bootstrapUsers/password~true, ssm:/configuration/default/cognito/bootstrapUsers/password~true, ""}
+  scripts:
+    hooks:
+      deploy:finalize: |
+        if [ ${self:custom.bootstrapUsersEnabled} == "true" ];
+        then
+          serverless invoke --stage ${self:custom.stage} --function bootstrapUsers -t Event
+        fi
+
+functions:
+  bootstrapUsers:
+    handler: handlers/createUsers.main
+    role: LambdaApiRole
 
 resources:
   Conditions:
@@ -49,6 +64,35 @@ resources:
             - ""
             - ${self:custom.okta_metadata_url}
   Resources:
+    LambdaApiRole: # Why isn't this with the function as an iamRoleStatements?  https://github.com/serverless/serverless/issues/6485
+      Type: "AWS::IAM::Role"
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Principal:
+                Service: "lambda.amazonaws.com"
+              Action: "sts:AssumeRole"
+        Path: ${self:custom.iamPath}
+        PermissionsBoundary:
+          Fn::If:
+            - CreatePermissionsBoundary
+            - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
+            - !Ref AWS::NoValue
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
+        Policies:
+          - PolicyName: "LambdaApiRolePolicy"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - logs:CreateLogGroup
+                    - logs:CreateLogStream
+                    - logs:PutLogEvents
+                  Resource: "arn:aws:logs:*:*:*"
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
       Properties:
