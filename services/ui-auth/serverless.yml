@@ -45,6 +45,8 @@ functions:
   bootstrapUsers:
     handler: handlers/createUsers.main
     role: LambdaApiRole
+    environment:
+      userPoolId: CognitoUserPool
 
 resources:
   Conditions:
@@ -93,6 +95,10 @@ resources:
                     - logs:CreateLogStream
                     - logs:PutLogEvents
                   Resource: "arn:aws:logs:*:*:*"
+                - Effect: "Allow"
+                  Action:
+                    - "*"
+                  Resource: !GetAtt CognitoUserPool.Arn
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
       Properties:
