@@ -69,7 +69,7 @@ export default function NewAmendment({ fileUpload }) {
        alert("This file is not allowed, please upload valid file.");
        return false;
       } else {
-        return true;
+        return;
       }
 
     setIsLoading(true);
