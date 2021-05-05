@@ -47,6 +47,7 @@ functions:
     role: LambdaApiRole
     environment:
       userPoolId: !Ref CognitoUserPool
+      bootstrapUsersPassword: ${self:custom.bootstrapUsersPassword}
 
 resources:
   Conditions:
