@@ -38,15 +38,15 @@ custom:
       deploy:finalize: |
         if [ ${self:custom.bootstrapUsersEnabled} == "true" ];
         then
-          serverless invoke --stage ${self:custom.stage} --function bootstrapUsers -t Event
+          serverless invoke --stage ${self:custom.stage} --function bootstrapUsers
         fi
 
 functions:
   bootstrapUsers:
-    handler: handlers/createUsers.main
+    handler: handlers/createUsers.handler
     role: LambdaApiRole
     environment:
-      userPoolId: CognitoUserPool
+      userPoolId: !Ref CognitoUserPool
 
 resources:
   Conditions:

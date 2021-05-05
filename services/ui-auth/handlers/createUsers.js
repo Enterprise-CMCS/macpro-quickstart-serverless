@@ -1,17 +1,9 @@
 var aws = require("aws-sdk");
-
 const userPoolId = process.env.userPoolId;
 
-export const main = handler(async (event, context) => {
-  // If this invokation is a prewarm, do nothing and return.
-  // if (event.source == "serverless-plugin-warmup") {
-  //   console.log("Warmed up!");
-  //   return null;
-  // }
-
+async function myHandler(event, context, callback) {
   console.log("USER POOL ID: ");
   console.log(userPoolId);
-
   // const users = [
   //   {
   //     username: "alice",
@@ -22,5 +14,6 @@ export const main = handler(async (event, context) => {
   //     },
   //   },
   // ];
-  return "asdfasdf";
-});
+}
+
+exports.handler = myHandler;
