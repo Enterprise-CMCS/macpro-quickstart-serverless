@@ -6,11 +6,35 @@ exports.handler = function (event, context, callback) {
     var params = (function (eventName) {
       switch (eventName) {
         case "INSERT":
-          return insertParams(record);
+          return ses.getSESEmailParams({
+            ToAddresses: [process.env.reviewerEmail],
+            fromAddressSource: process.env.emailSource,
+            Subject: `New APS Submission - ${record.dynamodb.NewImage.transmittalNumber.S}`,
+            HTML: getReviewerEmailBody(
+              record,
+              "A new APS submission has been received."
+            ),
+          });
         case "MODIFY":
-          return modifyParams(record);
+          return ses.getSESEmailParams({
+            ToAddresses: [process.env.reviewerEmail],
+            fromAddressSource: process.env.emailSource,
+            Subject: `Updated APS Submission - ${record.dynamodb.NewImage.transmittalNumber.S}`,
+            HTML: getReviewerEmailBody(
+              record,
+              "An update to an existing APS submission has been received."
+            ),
+          });
         case "REMOVE":
-          return removeParams(record);
+          return ses.getSESEmailParams({
+            ToAddresses: [process.env.reviewerEmail],
+            fromAddressSource: process.env.emailSource,
+            Subject: `Updated APS Submission - ${record.dynamodb.NewImage.transmittalNumber.S}`,
+            HTML: getReviewerEmailBody(
+              record,
+              "A request to delete the below APS request has been processed."
+            ),
+          });
         default:
           return 30;
       }
@@ -21,101 +45,20 @@ exports.handler = function (event, context, callback) {
   callback(null, "message");
 };
 
-function insertParams(record) {
-  return {
-    Destination: {
-      ToAddresses: [process.env.reviewerEmail],
-    },
-    Message: {
-      Body: {
-        Text: {
-          Data: `
+function getReviewerEmailBody(record, summary) {
+  return `
 Hi,
 
-A new APS submission has been received.
+${summary}
 
 Details:
- - APS ID (Transmittal Number):  ${record.dynamodb.NewImage.transmittalNumber.S}
-   State:  ${record.dynamodb.NewImage.territory.S}
-   Submitter Name:  ${record.dynamodb.NewImage.firstName.S} ${record.dynamodb.NewImage.lastName.S}
-   Submitter Contact Email:  ${record.dynamodb.NewImage.email.S}
+- APS ID (Transmittal Number):  ${record.dynamodb.NewImage.transmittalNumber.S}
+State:  ${record.dynamodb.NewImage.territory.S}
+Submitter Name:  ${record.dynamodb.NewImage.firstName.S} ${record.dynamodb.NewImage.lastName.S}
+Submitter Contact Email:  ${record.dynamodb.NewImage.email.S}
 
 Regards,
 APS Submission App
 
-`,
-        },
-      },
-      Subject: {
-        Data: `New APS Submission - ${record.dynamodb.NewImage.transmittalNumber.S}`,
-      },
-    },
-    Source: process.env.emailSource,
-  };
-}
-
-function modifyParams(record) {
-  return {
-    Destination: {
-      ToAddresses: [process.env.reviewerEmail],
-    },
-    Message: {
-      Body: {
-        Text: {
-          Data: `
-Hi,
-
-An update to an existing APS submission has been received.
-
-Details:
- - APS ID (Transmittal Number):  ${record.dynamodb.NewImage.transmittalNumber.S}
-   State:  ${record.dynamodb.NewImage.territory.S}
-   Submitter Name:  ${record.dynamodb.NewImage.firstName.S} ${record.dynamodb.NewImage.lastName.S}
-   Submitter Contact Email:  ${record.dynamodb.NewImage.email.S}
-
-Regards,
-APS Submission App
-
-`,
-        },
-      },
-      Subject: {
-        Data: `Updated APS Submission - ${record.dynamodb.NewImage.transmittalNumber.S}`,
-      },
-    },
-    Source: process.env.emailSource,
-  };
-}
-
-function removeParams(record) {
-  return {
-    Destination: {
-      ToAddresses: [process.env.reviewerEmail],
-    },
-    Message: {
-      Body: {
-        Text: {
-          Data: `
-Hi,
-
-A request to delete the below APS request has been processed.
-
-Details:
- - APS ID (Transmittal Number):  ${record.dynamodb.OldImage.transmittalNumber.S}
-   State:  ${record.dynamodb.NewImage.territory.S}
-   Submitter Name:  ${record.dynamodb.NewImage.firstName.S} ${record.dynamodb.OldImage.lastName.S}
-   Submitter Contact Email:  ${record.dynamodb.OldImage.email.S}
-
-Regards,
-APS Submission App
-
-`,
-        },
-      },
-      Subject: {
-        Data: `Deleted APS Submission - ${record.dynamodb.OldImage.transmittalNumber.S}`,
-      },
-    },
-    Source: process.env.emailSource,
-  };
+`;
 }
