@@ -2,6 +2,7 @@
 # 1. iamPath:  /configuration/${self:custom.stage}/iam/path    &  /configuration/default/iam/path
 # 2. iamPermissionsBoundaryPolicy:  configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy    &  /configuration/default/iam/permissionsBoundaryPolicy
 # 3. sesSourceEmailAddress: /configuration/${self:custom.stage}/sesSourceEmailAddress     &  /configuration/default/sesSourceEmailAddress
+# 4. okta_metadata_url: /configuration/${self:custom.stage}/okta_metadata_url
 service: ui-auth
 
 frameworkVersion: "2"
