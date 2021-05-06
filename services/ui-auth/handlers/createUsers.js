@@ -10,6 +10,27 @@ async function myHandler(event, context, callback) {
   console.log(userPoolId);
   const users = [
     {
+      username: "billy@example.com",
+      attributes: [
+        {
+          Name: "email",
+          Value: "billy@example.com",
+        },
+        {
+          Name: "given_name",
+          Value: "Billy",
+        },
+        {
+          Name: "family_name",
+          Value: "Bob",
+        },
+        {
+          Name: "email_verified",
+          Value: "true",
+        },
+      ],
+    },
+    {
       username: "alice@example.com",
       attributes: [
         {
@@ -22,7 +43,7 @@ async function myHandler(event, context, callback) {
         },
         {
           Name: "family_name",
-          Value: "Foo",
+          Value: "Cooper",
         },
         {
           Name: "email_verified",
@@ -46,19 +67,33 @@ async function myHandler(event, context, callback) {
 }
 
 async function createUser(params) {
-  await new Promise((resolve, reject) => {
-    COGNITO_CLIENT.adminCreateUser(params, function (err, data) {
-      if (err) {
-        console.log("FAILED ", err, err.stack); // an error occurred
-        response = { statusCode: 500, body: { message: "FAILED", error: err } };
-        reject();
-      } else {
-        console.log("SUCCESS", data); // successful response
-        response = { statusCode: 200, body: { message: "SUCCESS" } };
-        resolve();
-      }
+  // await new Promise((resolve, reject) => {
+  //   COGNITO_CLIENT.adminCreateUser(params, function (err, data) {
+  //     if (err) {
+  //       console.log("FAILED ", err, err.stack); // an error occurred
+  //       response = { statusCode: 500, body: { message: "FAILED", error: err } };
+  //       reject();
+  //     } else {
+  //       console.log("SUCCESS", data); // successful response
+  //       response = { statusCode: 200, body: { message: "SUCCESS" } };
+  //       resolve();
+  //     }
+  //   });
+  // });
+
+  try {
+
+    await new Promise((resolve, reject) => {
+      COGNITO_CLIENT.adminCreateUser(params, function (err, data) {
+      });
     });
-  });
+
+  } catch (err) {
+    console.log("FAILED ", err, err.stack); // an error occurred
+    response = { statusCode: 500, body: { message: "FAILED", error: err } };
+  } finally {
+    conosole.log("IN FINALLY");
+  }
 }
 
 exports.handler = myHandler;
