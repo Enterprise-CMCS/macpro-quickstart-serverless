@@ -62,38 +62,50 @@ async function myHandler(event, context, callback) {
       TemporaryPassword: "Abc@321456!",
       UserAttributes: users[i].attributes,
     };
+    var passwordData = {
+      Password: "BoatThatBass!!",
+      UserPoolId: userPoolId,
+      Username: users[i].username,
+      Permanent: true
+    };
     await createUser(poolData);
-  }
+    await setPassword(passwordData);
+  //}
 }
 
 async function createUser(params) {
-  // await new Promise((resolve, reject) => {
-  //   COGNITO_CLIENT.adminCreateUser(params, function (err, data) {
-  //     if (err) {
-  //       console.log("FAILED ", err, err.stack); // an error occurred
-  //       response = { statusCode: 500, body: { message: "FAILED", error: err } };
-  //       reject();
-  //     } else {
-  //       console.log("SUCCESS", data); // successful response
-  //       response = { statusCode: 200, body: { message: "SUCCESS" } };
-  //       resolve();
-  //     }
-  //   });
-  // });
-
-  try {
-
-    await new Promise((resolve, reject) => {
-      COGNITO_CLIENT.adminCreateUser(params, function (err, data) {
-      });
+  await new Promise((resolve, reject) => {
+    COGNITO_CLIENT.adminCreateUser(params, function (err, data) {
+      if (err) {
+        // console.log("FAILED ", err, err.stack); // an error occurred
+        // response = { statusCode: 500, body: { message: "FAILED", error: err } };
+        // reject();
+        console.log("FAILED ", err, err.stack); // an error occurred
+        response = { statusCode: 500, body: { message: "FAILED", error: err } };
+        resolve();
+      } else {
+        console.log("SUCCESS", data); // successful response
+        response = { statusCode: 200, body: { message: "SUCCESS" } };
+        resolve();
+      }
     });
+  });
+}
 
-  } catch (err) {
-    console.log("FAILED ", err, err.stack); // an error occurred
-    response = { statusCode: 500, body: { message: "FAILED", error: err } };
-  } finally {
-    conosole.log("IN FINALLY");
-  }
+async function setPassword(params) {
+  await new Promise((resolve, reject) => {
+    COGNITO_CLIENT.adminSetUserPassword(params, function (err, data) {
+      if (err) {
+        console.log("FAILED to update password", err, err.stack); // an error occurred
+        //response = { statusCode: 500, body: { message: "FAILED", error: err } };
+        reject();
+      } else {
+        console.log("SUCCESS", data);
+        resolve();
+      }
+    });
+  });
+}
 }
 
 exports.handler = myHandler;
