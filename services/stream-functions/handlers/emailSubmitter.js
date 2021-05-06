@@ -8,7 +8,7 @@ exports.handler = function (event, context, callback) {
         case "INSERT":
           return ses.getSESEmailParams({
             ToAddresses: [record.dynamodb.NewImage.email.S],
-            fromAddressSource: process.env.emailSource,
+            Source: process.env.emailSource,
             Subject: `New ACME APS submission received! - ${record.dynamodb.NewImage.transmittalNumber.S}`,
             HTML: `
 Hi ${record.dynamodb.NewImage.firstName.S},
@@ -29,7 +29,7 @@ APS Team
         case "MODIFY":
           return ses.getSESEmailParams({
             ToAddresses: [record.dynamodb.NewImage.email.S],
-            fromAddressSource: process.env.emailSource,
+            Source: process.env.emailSource,
             Subject: `Updated ACME APS submission received! - ${record.dynamodb.NewImage.transmittalNumber.S}`,
             HTML: `
   Hi ${record.dynamodb.NewImage.firstName.S},
@@ -50,7 +50,7 @@ APS Team
         case "REMOVE":
           return ses.getSESEmailParams({
             ToAddresses: [record.dynamodb.OldImage.email.S],
-            fromAddressSource: process.env.emailSource,
+            Source: process.env.emailSource,
             Subject: `Your ACME APS submission has been deleted - ${record.dynamodb.OldImage.transmittalNumber.S}`,
             HTML: `
   Hi ${record.dynamodb.OldImage.firstName.S},

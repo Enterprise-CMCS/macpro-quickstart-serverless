@@ -8,7 +8,7 @@ exports.handler = function (event, context, callback) {
         case "INSERT":
           return ses.getSESEmailParams({
             ToAddresses: [process.env.reviewerEmail],
-            fromAddressSource: process.env.emailSource,
+            Source: process.env.emailSource,
             Subject: `New APS Submission - ${record.dynamodb.NewImage.transmittalNumber.S}`,
             HTML: getReviewerEmailBody(
               record.dynamodb.NewImage,
@@ -18,7 +18,7 @@ exports.handler = function (event, context, callback) {
         case "MODIFY":
           return ses.getSESEmailParams({
             ToAddresses: [process.env.reviewerEmail],
-            fromAddressSource: process.env.emailSource,
+            Source: process.env.emailSource,
             Subject: `Updated APS Submission - ${record.dynamodb.NewImage.transmittalNumber.S}`,
             HTML: getReviewerEmailBody(
               record.dynamodb.NewImage,
@@ -28,7 +28,7 @@ exports.handler = function (event, context, callback) {
         case "REMOVE":
           return ses.getSESEmailParams({
             ToAddresses: [process.env.reviewerEmail],
-            fromAddressSource: process.env.emailSource,
+            Source: process.env.emailSource,
             Subject: `Updated APS Submission - ${record.dynamodb.OldImage.transmittalNumber.S}`,
             HTML: getReviewerEmailBody(
               record.dynamodb.OldImage,

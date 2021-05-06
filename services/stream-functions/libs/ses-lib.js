@@ -18,7 +18,7 @@ export function getSESEmailParams(email) {
         Data: email.Subject,
       },
     },
-    Source: email.fromAddressSource,
+    Source: email.Source,
   };
 
   return emailParams;
