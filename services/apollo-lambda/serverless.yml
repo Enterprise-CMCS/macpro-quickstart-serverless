@@ -34,6 +34,7 @@ provider:
   environment:
     tableName: ${self:custom.tableName}
 
+
 resources:
   Conditions:
     CreatePermissionsBoundary:
@@ -98,18 +99,23 @@ resources:
     Region:
       Value: !Sub ${AWS::Region}
 
+
+
+
+
 functions:
   graphql:
     handler: graphql.graphqlHandler
     role: LambdaApiRole
     events:
-      - http:
-          path: graphql
-          method: post
-          cors: true
-      #    authorizer:  aws_iam
-      - http:
-          path: graphql
-          method: get
-          cors: true
-        #  authorizer:  aws_iam
+    - http:
+        path: graphql
+        method: post
+        cors: true
+    #    authorizer:  aws_iam
+
+    - http:
+        path: graphql
+        method: get
+        cors: true
+      #  authorizer:  aws_iam
