@@ -18,30 +18,9 @@ jobs:
           else
             echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
           fi
-      - name: Check branch name is a legal serverless stage name
-        run: |
-          if [[ ! $branch_name =~ ^[a-zA-Z][a-zA-Z0-9-]*$ ]] || [[ $branch_name -gt 128 ]]; then
-            echo """
-              ------------------------------------------------------------------------------------------------------------------------------
-              ERROR:  Please read below
-              ------------------------------------------------------------------------------------------------------------------------------
-              Bad branch name detected; cannot continue.
-
-              The Serverless Application Framework has a concept of stages that facilitate multiple deployments of the same service.
-              In this setup, the git branch name gets passed to Serverless to serve as the stage name.
-              The stage name (branch name in this case) is tacked onto the end of the service name by Serverless.
-              Therefore, the branch name must be a valid service name.
-
-              From Serverless:
-                A service name should only contain alphanumeric (case sensitive) and hyphens. It should start with an alphabetic character and shouldnt exceed 128 characters.
-
-              For Github Actions support, please push your code to a new branch with a name that meets Serverless' service name requirements.
-              So, make a new branch with a name that begins with a letter and is made up of only letters, numbers, and hyphens... then delete this branch.
-              ------------------------------------------------------------------------------------------------------------------------------
-            """
-            exit 1
-          fi
       - uses: actions/checkout@v1
+      - name: Validate branch name
+        run: ./branchNameValidation.sh $STAGE_PREFIX$branch_name
       - name: set branch specific variable names
         run: ./.github/build_vars.sh set_names
       - name: set variable values
@@ -69,6 +48,15 @@ jobs:
       - name: set path
         run: |
           echo "PATH=$(pwd)/node_modules/.bin/:$PATH" >> $GITHUB_ENV
+      - name: unit test & publish coverage
+        uses: paambaati/codeclimate-action@v2.7.5
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_ID }}
+        with:
+          debug: true
+          coverageCommand: ./test-unit.sh {{ env.STAGE_PREFIX }}{{ env.branch_name }}
+          coverageLocations: |
+            ${{github.workspace}}/services/ui-src/coverage/lcov.info:lcov
       - name: deploy
         run: |
           # When deploying multiple copies of this quickstart to the same AWS Account (not ideal), a prefix helps prevent stepping on each other.

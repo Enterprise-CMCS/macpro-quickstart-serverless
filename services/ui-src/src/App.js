@@ -7,7 +7,8 @@ import Routes from "./Routes";
 import { AppContext } from "./libs/contextLib";
 import { Auth } from "aws-amplify";
 import { onError } from "./libs/errorLib";
-
+import { loginLocalUser } from "./libs/user";
+import config from "./config";
 function App() {
   const [isAuthenticating, setIsAuthenticating] = useState(true);
   const [isAuthenticated, userHasAuthenticated] = useState(false);
@@ -35,8 +36,36 @@ function App() {
 
     userHasAuthenticated(false);
 
-    history.push("/login");
+    history.push("/");
   }
+
+  async function handleLogin(event) {
+    event.preventDefault();
+    try {
+      const localLogin = config.LOCAL_LOGIN === "true";
+      if (localLogin) {
+        const alice = {
+          username: "alice",
+          attributes: {
+            given_name: "Alice",
+            family_name: "Foo",
+            email: "alice@example.com",
+          },
+        };
+        loginLocalUser(alice);
+        userHasAuthenticated(true);
+      } else {
+        const authConfig = Auth.configure();
+        const { domain, redirectSignIn, responseType } = authConfig.oauth;
+        const clientId = authConfig.userPoolWebClientId;
+        const url = `https://${domain}/oauth2/authorize?redirect_uri=${redirectSignIn}&response_type=${responseType}&client_id=${clientId}`;
+        window.location.assign(url);
+      }
+    } catch (e) {
+      onError(e);
+    }
+  }
+
   return (
     !isAuthenticating && (
       <div className="App container">
@@ -60,12 +89,7 @@ function App() {
                 </>
               ) : (
                 <>
-                  <LinkContainer to="/signup">
-                    <NavItem>Signup</NavItem>
-                  </LinkContainer>
-                  <LinkContainer to="/login">
-                    <NavItem>Login</NavItem>
-                  </LinkContainer>
+                  <NavItem onClick={handleLogin}>Login</NavItem>
                 </>
               )}
             </Nav>
