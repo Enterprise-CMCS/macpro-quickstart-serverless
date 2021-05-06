@@ -24,7 +24,7 @@ Thank you for using our APS submission system!
 Regards,
 APS Team
 
-`
+`,
           });
         case "MODIFY":
           return ses.getSESEmailParams({
@@ -45,7 +45,7 @@ APS Team
   Regards,
   APS Team
 
-  `
+  `,
           });
         case "REMOVE":
           return ses.getSESEmailParams({
@@ -66,7 +66,7 @@ APS Team
   Regards,
   APS Team
 
-  `
+  `,
           });
         default:
           return 30;
