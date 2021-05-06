@@ -10,7 +10,7 @@ exports.handler = function (event, context, callback) {
             ToAddresses: [record.dynamodb.NewImage.email.S],
             Source: process.env.emailSource,
             Subject: `New ACME APS submission received! - ${record.dynamodb.NewImage.transmittalNumber.S}`,
-            HTML: `
+            Text: `
 Hi ${record.dynamodb.NewImage.firstName.S},
 
 We are writing to let you know we've received your Amendment to Planned Settlement (APS) submission!
@@ -31,7 +31,7 @@ APS Team
             ToAddresses: [record.dynamodb.NewImage.email.S],
             Source: process.env.emailSource,
             Subject: `Updated ACME APS submission received! - ${record.dynamodb.NewImage.transmittalNumber.S}`,
-            HTML: `
+            Text: `
   Hi ${record.dynamodb.NewImage.firstName.S},
 
   We are writing to let you know we've received an update to your Amendment to Planned Settlement (APS) submission!
@@ -52,7 +52,7 @@ APS Team
             ToAddresses: [record.dynamodb.OldImage.email.S],
             Source: process.env.emailSource,
             Subject: `Your ACME APS submission has been deleted - ${record.dynamodb.OldImage.transmittalNumber.S}`,
-            HTML: `
+            Text: `
   Hi ${record.dynamodb.OldImage.firstName.S},
 
   We received a request to delete your Amendment to Planned Settlement (APS) submission.

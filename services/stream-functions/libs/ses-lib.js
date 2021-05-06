@@ -8,9 +8,9 @@ export function getSESEmailParams(email) {
     },
     Message: {
       Body: {
-        Html: {
+        Text: {
           Charset: "UTF-8",
-          Data: email.HTML,
+          Data: email.Text,
         },
       },
       Subject: {

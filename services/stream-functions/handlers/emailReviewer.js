@@ -10,7 +10,7 @@ exports.handler = function (event, context, callback) {
             ToAddresses: [process.env.reviewerEmail],
             Source: process.env.emailSource,
             Subject: `New APS Submission - ${record.dynamodb.NewImage.transmittalNumber.S}`,
-            HTML: getReviewerEmailBody(
+            Text: getReviewerEmailBody(
               record.dynamodb.NewImage,
               "A new APS submission has been received."
             ),
@@ -20,7 +20,7 @@ exports.handler = function (event, context, callback) {
             ToAddresses: [process.env.reviewerEmail],
             Source: process.env.emailSource,
             Subject: `Updated APS Submission - ${record.dynamodb.NewImage.transmittalNumber.S}`,
-            HTML: getReviewerEmailBody(
+            Text: getReviewerEmailBody(
               record.dynamodb.NewImage,
               "An update to an existing APS submission has been received."
             ),
@@ -30,7 +30,7 @@ exports.handler = function (event, context, callback) {
             ToAddresses: [process.env.reviewerEmail],
             Source: process.env.emailSource,
             Subject: `Updated APS Submission - ${record.dynamodb.OldImage.transmittalNumber.S}`,
-            HTML: getReviewerEmailBody(
+            Text: getReviewerEmailBody(
               record.dynamodb.OldImage,
               "A request to delete the below APS request has been processed."
             ),
