@@ -112,7 +112,7 @@ resources:
             - Action:
                 - "s3:GetObject"
               Effect: "Deny"
-              Resource: !Sub ${AttachmentsBucket.Arn}/*
+              Resource: !Sub ${AttachmentsBucket.Arn}/*.html
               Principal: "*"
               Condition:
                 StringNotEquals:

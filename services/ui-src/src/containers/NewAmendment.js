@@ -67,10 +67,9 @@ export default function NewAmendment({ fileUpload }) {
      var pos = validExt.indexOf(getFileExt);
      if(pos < 0) {
        alert("This file is not allowed, please upload valid file.");
-       return false;
-      } else {
-        return;
-      }
+       return;
+      } 
+    
 
     setIsLoading(true);
 
