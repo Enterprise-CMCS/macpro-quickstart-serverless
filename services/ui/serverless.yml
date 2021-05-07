@@ -1,4 +1,3 @@
-
 #iamPath: optional: This is optional and it is used to assign extra permissions for the service user or role to create certain  resources.
 #iamPermissionsBoundaryPolicy: optional: This is used to limit the scope of Iam users and roles to prevent privilege escalation
 #infrastructureType: This is used to select which infrastructure type that this deployment will be deployed on. Eg is development
