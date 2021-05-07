@@ -13,7 +13,7 @@ export const main = handler(async (event, context) => {
     Key: {
       userId: event.requestContext.identity.cognitoIdentityId,
       amendmentId: event.pathParameters.id,
-    });
+    }});
   if (!result.Item) {
     throw new Error("Item not found.");
   }
