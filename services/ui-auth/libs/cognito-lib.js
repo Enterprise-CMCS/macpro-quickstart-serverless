@@ -26,7 +26,10 @@ export async function setPassword(params) {
     COGNITO_CLIENT.adminSetUserPassword(params, function (err, data) {
       if (err) {
         console.log("FAILED to update password", err, err.stack); // an error occurred
-        var response = { statusCode: 500, body: { message: "FAILED", error: err } };
+        var response = {
+          statusCode: 500,
+          body: { message: "FAILED", error: err },
+        };
         reject(response);
       } else {
         console.log("SUCCESS", data);
@@ -41,7 +44,10 @@ export async function updateUserAttributes(params) {
     COGNITO_CLIENT.adminUpdateUserAttributes(params, function (err, data) {
       if (err) {
         console.log("FAILED to update user attributes", err, err.stack); // an error occurred
-        var response = { statusCode: 500, body: { message: "FAILED", error: err } };
+        var response = {
+          statusCode: 500,
+          body: { message: "FAILED", error: err },
+        };
         reject(response);
       } else {
         console.log("SUCCESS", data);
