@@ -1,15 +1,14 @@
-var aws = require("aws-sdk");
-const COGNITO_CLIENT = new aws.CognitoIdentityServiceProvider({
-  apiVersion: "2016-04-19",
-  region: "us-east-1",
-});
+// import * as cognitolib from "../libs/cognito-lib";
+import { createUser, setPassword, updateUserAttributes } from "../libs/cognito-lib";
+
 const userPoolId = process.env.userPoolId;
+const users = require('./libs/users.json')
 
 async function myHandler(event, context, callback) {
   console.log("USER POOL ID: ");
   console.log(userPoolId);
 
-  const users = require('./libs/users.json')
+
   // const users = [
   //   {
   //     username: "paul@example.com",
