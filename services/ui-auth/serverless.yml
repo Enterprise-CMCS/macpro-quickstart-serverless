@@ -2,6 +2,9 @@ service: ui-auth
 
 frameworkVersion: "2"
 
+package:
+  individually: true
+
 provider:
   name: aws
   runtime: nodejs12.x
@@ -10,6 +13,7 @@ provider:
 plugins:
   - serverless-stack-termination-protection
   - serverless-plugin-scripts
+  - serverless-bundle
 
 custom:
   stage: ${opt:stage, self:provider.stage}
