@@ -10,7 +10,7 @@ import Switch from "react-ios-switch";
 import { territoryList } from "../libs/territoryLib";
 import * as url from "url";
 import { getAmendment, updateAmendment, deleteAmendment } from "../libs/api";
-import { capitalize } from "../libs/helpers"
+import { capitalize } from "../libs/helpers";
 
 export default function Amendments({ fileUpload, fileURLResolver }) {
   const file = useRef(null);

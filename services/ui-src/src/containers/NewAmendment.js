@@ -10,7 +10,7 @@ import { currentUserInfo } from "../libs/user";
 import Select from "react-select";
 import Switch from "react-ios-switch";
 import { territoryList } from "../libs/territoryLib";
-import { capitalize } from "../libs/helpers"
+import { capitalize } from "../libs/helpers";
 
 export default function NewAmendment({ fileUpload }) {
   const file = useRef(null);

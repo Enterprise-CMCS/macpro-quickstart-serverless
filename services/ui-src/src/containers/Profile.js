@@ -7,7 +7,7 @@ import "./Profile.css";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { currentUserInfo, updateCurrentUserAttributes } from "../libs/user";
-import { capitalize } from "../libs/helpers"
+import { capitalize } from "../libs/helpers";
 
 export default function Profile() {
   const history = useHistory();
