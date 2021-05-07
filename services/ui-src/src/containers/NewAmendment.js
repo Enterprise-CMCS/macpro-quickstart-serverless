@@ -3,14 +3,13 @@ import { useHistory } from "react-router-dom";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { onError } from "../libs/errorLib";
-import config from "../config";
 import "./NewAmendment.css";
 import { createAmendment } from "../libs/api";
 import { currentUserInfo } from "../libs/user";
 import Select from "react-select";
 import Switch from "react-ios-switch";
 import { territoryList } from "../libs/territoryLib";
-import { capitalize, validateAmendmentForm } from "../libs/helpers";
+import { capitalize, validateAmendmentForm, validateFileAttachment } from "../libs/helpers";
 
 export default function NewAmendment({ fileUpload }) {
   const file = useRef(null);
@@ -40,14 +39,7 @@ export default function NewAmendment({ fileUpload }) {
   async function handleSubmit(event) {
     event.preventDefault();
 
-    if (file.current && file.current.size > config.MAX_ATTACHMENT_SIZE) {
-      alert(
-        `Please pick a file smaller than ${
-          config.MAX_ATTACHMENT_SIZE / 1000000
-        } MB.`
-      );
-      return;
-    }
+    if(!validateFileAttachment(file)) return;
 
     setIsLoading(true);
 
