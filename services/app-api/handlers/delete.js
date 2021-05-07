@@ -8,15 +8,12 @@ export const main = handler(async (event, context) => {
     return null;
   }
 
-  const params = {
+  await dynamoDb.delete({
     TableName: process.env.tableName,
     Key: {
       userId: event.requestContext.identity.cognitoIdentityId,
       amendmentId: event.pathParameters.id,
-    },
-  };
-
-  await dynamoDb.delete(params);
+    });
 
   return { status: true };
 });

@@ -8,15 +8,12 @@ export const main = handler(async (event, context) => {
     return null;
   }
 
-  const params = {
+  const result = await dynamoDb.get({
     TableName: process.env.tableName,
     Key: {
       userId: event.requestContext.identity.cognitoIdentityId,
       amendmentId: event.pathParameters.id,
-    },
-  };
-
-  const result = await dynamoDb.get(params);
+    });
   if (!result.Item) {
     throw new Error("Item not found.");
   }
