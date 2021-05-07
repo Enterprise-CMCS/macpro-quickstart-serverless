@@ -10,6 +10,7 @@ import { currentUserInfo } from "../libs/user";
 import Select from "react-select";
 import Switch from "react-ios-switch";
 import { territoryList } from "../libs/territoryLib";
+import { capitalize } from "../libs/helpers"
 
 export default function NewAmendment({ fileUpload }) {
   const file = useRef(null);
@@ -21,10 +22,6 @@ export default function NewAmendment({ fileUpload }) {
   const [urgent, setUrgent] = useState(false);
   const [comments, setComments] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const capitalize = (s) => {
-    if (typeof s !== "string") return "";
-    return s.charAt(0).toUpperCase() + s.slice(1);
-  };
 
   async function populateUserInfo() {
     var userInfo = await currentUserInfo();

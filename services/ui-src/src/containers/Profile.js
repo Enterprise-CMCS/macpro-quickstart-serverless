@@ -7,6 +7,7 @@ import "./Profile.css";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { currentUserInfo, updateCurrentUserAttributes } from "../libs/user";
+import { capitalize } from "../libs/helpers"
 
 export default function Profile() {
   const history = useHistory();
@@ -15,10 +16,6 @@ export default function Profile() {
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const capitalize = (s) => {
-    if (typeof s !== "string") return "";
-    return s.charAt(0).toUpperCase() + s.slice(1);
-  };
 
   useEffect(() => {
     async function onLoad() {

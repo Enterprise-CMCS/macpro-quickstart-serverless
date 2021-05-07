@@ -10,6 +10,7 @@ import Switch from "react-ios-switch";
 import { territoryList } from "../libs/territoryLib";
 import * as url from "url";
 import { getAmendment, updateAmendment, deleteAmendment } from "../libs/api";
+import { capitalize } from "../libs/helpers"
 
 export default function Amendments({ fileUpload, fileURLResolver }) {
   const file = useRef(null);
@@ -25,10 +26,6 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
   const [comments, setComments] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const capitalize = (s) => {
-    if (typeof s !== "string") return "";
-    return s.charAt(0).toUpperCase() + s.slice(1);
-  };
 
   useEffect(() => {
     function loadAmendment() {
