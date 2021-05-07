@@ -1,0 +1,65 @@
+[
+  {
+    "username": "paul@example.com",
+    "attributes": [
+      {
+        "Name": "email",
+        "Value": "paul@example.com"
+      },
+      {
+        "Name": "given_name",
+        "Value": "Paul"
+      },
+      {
+        "Name": "family_name",
+        "Value": "McCartney"
+      },
+      {
+        "Name": "email_verified",
+        "Value": "true"
+      }
+    ]
+  },
+  {
+    "username": "john@example.com",
+    "attributes": [
+      {
+        "Name": "email",
+        "Value": "john@example.com"
+      },
+      {
+        "Name": "given_name",
+        "Value": "John"
+      },
+      {
+        "Name": "family_name",
+        "Value": "Lennon"
+      },
+      {
+        "Name": "email_verified",
+        "Value": "true"
+      }
+    ]
+  },
+  {
+    "username": "george@example.com",
+    "attributes": [
+      {
+        "Name": "email",
+        "Value": "george@example.com"
+      },
+      {
+        "Name": "given_name",
+        "Value": "George"
+      },
+      {
+        "Name": "family_name",
+        "Value": "Harrison"
+      },
+      {
+        "Name": "email_verified",
+        "Value": "true"
+      }
+    ]
+  }
+]
