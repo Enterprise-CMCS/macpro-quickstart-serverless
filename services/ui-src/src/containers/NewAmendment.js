@@ -9,7 +9,11 @@ import { currentUserInfo } from "../libs/user";
 import Select from "react-select";
 import Switch from "react-ios-switch";
 import { territoryList } from "../libs/territoryLib";
-import { capitalize, validateAmendmentForm, validateFileAttachment } from "../libs/helpers";
+import {
+  capitalize,
+  validateAmendmentForm,
+  validateFileAttachment,
+} from "../libs/helpers";
 
 export default function NewAmendment({ fileUpload }) {
   const file = useRef(null);
@@ -39,7 +43,7 @@ export default function NewAmendment({ fileUpload }) {
   async function handleSubmit(event) {
     event.preventDefault();
 
-    if(!validateFileAttachment(file)) return;
+    if (!validateFileAttachment(file)) return;
 
     setIsLoading(true);
 
@@ -125,7 +129,9 @@ export default function NewAmendment({ fileUpload }) {
           bsSize="large"
           bsStyle="primary"
           isLoading={isLoading}
-          disabled={!validateAmendmentForm(email, firstName, lastName, territory)}
+          disabled={
+            !validateAmendmentForm(email, firstName, lastName, territory)
+          }
         >
           Submit
         </LoaderButton>
