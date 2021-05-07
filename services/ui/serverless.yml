@@ -1,3 +1,18 @@
+
+#iamPath: optional: This is optional and it is used to assign extra permissions for the service user or role to create certain  resources.
+#iamPermissionsBoundaryPolicy: optional: This is used to limit the scope of Iam users and roles to prevent privilege escalation
+#infrastructureType: This is used to select which infrastructure type that this deployment will be deployed on. Eg is development
+#sesSourceEmailAddress: not mandatory
+#route53HostedZoneId:  optional :This is the Id of the Amazon route53 hosted zone
+#route53DomainName: optional: Route 53 domain name for the site if any
+#cloudfrontCertificateArn: optional:  The arn for the clodfront distribution certificate
+#cloudfrontDomainName: The domain name for the cloudfront distribution
+#**okta_metadata_url: optional: url for okta
+#**reviewerEmailAddress: Email address of the submissions reviewer
+#lambda warmup schedule: This is a set schedule for warming up the lambda function
+#lambda warmup concurrency: Concurrency of the warmup function is the number of requests it can handle at any given time.
+#Self:custom.stage: stages are used for creating independent environments for development. Whenever a new branch is created, the branch name is assigned as the custom stage name, which helps to avoid conflicts by creating a whole new environment separate from existing ones.
+
 ## set the values for the following ssm parameters in AWS SSM Parameter store for ui service. You will need to set the values and also a default value to fall to if the required value is not present.
 # 1. iamPath:  /configuration/${self:custom.stage}/iam/path    &  /configuration/default/iam/path
 # 2. iamPermissionsBoundaryPolicy:  configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy    &  /configuration/default/iam/permissionsBoundaryPolicy
@@ -5,6 +20,7 @@
 # 4. route53DomainName: /configuration/${self:custom.stage}/route53/domainName
 # 5. cloudfrontCertificateArn: /configuration/${self:custom.stage}/cloudfront/certificateArn     &  /configuration/default/cloudfront/certificateArn
 # 6. cloudfrontDomainName: /configuration/${self:custom.stage}/cloudfront/domainName
+
 service: ui
 
 frameworkVersion: "2"
