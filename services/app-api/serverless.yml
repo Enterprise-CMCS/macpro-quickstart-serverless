@@ -19,6 +19,7 @@
 # 4. lambda warmup schedule: /configuration/${self:custom.stage}/warmup/schedule       &  /configuration/default/warmup/schedule
 # 5. lambda warmup concurrency: configuration/${self:custom.stage}/warmup/concurrency     &  /configuration/default/warmup/concurrency
 service: app-api
+
 frameworkVersion: "2"
 
 package:
