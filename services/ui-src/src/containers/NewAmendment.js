@@ -10,7 +10,7 @@ import { currentUserInfo } from "../libs/user";
 import Select from "react-select";
 import Switch from "react-ios-switch";
 import { territoryList } from "../libs/territoryLib";
-import { capitalize } from "../libs/helpers";
+import { capitalize, validateAmendmentForm } from "../libs/helpers";
 
 export default function NewAmendment({ fileUpload }) {
   const file = useRef(null);
@@ -32,15 +32,6 @@ export default function NewAmendment({ fileUpload }) {
   }
 
   populateUserInfo();
-
-  function validateForm() {
-    return (
-      email.length > 0 &&
-      firstName.length > 0 &&
-      lastName.length > 0 &&
-      territory.length > 0
-    );
-  }
 
   function handleFileChange(event) {
     file.current = event.target.files[0];
@@ -142,7 +133,7 @@ export default function NewAmendment({ fileUpload }) {
           bsSize="large"
           bsStyle="primary"
           isLoading={isLoading}
-          disabled={!validateForm()}
+          disabled={!validateAmendmentForm(email, firstName, lastName, territory)}
         >
           Submit
         </LoaderButton>

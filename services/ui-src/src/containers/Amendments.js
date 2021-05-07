@@ -10,7 +10,7 @@ import Switch from "react-ios-switch";
 import { territoryList } from "../libs/territoryLib";
 import * as url from "url";
 import { getAmendment, updateAmendment, deleteAmendment } from "../libs/api";
-import { capitalize } from "../libs/helpers";
+import { capitalize, validateAmendmentForm } from "../libs/helpers";
 
 export default function Amendments({ fileUpload, fileURLResolver }) {
   const file = useRef(null);
@@ -65,15 +65,6 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
 
     onLoad();
   }, [id, fileURLResolver]);
-
-  function validateForm() {
-    return (
-      email.length > 0 &&
-      firstName.length > 0 &&
-      lastName.length > 0 &&
-      territory.length > 0
-    );
-  }
 
   function formatFilename(str) {
     return str.replace(/^\w+-/, "");
@@ -262,7 +253,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
             bsSize="large"
             bsStyle="primary"
             isLoading={isLoading}
-            disabled={!validateForm()}
+            disabled={!validateAmendmentForm(email, firstName, lastName, territory)}
           >
             Save
           </LoaderButton>
