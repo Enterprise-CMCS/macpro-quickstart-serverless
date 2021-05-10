@@ -48,15 +48,15 @@ jobs:
       - name: set path
         run: |
           echo "PATH=$(pwd)/node_modules/.bin/:$PATH" >> $GITHUB_ENV
-      - name: unit test & publish coverage
-        uses: paambaati/codeclimate-action@v2.7.5
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_ID }}
-        with:
-          debug: true
-          coverageCommand: ./test-unit.sh {{ env.STAGE_PREFIX }}{{ env.branch_name }}
-          coverageLocations: |
-            ${{github.workspace}}/services/ui-src/coverage/lcov.info:lcov
+      #  - name: unit test & publish coverage
+      #    uses: paambaati/codeclimate-action@v2.7.5
+      #      env:
+      #        CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_ID }}
+      #      with:
+      #        debug: true
+      #        coverageCommand: ./test-unit.sh {{ env.STAGE_PREFIX }}{{ env.branch_name }}
+      #        coverageLocations: |
+      #          ${{github.workspace}}/services/ui-src/coverage/lcov.info:lcov
       - name: deploy
         run: |
           # When deploying multiple copies of this quickstart to the same AWS Account (not ideal), a prefix helps prevent stepping on each other.
