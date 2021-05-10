@@ -45,7 +45,7 @@ export default function NewAmendment({ fileUpload }) {
 
     if (!validateFileAttachment(file)) return;
 
-    var file= form.file.value;
+    var file= event.file.value;
     var reg = /(.*?)\.(html)$/;
     if(file.match(reg))
     {
