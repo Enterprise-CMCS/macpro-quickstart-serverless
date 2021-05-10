@@ -7,6 +7,7 @@ import "./Profile.css";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { currentUserInfo, updateCurrentUserAttributes } from "../libs/user";
+import { capitalize } from "../libs/helpers";
 
 export default function Profile() {
   const history = useHistory();
@@ -15,10 +16,6 @@ export default function Profile() {
   const [lastName, setLastName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const capitalize = (s) => {
-    if (typeof s !== "string") return "";
-    return s.charAt(0).toUpperCase() + s.slice(1);
-  };
 
   useEffect(() => {
     async function onLoad() {
@@ -85,17 +82,11 @@ export default function Profile() {
         </FormGroup>
         <FormGroup controlId="firstName">
           <ControlLabel>First Name</ControlLabel>
-          <FormControl
-            value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
-          />
+          <FormControl value={firstName} disabled={true} />
         </FormGroup>
         <FormGroup controlId="lastName">
           <ControlLabel>Last Name</ControlLabel>
-          <FormControl
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-          />
+          <FormControl value={lastName} disabled={true} />
         </FormGroup>
         <FormGroup controlId="phoneNumber">
           <ControlLabel>Phone</ControlLabel>

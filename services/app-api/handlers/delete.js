@@ -8,18 +8,13 @@ export const main = handler(async (event, context) => {
     return null;
   }
 
-  const params = {
+  await dynamoDb.delete({
     TableName: process.env.tableName,
-    // 'Key' defines the partition key and sort key of the item to be removed
-    // - 'userId': Identity Pool identity id of the authenticated user
-    // - 'amendmentId': path parameter
     Key: {
       userId: event.requestContext.identity.cognitoIdentityId,
       amendmentId: event.pathParameters.id,
     },
-  };
-
-  await dynamoDb.delete(params);
+  });
 
   return { status: true };
 });

@@ -14,6 +14,13 @@ Amplify.configure({
     userPoolId: config.cognito.USER_POOL_ID,
     identityPoolId: config.cognito.IDENTITY_POOL_ID,
     userPoolWebClientId: config.cognito.APP_CLIENT_ID,
+    oauth: {
+      domain: config.cognito.APP_CLIENT_DOMAIN,
+      redirectSignIn: config.cognito.REDIRECT_SIGNIN,
+      redirectSignOut: config.cognito.REDIRECT_SIGNOUT,
+      scope: ["email", "openid"],
+      responseType: "token",
+    },
   },
   Storage: {
     region: config.s3.REGION,
