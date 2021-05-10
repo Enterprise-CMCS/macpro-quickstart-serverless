@@ -5,14 +5,6 @@ set -e
 stage=${1:-dev}
 
 services=(
-  'database'
-  'uploads'
-  'app-api'
-  'stream-functions'
-  'ui-waflog-s3-bucket'
-  'ui'
-  'ui-auth'
-  'ui-waf-log-assoc'
   'ui-src'
 )
 
@@ -26,11 +18,11 @@ install_deps() {
   fi
 }
 
-deploy() {
+unit_test() {
   service=$1
   pushd services/$service
   install_deps
-  serverless deploy  --stage $stage
+  serverless testUnit --stage $stage
   popd
 }
 
@@ -39,14 +31,5 @@ export PATH=$(pwd)/node_modules/.bin/:$PATH
 
 for i in "${services[@]}"
 do
-	deploy $i
+	unit_test $i
 done
-
-pushd services
-echo """
-------------------------------------------------------------------------------------------------
-------------------------------------------------------------------------------------------------
-Application endpoint:  `./output.sh ui CloudFrontEndpointUrl $stage`
-------------------------------------------------------------------------------------------------
-"""
-popd

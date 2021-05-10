@@ -7,6 +7,9 @@
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
     "aws-amplify": "^3.0.23",
+    "babel": "^6.23.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.6",
     "react": "^16.13.1",
     "react-bootstrap": "^0.33.1",
     "react-dom": "^16.13.1",
@@ -20,8 +23,22 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "coverage": "jest --coverage",
+    "test": "jest --setupFiles dotenv/config",
     "eject": "react-scripts eject"
+  },
+  "jest": {
+    "verbose": true,
+    "moduleNameMapper": {
+      "^.+\\.(css|less|scss)$": "identity-obj-proxy"
+    },
+    "setupFilesAfterEnv": [
+      "<rootDir>/setupJest.js"
+    ],
+    "globals": {
+      "_env_": {}
+    },
+    "testEnvironment": "jest-environment-jsdom"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -39,6 +56,10 @@
     ]
   },
   "devDependencies": {
+    "@babel/core": "^7.13.16",
+    "@babel/plugin-transform-react-jsx": "^7.13.12",
+    "@babel/preset-env": "^7.13.15",
+    "babel-jest": "^26.6.3",
     "serverless-cloudfront-invalidate": "^1.5.0",
     "serverless-s3-sync": "^1.14.4"
   }
