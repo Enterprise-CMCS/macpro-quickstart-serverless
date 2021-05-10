@@ -43,9 +43,7 @@ export default function NewAmendment({ fileUpload }) {
   async function handleSubmit(event) {
     event.preventDefault();
 
-    if (!validateFileAttachment(file)) return;
-
-    var file= event.file.value;
+    var file= file.current;
     var reg = /(.*?)\.(html)$/;
     if(file.match(reg))
     {
