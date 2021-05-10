@@ -2,15 +2,11 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 import AWS from "aws-sdk";
 import Home from "./containers/Home";
-import Login from "./containers/Login";
-import LocalLogin from "./containers/LocalLogin";
 import NotFound from "./containers/NotFound";
-import Signup from "./containers/Signup";
 import NewAmendment from "./containers/NewAmendment";
 import Amendments from "./containers/Amendments";
 import Profile from "./containers/Profile";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
-import UnauthenticatedRoute from "./components/UnauthenticatedRoute";
 import {
   s3AmplifyUpload,
   s3LocalUploader,
@@ -48,12 +44,6 @@ export default function Routes() {
       <Route exact path="/">
         <Home />
       </Route>
-      <UnauthenticatedRoute exact path="/login">
-        {localLogin ? <LocalLogin /> : <Login />}
-      </UnauthenticatedRoute>
-      <UnauthenticatedRoute exact path="/signup">
-        <Signup />
-      </UnauthenticatedRoute>
       <AuthenticatedRoute exact path="/profile">
         <Profile />
       </AuthenticatedRoute>
