@@ -43,9 +43,9 @@ custom:
       localDir: ./build
       deleteRemoved: true
   cloudfrontInvalidate:
-    distributionId: ${self:custom.ui_cloudfront_distribution_id}
-    items:
-      - "/*"
+    - distributionId: ${self:custom.ui_cloudfront_distribution_id}
+      items:
+        - "/*"
   scripts:
     commands:
       testUnit: |
