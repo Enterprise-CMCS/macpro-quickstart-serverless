@@ -1,6 +1,5 @@
 #iamPath: optional: This is optional and it is used to assign extra permissions for the service user or role to create certain  resources.
 #iamPermissionsBoundaryPolicy: optional: This is used to limit the scope of Iam users and roles to prevent privilege escalation
-#infrastructureType: This is used to select which infrastructure type that this deployment will be deployed on. Eg is development
 #sesSourceEmailAddress: not mandatory
 #route53HostedZoneId:  optional :This is the Id of the Amazon route53 hosted zone
 #route53DomainName: optional: Route 53 domain name for the site if any
@@ -15,7 +14,6 @@
 ## set the values for the following ssm parameters in AWS SSM Parameter store for app-api service. You will need to set the values and also a default value to fall to if the required value is not present.
 # 1. iamPath:  /configuration/${self:custom.stage}/iam/path    &  /configuration/default/iam/path
 # 2. iamPermissionsBoundaryPolicy:  configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy    &  /configuration/default/iam/permissionsBoundaryPolicy
-# 3. infrastructureType:  /configuration/${self:custom.stage}/infrastucture/type       &  /configuration/default/iam/permissionsBoundaryPolicy
 # 4. lambda warmup schedule: /configuration/${self:custom.stage}/warmup/schedule       &  /configuration/default/warmup/schedule
 # 5. lambda warmup concurrency: configuration/${self:custom.stage}/warmup/concurrency     &  /configuration/default/warmup/concurrency
 service: app-api
