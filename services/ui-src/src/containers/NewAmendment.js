@@ -43,14 +43,16 @@ export default function NewAmendment({ fileUpload }) {
   async function handleSubmit(event) {
     event.preventDefault();
 
-    if (!validateFileAttachment(file)) return;
-
-    var validExt = [ 'html' ];
-    var ext = this.value.split('.').pop();
-
-    if (validExt.indexOf(ext.toLowerCase()) == 0) {
-      alert('This file type is not allowed');
-    return;
+    var validExt = ".html";
+     var filePath = event.value;
+     var getFileExt = filePath.substring(filePath.lastIndexOf('.') + 1).toLowerCase();
+     var pos = validExt.indexOf(getFileExt);
+     if(pos = 0) {
+       alert("This file is not allowed, please upload valid file.");
+       return false;
+      } else {
+        return true;
+      }
 
     setIsLoading(true);
 
