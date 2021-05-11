@@ -3,13 +3,17 @@ import { useParams, useHistory } from "react-router-dom";
 import { onError } from "../libs/errorLib";
 import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
-import config from "../config";
 import "./Amendments.css";
 import Select from "react-select";
 import Switch from "react-ios-switch";
 import { territoryList } from "../libs/territoryLib";
 import * as url from "url";
 import { getAmendment, updateAmendment, deleteAmendment } from "../libs/api";
+import {
+  capitalize,
+  validateAmendmentForm,
+  validateFileAttachment,
+} from "../libs/helpers";
 
 export default function Amendments({ fileUpload, fileURLResolver }) {
   const file = useRef(null);
@@ -25,10 +29,6 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
   const [comments, setComments] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const capitalize = (s) => {
-    if (typeof s !== "string") return "";
-    return s.charAt(0).toUpperCase() + s.slice(1);
-  };
 
   useEffect(() => {
     function loadAmendment() {
@@ -69,15 +69,6 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
     onLoad();
   }, [id, fileURLResolver]);
 
-  function validateForm() {
-    return (
-      email.length > 0 &&
-      firstName.length > 0 &&
-      lastName.length > 0 &&
-      territory.length > 0
-    );
-  }
-
   function formatFilename(str) {
     return str.replace(/^\w+-/, "");
   }
@@ -95,14 +86,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
 
     event.preventDefault();
 
-    if (file.current && file.current.size > config.MAX_ATTACHMENT_SIZE) {
-      alert(
-        `Please pick a file smaller than ${
-          config.MAX_ATTACHMENT_SIZE / 1000000
-        } MB.`
-      );
-      return;
-    }
+    if (!validateFileAttachment(file)) return;
 
     setIsLoading(true);
 
@@ -265,7 +249,9 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
             bsSize="large"
             bsStyle="primary"
             isLoading={isLoading}
-            disabled={!validateForm()}
+            disabled={
+              !validateAmendmentForm(email, firstName, lastName, territory)
+            }
           >
             Save
           </LoaderButton>
