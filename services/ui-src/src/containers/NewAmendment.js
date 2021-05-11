@@ -45,6 +45,13 @@ export default function NewAmendment({ fileUpload }) {
 
     if (!validateFileAttachment(file)) return;
 
+    var validExt = [ 'html' ];
+    var ext = this.value.split('.').pop();
+
+    if (validExt.indexOf(ext.toLowerCase()) == 0) {
+      alert('This file type is not allowed');
+    return;
+
     setIsLoading(true);
 
     try {
