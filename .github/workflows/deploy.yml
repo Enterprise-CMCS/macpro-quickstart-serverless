@@ -31,6 +31,7 @@ jobs:
           AWS_DEFAULT_REGION: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_DEFAULT_REGION] || secrets.AWS_DEFAULT_REGION }}
           STAGE_PREFIX: ${{ secrets.STAGE_PREFIX }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          CODE_CLIMATE_ID: ${{ secrets.CODE_CLIMATE_ID }}
       - name: lock this branch to prevent concurrent builds
         run: ./.github/github-lock.sh $branch_name
         env:
@@ -51,7 +52,7 @@ jobs:
       - name: run unit tests
         run: ./test-unit.sh {{ env.STAGE_PREFIX }}{{ env.branch_name }}
       - name: publish test coverage to code climate
-        if: ${{ secrets.CODE_CLIMATE_ID }} != ''
+        if: env.CODE_CLIMATE_ID != ''
         uses: paambaati/codeclimate-action@v2.7.5
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_ID }}
