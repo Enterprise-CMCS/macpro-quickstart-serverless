@@ -123,18 +123,18 @@ resources:
               Effect: Deny
               Principal: '*'
               Resource:
-                - 'arn:aws:s3:::DOC-EXAMPLE-BUCKET/*.jpg'
-                - 'arn:aws:s3:::DOC-EXAMPLE-BUCKET/*.png'
-                - 'arn:aws:s3:::DOC-EXAMPLE-BUCKET/*.gif'
-                - 'arn:aws:s3:::DOC-EXAMPLE-BUCKET/*.jpeg'
+                - !Sub ${AttachmentsBucket.Arn}/*.jpg
+                - !Sub ${AttachmentsBucket.Arn}/*.png
+                - !Sub ${AttachmentsBucket.Arn}/*.gif
+                - !Sub ${AttachmentsBucket.Arn}/*.jpeg
             - Action: 's3:PutObject'
               Effect: Deny
               Principal: '*'
               NotResource:
-                - 'arn:aws:s3:::DOC-EXAMPLE-BUCKET/*.jpg'
-                - 'arn:aws:s3:::DOC-EXAMPLE-BUCKET/*.png'
-                - 'arn:aws:s3:::DOC-EXAMPLE-BUCKET/*.gif'
-                - 'arn:aws:s3:::DOC-EXAMPLE-BUCKET/*.jpeg'
+                - !Sub ${AttachmentsBucket.Arn}/*.jpg
+                - !Sub ${AttachmentsBucket.Arn}/*.png
+                - !Sub ${AttachmentsBucket.Arn}/*.gif
+                - !Sub ${AttachmentsBucket.Arn}/*.jpeg
     LambdaInvokePermission:
       Type: AWS::Lambda::Permission
       Properties:
