@@ -48,13 +48,15 @@ jobs:
       - name: set path
         run: |
           echo "PATH=$(pwd)/node_modules/.bin/:$PATH" >> $GITHUB_ENV
-      - name: unit test & publish coverage
+      - name: run unit tests
+        run: /test-unit.sh {{ env.STAGE_PREFIX }}{{ env.branch_name }}
+      - name: publish coverage
         uses: paambaati/codeclimate-action@v2.7.5
         env:
           CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_ID }}
         with:
           debug: true
-          coverageCommand: ./test-unit.sh {{ env.STAGE_PREFIX }}{{ env.branch_name }}
+          # coverageCommand: ./test-unit.sh {{ env.STAGE_PREFIX }}{{ env.branch_name }}
           coverageLocations: |
             ${{github.workspace}}/services/ui-src/coverage/lcov.info:lcov
       - name: deploy
