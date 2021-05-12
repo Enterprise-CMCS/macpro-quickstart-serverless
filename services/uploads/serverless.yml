@@ -119,11 +119,22 @@ resources:
                   s3:ExistingObjectTag/virusScanStatus:
                     - "CLEAN"
                   aws:PrincipalArn: !GetAtt BucketAVScanRole.Arn
-            - Action:
-                - "s3:PutObject"
-              Effect: "Deny"
-              Resource: !Sub ${AttachmentsBucket.Arn}/*.html
-              Principal: "*"
+            - Action: 's3:PutObject'
+              Effect: Deny
+              Principal: '*'
+              Resource:
+                - 'arn:aws:s3:::DOC-EXAMPLE-BUCKET/*.jpg'
+                - 'arn:aws:s3:::DOC-EXAMPLE-BUCKET/*.png'
+                - 'arn:aws:s3:::DOC-EXAMPLE-BUCKET/*.gif'
+                - 'arn:aws:s3:::DOC-EXAMPLE-BUCKET/*.jpeg'
+            - Action: 's3:PutObject'
+              Effect: Deny
+              Principal: '*'
+              NotResource:
+                - 'arn:aws:s3:::DOC-EXAMPLE-BUCKET/*.jpg'
+                - 'arn:aws:s3:::DOC-EXAMPLE-BUCKET/*.png'
+                - 'arn:aws:s3:::DOC-EXAMPLE-BUCKET/*.gif'
+                - 'arn:aws:s3:::DOC-EXAMPLE-BUCKET/*.jpeg'
     LambdaInvokePermission:
       Type: AWS::Lambda::Permission
       Properties:
