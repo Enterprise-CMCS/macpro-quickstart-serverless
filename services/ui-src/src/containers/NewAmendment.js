@@ -45,7 +45,8 @@ export default function NewAmendment({ fileUpload }) {
 
     if (!validateFileAttachment(file)) return;
 
-    var validExt = ".bmp,.csv,.doc,.docx,.gif,.jpg,.jpeg,.odp,.ods,.odt,.png,.pdf,.ppt,.pptx,.rtf,.tif,.tiff,.txt,.xls,.xlsx";
+    var validExt =
+      ".bmp,.csv,.doc,.docx,.gif,.jpg,.jpeg,.odp,.ods,.odt,.png,.pdf,.ppt,.pptx,.rtf,.tif,.tiff,.txt,.xls,.xlsx";
     var filePath = event.value;
     var getFileExt = filePath
       .substring(filePath.lastIndexOf(".") + 1)

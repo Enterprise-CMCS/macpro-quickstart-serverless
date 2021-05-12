@@ -119,9 +119,9 @@ resources:
                   s3:ExistingObjectTag/virusScanStatus:
                     - "CLEAN"
                   aws:PrincipalArn: !GetAtt BucketAVScanRole.Arn
-            - Action: 's3:PutObject'
+            - Action: "s3:PutObject"
               Effect: Deny
-              Principal: '*'
+              Principal: "*"
               Resource:
                 - !Sub ${AttachmentsBucket.Arn}/*.jpg
                 - !Sub ${AttachmentsBucket.Arn}/*.png
@@ -143,9 +143,9 @@ resources:
                 - !Sub ${AttachmentsBucket.Arn}/*.txt
                 - !Sub ${AttachmentsBucket.Arn}/*.xls
                 - !Sub ${AttachmentsBucket.Arn}/*.xlsx
-            - Action: 's3:PutObject'
+            - Action: "s3:PutObject"
               Effect: Deny
-              Principal: '*'
+              Principal: "*"
               NotResource:
                 - !Sub ${AttachmentsBucket.Arn}/*.jpg
                 - !Sub ${AttachmentsBucket.Arn}/*.png
