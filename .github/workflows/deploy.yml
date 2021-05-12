@@ -61,11 +61,10 @@ jobs:
           coverageLocations: |
             ${{github.workspace}}/services/ui-src/coverage/lcov.info:lcov
       - name: Store unit test reults
-          # if: env.CODE_CLIMATE_ID = ''
-          uses: actions/upload-artifact@v2
-          with:
-            name: unit_test_results
-            path: ${{github.workspace}}/services/ui-src/coverage/lcov.info:lcov
+        uses: actions/upload-artifact@v2
+        with:
+          name: unit_test_results
+          path: ${{github.workspace}}/services/ui-src/coverage/lcov.info:lcov
       - name: deploy
         run: |
           # When deploying multiple copies of this quickstart to the same AWS Account (not ideal), a prefix helps prevent stepping on each other.
