@@ -123,7 +123,7 @@ resources:
                 - "s3:PutObject"
               Effect: "Deny"
               Resource: !Sub ${AttachmentsBucket.Arn}/*.html
-              Principal: "*" 
+              Principal: "*"
     LambdaInvokePermission:
       Type: AWS::Lambda::Permission
       Properties:

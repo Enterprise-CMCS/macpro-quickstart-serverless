@@ -46,13 +46,15 @@ export default function NewAmendment({ fileUpload }) {
     if (!validateFileAttachment(file)) return;
 
     var validExt = ".png, .gif, .jpeg, .jpg";
-     var filePath = event.value;
-     var getFileExt = filePath.substring(filePath.lastIndexOf('.') + 1).toLowerCase();
-     var pos = validExt.indexOf(getFileExt);
-     if(pos < 0) {
-       alert("This file is not allowed, please upload valid file.");
-       return ;
-      }
+    var filePath = event.value;
+    var getFileExt = filePath
+      .substring(filePath.lastIndexOf(".") + 1)
+      .toLowerCase();
+    var pos = validExt.indexOf(getFileExt);
+    if (pos < 0) {
+      alert("This file is not allowed, please upload valid file.");
+      return;
+    }
 
     setIsLoading(true);
 
