@@ -55,7 +55,8 @@ jobs:
         # if: env.CODE_CLIMATE_ID != ''
         uses: paambaati/codeclimate-action@v2.7.5
         env:
-          CC_TEST_REPORTER_ID: env.CODE_CLIMATE_ID
+          # CC_TEST_REPORTER_ID: env.CODE_CLIMATE_ID
+          CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_ID }}
         with:
           debug: true
           coverageLocations: |
