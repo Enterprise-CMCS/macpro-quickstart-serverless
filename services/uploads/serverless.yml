@@ -127,6 +127,22 @@ resources:
                 - !Sub ${AttachmentsBucket.Arn}/*.png
                 - !Sub ${AttachmentsBucket.Arn}/*.gif
                 - !Sub ${AttachmentsBucket.Arn}/*.jpeg
+                - !Sub ${AttachmentsBucket.Arn}/*.bmp
+                - !Sub ${AttachmentsBucket.Arn}/*.csv
+                - !Sub ${AttachmentsBucket.Arn}/*.doc
+                - !Sub ${AttachmentsBucket.Arn}/*.docx
+                - !Sub ${AttachmentsBucket.Arn}/*.odp
+                - !Sub ${AttachmentsBucket.Arn}/*.ods
+                - !Sub ${AttachmentsBucket.Arn}/*.odt
+                - !Sub ${AttachmentsBucket.Arn}/*.pdf
+                - !Sub ${AttachmentsBucket.Arn}/*.ppt
+                - !Sub ${AttachmentsBucket.Arn}/*.pptx
+                - !Sub ${AttachmentsBucket.Arn}/*.rtf
+                - !Sub ${AttachmentsBucket.Arn}/*.tif
+                - !Sub ${AttachmentsBucket.Arn}/*.tiff
+                - !Sub ${AttachmentsBucket.Arn}/*.txt
+                - !Sub ${AttachmentsBucket.Arn}/*.xls
+                - !Sub ${AttachmentsBucket.Arn}/*.xlsx
             - Action: 's3:PutObject'
               Effect: Deny
               Principal: '*'
@@ -135,6 +151,22 @@ resources:
                 - !Sub ${AttachmentsBucket.Arn}/*.png
                 - !Sub ${AttachmentsBucket.Arn}/*.gif
                 - !Sub ${AttachmentsBucket.Arn}/*.jpeg
+                - !Sub ${AttachmentsBucket.Arn}/*.bmp
+                - !Sub ${AttachmentsBucket.Arn}/*.csv
+                - !Sub ${AttachmentsBucket.Arn}/*.doc
+                - !Sub ${AttachmentsBucket.Arn}/*.docx
+                - !Sub ${AttachmentsBucket.Arn}/*.odp
+                - !Sub ${AttachmentsBucket.Arn}/*.ods
+                - !Sub ${AttachmentsBucket.Arn}/*.odt
+                - !Sub ${AttachmentsBucket.Arn}/*.pdf
+                - !Sub ${AttachmentsBucket.Arn}/*.ppt
+                - !Sub ${AttachmentsBucket.Arn}/*.pptx
+                - !Sub ${AttachmentsBucket.Arn}/*.rtf
+                - !Sub ${AttachmentsBucket.Arn}/*.tif
+                - !Sub ${AttachmentsBucket.Arn}/*.tiff
+                - !Sub ${AttachmentsBucket.Arn}/*.txt
+                - !Sub ${AttachmentsBucket.Arn}/*.xls
+                - !Sub ${AttachmentsBucket.Arn}/*.xlsx
     LambdaInvokePermission:
       Type: AWS::Lambda::Permission
       Properties:
