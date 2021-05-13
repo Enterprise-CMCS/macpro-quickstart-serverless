@@ -122,11 +122,11 @@ resources:
           - Name: given_name
             AttributeDataType: String
             Mutable: true
-            Required: false
+            Required: true
           - Name: family_name
             AttributeDataType: String
             Mutable: true
-            Required: false
+            Required: true
           - Name: phone_number
             AttributeDataType: String
             Mutable: true
