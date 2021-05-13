@@ -16,6 +16,8 @@ echo "Fetching information for stage $stage..."
 
 api_region=`sh ../output.sh ../app-api Region $stage`
 api_url=`sh ../output.sh ../app-api ApiGatewayRestApiUrl $stage`
+api_graphql_region=`../output.sh ../apollo-lambda Region $stage`
+api_graphql_url=`../output.sh ../apollo-lambda ApiGatewayRestApiUrl $stage`
 cognito_region=`sh ../output.sh ../ui-auth Region $stage`
 cognito_identity_pool_id=`sh ../output.sh ../ui-auth IdentityPoolId $stage`
 cognito_user_pool_id=`sh ../output.sh ../ui-auth UserPoolId $stage`
@@ -26,6 +28,8 @@ s3_attachements_bucket_name=`sh ../output.sh ../uploads AttachmentsBucketName $s
 
 export API_REGION=$api_region
 export API_URL=$api_url
+export API_GRAPHQL_REGION=$api_graphql_region
+export API_GRAPHQL_URL=$api_graphql_url
 export COGNITO_REGION=$cognito_region
 export COGNITO_IDENTITY_POOL_ID=$cognito_identity_pool_id
 export COGNITO_USER_POOL_ID=$cognito_user_pool_id
