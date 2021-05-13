@@ -6,9 +6,7 @@ import {
   ApolloProvider,
   HttpLink,
   from,
-  gql,
 } from "@apollo/client";
-import { onError } from "@apollo/client/link/error";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
@@ -25,12 +23,12 @@ import config from "./config";
 //   }
 // });
 
-const link = from([new HttpLink({ uri: "https://api.spacex.land/graphql/" })]);
-
-const graphqlClient = new ApolloClient({
-  cache: new InMemoryCache(),
-  link: link,
-});
+// const link = from([new HttpLink({ uri: "https://api.spacex.land/graphql/" })]);
+//
+// const graphqlClient = new ApolloClient({
+//   cache: new InMemoryCache(),
+//   link: link,
+// });
 
 Amplify.configure({
   Auth: {
