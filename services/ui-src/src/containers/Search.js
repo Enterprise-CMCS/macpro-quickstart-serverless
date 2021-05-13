@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { amendmentsQuery } from "../libs/graphql/queries";
-import { API } from "aws-amplify";
+import { API, graphqlOperation } from "aws-amplify";
 
 export default function Search() {
   const [amendments, setAmendments] = useState();
@@ -15,6 +15,7 @@ export default function Search() {
       query: amendmentsQuery,
       authMode: "AWS_IAM",
     });
+
     setAmendments(apiData.data);
   }
 
@@ -22,11 +23,7 @@ export default function Search() {
   if (amendments) {
     // Generate output
     for (const amendment in amendments) {
-      results.push(
-        <li>
-          {amendments[amendment].firstName}: {amendments[amendment].comments}
-        </li>
-      );
+      results.push(<li>{amendments[amendment].firstName}</li>);
     }
   }
 

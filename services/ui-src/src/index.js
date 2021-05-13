@@ -67,6 +67,8 @@ Amplify.configure({
         region: config.apiGraphqlGateway.REGION,
       },
     ],
+    graphql_endpoint: config.apiGraphqlGateway.URL,
+    graphql_endpoint_iam_region: config.apiGraphqlGateway.REGION,
   },
 });
 
