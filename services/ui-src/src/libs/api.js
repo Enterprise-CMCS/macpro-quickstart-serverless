@@ -44,3 +44,8 @@ export function deleteAmendment(id) {
   const opts = requestOptions();
   return API.del("amendments", `/amendments/${id}`, opts);
 }
+
+export function search(term) {
+  const opts = requestOptions();
+  return API.graphql("graphql");
+}

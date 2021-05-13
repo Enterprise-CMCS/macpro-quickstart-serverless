@@ -4,9 +4,11 @@ import {
   ApolloClient,
   InMemoryCache,
   ApolloProvider,
-  useQuery,
+  HttpLink,
+  from,
   gql,
 } from "@apollo/client";
+import { onError } from "@apollo/client/link/error";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
@@ -14,42 +16,28 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Amplify } from "aws-amplify";
 import config from "./config";
 
-const client = new ApolloClient({
-  uri: "config.apiGraphqlGateway.URL",
-  cache: new InMemoryCache(),
+const errorLink = onError(({ graphqlErrors, networkError }) => {
+  if (graphqlErrors) {
+    graphqlErrors.map(({ message, location, path }) => {
+      console.log(`GraphQL error $(message)`);
+    });
+  }
 });
-function Quotes() {
-  const { loading, error, data } = useQuery(gql`
-    {
-      quotes {
-        userId
-        firstName
-      }
-    }
-  `);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
+// const link = from([
+//   errorLink,
+//   new HttpLink({ uri: "https://api.spacex.land/graphql/" }),
+// ]);
 
-  return data.quotes.map(({ userId, firstName }) => (
-    <div key={userId}>
-      <p>
-        {userId}: {firstName}
-      </p>
-    </div>
-  ));
-}
+const link = from([
+  errorLink,
+  new HttpLink({ uri: "https://api.spacex.land/graphql/" }),
+]);
 
-function Querry() {
-  return (
-    <ApolloProvider client={client}>
-      <div>
-        <h2>first graphql query </h2>
-        <Quotes />
-      </div>
-    </ApolloProvider>
-  );
-}
+const graphqlClient = new ApolloClient({
+  cache: new InMemoryCache(),
+  link: link,
+});
 
 Amplify.configure({
   Auth: {
@@ -88,10 +76,11 @@ Amplify.configure({
 });
 
 ReactDOM.render(
-  <Router>
-    <App />
-    <Querry />
-  </Router>,
+  <ApolloProvider client={graphqlClient}>
+    <Router>
+      <App />
+    </Router>
+  </ApolloProvider>,
   document.getElementById("root")
 );
 

@@ -6,6 +6,7 @@ import NotFound from "./containers/NotFound";
 import NewAmendment from "./containers/NewAmendment";
 import Amendments from "./containers/Amendments";
 import Profile from "./containers/Profile";
+import Search from "./containers/Search";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import {
   s3AmplifyUpload,
@@ -46,6 +47,9 @@ export default function Routes() {
       </Route>
       <AuthenticatedRoute exact path="/profile">
         <Profile />
+      </AuthenticatedRoute>
+      <AuthenticatedRoute exact path="/search">
+        <Search />
       </AuthenticatedRoute>
       <AuthenticatedRoute exact path="/amendments/new">
         <NewAmendment fileUpload={s3Upload} />
