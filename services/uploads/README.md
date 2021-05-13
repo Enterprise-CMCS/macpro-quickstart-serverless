@@ -1,4 +1,4 @@
-# app-api
+# uploads
 
 ## Configuration - AWS Systems Manager Parameter Store (SSM)
 
@@ -7,8 +7,6 @@ The following values are used to configure the deployment of this service (see b
 | --- | :---: | :---: | :---: | --- |
 | .../iam/path  | N  | Y | Y | Specifies the [IAM Path](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-friendly-names) at which all IAM objects should be created.  The default value is "/". nb:The path variable in IAM is used for grouping related users and groups in a unique namespace, usually for organizational purposes.|
 | .../iam/permissionsBoundaryPolicy  | N  | Y | Y | Specifies the [IAM Permissions Boundary](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html) that should be attached to all IAM objects. nb: A permissions boundary is an advanced feature for using a managed policy to set the maximum permissions that an identity-based policy can grant to an IAM entity.|
-| .../warmup/schedule |  N |	Y |	Y |	This is a set schedule for warming up the lambda function.|
-| .../warmup/concurrency |  N |	Y |	Y |	The number of lambda functions to invoke on warmup. The higher this number the warm lambda containers are ready to go.|
 
 This project uses [AWS Systems Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html), often referred to as simply SSM, to inject environment specific, project specific, and/or sensitive information into the deployment.
 In short, SSM is an AWS service that allows users to store (optionally) encrypted strings in a directory like hierarchy.  For example, "/my/first/ssm/param" is a valid path for a parameter.  Access to this service and even individual paramters is granted via AWS IAM.
