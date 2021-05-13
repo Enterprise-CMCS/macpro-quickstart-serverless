@@ -73,6 +73,7 @@ Amplify.configure({
     graphql_headers: async () => ({
       "Access-Control-Allow-Origin": "*",
       "Access-Control-Allow-Credentials": "true",
+      "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
     }),
   },
 });
