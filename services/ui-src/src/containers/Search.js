@@ -1,25 +1,22 @@
-import React from "react";
-import { gql, useQuery } from "@apollo/client";
+import React, { useEffect, useState } from "react";
+import { amendmentsQuery } from "../libs/graphql/queries";
+import { API, graphqlOperation } from "aws-amplify";
 
 export default function Search() {
-  // Query for amendments
-  const amendmentsQuery = gql`
-    query amendmentsQuery {
-      amendments {
-        firstName
-        lastName
-        comments
-      }
-    }
-  `;
+  const [amendments, setAmendments] = useState();
 
-  // Make query against database
-  const { loading, error, data } = useQuery(amendmentsQuery);
+  useEffect(() => {
+    fetchAmendments();
+  });
+
+  // Get all amendments
+  async function fetchAmendments() {
+    const apiData = await API.graphql(graphqlOperation(amendmentsQuery));
+    setAmendments(apiData.data);
+  }
 
   let results = [];
-  if (data) {
-    let amendments = data.amendments;
-
+  if (amendments) {
     // Generate output
     for (const amendment in amendments) {
       results.push(
@@ -33,9 +30,10 @@ export default function Search() {
   return (
     <div className="Search">
       <h1>Search</h1>
-      {loading ? <h1>Loading</h1> : null}
-      {error ? error : null}
-      {results ?? null}
+      {console.log("zzzResults", results)}
+      {/*{loading ? <h1>Loading</h1> : null}*/}
+      {/*{error ? error : null}*/}
+      {results ?? "No Results found"}
     </div>
   );
 }

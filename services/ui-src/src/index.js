@@ -24,11 +24,6 @@ const errorLink = onError(({ graphqlErrors, networkError }) => {
   }
 });
 
-// const link = from([
-//   errorLink,
-//   new HttpLink({ uri: "https://api.spacex.land/graphql/" }),
-// ]);
-
 const link = from([
   errorLink,
   new HttpLink({ uri: "https://api.spacex.land/graphql/" }),
