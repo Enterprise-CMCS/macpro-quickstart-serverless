@@ -25,10 +25,7 @@ import config from "./config";
 //   }
 // });
 
-const link = from([
-  errorLink,
-  new HttpLink({ uri: "https://api.spacex.land/graphql/" }),
-]);
+const link = from([new HttpLink({ uri: "https://api.spacex.land/graphql/" })]);
 
 const graphqlClient = new ApolloClient({
   cache: new InMemoryCache(),
