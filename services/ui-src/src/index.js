@@ -16,14 +16,14 @@ import { BrowserRouter as Router } from "react-router-dom";
 import { Amplify } from "aws-amplify";
 import config from "./config";
 
-const errorLink = onError(({ graphqlErrors, networkError }) => {
-  if (graphqlErrors) {
-    graphqlErrors.map(({ message, location, path }) => {
-      console.log(`GraphQL error ${message}`);
-      return;
-    });
-  }
-});
+// const errorLink = onError(({ graphqlErrors, networkError }) => {
+//   if (graphqlErrors) {
+//     const errors = graphqlErrors.map(({ message, location, path }) => {
+//       console.log(`GraphQL error ${message}`);
+//       return 1;
+//     });
+//   }
+// });
 
 const link = from([
   errorLink,
