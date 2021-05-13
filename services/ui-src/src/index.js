@@ -19,7 +19,7 @@ import config from "./config";
 const errorLink = onError(({ graphqlErrors, networkError }) => {
   if (graphqlErrors) {
     graphqlErrors.map(({ message, location, path }) => {
-      console.log(`GraphQL error $(message)`);
+      console.log(`GraphQL error ${message}`);
       return;
     });
   }
