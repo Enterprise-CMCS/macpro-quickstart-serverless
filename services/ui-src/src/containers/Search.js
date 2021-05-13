@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { amendmentsQuery } from "../libs/graphql/queries";
-import { API, graphqlOperation } from "aws-amplify";
+import { API } from "aws-amplify";
 
 export default function Search() {
   const [amendments, setAmendments] = useState();
@@ -11,7 +11,10 @@ export default function Search() {
 
   // Get all amendments
   async function fetchAmendments() {
-    const apiData = await API.graphql(graphqlOperation(amendmentsQuery));
+    const apiData = await API.graphql({
+      query: amendmentsQuery,
+      authMode: "AWS_IAM",
+    });
     setAmendments(apiData.data);
   }
 
