@@ -65,11 +65,6 @@ Amplify.configure({
     ],
     graphql_endpoint: config.apiGraphqlGateway.URL + "/graphql",
     graphql_endpoint_iam_region: config.apiGraphqlGateway.REGION,
-    graphql_headers: async () => ({
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Credentials": "true",
-      "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token",
-    }),
   },
 });
 
