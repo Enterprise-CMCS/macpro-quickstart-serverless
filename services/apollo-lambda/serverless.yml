@@ -107,15 +107,15 @@ functions:
           path: /graphql
           method: post
           cors: true
+          authorizer: aws_iam
           response:
             headers:
               Access-Control-Allow-Origin: "'*'"
-          authorizer:  aws_iam
       - http:
           path: /graphql
           method: get
           cors: true
+          authorizer: aws_iam
           response:
             headers:
               Access-Control-Allow-Origin: "'*'"
-          authorizer:  aws_iam

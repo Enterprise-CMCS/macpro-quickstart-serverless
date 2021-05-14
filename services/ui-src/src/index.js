@@ -63,7 +63,7 @@ Amplify.configure({
         region: config.apiGraphqlGateway.REGION,
       },
     ],
-    graphql_endpoint: config.apiGraphqlGateway.URL,
+    graphql_endpoint: config.apiGraphqlGateway.URL + "/graphql",
     graphql_endpoint_iam_region: config.apiGraphqlGateway.REGION,
     graphql_headers: async () => ({
       "Access-Control-Allow-Origin": "*",
