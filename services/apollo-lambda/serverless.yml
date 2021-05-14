@@ -115,12 +115,28 @@ functions:
       - http:
           path: /graphql
           method: post
-          cors: true
+          cors:
             origin: '*'
+            headers:
+              - Content-Type
+              - X-Amz-Date
+              - Authorization
+              - X-Api-Key
+              - X-Amz-Security-Token
+              - X-Amz-User-Agent
+            allowCredentials: true
           authorizer:  aws_iam
       - http:
           path: /graphql
           method: get
-          cors: true
+          cors:
             origin: '*'
+              headers:
+                - Content-Type
+                - X-Amz-Date
+                - Authorization
+                - X-Api-Key
+                - X-Amz-Security-Token
+                - X-Amz-User-Agent
+              allowCredentials: true
           authorizer:  aws_iam
