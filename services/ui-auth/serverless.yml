@@ -40,7 +40,7 @@ custom:
   scripts:
     hooks:
       deploy:finalize: |
-        if [ ${self:custom.bootstrapUsersEnabled} == "true" ];
+        if [ ${self:custom.bootstrapUsersEnabled} = "true" ];
         then
           serverless invoke --stage ${self:custom.stage} --function bootstrapUsers
         fi
