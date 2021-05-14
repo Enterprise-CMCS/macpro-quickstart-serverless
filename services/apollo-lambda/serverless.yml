@@ -113,12 +113,14 @@ functions:
     role: LambdaApiRole
     events:
       - http:
-          path: graphql
+          path: /graphql
           method: post
           cors: true
+            origin: '*'
           authorizer:  aws_iam
       - http:
-          path: graphql
+          path: /graphql
           method: get
           cors: true
+            origin: '*'
           authorizer:  aws_iam
