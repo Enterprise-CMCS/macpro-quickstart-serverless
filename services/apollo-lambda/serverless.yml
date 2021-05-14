@@ -110,7 +110,7 @@ functions:
           authorizer: aws_iam
           response:
             headers:
-              Access-Control-Allow-Origin: "'*'"
+              Access-Control-Allow-Origin: "*"
       - http:
           path: /graphql
           method: get
@@ -118,4 +118,4 @@ functions:
           authorizer: aws_iam
           response:
             headers:
-              Access-Control-Allow-Origin: "'*'"
+              Access-Control-Allow-Origin: "*"
