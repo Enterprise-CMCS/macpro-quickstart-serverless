@@ -42,15 +42,6 @@ resources:
             - ""
             - ${self:custom.iamPermissionsBoundaryPolicy}
   Resources:
-    GatewayResponseDefault4XX:
-      Type: 'AWS::ApiGateway::GatewayResponse'
-      Properties:
-        ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "*"
-          gatewayresponse.header.Access-Control-Allow-Headers: "*"
-        ResponseType: DEFAULT_4XX
-        RestApiId:
-          Ref: 'ApiGatewayRestApi'
     LambdaApiRole: # Why isn't this with the function as an iamRoleStatements?  https://github.com/serverless/serverless/issues/6485
       Type: "AWS::IAM::Role"
       Properties:
@@ -115,28 +106,16 @@ functions:
       - http:
           path: /graphql
           method: post
-          cors:
-            origin: '*'
+          cors: true
+          response:
             headers:
-              - Content-Type
-              - X-Amz-Date
-              - Authorization
-              - X-Api-Key
-              - X-Amz-Security-Token
-              - X-Amz-User-Agent
-            allowCredentials: true
+              Access-Control-Allow-Origin: "'*'"
           authorizer:  aws_iam
       - http:
           path: /graphql
           method: get
-          cors:
-            origin: '*'
+          cors: true
+          response:
             headers:
-              - Content-Type
-              - X-Amz-Date
-              - Authorization
-              - X-Api-Key
-              - X-Amz-Security-Token
-              - X-Amz-User-Agent
-            allowCredentials: true
+              Access-Control-Allow-Origin: "'*'"
           authorizer:  aws_iam
