@@ -1,3 +1,4 @@
+# Refer to the README.md file in within this service directory to configure all ssm parameters required for this service.
 service: ui-auth
 
 frameworkVersion: "2"
@@ -41,7 +42,7 @@ custom:
   scripts:
     hooks:
       deploy:finalize: |
-        if [ ${self:custom.bootstrapUsersEnabled} == "true" ];
+        if [ ${self:custom.bootstrapUsersEnabled} = "true" ];
         then
           serverless invoke --stage ${self:custom.stage} --function bootstrapUsers
         fi
@@ -123,11 +124,11 @@ resources:
           - Name: given_name
             AttributeDataType: String
             Mutable: true
-            Required: false
+            Required: true
           - Name: family_name
             AttributeDataType: String
             Mutable: true
-            Required: false
+            Required: true
           - Name: phone_number
             AttributeDataType: String
             Mutable: true

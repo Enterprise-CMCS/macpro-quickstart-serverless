@@ -1,3 +1,4 @@
+# Refer to the README.md file in within this service directory to configure all ssm parameters required for this service.
 service: app-api
 
 frameworkVersion: "2"
@@ -29,7 +30,6 @@ custom:
       - impl
       - val
       - prod
-  infrastructureType: ${ssm:/configuration/${self:custom.stage}/infrastucture/type~true, ssm:/configuration/default/infrastucture/type~true, "development"}
   tableName: ${env:AMENDMENTS_TABLE_NAME, cf:database-${self:custom.stage}.AmendmentsTableName}
   tableArn: ${env:AMENDMENTS_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsTableArn}
   atomicCounterTableName: ${env:AMENDMENTS_COUNTER_TABLE_NAME, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableName}
