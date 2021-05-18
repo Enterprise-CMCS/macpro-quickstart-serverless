@@ -34,7 +34,7 @@ export function validateFileAttachment(file) {
     if (pos < 0) {
       alert(
         `This file type is not allowed.  Only files with one of the following extensions are allowed:  
-        ${validExt}`
+         ${validExt}`
       );
       return false;
     }
