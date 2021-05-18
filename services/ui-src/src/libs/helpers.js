@@ -25,7 +25,8 @@ export function validateFileAttachment(file) {
       return false;
     }
     const validExt =
-      ".bmp,.csv,.doc,.docx,.gif,.jpg,.jpeg,.odp,.ods,.odt,.png,.pdf,.ppt,.pptx,.rtf,.tif,.tiff,.txt,.xls,.xlsx";
+      ".bmp,.csv,.doc,.docx,.gif,.jpg,.jpeg,.odp,.ods,.odt,"
+      ".png,.pdf,.ppt,.pptx,.rtf,.tif,.tiff,.txt,.xls,.xlsx";
     var fileName = file.current.name;
     var fileExt = fileName
       .substring(fileName.lastIndexOf(".") + 1)
