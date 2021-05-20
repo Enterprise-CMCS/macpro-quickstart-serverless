@@ -2,8 +2,9 @@ import { gql } from "@apollo/client";
 
 export const amendmentsQuery = gql`
   {
-    fetchAmendments {
+    amendments {
       firstName
+      lastName
     }
   }
 `;

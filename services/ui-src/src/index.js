@@ -6,7 +6,6 @@ import {
   ApolloProvider,
   HttpLink,
   from,
-  gql,
 } from "@apollo/client";
 import "./index.css";
 import App from "./App";

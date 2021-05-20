@@ -1,6 +1,6 @@
-const { ApolloServer, gql } = require("apollo-server-lambda");
-const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
-const client = new DynamoDBClient({ region: "us-east-1" });
+const { ApolloServer } = require("apollo-server-lambda");
+// const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
+// const client = new DynamoDBClient({ region: "us-east-1" });
 import typeDefs from "./graphql/schema.graphql";
 import { resolvers } from "../resolvers";
 
@@ -14,4 +14,4 @@ const gqlHandler = server.createHandler({
     credentials: true,
   },
 });
-exports.graphqlHandler = server.gqlHandler;
+exports.graphqlHandler = gqlHandler;

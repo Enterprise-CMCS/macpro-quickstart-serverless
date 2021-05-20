@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { amendmentsQuery } from "../libs/graphql/queries";
-import { API } from "aws-amplify";
 import { useQuery } from "@apollo/client";
 
 export default function Search() {
-  const { data, loading, error } = useQuery(amendmentsQuery);
+  const { data } = useQuery(amendmentsQuery);
 
   let results = [];
   if (data) {
