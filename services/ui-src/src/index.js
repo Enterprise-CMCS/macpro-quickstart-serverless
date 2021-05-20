@@ -15,7 +15,7 @@ import { Amplify } from "aws-amplify";
 import config from "./config";
 import { loader } from "graphql.macro";
 
-const gqlSchema = loader("./libs/graphql/schema.graphql");
+const gqlSchema = loader("../../apollo-lambda/graphql/schema.graphql");
 
 const link = from([new HttpLink({ uri: config.apiGraphqlGateway.URL })]);
 
