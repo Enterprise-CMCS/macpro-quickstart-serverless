@@ -89,7 +89,7 @@ resources:
         BucketEncryption:
           ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
-            SSEAlgorithm: AES256
+              SSEAlgorithm: AES256
         CorsConfiguration: # Set the CORS policy
           CorsRules:
             - AllowedOrigins:
@@ -163,7 +163,7 @@ resources:
         BucketEncryption:
           ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
-            SSEAlgorithm: AES256
+              SSEAlgorithm: AES256
         AccessControl: Private
     BucketAVScanRole:
       Type: "AWS::IAM::Role"
