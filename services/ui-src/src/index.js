@@ -17,7 +17,9 @@ import { loader } from "graphql.macro";
 
 const gqlSchema = loader("../../apollo-lambda/graphql/schema.graphql");
 
-const link = from([new HttpLink({ uri: config.apiGraphqlGateway.URL })]);
+const link = from([
+  new HttpLink({ uri: config.apiGraphqlGateway.URL + "/graphql" }),
+]);
 
 const graphqlClient = new ApolloClient({
   cache: new InMemoryCache(),
