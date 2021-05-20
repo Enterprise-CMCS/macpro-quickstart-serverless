@@ -6,6 +6,7 @@ import {
   ApolloProvider,
   HttpLink,
   from,
+  gql,
 } from "@apollo/client";
 import "./index.css";
 import App from "./App";
@@ -13,21 +14,16 @@ import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Amplify } from "aws-amplify";
 import config from "./config";
+import { loader } from "graphql.macro";
 
-// const errorLink = onError(({ graphqlErrors, networkError }) => {
-//   if (graphqlErrors) {
-//     const errors = graphqlErrors.map(({ message, location, path }) => {
-//       console.log(`GraphQL error ${message}`);
-//       return 1;
-//     });
-//   }
-// });
+const gqlSchema = loader("./libs/graphql/schema.graphql");
 
-const link = from([new HttpLink({ uri: "https://api.spacex.land/graphql/" })]);
+const link = from([new HttpLink({ uri: config.apiGraphqlGateway.URL })]);
 
 const graphqlClient = new ApolloClient({
   cache: new InMemoryCache(),
   link: link,
+  typeDefs: gqlSchema,
 });
 
 Amplify.configure({
@@ -63,17 +59,17 @@ Amplify.configure({
         region: config.apiGraphqlGateway.REGION,
       },
     ],
-    graphql_endpoint: config.apiGraphqlGateway.URL + "/graphql",
+    graphql_endpoint: config.apiGraphqlGateway.URL,
     graphql_endpoint_iam_region: config.apiGraphqlGateway.REGION,
   },
 });
 
 ReactDOM.render(
-  <ApolloProvider client={graphqlClient}>
-    <Router>
+  <Router>
+    <ApolloProvider client={graphqlClient}>
       <App />
-    </Router>
-  </ApolloProvider>,
+    </ApolloProvider>
+  </Router>,
   document.getElementById("root")
 );
 

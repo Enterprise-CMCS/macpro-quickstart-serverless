@@ -1,29 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { amendmentsQuery } from "../libs/graphql/queries";
 import { API } from "aws-amplify";
+import { useQuery } from "@apollo/client";
 
 export default function Search() {
-  const [amendments, setAmendments] = useState();
-
-  useEffect(() => {
-    fetchAmendments();
-  });
-
-  // Get all amendments
-  async function fetchAmendments() {
-    const apiData = await API.graphql({
-      query: amendmentsQuery,
-      authMode: "AWS_IAM",
-    });
-
-    setAmendments(apiData.data);
-  }
+  const { data, loading, error } = useQuery(amendmentsQuery);
 
   let results = [];
-  if (amendments) {
+  if (data) {
     // Generate output
-    for (const amendment in amendments) {
-      results.push(<li>{amendments[amendment].firstName}</li>);
+    for (const datum in data) {
+      results.push(<li>{data[datum].firstName}</li>);
     }
   }
 

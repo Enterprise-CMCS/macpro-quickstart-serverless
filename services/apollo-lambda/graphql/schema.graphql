@@ -1,0 +1,15 @@
+schema {
+    query: Query
+}
+
+type Query {
+    amendments: [Amendment!]!
+}
+
+scalar Date
+scalar DateTime
+
+type Amendment {
+    firstName: String
+    lastName: String
+}
