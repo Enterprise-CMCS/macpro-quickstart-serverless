@@ -11,16 +11,20 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter as Router } from "react-router-dom";
-import { Amplify, Auth } from "aws-amplify";
+import { Amplify } from "aws-amplify";
 import config from "./config";
 import { loader } from "graphql.macro";
-import aws4 from "aws4";
+import { fakeAmplifyFetch } from "./api/fakeAmplifyFetch";
 
 const gqlSchema = loader("../../apollo-lambda/graphql/schema.graphql");
 
+const authMode = process.env.REACT_APP_AUTH_MODE;
+console.log("zzzAuthMode", authMode);
+
 const link = from([
   new HttpLink({
-    uri: config.apiGraphqlGateway.URL + "/graphql",
+    uri: "/graphql",
+    fetch: fakeAmplifyFetch,
   }),
 ]);
 
