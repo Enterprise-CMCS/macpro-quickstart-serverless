@@ -10,7 +10,7 @@ const server = new ApolloServer({
 });
 const gqlHandler = server.createHandler({
   cors: {
-    origin: true,
+    origin: "*",
     credentials: true,
   },
 });

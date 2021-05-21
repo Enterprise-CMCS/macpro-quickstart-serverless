@@ -84,7 +84,6 @@ export async function fakeAmplifyFetch(uri, options) {
   };
 
   return new Promise((resolve, reject) => {
-    console.log("zzzURI", uri);
     API.post("graphql", uri, apiOptions)
       .then((apiResponse) => {
         // The Apollo Link wants a fetch.Response shaped response,
