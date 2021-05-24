@@ -2,6 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import {
   ApolloClient,
+  ApolloLink,
+  concat,
   InMemoryCache,
   ApolloProvider,
   HttpLink,
@@ -11,25 +13,8 @@ import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter as Router } from "react-router-dom";
-import { Amplify } from "aws-amplify";
+import { Amplify, Auth } from "aws-amplify";
 import config from "./config";
-import { loader } from "graphql.macro";
-import { fakeAmplifyFetch } from "./api/fakeAmplifyFetch";
-
-const gqlSchema = loader("../../apollo-lambda/graphql/schema.graphql");
-
-const link = from([
-  new HttpLink({
-    uri: "/graphql",
-    fetch: fakeAmplifyFetch,
-  }),
-]);
-
-const graphqlClient = new ApolloClient({
-  cache: new InMemoryCache(),
-  link: link,
-  typeDefs: gqlSchema,
-});
 
 Amplify.configure({
   Auth: {
@@ -71,9 +56,7 @@ Amplify.configure({
 
 ReactDOM.render(
   <Router>
-    <ApolloProvider client={graphqlClient}>
-      <App />
-    </ApolloProvider>
+    <App />
   </Router>,
   document.getElementById("root")
 );

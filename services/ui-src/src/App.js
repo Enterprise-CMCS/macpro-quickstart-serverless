@@ -9,16 +9,36 @@ import { Auth } from "aws-amplify";
 import { onError } from "./libs/errorLib";
 import { loginLocalUser } from "./libs/user";
 import config from "./config";
+import { loader } from "graphql.macro";
+import {
+  ApolloClient,
+  ApolloLink,
+  ApolloProvider,
+  concat,
+  HttpLink,
+  InMemoryCache,
+} from "@apollo/client";
+
 function App() {
   const [isAuthenticating, setIsAuthenticating] = useState(true);
   const [isAuthenticated, userHasAuthenticated] = useState(false);
   const history = useHistory();
 
+  const gqlSchema = loader("../../apollo-lambda/graphql/schema.graphql");
+  let fullJWT;
   useEffect(() => {
     onLoad();
   }, []);
 
   async function onLoad() {
+    try {
+      await Auth.currentSession().then((res) => {
+        let accessToken = res.getAccessToken();
+        fullJWT = accessToken.jwtToken;
+      });
+    } catch (e) {
+      onError(e);
+    }
     try {
       await Auth.currentSession();
       userHasAuthenticated(true);
@@ -66,39 +86,64 @@ function App() {
     }
   }
 
+  const httpLink = new HttpLink({
+    uri: config.apiGraphqlGateway.URL + "/graphql",
+  });
+
+  const authMiddleware = new ApolloLink((operation, forward) => {
+    // add the authorization to the headers
+    operation.setContext({
+      headers: {
+        authorization: `Bearer ${fullJWT}`,
+      },
+    });
+
+    return forward(operation);
+  });
+
+  const graphqlClient = new ApolloClient({
+    cache: new InMemoryCache(),
+    link: concat(authMiddleware, httpLink),
+    typeDefs: gqlSchema,
+  });
+
   return (
     !isAuthenticating && (
-      <div className="App container">
-        <Navbar fluid collapseOnSelect>
-          <Navbar.Header>
-            <Navbar.Brand>
-              <Link to="/">APS Home</Link>
-            </Navbar.Brand>
-            <Navbar.Toggle />
-          </Navbar.Header>
-          <Navbar.Collapse>
-            <Nav pullRight>
-              {isAuthenticated ? (
-                <>
-                  <NavDropdown id="User" title="My Account">
-                    <LinkContainer to="/profile">
-                      <NavItem>User Profile</NavItem>
-                    </LinkContainer>
-                    <NavItem onClick={handleLogout}>Logout</NavItem>
-                  </NavDropdown>
-                </>
-              ) : (
-                <>
-                  <NavItem onClick={handleLogin}>Login</NavItem>
-                </>
-              )}
-            </Nav>
-          </Navbar.Collapse>
-        </Navbar>
-        <AppContext.Provider value={{ isAuthenticated, userHasAuthenticated }}>
-          <Routes />
-        </AppContext.Provider>
-      </div>
+      <ApolloProvider client={graphqlClient}>
+        <div className="App container">
+          <Navbar fluid collapseOnSelect>
+            <Navbar.Header>
+              <Navbar.Brand>
+                <Link to="/">APS Home</Link>
+              </Navbar.Brand>
+              <Navbar.Toggle />
+            </Navbar.Header>
+            <Navbar.Collapse>
+              <Nav pullRight>
+                {isAuthenticated ? (
+                  <>
+                    <NavDropdown id="User" title="My Account">
+                      <LinkContainer to="/profile">
+                        <NavItem>User Profile</NavItem>
+                      </LinkContainer>
+                      <NavItem onClick={handleLogout}>Logout</NavItem>
+                    </NavDropdown>
+                  </>
+                ) : (
+                  <>
+                    <NavItem onClick={handleLogin}>Login</NavItem>
+                  </>
+                )}
+              </Nav>
+            </Navbar.Collapse>
+          </Navbar>
+          <AppContext.Provider
+            value={{ isAuthenticated, userHasAuthenticated }}
+          >
+            <Routes />
+          </AppContext.Provider>
+        </div>
+      </ApolloProvider>
     )
   );
 }
