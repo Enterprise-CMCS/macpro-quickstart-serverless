@@ -18,9 +18,6 @@ import { fakeAmplifyFetch } from "./api/fakeAmplifyFetch";
 
 const gqlSchema = loader("../../apollo-lambda/graphql/schema.graphql");
 
-const authMode = process.env.REACT_APP_AUTH_MODE;
-console.log("zzzAuthMode", authMode);
-
 const link = from([
   new HttpLink({
     uri: "/graphql",

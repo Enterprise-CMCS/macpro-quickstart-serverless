@@ -1,19 +1,15 @@
 import { GraphQLDate, GraphQLDateTime } from "graphql-scalars";
+import { getAmendment, listAmendments } from "../../../ui-src/src/libs/api";
 
 export function resolvers() {
   const resolvers = {
     Date: GraphQLDate,
     DateTime: GraphQLDateTime,
     Query: {
-      amendments: async (parent, args, context) => {
-        return context.amendments;
-      },
-    },
-    Amendment: {
-      amendment: (parent, args, context) => {
-        return { firstName: context.firstName, lastName: context.lastName };
-      },
+      amendments: async (root, args) => listAmendments(),
+      amendment: async (root, args) => getAmendment(args),
     },
   };
+
   return resolvers;
 }
