@@ -61,6 +61,8 @@ provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
+  logs:
+    restApi: true
   environment:
     tableName: ${self:custom.tableName}
     atomicCounterTableName: ${self:custom.atomicCounterTableName}
