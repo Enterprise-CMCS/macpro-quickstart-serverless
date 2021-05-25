@@ -57,6 +57,14 @@ custom:
           sed '/Generated/d' index.js > index.js.sub && mv -f index.js.sub index.js
         fi
 
+resources:
+  Conditions:
+    CreatePermissionsBoundary:
+      Fn::Not:
+        - Fn::Equals:
+            - ""
+            - ${self:custom.iamPermissionsBoundaryPolicy}
+            
 provider:
   name: aws
   runtime: nodejs12.x
@@ -118,13 +126,13 @@ functions:
           cors: true
           authorizer: aws_iam
 
-resources:
-  Conditions:
-    CreatePermissionsBoundary:
-      Fn::Not:
-        - Fn::Equals:
-            - ""
-            - ${self:custom.iamPermissionsBoundaryPolicy}
+# resources:
+#   Conditions:
+#     CreatePermissionsBoundary:
+#       Fn::Not:
+#         - Fn::Equals:
+#             - ""
+#             - ${self:custom.iamPermissionsBoundaryPolicy}
   Resources:
     LambdaApiRole: # Why isn't this with the function as an iamRoleStatements?  https://github.com/serverless/serverless/issues/6485
       Type: "AWS::IAM::Role"
