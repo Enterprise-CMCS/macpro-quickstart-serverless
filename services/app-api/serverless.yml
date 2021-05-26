@@ -15,6 +15,7 @@ plugins:
   - serverless-offline
   - serverless-stack-termination-protection
   - serverless-api-stage
+  # temp comment
 
 custom:
   stage: ${opt:stage, self:provider.stage}
