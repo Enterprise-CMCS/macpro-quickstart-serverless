@@ -7,11 +7,15 @@ plugins:
   - serverless-s3-sync
   - serverless-cloudfront-invalidate
   - serverless-stack-termination-protection
+  - serverless-deployment-bucket
 
 provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
+
+  deploymentBucket:
+    serverSideEncryption: AES256  
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -70,3 +74,5 @@ custom:
         export LOCAL_LOGIN=false
         ./env.sh
         cp public/env-config.js build/env-config.js
+  deploymentBucket:
+    versioning: true
