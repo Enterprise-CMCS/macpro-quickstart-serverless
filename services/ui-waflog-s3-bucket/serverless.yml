@@ -29,7 +29,9 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: !Sub ${AWS::AccountId}-${self:custom.stage}-waflogs
-
+        VersioningConfiguration:
+          Status: Enabled
+          
   Outputs:
     WaflogsUploadBucketArn:
       Value: !GetAtt WaflogsUploadBucket.Arn
