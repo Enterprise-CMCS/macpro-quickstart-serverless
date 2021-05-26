@@ -13021,6 +13021,13 @@ serverless-cloudfront-invalidate@^1.5.0:
     proxy-agent "^4.0.1"
     randomstring "^1.1.5"
 
+serverless-deployment-bucket@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/serverless-deployment-bucket/-/serverless-deployment-bucket-1.5.1.tgz#39e436b9239a9101dce31672a10349173b118d51"
+  integrity sha512-CoMpzSOLh1+xeEk7nnhp6Atu4hcVa8O/ayuoruPUg9R8oRgNzR1ZxKlOhMxoUozCNdgGp4viQ5YyO9Fblr0lrQ==
+  dependencies:
+    chalk "^2.4.2"
+
 serverless-s3-sync@^1.14.4:
   version "1.14.4"
   resolved "https://registry.yarnpkg.com/serverless-s3-sync/-/serverless-s3-sync-1.14.4.tgz#9822e109d65d82d79ba7112b96c836f42867fbbb"
