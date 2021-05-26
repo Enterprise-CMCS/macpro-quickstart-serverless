@@ -1,6 +1,7 @@
 import * as ses from "./../libs/ses-lib";
 
 exports.handler = function (event, context, callback) {
+  console.log("ENVIRONMENT VARIABLES\n" + JSON.stringify(process.env, null, 2));
   console.log("Received event:", JSON.stringify(event, null, 2));
   event.Records.forEach(function (record) {
     var params = (function (eventName) {
