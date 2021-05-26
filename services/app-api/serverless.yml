@@ -14,7 +14,7 @@ plugins:
   - serverless-associate-waf
   - serverless-offline
   - serverless-stack-termination-protection
-  # - serverless-api-stage
+  - serverless-api-stage
   # temp comment
 
 custom:
