@@ -15,7 +15,7 @@ provider:
   region: us-east-1
 
   deploymentBucket:
-    name: ${self}-deploy-bucket-${opt:region, self:provider.region}
+    name: ${self}-deploy-bucket1-${opt:region, self:provider.region}
     serverSideEncryption: AES256
 
 custom:
