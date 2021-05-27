@@ -11,10 +11,15 @@ provider:
   runtime: nodejs12.x
   region: us-east-1
 
+  deploymentBucket:
+    name: ${self:provider.stage}-deployment-s3buck-${opt:region, self:provider.region}
+    serverSideEncryption: AES256
+
 plugins:
   - serverless-stack-termination-protection
   - serverless-plugin-scripts
   - serverless-bundle
+  - serverless-deployment-bucket
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -45,6 +50,9 @@ custom:
         then
           serverless invoke --stage ${self:custom.stage} --function bootstrapUsers
         fi
+
+  deploymentBucket:
+    versioning: true
 
 functions:
   bootstrapUsers:
