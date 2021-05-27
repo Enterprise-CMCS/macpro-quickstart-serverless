@@ -14,8 +14,7 @@ plugins:
   - serverless-associate-waf
   - serverless-offline
   - serverless-stack-termination-protection
-  # - serverless-api-stage
-  # temp comment
+  - serverless-enable-api-logs
 
 custom:
   stage: ${opt:stage, self:provider.stage}

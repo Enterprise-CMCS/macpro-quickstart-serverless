@@ -18,7 +18,7 @@
   "dependencies": {
     "aws-sdk": "^2.788.0",
     "dynamodb-atomic-counter": "^0.1.1",
-    "serverless-api-stage": "^1.4.0",
+    "serverless-enable-api-logs": "^2.0.0",
     "uuid": "^7.0.3"
   }
 }
