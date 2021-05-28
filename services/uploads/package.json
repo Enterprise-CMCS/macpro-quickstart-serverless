@@ -10,5 +10,8 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "serverless-s3-local": "^0.6.7"
+  },
+  "dependencies": {
+    "serverless-deployment-bucket": "^1.5.1"
   }
 }

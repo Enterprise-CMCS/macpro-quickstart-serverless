@@ -1986,6 +1986,13 @@ semver@^7.1.3:
   dependencies:
     lru-cache "^6.0.0"
 
+serverless-deployment-bucket@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/serverless-deployment-bucket/-/serverless-deployment-bucket-1.5.1.tgz#39e436b9239a9101dce31672a10349173b118d51"
+  integrity sha512-CoMpzSOLh1+xeEk7nnhp6Atu4hcVa8O/ayuoruPUg9R8oRgNzR1ZxKlOhMxoUozCNdgGp4viQ5YyO9Fblr0lrQ==
+  dependencies:
+    chalk "^2.4.2"
+
 serverless-offline@^6.5.0:
   version "6.8.0"
   resolved "https://registry.yarnpkg.com/serverless-offline/-/serverless-offline-6.8.0.tgz#65d2192e41ef87ebcbc1093108db6a25059d6ab5"

@@ -9521,6 +9521,13 @@ serverless-bundle@^3.0.0:
     webpack "^4.44.1"
     webpack-node-externals "^2.5.2"
 
+serverless-deployment-bucket@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/serverless-deployment-bucket/-/serverless-deployment-bucket-1.5.1.tgz#39e436b9239a9101dce31672a10349173b118d51"
+  integrity sha512-CoMpzSOLh1+xeEk7nnhp6Atu4hcVa8O/ayuoruPUg9R8oRgNzR1ZxKlOhMxoUozCNdgGp4viQ5YyO9Fblr0lrQ==
+  dependencies:
+    chalk "^2.4.2"
+
 serverless-dotenv-plugin@^3.0.0:
   version "3.9.0"
   resolved "https://registry.yarnpkg.com/serverless-dotenv-plugin/-/serverless-dotenv-plugin-3.9.0.tgz#0d82704a3911c1051a1f566a30aaa5f278ad4ae3"

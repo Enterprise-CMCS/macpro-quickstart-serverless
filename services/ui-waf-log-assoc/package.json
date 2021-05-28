@@ -8,5 +8,8 @@
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {}
+  "devDependencies": {},
+  "dependencies": {
+    "serverless-deployment-bucket": "^1.5.1"
+  }
 }
