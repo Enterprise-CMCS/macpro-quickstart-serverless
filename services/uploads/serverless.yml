@@ -7,11 +7,16 @@ plugins:
   - serverless-plugin-scripts
   - serverless-s3-local
   - serverless-stack-termination-protection
+  - serverless-deployment-bucket
 
 provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
+
+  deploymentBucket:
+    name: ${self:provider.stage}-deployment-s3buck-${opt:region, self:provider.region}
+    serverSideEncryption: AES256
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -37,6 +42,9 @@ custom:
       deploy:finalize: |
         rm lambda_layer.zip
         serverless invoke --stage ${self:custom.stage} --function avDownloadDefinitions -t Event
+  deploymentBucket:
+    versioning: true
+
   s3:
     directory: ./local_buckets
     cors: ./local_cors.xml

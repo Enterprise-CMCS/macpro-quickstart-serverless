@@ -3,12 +3,17 @@ service: ui-waf-log-assoc
 plugins:
   - serverless-plugin-scripts
   - serverless-stack-termination-protection
+  - serverless-deployment-bucket
 
 provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
   stage: dev
+
+  deploymentBucket:
+    name: ${self:provider.stage}-deployment-s3buck-${opt:region, self:provider.region}
+    serverSideEncryption: AES256
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -32,3 +37,6 @@ custom:
         aws wafv2 put-logging-configuration \
           --logging-configuration ResourceArn=${self:custom.wafAclArn},LogDestinationConfigs=${self:custom.firehoseStreamArn} \
           --region ${self:provider.region}
+
+  deploymentBucket:
+    versioning: true
