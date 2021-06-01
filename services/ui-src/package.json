@@ -28,7 +28,15 @@
     "eject": "react-scripts eject"
   },
   "jest": {
-    "coverageReporters": ["json", ["lcov", {"projectRoot": "../../"}]],
+    "coverageReporters": [
+      "json",
+      [
+        "lcov",
+        {
+          "projectRoot": "../../"
+        }
+      ]
+    ],
     "verbose": true,
     "moduleNameMapper": {
       "^.+\\.(css|less|scss)$": "identity-obj-proxy"
