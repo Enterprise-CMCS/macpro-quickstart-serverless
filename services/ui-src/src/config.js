@@ -1,4 +1,4 @@
-export default {
+const configToExport = {
   MAX_ATTACHMENT_SIZE: 5000000,
   LOCAL_LOGIN: window._env_.LOCAL_LOGIN,
   s3: {
@@ -20,3 +20,5 @@ export default {
     REDIRECT_SIGNOUT: window._env_.COGNITO_REDIRECT_SIGNOUT,
   },
 };
+
+export default configToExport;
