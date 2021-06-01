@@ -141,6 +141,9 @@ resources:
               Cookies:
                 Forward: none
             ViewerProtocolPolicy: redirect-to-https
+            FunctionAssociations:
+              - EventType: viewer-response
+                FunctionARN: !GetAtt HstsCloudfrontFunction.FunctionMetadata.FunctionARN
           ViewerCertificate:
             Fn::If:
               - CreateCustomCloudFrontDomain
@@ -164,6 +167,21 @@ resources:
           HostedZoneId: Z2FDTNDATAQYW2
           EvaluateTargetHealth: false
         Type: A
+    HstsCloudfrontFunction:
+      Type: AWS::CloudFront::Function
+      Properties:
+        AutoPublish: true
+        FunctionCode: |
+          function handler(event) {
+            var response = event.response;
+            var headers = response.headers;
+            headers['strict-transport-security'] = { value: 'max-age=63072000; includeSubdomains; preload'};
+            return response;
+          }
+        FunctionConfig:
+          Comment: This function adds headers to implement HSTS
+          Runtime: cloudfront-js-1.0
+        Name: hsts-${self:custom.stage}
     ###############This code block enables logging on waf and sends all logs to s3.##################################
     Firehose:
       Type: AWS::KinesisFirehose::DeliveryStream
