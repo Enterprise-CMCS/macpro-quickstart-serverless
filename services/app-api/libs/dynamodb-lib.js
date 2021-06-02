@@ -1,5 +1,4 @@
 import AWS from "aws-sdk";
-import atomicCounter from "dynamodb-atomic-counter";
 
 const dyanmoConfig = {};
 
@@ -16,14 +15,33 @@ if (endpoint) {
 
 const client = new AWS.DynamoDB.DocumentClient(dyanmoConfig);
 
-atomicCounter.config.update(dyanmoConfig);
-
 export default {
   get: (params) => client.get(params).promise(),
   put: (params) => client.put(params).promise(),
   query: (params) => client.query(params).promise(),
   update: (params) => client.update(params).promise(),
   delete: (params) => client.delete(params).promise(),
-  increment: (params) =>
-    atomicCounter.increment(params, { tableName: atomicTableName }),
+  increment: (counterId) =>
+    atomicUpdate(counterId, { tableName: atomicTableName }),
 };
+
+function atomicUpdate(counterId, options) {
+  options || (options = {});
+  var params = {
+    Key: {},
+    AttributeUpdates: {},
+    ReturnValues: "UPDATED_NEW",
+    TableName: options.tableName,
+  };
+  var keyAttribute = options.keyAttribute || "id";
+  var countAttribute = options.countAttribute || "lastValue";
+
+  params.Key[keyAttribute] = { S: counterId };
+  params.AttributeUpdates[countAttribute] = {
+    Action: "ADD",
+    Value: {
+      N: "" + 1,
+    },
+  };
+  return new AWS.DynamoDB().updateItem(params).promise();
+}
