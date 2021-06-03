@@ -7,11 +7,17 @@ plugins:
   - serverless-plugin-scripts
   - serverless-s3-local
   - serverless-stack-termination-protection
+  - serverless-deployment-bucket
 
 provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
+
+  deploymentBucket:
+    name: ${self:service}-${opt:stage, self:provider.stage}-deployment-bucket
+    maxPreviousDeploymentArtifacts: 0
+    serverSideEncryption: AES256
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -44,6 +50,10 @@ custom:
       - local-uploads # This is a little silly, but I've spent enough time on it.
         # the serverless-s3-local plugin starts any bucket with a BucketName
         # the attachments bucket has no name, so we need to make one up on our own
+
+  deploymentBucket:
+    versioning: true
+
 layers:
   clamDefs:
     package:
@@ -86,6 +96,8 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: !Sub ${self:service.name}-${self:custom.stage}-attachments-${AWS::AccountId}
+        VersioningConfiguration:
+          Status: Enabled
         BucketEncryption:
           ServerSideEncryptionConfiguration:
             - ServerSideEncryptionByDefault:
@@ -160,6 +172,8 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: !Sub ${self:service.name}-${self:custom.stage}-avscan-${AWS::AccountId}
+        VersioningConfiguration:
+          Status: Enabled
         BucketEncryption:
           ServerSideEncryptionConfiguration:
             - ServerSideEncryptionByDefault:

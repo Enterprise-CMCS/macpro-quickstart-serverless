@@ -4,11 +4,17 @@ frameworkVersion: "2"
 
 plugins:
   - serverless-stack-termination-protection
+  - serverless-deployment-bucket
 
 provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
+
+  deploymentBucket:
+    name: ${self:service}-${opt:stage, self:provider.stage}-deployment-bucket
+    maxPreviousDeploymentArtifacts: 0
+    serverSideEncryption: AES256
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -23,12 +29,17 @@ custom:
       - val
       - prod
 
+  deploymentBucket:
+    versioning: true
+
 resources:
   Resources:
     WaflogsUploadBucket:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: !Sub ${AWS::AccountId}-${self:custom.stage}-waflogs
+        VersioningConfiguration:
+          Status: Enabled
 
   Outputs:
     WaflogsUploadBucketArn:

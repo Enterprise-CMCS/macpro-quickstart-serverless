@@ -8,8 +8,14 @@ provider:
   runtime: nodejs12.x
   region: us-east-1
 
+  deploymentBucket:
+    name: ${self:service}-${opt:stage, self:provider.stage}-deployment-bucket
+    maxPreviousDeploymentArtifacts: 0
+    serverSideEncryption: AES256
+
 plugins:
   - serverless-stack-termination-protection
+  - serverless-deployment-bucket
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -31,6 +37,9 @@ custom:
   wafLoggingBucket: ${cf:ui-waflog-s3-bucket-${self:custom.stage}.WaflogsUploadBucketArn}
   iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
   iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
+
+  deploymentBucket:
+    versioning: true
 
 resources:
   Conditions:
