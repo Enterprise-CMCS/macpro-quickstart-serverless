@@ -14,7 +14,6 @@ provider:
 plugins:
   - serverless-stack-termination-protection
   - serverless-plugin-scripts
-  - serverless-bundle
 
 custom:
   stage: ${opt:stage, self:provider.stage}
