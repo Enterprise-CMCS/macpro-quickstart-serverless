@@ -33,7 +33,7 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           CODE_CLIMATE_ID: ${{ secrets.CODE_CLIMATE_ID }}
       - name: lock this branch to prevent concurrent builds
-        run: ./.github/github-lock.sh $branch_name
+        run: exit 1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: read .nvmrc
@@ -84,6 +84,6 @@ jobs:
           path: tests/nightwatch/tests_output
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
-        if: env.SLACK_WEBHOOK_URL != '' && contains(fromJson('["develop", "main", "master", "impl", "val", "prod", "production"]'), env.branch_name) && failure ()
+        if: env.SLACK_WEBHOOK_URL != '' && contains(fromJson('["perfupdates", "develop", "main", "master", "impl", "val", "prod", "production"]'), env.branch_name) && failure ()
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
