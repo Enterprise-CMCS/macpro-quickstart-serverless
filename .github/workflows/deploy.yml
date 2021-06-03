@@ -86,4 +86,4 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         if: env.SLACK_WEBHOOK_URL != '' && contains(fromJson('["perfupdates", "develop", "main", "master", "impl", "val", "prod", "production"]'), env.branch_name) && failure ()
         env:
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
