@@ -30,7 +30,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_SECRET_ACCESS_KEY] || secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_DEFAULT_REGION] || secrets.AWS_DEFAULT_REGION }}
           STAGE_PREFIX: ${{ secrets.STAGE_PREFIX }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
           CODE_CLIMATE_ID: ${{ secrets.CODE_CLIMATE_ID }}
       - name: lock this branch to prevent concurrent builds
         run: ./.github/github-lock.sh $branch_name
@@ -86,5 +86,9 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         if: env.SLACK_WEBHOOK_URL != '' && contains(fromJson('["develop", "main", "master", "impl", "val", "prod", "production"]'), env.branch_name) && failure ()
         env:
-          SLACK_COLOR: ${{ job.status }}
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_USERNAME: Destroy Alerts
+          SLACK_ICON_EMOJI: ':bell:'
+          SLACK_COLOR: ${{job.status}}
+          SLACK_FOOTER: ''
+          MSG_MINIMAL: actions url,commit,ref
