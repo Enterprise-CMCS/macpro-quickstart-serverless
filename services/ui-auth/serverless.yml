@@ -52,6 +52,7 @@ functions:
     environment:
       userPoolId: !Ref CognitoUserPool
       bootstrapUsersPassword: ${self:custom.bootstrapUsersPassword}
+    timeout: 20
 
 resources:
   Conditions:

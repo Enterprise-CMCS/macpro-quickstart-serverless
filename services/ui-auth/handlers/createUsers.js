@@ -1,6 +1,6 @@
-import * as cognitolib from "../libs/cognito-lib";
-const userPoolId = process.env.userPoolId;
+const cognitolib = require("../libs/cognito-lib");
 const users = require("../libs/users.json");
+const userPoolId = process.env.userPoolId;
 
 async function myHandler(event, context, callback) {
   console.log("USER POOL ID: ");

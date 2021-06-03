@@ -4,7 +4,7 @@ const COGNITO_CLIENT = new aws.CognitoIdentityServiceProvider({
   region: "us-east-1",
 });
 
-export async function createUser(params) {
+async function createUser(params) {
   await new Promise((resolve, reject) => {
     COGNITO_CLIENT.adminCreateUser(params, function (err, data) {
       var response;
@@ -21,7 +21,7 @@ export async function createUser(params) {
   });
 }
 
-export async function setPassword(params) {
+async function setPassword(params) {
   await new Promise((resolve, reject) => {
     COGNITO_CLIENT.adminSetUserPassword(params, function (err, data) {
       if (err) {
@@ -39,7 +39,7 @@ export async function setPassword(params) {
   });
 }
 
-export async function updateUserAttributes(params) {
+async function updateUserAttributes(params) {
   await new Promise((resolve, reject) => {
     COGNITO_CLIENT.adminUpdateUserAttributes(params, function (err, data) {
       if (err) {
@@ -56,3 +56,5 @@ export async function updateUserAttributes(params) {
     });
   });
 }
+
+module.exports = { createUser, setPassword, updateUserAttributes };
