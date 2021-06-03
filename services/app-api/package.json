@@ -3,9 +3,6 @@
   "description": "",
   "version": "1.0.0",
   "main": "handler.js",
-  "scripts": {
-    "test": "serverless-bundle test"
-  },
   "author": "",
   "license": "CC0-1.0",
   "repository": {
