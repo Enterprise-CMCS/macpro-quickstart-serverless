@@ -84,7 +84,7 @@ jobs:
           path: tests/nightwatch/tests_output
       - name: Slack notification
         if: env.SLACK_WEBHOOK_URL != '' && contains(fromJson('["develop", "main", "master", "impl", "val", "prod", "production"]'), env.branch_name) && always ()
-        uses: ravsamhq/notify-slack-action@master
+        uses: ravsamhq/notify-slack-action@v1
         with:
           status: ${{ job.status }}
           notify_when: "failure"
