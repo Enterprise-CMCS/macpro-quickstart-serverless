@@ -88,3 +88,5 @@ jobs:
         with:
           status: ${{ job.status }}
           notify_when: "failure"
+      - uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
