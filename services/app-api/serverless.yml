@@ -7,14 +7,12 @@ package:
   individually: true
 
 plugins:
-  - serverless-bundle
   - serverless-dotenv-plugin
   - serverless-plugin-warmup
   - serverless-plugin-scripts
   - serverless-associate-waf
   - serverless-offline
   - serverless-stack-termination-protection
-  - serverless-enable-api-logs
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -45,17 +43,14 @@ custom:
     timeout: 20
     prewarm: true
     concurrency: ${ssm:/configuration/${self:custom.stage}/warmup/concurrency~true, ssm:/configuration/default/warmup/concurrency~true, 5}
-    folderName: node_modules/serverless-bundle/src/_warmup
     cleanFolder: false
   scripts:
     hooks:
       package:setupProviderConfiguration: |
-        # Remove the timestamp line from the warmup handler so a new function is uploaded
-        #   only if a configuration has truly changed.
+        # Remove the timestamp line from the warmup handler for idempotency's (speed's) sake.
         set -e
-        if [ -d "node_modules/serverless-bundle/src/_warmup" ]; then
-          cd node_modules/serverless-bundle/src/_warmup
-          sed '/Generated/d' index.js > index.js.sub && mv -f index.js.sub index.js
+        if [ -d "_warmup" ] && [ -f "_warmup/index.js" ]; then
+          sed '/Generated/d' _warmup/index.js > _warmup/index.js.sub && mv -f _warmup/index.js.sub _warmup/index.js
         fi
 
 provider:

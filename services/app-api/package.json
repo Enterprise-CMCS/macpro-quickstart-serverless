@@ -13,14 +13,9 @@
     "url": "https://github.com/AnomalyInnovations/serverless-nodejs-starter.git"
   },
   "devDependencies": {
-    "serverless-associate-waf": "^1.2.1",
-    "serverless-enable-api-logs": "^2.0.0"
+    "serverless-associate-waf": "^1.2.1"
   },
   "dependencies": {
-    "aws-sdk": "^2.788.0",
     "uuid": "^7.0.3"
-  },
-  "resolutions": {
-    "lodash": "~4.17.21"
   }
 }

@@ -7,7 +7,6 @@ package:
   individually: true
 
 plugins:
-  - serverless-bundle
   - serverless-dotenv-plugin
   - serverless-stack-termination-protection
 
