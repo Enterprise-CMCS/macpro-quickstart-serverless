@@ -50,7 +50,7 @@ jobs:
         run: |
           echo "PATH=$(pwd)/node_modules/.bin/:$PATH" >> $GITHUB_ENV
       - name: run unit tests
-        run: ./test-unit.sh {{ env.STAGE_PREFIX }}{{ env.branch_name }}
+        run: ./test-unit.sh $STAGE_PREFIX$branch_name
       - name: publish test coverage to code climate
         if: env.CODE_CLIMATE_ID != ''
         uses: paambaati/codeclimate-action@v2.7.5
