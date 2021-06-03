@@ -87,5 +87,5 @@ jobs:
         if: env.SLACK_WEBHOOK_URL != '' && contains(fromJson('["perfupdates", "develop", "main", "master", "impl", "val", "prod", "production"]'), env.branch_name) && failure ()
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_USERNAME: FAILURE:  GitHub Actions has had a failure
+          SLACK_USERNAME: GitHub Actions has had a FAILURE
           SLACK_COLOR: ${{ job.status }}
