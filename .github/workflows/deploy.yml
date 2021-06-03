@@ -42,6 +42,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ steps.node_version.outputs.NODE_VERSION }}
+      - run: echo {} | jq
       - uses: actions/cache@v2
         with:
           path: "**/node_modules"
