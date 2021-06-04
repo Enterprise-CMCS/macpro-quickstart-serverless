@@ -10,12 +10,12 @@ provider:
 
   deploymentBucket:
     name: ${self:service}-${opt:stage, self:provider.stage}-deployment-bucket
-    maxPreviousDeploymentArtifacts: 0
     serverSideEncryption: AES256
 
 plugins:
   - serverless-stack-termination-protection
   - serverless-deployment-bucket
+  - serverless-s3-remover
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -40,6 +40,12 @@ custom:
 
   deploymentBucket:
     versioning: true
+  s3:
+    slsbucket:
+      name: ${self:service}-${opt:stage, self:provider.stage}-deployment-bucket
+  remover:
+    buckets:
+      - ${self:custom.s3.slsbucket.name}
 
 resources:
   Conditions:
