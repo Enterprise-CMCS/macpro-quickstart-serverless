@@ -2,8 +2,6 @@
 
 set -e
 
-stage=${1:-dev}
-
 services=(
   'ui-src'
 )
@@ -22,7 +20,7 @@ unit_test() {
   service=$1
   pushd services/$service
   install_deps
-  serverless testUnit --stage $stage
+  yarn run coverage
   popd
 }
 
