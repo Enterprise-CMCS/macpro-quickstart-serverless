@@ -13,6 +13,7 @@ plugins:
   - serverless-associate-waf
   - serverless-offline
   - serverless-stack-termination-protection
+  - serverless-enable-api-logs
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -33,7 +34,6 @@ custom:
   tableArn: ${env:AMENDMENTS_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsTableArn}
   atomicCounterTableName: ${env:AMENDMENTS_COUNTER_TABLE_NAME, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableName}
   atomicCounterTableArn: ${env:AMENDMENTS_COUNTER_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableArn}
-
   warmup:
     enabled: true
     role: LambdaWarmupRole
@@ -52,11 +52,6 @@ custom:
         if [ -d "_warmup" ] && [ -f "_warmup/index.js" ]; then
           sed '/Generated/d' _warmup/index.js > _warmup/index.js.sub && mv -f _warmup/index.js.sub _warmup/index.js
         fi
-      before:deploy:deploy: |
-        set -e
-        cat .serverless/cloudformation-template-update-stack.json | jq
-        exit 1
-
 provider:
   name: aws
   runtime: nodejs12.x
@@ -245,21 +240,6 @@ resources:
           CloudWatchMetricsEnabled: true
           SampledRequestsEnabled: true
           MetricName: ${self:custom.stage}-webacl
-    ApiGatewayStage:
-      Type: AWS::ApiGateway::Stage
-      Properties:
-        StageName: ${self:custom.stage}
-        Description: ${self:custom.stage}
-        RestApiId:
-          Ref: ApiGatewayRestApi
-        DeploymentId:
-          Ref: ApiGatewayDeployment${sls:instanceId}
-        MethodSettings:
-          - DataTraceEnabled: true
-            HttpMethod: "*"
-            LoggingLevel: INFO
-            ResourcePath: "/*"
-            MetricsEnabled: true
   Outputs:
     ApiGatewayRestApiName:
       Value: !Ref ApiGatewayRestApi
