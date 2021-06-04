@@ -17,6 +17,7 @@ provider:
 
   deploymentBucket:
     name: ${self:service}-${opt:stage, self:provider.stage}-deployment-bucket
+    maxPreviousDeploymentArtifacts: 1
     serverSideEncryption: AES256
 
 custom:
