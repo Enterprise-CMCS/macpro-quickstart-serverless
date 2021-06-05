@@ -1,3 +1,4 @@
 #!/bin/bash
 
-export PATH=./../../node_modules/.bin:$PATH
+THISDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export PATH=$THISDIR/node_modules/.bin:$PATH
