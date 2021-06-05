@@ -1,4 +1,4 @@
-import * as ses from "./../libs/ses-lib";
+import * as ses from "./libs/ses-lib";
 
 exports.handler = function (event, context, callback) {
   console.log("Received event:", JSON.stringify(event, null, 2));
