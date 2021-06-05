@@ -3,5 +3,7 @@
   "description": "",
   "version": "1.0.0",
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {
+    "serverless-idempotent-lambdas": "file:../../libs/serverless-idempotent-lambdas"
+  }
 }

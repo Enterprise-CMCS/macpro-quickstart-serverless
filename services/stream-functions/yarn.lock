@@ -2,3 +2,5 @@
 # yarn lockfile v1
 
 
+"serverless-idempotent-lambdas@file:../../libs/serverless-idempotent-lambdas":
+  version "1.0.0"
