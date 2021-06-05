@@ -78,7 +78,7 @@ provider:
           Resource:
             - ${self:custom.tableArn}
             - ${self:custom.atomicCounterTableArn}
-        - Effect: 'Allow' #Warmup permissions
+        - Effect: "Allow" #Warmup permissions
           Action:
             - lambda:InvokeFunction
           Resource:
