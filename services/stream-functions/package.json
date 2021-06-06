@@ -4,6 +4,6 @@
   "version": "1.0.0",
   "dependencies": {},
   "devDependencies": {
-    "serverless-idempotent-lambdas": "file:../../libs/serverless-idempotent-lambdas"
+    "serverless-webpack-idempotent": "file:../../libs/serverless-webpack-idempotent"
   }
 }

@@ -10,7 +10,7 @@ plugins:
   - serverless-bundle
   - serverless-dotenv-plugin
   - serverless-stack-termination-protection
-  - serverless-idempotent-lambdas
+  - serverless-webpack-idempotent
 
 provider:
   name: aws
