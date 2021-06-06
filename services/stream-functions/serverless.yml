@@ -55,7 +55,7 @@ custom:
 
 functions:
   emailSubmitter:
-    handler: emailSubmitter.handler
+    handler: handlers/emailSubmitter.handler
     events:
       - stream:
           arn: ${self:custom.tableStreamArn}
@@ -65,7 +65,7 @@ functions:
       emailSource: ${self:custom.sesSourceEmailAddress}
     maximumRetryAttempts: 2
   emailReviewer:
-    handler: emailReviewer.handler
+    handler: handlers/emailReviewer.handler
     events:
       - stream:
           arn: ${self:custom.tableStreamArn}
