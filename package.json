@@ -32,6 +32,7 @@
     "serverless-plugin-scripts": "^1.0.2",
     "serverless-plugin-warmup": "^4.9.0",
     "serverless-stack-termination-protection": "^1.0.4",
+    "serverless-webpack-idempotent": "file:./libs/serverless-webpack-idempotent",
     "typescript": "^4.0.5",
     "yargs": "^16.1.1"
   }
