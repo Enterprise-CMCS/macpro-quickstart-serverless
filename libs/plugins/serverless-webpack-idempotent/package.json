@@ -1,0 +1,21 @@
+{
+  "name": "serverless-webpack-idempotent",
+  "version": "1.0.0",
+  "description": "Serverless plugin to fix timestamps on webpack'ed function source code to help deployment idempotency.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "glob": "^7.1.7",
+    "lodash": "^4.17.21"
+  },
+  "devDependencies": {},
+  "peerDependencies": {
+    "serverless": "2.x"
+  },
+  "engines": {
+    "node": ">=10.0"
+  },
+  "license": "MIT"
+}
