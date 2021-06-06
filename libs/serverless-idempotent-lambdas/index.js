@@ -26,8 +26,7 @@ class ServerlessPlugin {
         : this.serverless.service.getAllFunctions();
       dirs = functionNames;
     } else {
-      const serviceName = this.serverless.service.getServiceObject().name;
-      dirs = [serviceName];
+      dirs = ["service"];
     }
 
     dirs.forEach((dir) => {
