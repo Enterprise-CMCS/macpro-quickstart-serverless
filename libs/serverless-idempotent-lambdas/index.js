@@ -17,7 +17,7 @@ class ServerlessPlugin {
   repackZips() {
     this.serverless.cli.log("Setting timestamps...");
     const serviceDir = this.serverless.serviceDir;
-    const time = new Date("1995-12-17T03:24:00");
+    const time = new Date("631152000000");
 
     var dirs;
     if (isIndividialPackaging.call(this)) {
