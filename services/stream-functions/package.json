@@ -3,7 +3,5 @@
   "description": "",
   "version": "1.0.0",
   "dependencies": {},
-  "devDependencies": {
-    "serverless-webpack-idempotent": "file:../../libs/serverless-webpack-idempotent"
-  }
+  "devDependencies": {}
 }
