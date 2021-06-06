@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {},
+  "dependencies": {
+    "glob": "^7.1.7",
+    "lodash": "^4.17.21"
+  },
   "devDependencies": {},
   "peerDependencies": {
     "serverless": "2.x"
