@@ -1,4 +1,8 @@
-'use strict';
+"use strict";
+const path = require("path");
+const glob = require("glob");
+const fs = require("fs");
+const _ = require("lodash");
 
 class ServerlessPlugin {
   constructor(serverless, options) {
@@ -6,13 +10,42 @@ class ServerlessPlugin {
     this.options = options;
 
     this.hooks = {
-      'package:createDeploymentArtifacts': this.repackZips.bind(this),
+      "webpack:compile:compile": this.repackZips.bind(this),
     };
   }
 
   repackZips() {
-    this.serverless.cli.log('Repacking zips to be idempotent...');
+    this.serverless.cli.log("Setting timestamps...");
+    const serviceDir = this.serverless.serviceDir;
+    const time = new Date("1995-12-17T03:24:00");
+
+    var dirs;
+    if (isIndividialPackaging.call(this)) {
+      const functionNames = this.options.function
+        ? [this.options.function]
+        : this.serverless.service.getAllFunctions();
+      dirs = functionNames;
+    } else {
+      const serviceName = this.serverless.service.getServiceObject().name;
+      dirs = [serviceName];
+    }
+
+    dirs.forEach((dir) => {
+      var dirPath = `${serviceDir}/.webpack/${dir}/**/*`;
+      let files = glob.sync(dirPath, {
+        dot: true,
+        silent: true,
+        follow: true,
+      });
+      files.forEach((file) => {
+        fs.utimesSync(file, time, time);
+      });
+    });
   }
+}
+
+function isIndividialPackaging() {
+  return _.get(this.serverless, "service.package.individually");
 }
 
 module.exports = ServerlessPlugin;
