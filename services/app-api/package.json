@@ -13,7 +13,7 @@
     "url": "https://github.com/AnomalyInnovations/serverless-nodejs-starter.git"
   },
   "devDependencies": {
-    "serverless-api-logs-idempotent": "../../libs/plugins/serverless-api-logs-idempotent",
+    "serverless-api-logs-idempotent": "./../../libs/plugins/serverless-api-logs-idempotent",
     "serverless-associate-waf": "^1.2.1"
   },
   "dependencies": {

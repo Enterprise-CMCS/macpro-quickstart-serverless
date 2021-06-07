@@ -2,6 +2,11 @@
 
 const _ = require("lodash");
 const Class = require("class.extend");
+const fs = require("fs");
+const glob = require("glob");
+const path = require("path");
+var zip = require('bestzip');
+
 
 module.exports = Class.extend({
   init: function (serverless, opts) {
@@ -12,7 +17,60 @@ module.exports = Class.extend({
       "before:deploy:deploy": this.helpApiLoggingEnablementBeIdempotent.bind(
         this
       ),
+      "package:compileEvents": this.repackCustomResourcesZip.bind(
+        this
+      ),
     };
+  },
+
+  repackCustomResourcesZip: async function() {
+    const serviceDir = this._serverless.serviceDir;
+    const time = new Date(1990, 1, 1);
+
+    var customResourcesZip = `${serviceDir}/.serverless/custom-resources.zip`;
+    var targetDir = `${serviceDir}/.serverless/customResourcesZipNew`;
+
+    console.log('asdfasdf');
+
+    fs.rmdir(targetDir, { recursive: true }, (err) => {
+      if (err) {
+          console.log('targetDir does not exist')
+      }
+      console.log(`${targetDir} is deleted!`);
+    });
+    console.log(customResourcesZip);
+    await extract(customResourcesZip, { dir: targetDir })
+
+    let files = glob.sync(`${targetDir}/**/*`, {
+      dot: true,
+      silent: true,
+      follow: true,
+    });
+    console.log('asdf');
+    files.forEach((file) => {
+      console.log(file);
+      fs.utimesSync(file, time, time);
+    });
+
+
+    var dotServerlessDir = `${serviceDir}/.serverless`
+    var relativeSourcePath = path.relative(dotServerlessDir, targetDir)
+    var relativeDestinationPath = path.relative(dotServerlessDir, customResourcesZip)
+    var zipArgs = {
+      source: `${relativeSourcePath}/*`,
+      cwd: `${serviceDir}/.serverless`,
+      destination: `${relativeDestinationPath}.new`
+    }
+    console.log(zipArgs);
+    await zip(zipArgs).then(function() {
+      console.log('all done!');
+    }).catch(function(err) {
+      console.error(err.stack);
+      process.exit(1);
+    });
+
+    fs.copyFileSync(`${customResourcesZip}.new`, customResourcesZip);
+
   },
 
   helpApiLoggingEnablementBeIdempotent: function () {
@@ -76,3 +134,12 @@ module.exports = Class.extend({
     }
   },
 });
+
+function copyArtifactByName(artifactName) {
+  const { webpackArtifact, serverlessArtifact } = getArtifactLocations.call(this, artifactName);
+
+  // Make sure the destination dir exists
+  this.serverless.utils.writeFileDir(serverlessArtifact);
+
+  fs.copyFileSync(webpackArtifact, serverlessArtifact);
+}

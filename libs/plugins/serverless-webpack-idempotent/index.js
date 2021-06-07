@@ -12,15 +12,7 @@ class ServerlessPlugin {
     this.hooks = {
       "webpack:compile:compile": this.readyFilesForIdempotentZipping.bind(this),
     };
-
-    // this.hooks = {
-    //   "package:compileEvents": this.thrower.bind(this),
-    // };
   }
-
-  // thrower() {
-  //   throw("thrownnn");
-  // }
 
   readyFilesForIdempotentZipping() {
     this.serverless.cli.log(
@@ -41,11 +33,6 @@ class ServerlessPlugin {
         ? [this.options.function]
         : this.serverless.service.getAllFunctions();
       dirs = functionNames;
-      console.log(functionNames);
-      if(this.serverless.service.provider.logs && this.serverless.service.provider.logs.restApi && this.serverless.service.provider.logs.restApi){
-        functionNames.push("custom-resources");
-      }
-      console.log(functionNames);
     } else {
       dirs = ["service"];
     }
