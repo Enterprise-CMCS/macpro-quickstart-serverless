@@ -41,9 +41,13 @@ for i in "${services[@]}"
 do
 	deploy $i
   ls -la services/app-api/.serverless
+  sha256sum services/app-api/.serverless/create.zip
+  sha256sum services/app-api/.serverless/warmUpPlugin.zip
   sha256sum services/app-api/.serverless/custom-resources.zip
   # cat services/app-api/.serverless/cloudformation-template-update-stack.json
   deploy $i
+  sha256sum services/app-api/.serverless/create.zip
+  sha256sum services/app-api/.serverless/warmUpPlugin.zip
   sha256sum services/app-api/.serverless/custom-resources.zip
   # cat services/app-api/.serverless/cloudformation-template-update-stack.json
 done
