@@ -21,8 +21,11 @@ jobs:
             echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
           fi
       - uses: actions/checkout@v1
-      - name: restore timestamps
-        uses: chetan/git-restore-mtime-action@release
+      - name: set atime and mtime per git
+        run: |
+          find . -exec touch -t `git ls-files -z . | \
+          xargs -0 -n1 -I{} -- git log -1 --date=format:"%Y%m%d%H%M" --format="%ad" {} | \
+          sort -r | head -n 1` {} +
       - name: Validate branch name
         run: ./branchNameValidation.sh $STAGE_PREFIX$branch_name
       - name: set branch specific variable names
