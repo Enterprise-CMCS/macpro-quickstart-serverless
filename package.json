@@ -28,11 +28,11 @@
     "serverless": "^2.43.1",
     "serverless-bundle": "^4.3.1",
     "serverless-dotenv-plugin": "^3.0.0",
+    "serverless-idempotency-helper": "./libs/plugins/serverless-idempotency-helper",
     "serverless-offline": "^6.8.0",
     "serverless-plugin-scripts": "^1.0.2",
     "serverless-plugin-warmup": "^4.9.0",
     "serverless-stack-termination-protection": "^1.0.4",
-    "serverless-webpack-idempotent": "./libs/plugins/serverless-webpack-idempotent",
     "typescript": "^4.0.5",
     "yargs": "^16.1.1"
   },
