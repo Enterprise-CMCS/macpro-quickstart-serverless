@@ -40,10 +40,10 @@ export PATH=$(pwd)/node_modules/.bin/:$PATH
 for i in "${services[@]}"
 do
 	deploy $i
-  sha256sum services/app-api/.serverless/emailSubmitter.zip
+  sha256sum services/app-api/.serverless/create.zip
   cat services/app-api/.serverless/cloudformation-template-update-stack.json
   deploy $i
-  sha256sum services/app-api/.serverless/emailSubmitter.zip
+  sha256sum services/app-api/.serverless/create.zip
   cat services/app-api/.serverless/cloudformation-template-update-stack.json
 done
 
