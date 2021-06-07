@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "aws-sdk": "^2.788.0",
-    "serverless-enable-api-logs": "^2.0.0",
+    "serverless-api-logs-idempotent": "../../libs/plugins/serverless-api-logs-idempotent",
     "uuid": "^7.0.3"
   },
   "resolutions": {

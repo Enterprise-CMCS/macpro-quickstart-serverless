@@ -1,0 +1,21 @@
+{
+  "name": "serverless-api-logs-idempotent",
+  "version": "1.0.0",
+  "description": "Serverless plugin template",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "class.extend": "0.9.2",
+    "lodash.merge": "4.6.1"
+  },
+  "devDependencies": {},
+  "peerDependencies": {
+    "serverless": "2.x"
+  },
+  "engines": {
+    "node": ">=10.0"
+  },
+  "license": "MIT"
+}

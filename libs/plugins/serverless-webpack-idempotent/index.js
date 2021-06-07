@@ -15,7 +15,9 @@ class ServerlessPlugin {
   }
 
   readyFilesForIdempotentZipping() {
-    this.serverless.cli.log("Readying function files for idempotent zipping...");
+    this.serverless.cli.log(
+      "Readying function files for idempotent zipping..."
+    );
 
     // Tell the zip command to forego creating directory entries in the archive, via the ZIPOPT variable.
     // see:  https://linux.die.net/man/1/zip
