@@ -14,8 +14,6 @@ plugins:
   - serverless-associate-waf
   - serverless-offline
   - serverless-stack-termination-protection
-  # - serverless-api-logs-idempotent
-  # - serverless-webpack-idempotent
   - serverless-idempotency-helper
 
 custom:
@@ -63,8 +61,8 @@ provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
-  # logs:
-  #   restApi: true
+  logs:
+    restApi: true
   iam:
     role:
       path: ${self:custom.iamPath}
