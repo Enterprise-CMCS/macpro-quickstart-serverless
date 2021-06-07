@@ -8,7 +8,6 @@ plugins:
   - serverless-s3-local
   - serverless-stack-termination-protection
   - serverless-deployment-bucket
-  - serverless-s3-remover
 
 provider:
   name: aws
@@ -52,11 +51,6 @@ custom:
         # the serverless-s3-local plugin starts any bucket with a BucketName
         # the attachments bucket has no name, so we need to make one up on our own
 
-    slsbucket:
-      name: ${self:service}-${opt:stage, self:provider.stage}-deployment-bucket
-  remover:
-    buckets:
-      - ${self:custom.s3.slsbucket.name}
   deploymentBucket:
     versioning: true
 
