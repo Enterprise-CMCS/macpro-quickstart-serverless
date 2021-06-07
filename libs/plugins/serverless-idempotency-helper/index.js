@@ -76,8 +76,6 @@ class ServerlessPlugin {
       };
       // console.log(JSON.stringify(template.Resources));
       this.serverless.cli.log("Enabled logging for ApiGateway Stage");
-    } else {
-      this.serverless.cli.log("API Gateway logging not enabled...");
     }
   }
 
