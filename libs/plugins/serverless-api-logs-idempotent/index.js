@@ -40,7 +40,6 @@ module.exports = Class.extend({
       if (err) {
           console.log('targetDir does not exist')
       }
-      console.log(`${targetDir} is deleted!`);
     });
     await extract(artifactFullPath, { dir: targetDir })
 
@@ -49,19 +48,14 @@ module.exports = Class.extend({
       silent: true,
       follow: true,
     });
-    console.log('asdf');
     files.forEach((file) => {
-      console.log(file);
       fs.utimesSync(file, time, time);
     });
-    // var relativeSourcePath = path.relative(dotServerlessDir, targetDir)
-    // var relativeDestinationPath = path.relative(dotServerlessDir, customResourcesZip)
     var zipArgs = {
       source: `.`,
       cwd: targetDir,
       destination: `../${artifact}.new`
     }
-    console.log(zipArgs);
     await zip(zipArgs).then(function() {
       console.log('all done!');
     }).catch(function(err) {
