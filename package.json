@@ -35,5 +35,6 @@
     "serverless-webpack-idempotent": "./libs/plugins/serverless-webpack-idempotent",
     "typescript": "^4.0.5",
     "yargs": "^16.1.1"
-  }
+  },
+  "dependencies": {}
 }
