@@ -41,10 +41,10 @@ for i in "${services[@]}"
 do
 	deploy $i
   sha256sum services/app-api/.serverless/create.zip
-  cat services/app-api/.serverless/cloudformation-template-update-stack.json
+  # cat services/app-api/.serverless/cloudformation-template-update-stack.json
   deploy $i
   sha256sum services/app-api/.serverless/create.zip
-  cat services/app-api/.serverless/cloudformation-template-update-stack.json
+  # cat services/app-api/.serverless/cloudformation-template-update-stack.json
 done
 
 pushd services
