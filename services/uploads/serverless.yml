@@ -7,7 +7,7 @@ plugins:
   - serverless-plugin-scripts
   - serverless-s3-local
   - serverless-stack-termination-protection
-  - serverless-webpack-idempotent
+  - serverless-idempotency-helper
 
 provider:
   name: aws

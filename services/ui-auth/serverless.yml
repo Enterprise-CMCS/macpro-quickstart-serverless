@@ -24,7 +24,7 @@ plugins:
   - serverless-stack-termination-protection
   - serverless-plugin-scripts
   - serverless-bundle
-  - serverless-webpack-idempotent
+  - serverless-idempotency-helper
 
 custom:
   stage: ${opt:stage, self:provider.stage}
