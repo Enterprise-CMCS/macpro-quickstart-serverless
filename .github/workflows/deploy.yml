@@ -10,6 +10,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      ZIPOPT: "-DX"
     steps:
       - name: set branch_name
         run: |
