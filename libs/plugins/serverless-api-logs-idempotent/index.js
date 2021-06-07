@@ -69,6 +69,7 @@ module.exports = Class.extend({
       template.Resources.CustomApiGatewayAccountCloudWatchRole.Properties.RoleArn = {
         "Fn::GetAtt": ["CloudWatchRoleForApiGW", "Arn"],
       };
+      console.log(JSON.stringify(template.Resources));
       this._serverless.cli.log("Enabled logging for ApiGateway Stage");
     } else {
       this._serverless.cli.log("API Gateway logging not enabled...");
