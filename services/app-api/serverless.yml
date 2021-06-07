@@ -136,6 +136,7 @@ functions:
           cors: true
           authorizer: aws_iam
 
+
 resources:
   Resources:
     GatewayResponseDefault4XX:
