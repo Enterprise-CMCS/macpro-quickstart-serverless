@@ -5,15 +5,15 @@ set -e
 stage=${1:-dev}
 
 services=(
-  'database'
-  'uploads'
+  # 'database'
+  # 'uploads'
   'app-api'
-  'stream-functions'
-  'ui-waflog-s3-bucket'
-  'ui'
-  'ui-auth'
-  'ui-waf-log-assoc'
-  'ui-src'
+  # 'stream-functions'
+  # 'ui-waflog-s3-bucket'
+  # 'ui'
+  # 'ui-auth'
+  # 'ui-waf-log-assoc'
+  # 'ui-src'
 )
 
 install_deps() {
