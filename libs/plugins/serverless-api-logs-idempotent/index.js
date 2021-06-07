@@ -25,13 +25,16 @@ module.exports = Class.extend({
   },
 
   repackCustomResourcesZip: async function() {
-    const serviceDir = this._serverless.serviceDir;
     const time = new Date(1990, 1, 1);
-
-    var customResourcesZip = `${serviceDir}/.serverless/custom-resources.zip`;
-    var targetDir = `${serviceDir}/.serverless/customResourcesZipNew`;
-
-    console.log('asdfasdf');
+    const serviceDir = this._serverless.serviceDir;
+    const serverlessDir = `${serviceDir}/.serverless`
+    const artifact = "custom-resources.zip"
+    const artifactFullPath = `${serverlessDir}/${artifact}`
+    // Tell the zip command to forego creating directory entries in the archive, via the ZIPOPT variable.
+    // see:  https://linux.die.net/man/1/zip
+    process.env.ZIPOPT = "-D";
+    var artifactZip = `${serverlessDir}/${artifact}`;
+    var targetDir = `${serverlessDir}/tmp`;
 
     fs.rmdir(targetDir, { recursive: true }, (err) => {
       if (err) {
@@ -39,8 +42,7 @@ module.exports = Class.extend({
       }
       console.log(`${targetDir} is deleted!`);
     });
-    console.log(customResourcesZip);
-    await extract(customResourcesZip, { dir: targetDir })
+    await extract(artifactFullPath, { dir: targetDir })
 
     let files = glob.sync(`${targetDir}/**/*`, {
       dot: true,
@@ -52,15 +54,12 @@ module.exports = Class.extend({
       console.log(file);
       fs.utimesSync(file, time, time);
     });
-
-
-    var dotServerlessDir = `${serviceDir}/.serverless`
-    var relativeSourcePath = path.relative(dotServerlessDir, targetDir)
-    var relativeDestinationPath = path.relative(dotServerlessDir, customResourcesZip)
+    // var relativeSourcePath = path.relative(dotServerlessDir, targetDir)
+    // var relativeDestinationPath = path.relative(dotServerlessDir, customResourcesZip)
     var zipArgs = {
-      source: `${relativeSourcePath}/*`,
-      cwd: `${serviceDir}/.serverless`,
-      destination: `${relativeDestinationPath}.new`
+      source: `.`,
+      cwd: targetDir,
+      destination: `../${artifact}.new`
     }
     console.log(zipArgs);
     await zip(zipArgs).then(function() {
@@ -70,7 +69,7 @@ module.exports = Class.extend({
       process.exit(1);
     });
 
-    fs.copyFileSync(`${customResourcesZip}.new`, customResourcesZip);
+    fs.copyFileSync(`${artifactFullPath}.new`, artifactFullPath);
 
   },
 
