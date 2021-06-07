@@ -49,42 +49,42 @@ jobs:
       - name: set path
         run: |
           echo "PATH=$(pwd)/node_modules/.bin/:$PATH" >> $GITHUB_ENV
-      - name: run unit tests
-        run: ./test-unit.sh {{ env.STAGE_PREFIX }}{{ env.branch_name }}
-      - name: publish test coverage to code climate
-        if: env.CODE_CLIMATE_ID != ''
-        uses: paambaati/codeclimate-action@v2.7.5
-        env:
-          CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_ID }}
-        with:
-          debug: true
-          coverageLocations: |
-            ${{github.workspace}}/services/ui-src/coverage/lcov.info:lcov
-      - name: Store unit test reults
-        uses: actions/upload-artifact@v2
-        with:
-          name: unit_test_results
-          path: ${{github.workspace}}/services/ui-src/coverage/lcov.info
+      # - name: run unit tests
+      #   run: ./test-unit.sh {{ env.STAGE_PREFIX }}{{ env.branch_name }}
+      # - name: publish test coverage to code climate
+      #   if: env.CODE_CLIMATE_ID != ''
+      #   uses: paambaati/codeclimate-action@v2.7.5
+      #   env:
+      #     CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_ID }}
+      #   with:
+      #     debug: true
+      #     coverageLocations: |
+      #       ${{github.workspace}}/services/ui-src/coverage/lcov.info:lcov
+      # - name: Store unit test reults
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: unit_test_results
+      #     path: ${{github.workspace}}/services/ui-src/coverage/lcov.info
       - name: deploy
         run: |
           # When deploying multiple copies of this quickstart to the same AWS Account (not ideal), a prefix helps prevent stepping on each other.
           # This can optionally be set as an GitHub Actions Secret
           ./deploy.sh $STAGE_PREFIX$branch_name
-      - name: Run Nightwatch suite
-        run: |
-          pushd services
-          export APPLICATION_ENDPOINT=`./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$branch_name`
-          popd
-          ./test.sh
-      - name: Store test reults
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: test_results
-          path: tests/nightwatch/tests_output
-      - name: Slack notification
-        if: env.SLACK_WEBHOOK_URL != '' && contains(fromJson('["develop", "main", "master", "impl", "val", "prod", "production"]'), env.branch_name) && always ()
-        uses: ravsamhq/notify-slack-action@master
-        with:
-          status: ${{ job.status }}
-          notify_when: "failure"
+      # - name: Run Nightwatch suite
+      #   run: |
+      #     pushd services
+      #     export APPLICATION_ENDPOINT=`./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$branch_name`
+      #     popd
+      #     ./test.sh
+      # - name: Store test reults
+      #   if: ${{ always() }}
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: test_results
+      #     path: tests/nightwatch/tests_output
+      # - name: Slack notification
+      #   if: env.SLACK_WEBHOOK_URL != '' && contains(fromJson('["develop", "main", "master", "impl", "val", "prod", "production"]'), env.branch_name) && always ()
+      #   uses: ravsamhq/notify-slack-action@master
+      #   with:
+      #     status: ${{ job.status }}
+      #     notify_when: "failure"
