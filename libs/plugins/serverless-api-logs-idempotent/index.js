@@ -2,6 +2,7 @@
 
 const _ = require("lodash");
 const Class = require("class.extend");
+const extract = require('extract-zip');
 const fs = require("fs");
 const glob = require("glob");
 const path = require("path");
