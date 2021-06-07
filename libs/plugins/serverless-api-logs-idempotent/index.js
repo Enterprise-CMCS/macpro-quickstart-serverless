@@ -9,9 +9,6 @@ module.exports = Class.extend({
     this._opts = opts;
 
     this.hooks = {
-      "webpack:compile:compile": this.helpApiLoggingEnablementBeIdempotent.bind(
-        this
-      ),
       "before:deploy:deploy": this.helpApiLoggingEnablementBeIdempotent.bind(
         this
       ),
