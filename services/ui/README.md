@@ -6,7 +6,7 @@ The following values are used to configure the deployment of this service (see b
 | Parameter | Required? | Accepts a default? | Accepts a branch override? | Purpose |
 | --- | :---: | :---: | :---: | --- |
 | .../iam/path | N | Y | Y | Specifies the [IAM Path](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-friendly-names) at which all IAM objects should be created. The default value is "/". The path variable in IAM is used for grouping related users and groups in a unique namespace, usually for organizational purposes.|
-| .../iam/permissionsBoundaryPolicy | N | Y | Y | Specifies the [IAM Permissions Boundary](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html) that should be attached to all IAM objects. A permissions boundary is an advanced feature for using a managed policy to set the maximum permissions that an identity-based policy can grant to an IAM entity.|
+| .../iam/permissionsBoundaryPolicy | N | Y | Y | Specifies the [IAM Permissions Boundary](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html) that should be attached to all IAM objects. A permissions boundary is an advanced feature for using a managed policy to set the maximum permissions that an identity-based policy can grant to an IAM entity. If set, this parmeter should contain the full ARN to the policy.|
 | route53HostedZoneId | N | Y | Y | This is the Id of the Amazon route53 hosted zone.|
 | cloudfrontCertificateArn | N | Y | Y | The arn for the clodfront distribution certificate.|
 | cloudfrontDomainName | N | N | Y | The domain name for the cloudfront distribution.|
