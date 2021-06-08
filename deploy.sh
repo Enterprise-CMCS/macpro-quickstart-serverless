@@ -11,7 +11,6 @@ services=(
   'stream-functions'
   'ui'
   'ui-auth'
-  'ui-waf-log-assoc'
   'ui-src'
 )
 
