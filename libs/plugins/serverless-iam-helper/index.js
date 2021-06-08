@@ -6,29 +6,13 @@ class ServerlessPlugin {
     this.serverless = serverless;
     this.options = options;
     this.hooks = {
-      "before:deploy:deploy": this.addPathAndPermissionsBoundary.bind(this),
+      "before:deploy:deploy": this.iamPathAndPermissionsBoundaryHelp.bind(this),
     };
   }
 
-  addPathAndPermissionsBoundary() {
-    const iamPath = iamPathSpecified.call(this);
-    if (iamPath) {
-      setPropertyForTypesIfNotSet.call(
-        this,
-        ["AWS::IAM::Role", "AWS::IAM::Policy"],
-        "Path",
-        iamPath
-      );
-    }
-    const iamPermissionBoundary = iamPermissionsBoundarySpecified.call(this);
-    if (iamPermissionBoundary) {
-      setPropertyForTypesIfNotSet.call(
-        this,
-        ["AWS::IAM::Role"],
-        "PermissionsBoundary",
-        iamPermissionBoundary
-      );
-    }
+  iamPathAndPermissionsBoundaryHelp() {
+    addRoleForApiLogging.call(this);
+    addProperties.call(this);
   }
 }
 
@@ -42,6 +26,64 @@ function setPropertyForTypesIfNotSet(types, property, value) {
       }
     }
   });
+}
+
+function addRoleForApiLogging() {
+  if (apiLoggingEnabled.call(this)) {
+    const iamPath = iamPathSpecified.call(this);
+    const iamPermissionBoundary = iamPermissionsBoundarySpecified.call(this);
+    var cloudwatchRoleForApiLogging = {
+      Type: "AWS::IAM::Role",
+      Properties: {
+        AssumeRolePolicyDocument: {
+          Version: "2012-10-17",
+          Statement: [
+            {
+              Effect: "Allow",
+              Principal: {
+                Service: "apigateway.amazonaws.com",
+              },
+              Action: "sts:AssumeRole",
+            },
+          ],
+        },
+        ManagedPolicyArns: [
+          "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
+        ],
+      },
+    };
+    const template = this.serverless.service.provider
+      .compiledCloudFormationTemplate;
+    template.Resources.CloudWatchRoleForApiGatewayLogging = cloudwatchRoleForApiLogging;
+    template.Resources.CustomApiGatewayAccountCloudWatchRole.Properties.RoleArn = {
+      "Fn::GetAtt": ["CloudWatchRoleForApiGatewayLogging", "Arn"],
+    };
+  }
+}
+
+function addProperties() {
+  const iamPath = iamPathSpecified.call(this);
+  if (iamPath) {
+    setPropertyForTypesIfNotSet.call(
+      this,
+      ["AWS::IAM::Role", "AWS::IAM::Policy"],
+      "Path",
+      iamPath
+    );
+  }
+  const iamPermissionBoundary = iamPermissionsBoundarySpecified.call(this);
+  if (iamPermissionBoundary) {
+    setPropertyForTypesIfNotSet.call(
+      this,
+      ["AWS::IAM::Role"],
+      "PermissionsBoundary",
+      iamPermissionBoundary
+    );
+  }
+}
+
+function apiLoggingEnabled() {
+  return _.get(this.serverless, "service.provider.logs.restApi");
 }
 
 function iamPathSpecified() {
