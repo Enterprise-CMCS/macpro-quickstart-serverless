@@ -16,18 +16,6 @@ class ServerlessPlugin {
   }
 }
 
-function setPropertyForTypesIfNotSet(types, property, value) {
-  const template = this.serverless.service.provider
-    .compiledCloudFormationTemplate;
-  Object.keys(template.Resources).forEach(function (key) {
-    if (types.includes(template.Resources[key]["Type"])) {
-      if (!template.Resources[key]["Properties"][property]) {
-        template.Resources[key]["Properties"][property] = value;
-      }
-    }
-  });
-}
-
 function addRoleForApiLogging() {
   if (apiLoggingEnabled.call(this)) {
     const iamPath = iamPathSpecified.call(this);
@@ -66,7 +54,7 @@ function addProperties() {
   if (iamPath) {
     setPropertyForTypesIfNotSet.call(
       this,
-      ["AWS::IAM::Role", "AWS::IAM::Policy"],
+      ["AWS::IAM::Role"],
       "Path",
       iamPath
     );
@@ -80,6 +68,18 @@ function addProperties() {
       iamPermissionBoundary
     );
   }
+}
+
+function setPropertyForTypesIfNotSet(types, property, value) {
+  const template = this.serverless.service.provider
+    .compiledCloudFormationTemplate;
+  Object.keys(template.Resources).forEach(function (key) {
+    if (types.includes(template.Resources[key]["Type"])) {
+      if (!template.Resources[key]["Properties"][property]) {
+        template.Resources[key]["Properties"][property] = value;
+      }
+    }
+  });
 }
 
 function apiLoggingEnabled() {
