@@ -25,6 +25,7 @@ plugins:
   - serverless-plugin-scripts
   - serverless-bundle
   - serverless-idempotency-helper
+  - serverless-iam-helper
 
 custom:
   stage: ${opt:stage, self:provider.stage}
