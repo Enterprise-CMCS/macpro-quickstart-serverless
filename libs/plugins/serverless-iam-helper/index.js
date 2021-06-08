@@ -52,12 +52,7 @@ function addRoleForApiLogging() {
 function addProperties() {
   const iamPath = iamPathSpecified.call(this);
   if (iamPath) {
-    setPropertyForTypesIfNotSet.call(
-      this,
-      ["AWS::IAM::Role"],
-      "Path",
-      iamPath
-    );
+    setPropertyForTypesIfNotSet.call(this, ["AWS::IAM::Role"], "Path", iamPath);
   }
   const iamPermissionBoundary = iamPermissionsBoundarySpecified.call(this);
   if (iamPermissionBoundary) {
