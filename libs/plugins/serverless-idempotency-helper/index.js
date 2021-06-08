@@ -23,7 +23,10 @@ class ServerlessPlugin {
 
     // Repack all functions that are set to deploy
     const functionArchives = getFunctionArchives.call(this);
-    await repackFunctions.call(this, functionArchives);
+    if (functionArchives.length != 0) {
+      this.serverless.cli.log("Repacking functions for speed...");
+      await repackFunctions.call(this, functionArchives);
+    }
   }
 
   async repackAnyOtherZips() {
@@ -39,9 +42,12 @@ class ServerlessPlugin {
       silent: true,
       follow: true,
     });
-    zips = zips.filter((el) => !functionArchives.includes(el));
 
-    await repackFunctions.call(this, zips);
+    zips = zips.filter((el) => !functionArchives.includes(el));
+    if (zips.length != 0) {
+        this.serverless.cli.log("Repacking custom functions for speed...");
+        await repackFunctions.call(this, zips);
+    }
   }
 }
 
@@ -74,8 +80,6 @@ function getFunctionArchives() {
 }
 
 async function repackFunctions(archives) {
-  this.serverless.cli.log("Repacking functions for speed...");
-
   // Tell the zip command to forego creating directory entries in the archive, via the ZIPOPT variable.
   // See:  https://linux.die.net/man/1/zip
   process.env.ZIPOPT = "-D";
