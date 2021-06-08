@@ -231,14 +231,8 @@ resources:
                 - "s3:ListBucketMultipartUploads"
                 - "s3:PutObject"
               Resource:
-                - !Join
-                  - ""
-                  - - "${self:custom.wafLoggingBucket}"
-                    - /*
-                - !Join
-                  - ""
-                  - - "${self:custom.wafLoggingBucket}"
-                    - /*
+                - !Sub ${WaflogsUploadBucket.Arn}/*
+                - !Sub ${WaflogsUploadBucket.Arn}/*
         Roles:
           - !Ref DeliveryRole
     ApplicationEndpointUrl:
