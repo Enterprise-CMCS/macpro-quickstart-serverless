@@ -60,8 +60,8 @@ class ServerlessPlugin {
     // Repack any/all custom functions for idempotent deployment.
     // This if isn't strictly needed, but it makes for better logging.
     if (zips.length != 0) {
-        this.serverless.cli.log("Repacking custom functions for speed...");
-        await repackFunctions.call(this, zips);
+      this.serverless.cli.log("Repacking custom functions for speed...");
+      await repackFunctions.call(this, zips);
     }
   }
 }
