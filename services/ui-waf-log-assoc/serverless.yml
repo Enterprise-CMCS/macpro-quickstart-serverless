@@ -22,7 +22,6 @@ custom:
       - impl
       - val
       - prod
-  iamPath: ${env:IAM_PATH, "/"}
   wafAclArn: ${cf:ui-${self:custom.stage}.CloudFrontWebAclArn}
   firehoseStreamArn: ${cf:ui-${self:custom.stage}.FirehoseArn}
   scripts:
