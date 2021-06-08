@@ -9324,6 +9324,9 @@ serverless-dotenv-plugin@^3.0.0:
     dotenv "^8.2.0"
     dotenv-expand "^5.1.0"
 
+serverless-iam-helper@./libs/plugins/serverless-iam-helper:
+  version "1.0.0"
+
 serverless-idempotency-helper@./libs/plugins/serverless-idempotency-helper:
   version "1.0.0"
   dependencies:

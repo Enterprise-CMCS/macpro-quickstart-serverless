@@ -14,69 +14,10 @@ class ServerlessPlugin {
     this.hooks = {
       "package:createDeploymentArtifacts": this.repackAllFunctions.bind(this),
       "package:compileEvents": this.repackAnyOtherZips.bind(this),
-      "before:deploy:deploy": this.helpProviderApiLoggingBeIdempotent.bind(
-        this
-      ),
+      // "before:deploy:deploy": this.helpProviderApiLoggingBeIdempotent.bind(
+      //   this
+      // ),
     };
-  }
-
-  helpProviderApiLoggingBeIdempotent() {
-    const template = this.serverless.service.provider
-      .compiledCloudFormationTemplate;
-    const providerConfig = this.serverless.service.provider;
-    var iamRolePath;
-    var iamRolePermissionsBoundary;
-    var cloudwatchRoleForApiGatewayConfig = {
-      Type: "AWS::IAM::Role",
-      Properties: {
-        AssumeRolePolicyDocument: {
-          Version: "2012-10-17",
-          Statement: [
-            {
-              Effect: "Allow",
-              Principal: {
-                Service: "apigateway.amazonaws.com",
-              },
-              Action: "sts:AssumeRole",
-            },
-          ],
-        },
-        ManagedPolicyArns: [
-          "arn:aws:iam::aws:policy/service-role/AmazonAPIGatewayPushToCloudWatchLogs",
-        ],
-      },
-    };
-
-    // If rest api logs are configured to be enabled...
-    if (providerConfig.logs && providerConfig.logs.restApi) {
-      // If a specific IAM path is set at the provider level, set iamRolePath
-      if (
-        providerConfig.iam &&
-        providerConfig.iam.role &&
-        providerConfig.iam.role.path
-      ) {
-        iamRolePath = providerConfig.iam.role.path;
-        template.Resources.IamRoleCustomResourcesLambdaExecution.Properties.Path = iamRolePath;
-        cloudwatchRoleForApiGatewayConfig.Properties.Path = iamRolePath;
-      }
-      // If a specific IAM perm boundary is set at the provider level, set iamRolePermissionsBoundary
-      if (
-        providerConfig.iam &&
-        providerConfig.iam.role &&
-        providerConfig.iam.role.permissionsBoundary
-      ) {
-        iamRolePermissionsBoundary =
-          providerConfig.iam.role.permissionsBoundary;
-        template.Resources.IamRoleCustomResourcesLambdaExecution.Properties.PermissionsBoundary = iamRolePermissionsBoundary;
-        cloudwatchRoleForApiGatewayConfig.Properties.PermissionsBoundary = iamRolePermissionsBoundary;
-      }
-      template.Resources.CloudWatchRoleForApiGW = cloudwatchRoleForApiGatewayConfig;
-      template.Resources.CustomApiGatewayAccountCloudWatchRole.Properties.RoleArn = {
-        "Fn::GetAtt": ["CloudWatchRoleForApiGW", "Arn"],
-      };
-      // console.log(JSON.stringify(template.Resources));
-      this.serverless.cli.log("Enabled logging for ApiGateway Stage");
-    }
   }
 
   async repackAllFunctions() {

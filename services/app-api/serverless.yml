@@ -15,6 +15,7 @@ plugins:
   - serverless-offline
   - serverless-stack-termination-protection
   - serverless-idempotency-helper
+  - serverless-iam-helper
 
 custom:
   stage: ${opt:stage, self:provider.stage}
