@@ -20,16 +20,17 @@ Notes on logic:
 
 ## Usage
 
+```
 ...
 
 plugins:
-
-- serverless-iam-helper
+  - serverless-iam-helper
 
 ...
 
 provider:
-iam:
-role:
-path: /my/custom/path
-permissionsBoundary: arn:aws:iam::000000000000:policy/my/custom-boundary-policy
+  iam:
+    role:
+      path: /my/custom/path
+        permissionsBoundary: arn:aws:iam::000000000000:policy/my/custom-boundary-policy
+```

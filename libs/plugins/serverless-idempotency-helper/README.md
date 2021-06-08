@@ -10,10 +10,11 @@ This plugin aims to make deployments more idempotent by addressing a few observe
 
 ## Usage
 
+```
 ...
 
 plugins:
-
-- serverless-idempotency-helper
+  - serverless-idempotency-helper
 
 ...
+```
