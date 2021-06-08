@@ -11,7 +11,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      SLS_DEPRECATION_DISABLE: '*' # Turn off deprecation warnings in the pipeline
+      SLS_DEPRECATION_DISABLE: "*" # Turn off deprecation warnings in the pipeline
     steps:
       - name: set branch_name
         run: |

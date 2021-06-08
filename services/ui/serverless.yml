@@ -28,7 +28,6 @@ custom:
   route53DomainName: ${ssm:/configuration/${self:custom.stage}/route53/domainName~true, ""}
   cloudfrontCertificateArn: ${ssm:/configuration/${self:custom.stage}/cloudfront/certificateArn~true, ssm:/configuration/default/cloudfront/certificateArn~true, ""}
   cloudfrontDomainName: ${ssm:/configuration/${self:custom.stage}/cloudfront/domainName~true, ""}
-  wafLoggingBucket: ${cf:ui-waflog-s3-bucket-${self:custom.stage}.WaflogsUploadBucketArn}
   iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
   iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
 
@@ -178,6 +177,10 @@ resources:
           Runtime: cloudfront-js-1.0
         Name: hsts-${self:custom.stage}
     ###############This code block enables logging on waf and sends all logs to s3.##################################
+    WaflogsUploadBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: !Sub ${AWS::AccountId}-${self:service}-${self:custom.stage}-waflogs
     Firehose:
       Type: AWS::KinesisFirehose::DeliveryStream
       Properties:
@@ -187,9 +190,7 @@ resources:
             - !Ref AWS::StackName
         ExtendedS3DestinationConfiguration:
           RoleARN: !GetAtt DeliveryRole.Arn
-          BucketARN: !Join
-            - ""
-            - - "${self:custom.wafLoggingBucket}"
+          BucketARN: !GetAtt WaflogsUploadBucket.Arn
           Prefix: AWSLogs/WAF/${self:custom.stage}/
           BufferingHints:
             IntervalInSeconds: 300
