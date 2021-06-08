@@ -12,7 +12,10 @@ class ServerlessPlugin {
     this.options = options;
 
     this.hooks = {
+      // This hook repacks all user defined functions; this happens after webpack, if used.
       "package:createDeploymentArtifacts": this.repackAllFunctions.bind(this),
+
+      // This hook repacks any other functions, such as a custom-resources function.
       "package:compileEvents": this.repackAnyOtherZips.bind(this),
     };
   }
@@ -21,8 +24,11 @@ class ServerlessPlugin {
     const serviceDir = this.serverless.serviceDir;
     const dotServerlessDir = `${serviceDir}/.serverless`;
 
-    // Repack all functions that are set to deploy
+    // Find all archives that belong to user defined functions
     const functionArchives = getFunctionArchives.call(this);
+
+    // Repack any/all user defined functions for idempotent deployment.
+    // This if isn't strictly needed, but it makes for better logging.
     if (functionArchives.length != 0) {
       this.serverless.cli.log("Repacking functions for speed...");
       await repackFunctions.call(this, functionArchives);
@@ -36,14 +42,23 @@ class ServerlessPlugin {
     // Some of these zips aren't created until this later lifecycle stage
     const serviceDir = this.serverless.serviceDir;
     const dotServerlessDir = `${serviceDir}/.serverless`;
+
+    // Find all archives that belong to user defined functions
     const functionArchives = getFunctionArchives.call(this);
+
+    // Find all archives in the .serverless directory.
     let zips = glob.sync(`${dotServerlessDir}/**/*.zip`, {
       dot: true,
       silent: true,
       follow: true,
     });
 
+    // Remove user defined function archives from the full list of archives, leaving
+    // zips equal to a list of non-user defined, or custom, resources.
     zips = zips.filter((el) => !functionArchives.includes(el));
+
+    // Repack any/all custom functions for idempotent deployment.
+    // This if isn't strictly needed, but it makes for better logging.
     if (zips.length != 0) {
         this.serverless.cli.log("Repacking custom functions for speed...");
         await repackFunctions.call(this, zips);
@@ -65,11 +80,13 @@ function getFunctionArchives() {
     ? [this.options.function]
     : this.serverless.service.getAllFunctions();
   if (isIndividialPackaging.call(this)) {
+    // Each function has an archive, since they were packed individually.
     functionNames.forEach((name) => {
       archives.push(`${dotServerlessDir}/${name}.zip`);
     });
     return archives;
   } else {
+    // There is only one archive for all functions.
     archives.push(
       `${dotServerlessDir}/${
         this.serverless.service.getServiceObject().name
