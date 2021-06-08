@@ -36,6 +36,9 @@ custom:
   tableArn: ${env:AMENDMENTS_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsTableArn}
   atomicCounterTableName: ${env:AMENDMENTS_COUNTER_TABLE_NAME, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableName}
   atomicCounterTableArn: ${env:AMENDMENTS_COUNTER_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableArn}
+  associateWaf:
+    name: ${self:service.name}-${self:custom.stage}-WebACLAssociation
+    version: V2
 
   warmup:
     enabled: true
@@ -89,10 +92,6 @@ provider:
   environment:
     tableName: ${self:custom.tableName}
     atomicCounterTableName: ${self:custom.atomicCounterTableName}
-
-associateWaf:
-  name: ${self:service.name}-${self:custom.stage}-WebACLAssociation
-  version: V2
 
 functions:
   create:
@@ -157,7 +156,7 @@ resources:
     ApiGwWebAcl:
       Type: AWS::WAFv2::WebACL
       Properties:
-        Name: ${self:custom.stage}-ApiGwWebAcl
+        Name: ${self:custom.associateWaf.name}
         DefaultAction:
           Block: {}
         Rules:
