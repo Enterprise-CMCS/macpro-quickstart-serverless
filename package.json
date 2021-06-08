@@ -36,7 +36,6 @@
     "yargs": "^16.1.1"
   },
   "dependencies": {
-    "serverless-deployment-bucket": "^1.5.1",
-    "serverless-s3-remover": "^0.6.0"
+    "serverless-deployment-bucket": "^1.5.1"
   }
 }
