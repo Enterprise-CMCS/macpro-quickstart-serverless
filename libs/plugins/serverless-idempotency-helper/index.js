@@ -14,9 +14,6 @@ class ServerlessPlugin {
     this.hooks = {
       "package:createDeploymentArtifacts": this.repackAllFunctions.bind(this),
       "package:compileEvents": this.repackAnyOtherZips.bind(this),
-      // "before:deploy:deploy": this.helpProviderApiLoggingBeIdempotent.bind(
-      //   this
-      // ),
     };
   }
 
