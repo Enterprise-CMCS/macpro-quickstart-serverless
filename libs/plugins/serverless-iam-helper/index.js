@@ -54,11 +54,11 @@ function addRoleForApiLogging() {
 function addProperties() {
   const iamPath = iamPathSpecified.call(this);
   if (iamPath) {
-    setPropertyForTypesIfNotSet.call(this, ["AWS::IAM::Role"], "Path", iamPath);
+    setPropertyForTypes.call(this, ["AWS::IAM::Role"], "Path", iamPath);
   }
   const iamPermissionBoundary = iamPermissionsBoundarySpecified.call(this);
   if (iamPermissionBoundary) {
-    setPropertyForTypesIfNotSet.call(
+    setPropertyForTypes.call(
       this,
       ["AWS::IAM::Role"],
       "PermissionsBoundary",
@@ -67,14 +67,12 @@ function addProperties() {
   }
 }
 
-function setPropertyForTypesIfNotSet(types, property, value) {
+function setPropertyForTypes(types, property, value) {
   const template =
     this.serverless.service.provider.compiledCloudFormationTemplate;
   Object.keys(template.Resources).forEach(function (key) {
     if (types.includes(template.Resources[key]["Type"])) {
-      if (!template.Resources[key]["Properties"][property]) {
-        template.Resources[key]["Properties"][property] = value;
-      }
+      template.Resources[key]["Properties"][property] = value;
     }
   });
 }
