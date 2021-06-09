@@ -31,8 +31,8 @@ Scenarios where this should help:
 Notes on logic:
 
 - This plugin hooks into before:deploy:deploy.
-- The provider.iam.role.path/permissionsBoundary configuration drives this plugin. If a value for either or both is set at the provider level, this plugin assumes you need to apply those paths/permissions boundary to all appropriate resources unless otherwise set.
-- When run, all resources of type AWS::IAM::Role are found and conditionally modified.
-- If provider.iam.role.path is specified and a role is discovered to not have a Properties.Path, Properties.Path is set for that role.
-- If provider.iam.role.permissionsBoundary is specified and a role is discovered to not have a Properties.PermissionsBoundary, Properties.PermissionsBoundary is set for that role.
-- Paths/PermissionsBoundarys already set on resources will not be overwritten by this plugin. So, if for some reason, a user wants to generate a new role in plain cloudformation at a different path than that specified in provider.iam.role.path, he may do so.
+- The provider.iam.role.path/permissionsBoundary configuration drives this plugin. If a value for either or both is set at the provider level, this plugin assumes you need to apply those paths/permissions boundary to all accepting resources.
+- When run, all resources of type AWS::IAM::Role are found.
+- If provider.iam.role.path is specified, the plugin makes sure the role's Properties.Path is set to provider.iam.role.path.
+- If provider.iam.role.permissionsBoundary is specified, the plugin makes sure the role's  Properties.PermissionsBoundary is set to provider.iam.role.permissionsBoundary.
+- Paths/PermissionsBoundarys already set on resources will be overwritten.  So if a user specifies a provider.iam.role.path to /my/path/one, and then in the same serverless.yml creates a role in cloudformation and attempts to manually set that role's path to /my/path/two... the provider config will win.  Originally, this plugin had not overwritten, to allow for users to specify different paths/permboundarys in the same serverless.yml.  However, some other plugins and workflows generate cloudformation resources with path set to the default, so there's no good way to differentiate between an incorrectly set path and a user's correctly set path (different than provider config).  This is seen as an edge case, however.  If a user wants to leverage the provider level iam path/permBoundary settings, the assumption is that all roles created in that service will use the provider config.  This plugin stands on that assumption, and is deemed fair.
