@@ -15,7 +15,7 @@ provider:
   region: us-east-1
 
   deploymentBucket:
-    name: ${file(/libs/AccountId.cjs):getAccountId}-${self:service}-${opt:stage, self:provider.stage}-deployment-bucket
+    name: ${file(libs/AccountId.cjs):getAccountId}-${self:service}-${opt:stage, self:provider.stage}-deployment-bucket
     maxPreviousDeploymentArtifacts: 1
     serverSideEncryption: AES256
 
