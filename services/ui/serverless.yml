@@ -36,7 +36,7 @@ custom:
   cloudfrontDomainName: ${ssm:/configuration/${self:custom.stage}/cloudfront/domainName~true, ""}
   iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
   iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
-  webAclName: ${self:service}-${self:custom.stage}-allow-usa-plus-territories
+  webAclName: ${self:service}-${self:custom.stage}-webacl
   firehoseStreamName: aws-waf-logs-${self:service}-${self:custom.stage}-firehose
   scripts:
     hooks:
@@ -99,7 +99,7 @@ resources:
         Rules:
           - Action:
               Allow: {}
-            Name: ${self:custom.stage}-allow-usa-plus-territories
+            Name: ${self:custom.webAclName}-allow-usa-plus-territories
             Priority: 0
             Statement:
               GeoMatchStatement:

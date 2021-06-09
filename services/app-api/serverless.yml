@@ -36,8 +36,9 @@ custom:
   tableArn: ${env:AMENDMENTS_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsTableArn}
   atomicCounterTableName: ${env:AMENDMENTS_COUNTER_TABLE_NAME, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableName}
   atomicCounterTableArn: ${env:AMENDMENTS_COUNTER_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableArn}
+  webAclName: ${self:service}-${self:custom.stage}-webacl
   associateWaf:
-    name: ${self:service.name}-${self:custom.stage}-WebACLAssociation
+    name: ${self:custom.webAclName}
     version: V2
 
   warmup:
@@ -156,13 +157,13 @@ resources:
     ApiGwWebAcl:
       Type: AWS::WAFv2::WebACL
       Properties:
-        Name: ${self:custom.associateWaf.name}
+        Name: ${self:custom.webAclName}
         DefaultAction:
           Block: {}
         Rules:
           - Action:
               Allow: {}
-            Name: ${self:custom.stage}-allow-usa-plus-territories
+            Name: ${self:custom.webAclName}-allow-usa-plus-territories
             Priority: 0
             Statement:
               GeoMatchStatement:
