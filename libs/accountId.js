@@ -1,6 +1,5 @@
-
-const config= {}
-config.accountId = function(context) {
+const config = {};
+config.accountId = function (context) {
   return context.providers.aws.getAccountId();
 };
 
