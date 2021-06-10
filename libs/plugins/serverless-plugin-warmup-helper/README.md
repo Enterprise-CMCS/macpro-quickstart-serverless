@@ -1,15 +1,17 @@
-# Serverless Plugin
+# Serverless Warmup Plugin Helper
 
-This plugin has been generated using the `plugin` template from the [Serverless Framework](https://www.serverless.com/).
+This plugin wraps the [severless-plugin-warmup](https://www.npmjs.com/package/serverless-plugin-warmup) to make it idempotent.
+There exists a small idempotency issue caused by the inclusion of a timestamp in the warmup function's source code.  I've opened a PR against serverless-plugin-warmup in the hopes to fix it upstream.  See https://github.com/juanjoDiaz/serverless-plugin-warmup/pull/271  If/when that PR is accepted, this plugin can be removed, and the serverless-plugin-warmup can be used directly.
 
-## Implementing your plugin
+Documentation here will be light, as I expect this wrapper is a stop gap.
 
-When developing your plugin, please refer to the following sources:
+## Usage
 
-- [Plugins Documentation](https://www.serverless.com/framework/docs/providers/aws/guide/plugins/)
-- [Blog - How to create serverless plugins - Part 1](https://serverless.com/blog/writing-serverless-plugins/)
-- [Blog - How to create serverless plugins - Part 2](https://serverless.com/blog/writing-serverless-plugins-2/)
+```
+...
 
-## Sharing your plugin
+plugins:
+  - serverless-plugin-warmup-helper
 
-After implementing your plugin, you might consider sharing it with a wider audience. You might do it by adding it to `Community Contributed Plugins` in official [plugins repository](https://github.com/serverless/plugins).
+...
+```
