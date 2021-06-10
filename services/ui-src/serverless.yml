@@ -75,3 +75,5 @@ custom:
         export LOCAL_LOGIN=false
         ./env.sh
         cp public/env-config.js build/env-config.js
+  deploymentBucket:
+    versioning: true

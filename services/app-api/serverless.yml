@@ -36,6 +36,8 @@ custom:
   tableArn: ${env:AMENDMENTS_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsTableArn}
   atomicCounterTableName: ${env:AMENDMENTS_COUNTER_TABLE_NAME, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableName}
   atomicCounterTableArn: ${env:AMENDMENTS_COUNTER_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableArn}
+  deploymentBucket:
+    versioning: true
 
   warmup:
     enabled: true

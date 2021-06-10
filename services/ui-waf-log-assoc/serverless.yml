@@ -37,3 +37,5 @@ custom:
         aws wafv2 put-logging-configuration \
           --logging-configuration ResourceArn=${self:custom.wafAclArn},LogDestinationConfigs=${self:custom.firehoseStreamArn} \
           --region ${self:provider.region}
+  deploymentBucket:
+    versioning: true

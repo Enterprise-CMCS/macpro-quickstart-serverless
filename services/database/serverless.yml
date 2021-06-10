@@ -28,6 +28,8 @@ custom:
       port: 8000
       inMemory: true
       migrate: true
+  deploymentBucket:
+    versioning: true
 
 provider:
   name: aws
