@@ -16,11 +16,6 @@
     "serverless-associate-waf": "^1.2.1"
   },
   "dependencies": {
-    "aws-sdk": "^2.788.0",
-    "serverless-enable-api-logs": "^2.0.0",
     "uuid": "^7.0.3"
-  },
-  "resolutions": {
-    "lodash": "~4.17.21"
   }
 }

@@ -14,7 +14,8 @@ plugins:
   - serverless-associate-waf
   - serverless-offline
   - serverless-stack-termination-protection
-  - serverless-enable-api-logs
+  - serverless-idempotency-helper
+  - serverless-iam-helper
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -61,10 +62,12 @@ provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
+  logs:
+    restApi: true
   iam:
     role:
       path: ${self:custom.iamPath}
-      permissionsBoundary: !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
+      permissionsBoundary: ${self:custom.iamPermissionsBoundaryPolicy}
       statements:
         - Effect: "Allow"
           Action:

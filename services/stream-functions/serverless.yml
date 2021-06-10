@@ -10,6 +10,7 @@ plugins:
   - serverless-bundle
   - serverless-dotenv-plugin
   - serverless-stack-termination-protection
+  - serverless-idempotency-helper
 
 provider:
   name: aws
@@ -18,7 +19,7 @@ provider:
   iam:
     role:
       path: ${self:custom.iamPath}
-      permissionsBoundary: !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
+      permissionsBoundary: ${self:custom.iamPermissionsBoundaryPolicy}
       statements:
         - Effect: "Allow"
           Action:
