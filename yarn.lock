@@ -9326,6 +9326,8 @@ serverless-dotenv-plugin@^3.0.0:
 
 serverless-iam-helper@./libs/plugins/serverless-iam-helper:
   version "1.0.0"
+  dependencies:
+    lodash "^4.17.21"
 
 serverless-idempotency-helper@./libs/plugins/serverless-idempotency-helper:
   version "1.0.0"
@@ -9374,12 +9376,15 @@ serverless-plugin-scripts@^1.0.2:
   resolved "https://registry.yarnpkg.com/serverless-plugin-scripts/-/serverless-plugin-scripts-1.0.2.tgz#21808c3cfd0a1a84e48c0660b0f6f370b5665486"
   integrity sha1-IYCMPP0KGoTkjAZgsPbzcLVmVIY=
 
-serverless-plugin-warmup@^4.9.0:
-  version "4.9.0"
-  resolved "https://registry.yarnpkg.com/serverless-plugin-warmup/-/serverless-plugin-warmup-4.9.0.tgz#4617a10e2b95d166647abab557b55aea9e5ae0ef"
-  integrity sha512-o6u0Wovyjm1tJNsa38oHOKEjmjBdhie8sCIlCCUAtHZza7L7y9WgtHTFqK6QGTl7O6sbw98vB8z4pNsSQGH6YA==
+serverless-plugin-warmup-helper@./libs/plugins/serverless-plugin-warmup-helper:
+  version "1.0.0"
   dependencies:
-    fs-extra "^9.0.0"
+    serverless-plugin-warmup "^5.2.3"
+
+serverless-plugin-warmup@^5.2.3:
+  version "5.2.3"
+  resolved "https://registry.yarnpkg.com/serverless-plugin-warmup/-/serverless-plugin-warmup-5.2.3.tgz#516c50d9859fb0d880c7b1215451ccbee499a8d2"
+  integrity sha512-azuznNNpakupdmUle8OyPhmRDEb+EbZu8TjFKf6cppd3yU96qFy98LRxS3jLryMz7E1HhimY73leNnFS0GYN8g==
 
 serverless-stack-termination-protection@^1.0.4:
   version "1.0.4"

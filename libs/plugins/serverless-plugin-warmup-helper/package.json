@@ -1,0 +1,20 @@
+{
+  "name": "serverless-plugin-warmup-helper",
+  "version": "1.0.0",
+  "description": "Serverless plugin to wrap serverless-plugin-warmup, pending acceptance of https://github.com/juanjoDiaz/serverless-plugin-warmup/pull/271",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "serverless-plugin-warmup": "^5.2.3"
+  },
+  "devDependencies": {},
+  "peerDependencies": {
+    "serverless": "2.x"
+  },
+  "engines": {
+    "node": ">=10.0"
+  },
+  "license": "MIT"
+}
