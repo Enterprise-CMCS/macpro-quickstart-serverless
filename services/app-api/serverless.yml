@@ -69,7 +69,7 @@ provider:
     tableName: ${self:custom.tableName}
     atomicCounterTableName: ${self:custom.atomicCounterTableName}
   deploymentBucket:
-    name: ${file(./../../libs/accountId.js):accountId}-${self:service}-${opt:stage, self:provider.stage}-deployment-bucket
+    name: ${file(./../../libs/accountId.js):accountId}-${self:service}-${self:custom.stage}-deployment-bucket
     maxPreviousDeploymentArtifacts: 1
     serverSideEncryption: AES256
 

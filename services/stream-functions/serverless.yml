@@ -17,7 +17,7 @@ provider:
   runtime: nodejs12.x
   region: us-east-1
   deploymentBucket:
-    name: ${file(./../../libs/accountId.js):accountId}-${self:service}-${opt:stage, self:provider.stage}-deployment-bucket
+    name: ${file(./../../libs/accountId.js):accountId}-${self:service}-${self:custom.stage}-deployment-bucket
     maxPreviousDeploymentArtifacts: 1
     serverSideEncryption: AES256
 
@@ -41,7 +41,7 @@ custom:
   reviewerEmailAddress: ${ssm:/configuration/${self:custom.stage}/reviewerEmailAddress~true, ssm:/configuration/default/reviewerEmailAddress~true, "reviewteam@example.com"}
   deploymentBucket:
     versioning: true
-    
+
 functions:
   emailSubmitter:
     handler: handlers/emailSubmitter.handler
