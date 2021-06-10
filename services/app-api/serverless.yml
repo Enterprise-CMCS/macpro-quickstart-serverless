@@ -9,7 +9,7 @@ package:
 plugins:
   - serverless-bundle
   - serverless-dotenv-plugin
-  - serverless-plugin-warmup
+  - serverless-plugin-warmup-helper
   - serverless-plugin-scripts
   - serverless-associate-waf
   - serverless-offline
@@ -36,27 +36,16 @@ custom:
   tableArn: ${env:AMENDMENTS_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsTableArn}
   atomicCounterTableName: ${env:AMENDMENTS_COUNTER_TABLE_NAME, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableName}
   atomicCounterTableArn: ${env:AMENDMENTS_COUNTER_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableArn}
-
+  webAclName: ${self:service}-${self:custom.stage}-webacl
+  associateWaf:
+    name: ${self:custom.webAclName}
+    version: V2
   warmup:
-    enabled: true
-    vpc: false
-    events:
-      - schedule: rate(${ssm:/configuration/${self:custom.stage}/warmup/schedule~true, ssm:/configuration/default/warmup/schedule~true, "4 minutes"})
-    timeout: 20
-    prewarm: true
-    concurrency: ${ssm:/configuration/${self:custom.stage}/warmup/concurrency~true, ssm:/configuration/default/warmup/concurrency~true, 5}
-    folderName: node_modules/serverless-bundle/src/_warmup
-    cleanFolder: false
-  scripts:
-    hooks:
-      package:setupProviderConfiguration: |
-        # Remove the timestamp line from the warmup handler so a new function is uploaded
-        #   only if a configuration has truly changed.
-        set -e
-        if [ -d "node_modules/serverless-bundle/src/_warmup" ]; then
-          cd node_modules/serverless-bundle/src/_warmup
-          sed '/Generated/d' index.js > index.js.sub && mv -f index.js.sub index.js
-        fi
+    default:
+      enabled: true
+      events:
+        - schedule: rate(${ssm:/configuration/${self:custom.stage}/warmup/schedule~true, ssm:/configuration/default/warmup/schedule~true, "4 minutes"})
+      concurrency: ${ssm:/configuration/${self:custom.stage}/warmup/concurrency~true, ssm:/configuration/default/warmup/concurrency~true, 5}
 
 provider:
   name: aws
@@ -81,11 +70,6 @@ provider:
           Resource:
             - ${self:custom.tableArn}
             - ${self:custom.atomicCounterTableArn}
-        - Effect: "Allow" #Warmup permissions
-          Action:
-            - lambda:InvokeFunction
-          Resource:
-            - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:service}-${opt:stage, self:provider.stage}-*
   environment:
     tableName: ${self:custom.tableName}
     atomicCounterTableName: ${self:custom.atomicCounterTableName}
