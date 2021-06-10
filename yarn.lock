@@ -9324,10 +9324,12 @@ serverless-dotenv-plugin@^3.0.0:
     dotenv "^8.2.0"
     dotenv-expand "^5.1.0"
 
-serverless-iam-helper@./libs/plugins/serverless-iam-helper:
+serverless-iam-helper@./plugins/serverless-iam-helper:
   version "1.0.0"
+  dependencies:
+    lodash "^4.17.21"
 
-serverless-idempotency-helper@./libs/plugins/serverless-idempotency-helper:
+serverless-idempotency-helper@./plugins/serverless-idempotency-helper:
   version "1.0.0"
   dependencies:
     bestzip "^2.2.0"
