@@ -15,6 +15,7 @@ plugins:
   - serverless-offline
   - serverless-stack-termination-protection
   - serverless-enable-api-logs
+  - serverless-deployment-bucket
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -65,6 +66,10 @@ provider:
   environment:
     tableName: ${self:custom.tableName}
     atomicCounterTableName: ${self:custom.atomicCounterTableName}
+  deploymentBucket:
+    name: ${file(./../../libs/accountId.js):accountId}-${self:service}-${opt:stage, self:provider.stage}-deployment-bucket
+    maxPreviousDeploymentArtifacts: 1
+    serverSideEncryption: AES256
 
 associateWaf:
   name: ${self:service.name}-${self:custom.stage}-WebACLAssociation

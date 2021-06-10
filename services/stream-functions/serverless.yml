@@ -10,11 +10,16 @@ plugins:
   - serverless-bundle
   - serverless-dotenv-plugin
   - serverless-stack-termination-protection
+  - serverless-deployment-bucket
 
 provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
+  deploymentBucket:
+    name: ${file(./../../libs/accountId.js):accountId}-${self:service}-${opt:stage, self:provider.stage}-deployment-bucket
+    maxPreviousDeploymentArtifacts: 1
+    serverSideEncryption: AES256
 
 custom:
   stage: ${opt:stage, self:provider.stage}
