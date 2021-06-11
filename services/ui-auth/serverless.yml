@@ -10,10 +10,6 @@ provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
-  deploymentBucket:
-    name: ${file(./../../libs/accountId.js):accountId}-${self:service}-${self:custom.stage}-deployment-bucket
-    maxPreviousDeploymentArtifacts: 1
-    serverSideEncryption: AES256
   iam:
     role:
       path: ${self:custom.iamPath}
@@ -30,7 +26,6 @@ plugins:
   - serverless-bundle
   - serverless-idempotency-helper
   - serverless-iam-helper
-  - serverless-deployment-bucket
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -61,8 +56,6 @@ custom:
         then
           serverless invoke --stage ${self:custom.stage} --function bootstrapUsers
         fi
-  deploymentBucket:
-    versioning: true
 
 functions:
   bootstrapUsers:

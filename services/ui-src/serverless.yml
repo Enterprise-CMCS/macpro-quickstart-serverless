@@ -7,16 +7,11 @@ plugins:
   - serverless-s3-sync
   - serverless-cloudfront-invalidate
   - serverless-stack-termination-protection
-  - serverless-deployment-bucket
 
 provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
-  deploymentBucket:
-    name: ${file(./../../libs/accountId.js):accountId}-${self:service}-${self:custom.stage}-deployment-bucket
-    maxPreviousDeploymentArtifacts: 1
-    serverSideEncryption: AES256
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -43,8 +38,6 @@ custom:
   ui_s3_bucket_name: ${cf:ui-${self:custom.stage}.S3BucketName}
   ui_cloudfront_distribution_id: ${cf:ui-${self:custom.stage}.CloudFrontDistributionId}
   application_endpoint_url: ${cf:ui-${self:custom.stage}.ApplicationEndpointUrl}
-  deploymentBucket:
-    versioning: true
   s3Sync:
     - bucketName: ${self:custom.ui_s3_bucket_name}
       localDir: ./build
@@ -77,13 +70,3 @@ custom:
         export LOCAL_LOGIN=false
         ./env.sh
         cp public/env-config.js build/env-config.js
-
-# We must have at least one resource defined for our CloudFormation template to be valid.
-# This resource will never be created.
-resources:
-  Conditions:
-    HasNot: !Equals ["true", "false"]
-  Resources:
-    NullResource:
-      Type: "Custom::NullResource"
-      Condition: HasNot
