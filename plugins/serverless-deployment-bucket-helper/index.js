@@ -1,13 +1,5 @@
 "use strict";
-const get = (obj, path, defaultValue) => {
-  return path
-    .split(".")
-    .filter(Boolean)
-    .every((step) => !(step && !(obj = obj[step])))
-    ? obj
-    : defaultValue;
-};
-const util = require("util");
+
 class ServerlessPlugin {
   constructor(serverless, options) {
     this.serverless = serverless;
