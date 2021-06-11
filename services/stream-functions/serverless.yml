@@ -11,11 +11,16 @@ plugins:
   - serverless-dotenv-plugin
   - serverless-stack-termination-protection
   - serverless-idempotency-helper
+  - serverless-deployment-bucket
 
 provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
+  deploymentBucket:
+    name: ${file(./../../libs/accountId.js):accountId}-${self:service}-${self:custom.stage}-deployment-bucket
+    maxPreviousDeploymentArtifacts: 1
+    serverSideEncryption: AES256
   iam:
     role:
       path: ${self:custom.iamPath}
@@ -52,6 +57,8 @@ custom:
   tableStreamArn: ${cf:database-${self:custom.stage}.AmendmentsTableStreamArn}
   sesSourceEmailAddress: ${ssm:/configuration/${self:custom.stage}/sesSourceEmailAddress~true, ssm:/configuration/default/sesSourceEmailAddress~true, "admin@example.com"}
   reviewerEmailAddress: ${ssm:/configuration/${self:custom.stage}/reviewerEmailAddress~true, ssm:/configuration/default/reviewerEmailAddress~true, "reviewteam@example.com"}
+  deploymentBucket:
+    versioning: true
 
 functions:
   emailSubmitter:
