@@ -14,7 +14,8 @@ plugins:
   - serverless-associate-waf
   - serverless-offline
   - serverless-stack-termination-protection
-  - serverless-enable-api-logs
+  - serverless-idempotency-helper
+  - serverless-iam-helper
   - serverless-deployment-bucket
 
 custom:
@@ -41,7 +42,6 @@ custom:
 
   warmup:
     enabled: true
-    role: LambdaWarmupRole
     vpc: false
     events:
       - schedule: rate(${ssm:/configuration/${self:custom.stage}/warmup/schedule~true, ssm:/configuration/default/warmup/schedule~true, "4 minutes"})
@@ -65,6 +65,30 @@ provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
+  logs:
+    restApi: true
+  iam:
+    role:
+      path: ${self:custom.iamPath}
+      permissionsBoundary: ${self:custom.iamPermissionsBoundaryPolicy}
+      statements:
+        - Effect: "Allow"
+          Action:
+            - dynamodb:DescribeTable
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - ${self:custom.tableArn}
+            - ${self:custom.atomicCounterTableArn}
+        - Effect: "Allow" #Warmup permissions
+          Action:
+            - lambda:InvokeFunction
+          Resource:
+            - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${self:service}-${opt:stage, self:provider.stage}-*
   environment:
     tableName: ${self:custom.tableName}
     atomicCounterTableName: ${self:custom.atomicCounterTableName}
@@ -80,7 +104,6 @@ associateWaf:
 functions:
   create:
     handler: handlers/create.main
-    role: LambdaApiRole
     events:
       - http:
           path: amendments
@@ -89,7 +112,6 @@ functions:
           authorizer: aws_iam
   get:
     handler: handlers/get.main
-    role: LambdaApiRole
     events:
       - http:
           path: amendments/{id}
@@ -98,7 +120,6 @@ functions:
           authorizer: aws_iam
   list:
     handler: handlers/list.main
-    role: LambdaApiRole
     events:
       - http:
           path: amendments
@@ -107,7 +128,6 @@ functions:
           authorizer: aws_iam
   update:
     handler: handlers/update.main
-    role: LambdaApiRole
     events:
       - http:
           path: amendments/{id}
@@ -116,7 +136,6 @@ functions:
           authorizer: aws_iam
   delete:
     handler: handlers/delete.main
-    role: LambdaApiRole
     events:
       - http:
           path: amendments/{id}
@@ -125,90 +144,7 @@ functions:
           authorizer: aws_iam
 
 resources:
-  Conditions:
-    CreatePermissionsBoundary:
-      Fn::Not:
-        - Fn::Equals:
-            - ""
-            - ${self:custom.iamPermissionsBoundaryPolicy}
   Resources:
-    LambdaApiRole: # Why isn't this with the function as an iamRoleStatements?  https://github.com/serverless/serverless/issues/6485
-      Type: "AWS::IAM::Role"
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: "Allow"
-              Principal:
-                Service: "lambda.amazonaws.com"
-              Action: "sts:AssumeRole"
-        Path: ${self:custom.iamPath}
-        PermissionsBoundary:
-          Fn::If:
-            - CreatePermissionsBoundary
-            - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
-            - !Ref AWS::NoValue
-        ManagedPolicyArns:
-          - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
-        Policies:
-          - PolicyName: "LambdaApiRolePolicy"
-            PolicyDocument:
-              Version: "2012-10-17"
-              Statement:
-                - Effect: "Allow"
-                  Action:
-                    - logs:CreateLogGroup
-                    - logs:CreateLogStream
-                    - logs:PutLogEvents
-                  Resource: "arn:aws:logs:*:*:*"
-                - Effect: "Allow"
-                  Action:
-                    - dynamodb:DescribeTable
-                    - dynamodb:Query
-                    - dynamodb:Scan
-                    - dynamodb:GetItem
-                    - dynamodb:PutItem
-                    - dynamodb:UpdateItem
-                    - dynamodb:DeleteItem
-                  Resource:
-                    - ${self:custom.tableArn}
-                    - ${self:custom.atomicCounterTableArn}
-                - Effect: "Allow"
-                  Action:
-                    - logs:CreateLogStream
-                    - logs:CreateLogGroup
-                  Resource: !Sub /arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiGatewayRestApi}
-    LambdaWarmupRole:
-      Type: "AWS::IAM::Role"
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: "Allow"
-              Principal:
-                Service: "lambda.amazonaws.com"
-              Action: "sts:AssumeRole"
-        Path: ${self:custom.iamPath}
-        PermissionsBoundary:
-          Fn::If:
-            - CreatePermissionsBoundary
-            - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
-            - !Ref AWS::NoValue
-        Policies:
-          - PolicyName: "Warmup"
-            PolicyDocument:
-              Version: "2012-10-17"
-              Statement:
-                - Effect: "Allow"
-                  Action:
-                    - logs:CreateLogGroup
-                    - logs:CreateLogStream
-                    - logs:PutLogEvents
-                  Resource: "arn:aws:logs:*:*:*"
-                - Effect: "Allow"
-                  Action:
-                    - lambda:InvokeFunction
-                  Resource: "*"
     GatewayResponseDefault4XX:
       Type: "AWS::ApiGateway::GatewayResponse"
       Properties:

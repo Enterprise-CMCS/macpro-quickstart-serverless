@@ -11,9 +11,14 @@ provider:
     name: ${file(./../../libs/accountId.js):accountId}-${self:service}-${self:custom.stage}-deployment-bucket
     maxPreviousDeploymentArtifacts: 1
     serverSideEncryption: AES256
+  iam:
+    role:
+      path: ${self:custom.iamPath}
+      permissionsBoundary: ${self:custom.iamPermissionsBoundaryPolicy}
 
 plugins:
   - serverless-stack-termination-protection
+  - serverless-iam-helper
   - serverless-deployment-bucket
 
 custom:
@@ -41,11 +46,6 @@ custom:
 
 resources:
   Conditions:
-    CreatePermissionsBoundary:
-      Fn::Not:
-        - Fn::Equals:
-            - ""
-            - ${self:custom.iamPermissionsBoundaryPolicy}
     CreateDnsRecord:
       Fn::And:
         - Fn::Not:
@@ -210,17 +210,6 @@ resources:
     DeliveryRole:
       Type: AWS::IAM::Role
       Properties:
-        Path: ${self:custom.iamPath}
-        PermissionsBoundary:
-          Fn::If:
-            - CreatePermissionsBoundary
-            - Fn::Join:
-                - ""
-                - - "arn:aws:iam::"
-                  - Ref: AWS::AccountId
-                  - ":policy"
-                  - '${self:custom.iamPermissionsBoundaryPolicy, ""}'
-            - Ref: AWS::NoValue
         AssumeRolePolicyDocument:
           Version: "2012-10-17"
           Statement:

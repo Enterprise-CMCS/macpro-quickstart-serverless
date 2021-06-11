@@ -27,7 +27,6 @@ custom:
       - impl
       - val
       - prod
-  iamPath: ${env:IAM_PATH, "/"}
   deploymentBucket:
     versioning: true
   wafAclArn: ${cf:ui-${self:custom.stage}.CloudFrontWebAclArn}
