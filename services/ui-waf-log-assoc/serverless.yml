@@ -3,12 +3,17 @@ service: ui-waf-log-assoc
 plugins:
   - serverless-plugin-scripts
   - serverless-stack-termination-protection
+  - serverless-deployment-bucket
 
 provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
   stage: dev
+  deploymentBucket:
+    name: ${file(./../../libs/accountId.js):accountId}-${self:service}-${self:custom.stage}-deployment-bucket
+    maxPreviousDeploymentArtifacts: 1
+    serverSideEncryption: AES256
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -22,6 +27,8 @@ custom:
       - impl
       - val
       - prod
+  deploymentBucket:
+    versioning: true
   wafAclArn: ${cf:ui-${self:custom.stage}.CloudFrontWebAclArn}
   firehoseStreamArn: ${cf:ui-${self:custom.stage}.FirehoseArn}
   scripts:
@@ -31,3 +38,13 @@ custom:
         aws wafv2 put-logging-configuration \
           --logging-configuration ResourceArn=${self:custom.wafAclArn},LogDestinationConfigs=${self:custom.firehoseStreamArn} \
           --region ${self:provider.region}
+
+# We must have at least one resource defined for our CloudFormation template to be valid.
+# This resource will never be created.
+resources:
+  Conditions:
+    HasNot: !Equals ["true", "false"]
+  Resources:
+    NullResource:
+      Type: "Custom::NullResource"
+      Condition: HasNot

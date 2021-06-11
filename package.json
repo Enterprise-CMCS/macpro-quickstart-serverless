@@ -1,6 +1,5 @@
 {
   "name": "macpro-quickstart-serverless",
-  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -28,6 +27,7 @@
     "dotenv": "^8.2.0",
     "serverless": "^2.43.1",
     "serverless-bundle": "^4.3.1",
+    "serverless-deployment-bucket": "^1.5.1",
     "serverless-dotenv-plugin": "^3.0.0",
     "serverless-iam-helper": "./plugins/serverless-iam-helper",
     "serverless-idempotency-helper": "./plugins/serverless-idempotency-helper",
