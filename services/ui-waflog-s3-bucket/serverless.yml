@@ -11,7 +11,7 @@ provider:
   runtime: nodejs12.x
   region: us-east-1
   deploymentBucket:
-    name: ${file(./../../libs/accountId.js):accountId}-${self:service}-${self:custom.stage}-deployment-bucket
+    name: ${file(./../../libs/accountId.js):accountId}-sdb-${self:service}-${self:custom.stage}
     maxPreviousDeploymentArtifacts: 1
     serverSideEncryption: AES256
 
