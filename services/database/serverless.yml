@@ -5,7 +5,6 @@ frameworkVersion: "2"
 plugins:
   - serverless-dynamodb-local
   - serverless-stack-termination-protection
-  - serverless-deployment-bucket
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -28,17 +27,11 @@ custom:
       port: 8000
       inMemory: true
       migrate: true
-  deploymentBucket:
-    versioning: true
 
 provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
-  deploymentBucket:
-    name: ${file(./../../libs/accountId.js):accountId}-${self:service}-${self:custom.stage}-deployment-bucket
-    maxPreviousDeploymentArtifacts: 1
-    serverSideEncryption: AES256
 
 resources:
   Resources:
