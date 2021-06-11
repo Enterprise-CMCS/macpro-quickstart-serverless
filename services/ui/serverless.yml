@@ -64,8 +64,6 @@ resources:
     S3Bucket:
       Type: AWS::S3::Bucket
       Properties:
-        VersioningConfiguration:
-          Status: Enabled
         WebsiteConfiguration:
           IndexDocument: index.html
           ErrorDocument: index.html

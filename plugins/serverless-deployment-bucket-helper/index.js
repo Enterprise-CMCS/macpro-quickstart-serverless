@@ -1,28 +1,37 @@
 "use strict";
 
+const type = ["AWS::S3::Bucket"]
+const property = "VersioningConfiguration";
+const versioningConfiguration = {
+  Status: "Enabled"
+};
+
 class ServerlessPlugin {
   constructor(serverless, options) {
     this.serverless = serverless;
     this.options = options;
 
     this.hooks = {
-      "aws:deploy:deploy:createStack": this.enableVersioning.bind(this),
+      // This will ensure versioning is enabled for the serverless deployment bucket.
+      "aws:deploy:deploy:createStack": this.enableVersioningForBuckets.bind(this),
+
+      // This will ensure versioning is enabled for all buckets.
+      "before:deploy:deploy": this.enableVersioningForBuckets.bind(this),
     };
   }
-
-  enableVersioning() {
-    this.serverless.cli.log(
-      "Enabling versioning for ServerlessDeploymentBucket..."
-    );
-    const template =
-      this.serverless.service.provider.compiledCloudFormationTemplate;
-    if (template.Resources.ServerlessDeploymentBucket) {
-      template.Resources.ServerlessDeploymentBucket.Properties.VersioningConfiguration =
-        {
-          Status: "Enabled",
-        };
-    }
+  enableVersioningForBuckets(){
+    setPropertyForTypes.call(this, type, property, versioningConfiguration);
   }
+}
+
+function setPropertyForTypes(types, property, value) {
+  const template =
+    this.serverless.service.provider.compiledCloudFormationTemplate;
+  Object.keys(template.Resources).forEach(function (key) {
+    if (types.includes(template.Resources[key]["Type"])) {
+      template.Resources[key]["Properties"][property] = value;
+    }
+  });
 }
 
 module.exports = ServerlessPlugin;
