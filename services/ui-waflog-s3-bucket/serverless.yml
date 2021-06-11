@@ -27,7 +27,6 @@ custom:
       - impl
       - val
       - prod
-
   deploymentBucket:
     versioning: true
 

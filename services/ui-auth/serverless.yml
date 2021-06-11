@@ -50,7 +50,6 @@ custom:
         then
           serverless invoke --stage ${self:custom.stage} --function bootstrapUsers
         fi
-
   deploymentBucket:
     versioning: true
 
