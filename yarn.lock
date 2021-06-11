@@ -9383,6 +9383,9 @@ serverless-plugin-warmup@^4.9.0:
   dependencies:
     fs-extra "^9.0.0"
 
+serverless-s3-bucket-helper@./plugins/serverless-s3-bucket-helper:
+  version "1.0.0"
+
 serverless-stack-termination-protection@^1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/serverless-stack-termination-protection/-/serverless-stack-termination-protection-1.0.4.tgz#e0430108cfc8f4d72a63138ef5781c6fe9707868"

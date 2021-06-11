@@ -3,6 +3,7 @@ service: ui-waf-log-assoc
 plugins:
   - serverless-plugin-scripts
   - serverless-stack-termination-protection
+  - serverless-s3-bucket-helper
 
 provider:
   name: aws
