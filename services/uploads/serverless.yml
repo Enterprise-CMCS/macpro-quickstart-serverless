@@ -107,6 +107,8 @@ resources:
           ServerSideEncryptionConfiguration:
             - ServerSideEncryptionByDefault:
                 SSEAlgorithm: AES256
+        VersioningConfiguration:
+          Status: Enabled
         CorsConfiguration: # Set the CORS policy
           CorsRules:
             - AllowedOrigins:
