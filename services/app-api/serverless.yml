@@ -39,7 +39,8 @@ custom:
   atomicCounterTableArn: ${env:AMENDMENTS_COUNTER_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableArn}
   deploymentBucket:
     versioning: true
-
+    tags:
+      STAGE: ${self:custom.stage}
   warmup:
     enabled: true
     vpc: false

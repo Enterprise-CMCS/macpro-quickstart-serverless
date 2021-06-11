@@ -17,6 +17,8 @@ provider:
     name: ${file(./../../libs/accountId.js):accountId}-sdb-${self:service}-${self:custom.stage}
     maxPreviousDeploymentArtifacts: 1
     serverSideEncryption: AES256
+    tags:
+      STAGE: ${self:custom.stage}
 
 custom:
   stage: ${opt:stage, self:provider.stage}
