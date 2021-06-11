@@ -10,7 +10,7 @@ Currently, it enables versioning.
 ...
 
 plugins:
-  - serverless-enable-bucket-versioning
+  - serverless-s3-bucket-helper
 
 ...
 
