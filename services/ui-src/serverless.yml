@@ -7,7 +7,7 @@ plugins:
   - serverless-s3-sync
   - serverless-cloudfront-invalidate
   - serverless-stack-termination-protection
-  - serverless-deployment-bucket-helper
+  - serverless-s3-bucket-helper
 
 provider:
   name: aws

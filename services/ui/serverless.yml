@@ -15,7 +15,7 @@ provider:
 plugins:
   - serverless-stack-termination-protection
   - serverless-iam-helper
-  - serverless-deployment-bucket-helper
+  - serverless-s3-bucket-helper
 
 custom:
   stage: ${opt:stage, self:provider.stage}

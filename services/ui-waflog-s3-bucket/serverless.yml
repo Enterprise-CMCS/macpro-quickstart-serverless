@@ -4,7 +4,7 @@ frameworkVersion: "2"
 
 plugins:
   - serverless-stack-termination-protection
-  - serverless-deployment-bucket-helper
+  - serverless-s3-bucket-helper
 
 provider:
   name: aws

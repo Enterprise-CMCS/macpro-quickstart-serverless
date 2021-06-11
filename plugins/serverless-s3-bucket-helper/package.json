@@ -1,7 +1,7 @@
 {
-  "name": "serverless-deployment-bucket-helper",
+  "name": "serverless-s3-bucket-helper",
   "version": "1.0.0",
-  "description": "Serverless plugin to enable versioning on the serverless managed deployment bucket",
+  "description": "Serverless plugin to set properties on s3 buckets that we want set everywhere.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
