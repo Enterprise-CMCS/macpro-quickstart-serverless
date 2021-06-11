@@ -8,6 +8,7 @@ plugins:
   - serverless-s3-local
   - serverless-stack-termination-protection
   - serverless-iam-helper
+  - serverless-deployment-bucket-helper
 
 provider:
   name: aws

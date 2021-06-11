@@ -9315,6 +9315,9 @@ serverless-bundle@^4.3.1:
     webpack-node-externals "^2.5.2"
     webpack-permissions-plugin "^1.0.8"
 
+serverless-deployment-bucket-helper@./plugins/serverless-deployment-bucket-helper:
+  version "1.0.0"
+
 serverless-dotenv-plugin@^3.0.0:
   version "3.9.0"
   resolved "https://registry.yarnpkg.com/serverless-dotenv-plugin/-/serverless-dotenv-plugin-3.9.0.tgz#0d82704a3911c1051a1f566a30aaa5f278ad4ae3"
