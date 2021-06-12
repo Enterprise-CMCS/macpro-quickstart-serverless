@@ -13,7 +13,7 @@ provider:
   iam:
     role:
       path: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
-      permissionsBoundary: ${self:custom.iamPermissionsBoundaryPolicy}
+      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
       statements:
         - Effect: "Allow"
           Action:
