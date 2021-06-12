@@ -28,7 +28,7 @@ deploy() {
   service=$1
   pushd services/$service
   install_deps
-  time serverless deploy  --stage $stage
+  serverless deploy  --stage $stage
   popd
 }
 
