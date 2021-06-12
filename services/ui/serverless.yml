@@ -9,8 +9,8 @@ provider:
   region: us-east-1
   iam:
     role:
-      path: ${self:custom.iamPath}
-      permissionsBoundary: ${self:custom.iamPermissionsBoundaryPolicy}
+      path: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
+      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
 
 plugins:
   - serverless-plugin-scripts
@@ -35,8 +35,6 @@ custom:
   route53DomainName: ${ssm:/configuration/${self:custom.stage}/route53/domainName~true, ""}
   cloudfrontCertificateArn: ${ssm:/configuration/${self:custom.stage}/cloudfront/certificateArn~true, ssm:/configuration/default/cloudfront/certificateArn~true, ""}
   cloudfrontDomainName: ${ssm:/configuration/${self:custom.stage}/cloudfront/domainName~true, ""}
-  iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
-  iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
   webAclName: ${self:service}-${self:custom.stage}-webacl
   firehoseStreamName: aws-waf-logs-${self:service}-${self:custom.stage}-firehose
   scripts:

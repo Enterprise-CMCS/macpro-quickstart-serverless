@@ -16,8 +16,8 @@ provider:
   region: us-east-1
   iam:
     role:
-      path: ${self:custom.iamPath}
-      permissionsBoundary: ${self:custom.iamPermissionsBoundaryPolicy}
+      path: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
+      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
       statements:
         - Effect: "Allow"
           Action:
@@ -41,8 +41,6 @@ provider:
 custom:
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
-  iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
-  iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
   serverlessTerminationProtection:
     stages: # This is a list of common names for important envs that should not be destroyed.  You can remove the stage names your project doesn't use; this list is meant to be inclusive.
       - master
