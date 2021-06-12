@@ -9324,10 +9324,12 @@ serverless-dotenv-plugin@^3.0.0:
     dotenv "^8.2.0"
     dotenv-expand "^5.1.0"
 
-serverless-iam-helper@./libs/plugins/serverless-iam-helper:
+serverless-iam-helper@./plugins/serverless-iam-helper:
   version "1.0.0"
+  dependencies:
+    lodash "^4.17.21"
 
-serverless-idempotency-helper@./libs/plugins/serverless-idempotency-helper:
+serverless-idempotency-helper@./plugins/serverless-idempotency-helper:
   version "1.0.0"
   dependencies:
     bestzip "^2.2.0"
@@ -9380,6 +9382,9 @@ serverless-plugin-warmup@^4.9.0:
   integrity sha512-o6u0Wovyjm1tJNsa38oHOKEjmjBdhie8sCIlCCUAtHZza7L7y9WgtHTFqK6QGTl7O6sbw98vB8z4pNsSQGH6YA==
   dependencies:
     fs-extra "^9.0.0"
+
+serverless-s3-bucket-helper@./plugins/serverless-s3-bucket-helper:
+  version "1.0.0"
 
 serverless-stack-termination-protection@^1.0.4:
   version "1.0.4"
