@@ -9,7 +9,7 @@ stage=$1
 
 # A list of names commonly used for protected/important branches/environments/stages.
 # Update as appropriate.
-protected_stage_regex="(^develop$|^master$|^main$|^val$|^impl$|^production$|^prod$|prod)"
+protected_stage_regex="(^master$|^val$|^production)"
 if [[ $stage =~ $protected_stage_regex ]] ; then
     echo """
       ---------------------------------------------------------------------------------------------

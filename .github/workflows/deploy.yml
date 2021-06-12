@@ -85,7 +85,7 @@ jobs:
           path: tests/nightwatch/tests_output
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
-        if: env.SLACK_WEBHOOK_URL != '' && contains(fromJson('["develop", "main", "master", "impl", "val", "prod", "production"]'), env.branch_name) && failure ()
+        if: env.SLACK_WEBHOOK_URL != '' && contains(fromJson('["master", "val", "production"]'), env.branch_name) && failure ()
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_USERNAME: Destroy Alerts
