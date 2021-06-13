@@ -19,7 +19,7 @@ jobs:
           else
             echo "branch_name=${{ github.event.ref }}" >> $GITHUB_ENV
           fi
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: set branch specific variable names
         run: ./.github/build_vars.sh set_names
       - name: set variable values
