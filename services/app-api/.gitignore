@@ -53,3 +53,4 @@ env.yml
 
 # Serverless warmup plugin temp dir
 _warmup
+.warmup
