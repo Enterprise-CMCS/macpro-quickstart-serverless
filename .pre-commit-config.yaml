@@ -1,0 +1,4 @@
+- repo: https://github.com/leehambley/pre-commit-sort-yaml-keys.git
+  rev: master
+  hooks:
+  - id: yml-sorter
