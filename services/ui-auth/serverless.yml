@@ -27,15 +27,10 @@ plugins:
   - serverless-idempotency-helper
   - serverless-iam-helper
   - serverless-s3-bucket-helper
-  - serverless-localstack
-  - serverless-localstack-helper
 
 custom:
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
-  localstack:
-    stages:
-      - local
   serverlessTerminationProtection:
     stages:
       - master
@@ -89,7 +84,7 @@ resources:
             - CreateEmailConfiguration
             - EmailSendingAccount: DEVELOPER
               SourceArn: !Sub arn:aws:ses:us-east-1:${AWS::AccountId}:identity/${self:custom.sesSourceEmailAddress}
-            - Fn::Ref: AWS::NoValue
+            - !Ref AWS::NoValue
         Schema:
           - Name: given_name
             AttributeDataType: String
