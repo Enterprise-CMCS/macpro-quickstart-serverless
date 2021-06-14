@@ -7,3 +7,8 @@ repos:
     rev: v2.3.1
     hooks:
       - id: prettier
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.1.0
+    hooks:
+      - id: detect-secrets
+        args: ["--exclude-files", "services/uploads/src/test.json"]
