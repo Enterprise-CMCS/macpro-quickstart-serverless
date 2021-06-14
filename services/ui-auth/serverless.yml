@@ -105,7 +105,7 @@ resources:
         UserPoolId: !Ref CognitoUserPool
         ExplicitAuthFlows:
           - ADMIN_NO_SRP_AUTH
-        GenerateSecret: false
+        GenerateSecret: false # pragma: allowlist secret
         AllowedOAuthFlows:
           - implicit
         AllowedOAuthFlowsUserPoolClient: true

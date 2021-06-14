@@ -7,8 +7,8 @@ const atomicTableName = process.env.atomicCounterTableName;
 const endpoint = process.env.DYNAMODB_URL;
 if (endpoint) {
   dyanmoConfig.endpoint = endpoint;
-  dyanmoConfig.accessKeyId = "LOCAL_FAKE_KEY";
-  dyanmoConfig.secretAccessKey = "LOCAL_FAKE_SECRET";
+  dyanmoConfig.accessKeyId = "LOCAL_FAKE_KEY"; // pragma: allowlist secret
+  dyanmoConfig.secretAccessKey = "LOCAL_FAKE_SECRET"; // pragma: allowlist secret
 } else {
   dyanmoConfig["region"] = "us-east-1";
 }
