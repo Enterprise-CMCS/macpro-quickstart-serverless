@@ -9376,15 +9376,10 @@ serverless-plugin-scripts@^1.0.2:
   resolved "https://registry.yarnpkg.com/serverless-plugin-scripts/-/serverless-plugin-scripts-1.0.2.tgz#21808c3cfd0a1a84e48c0660b0f6f370b5665486"
   integrity sha1-IYCMPP0KGoTkjAZgsPbzcLVmVIY=
 
-serverless-plugin-warmup-helper@./plugins/serverless-plugin-warmup-helper:
-  version "1.0.0"
-  dependencies:
-    serverless-plugin-warmup "^5.2.3"
-
-serverless-plugin-warmup@^5.2.3:
-  version "5.2.3"
-  resolved "https://registry.yarnpkg.com/serverless-plugin-warmup/-/serverless-plugin-warmup-5.2.3.tgz#516c50d9859fb0d880c7b1215451ccbee499a8d2"
-  integrity sha512-azuznNNpakupdmUle8OyPhmRDEb+EbZu8TjFKf6cppd3yU96qFy98LRxS3jLryMz7E1HhimY73leNnFS0GYN8g==
+serverless-plugin-warmup@^5.3.1:
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/serverless-plugin-warmup/-/serverless-plugin-warmup-5.3.1.tgz#cc8ca43452c5468a79a7b5447c84267035fa8d1e"
+  integrity sha512-+nY6VCTLf/VjwkwAudtCXE/neaYSKy+9NmnYTSL0y8ZGfKB6u9Hrh9J2vqYEcam6eQFnCAEsch9iTs/dbU2vGg==
 
 serverless-s3-bucket-helper@./plugins/serverless-s3-bucket-helper:
   version "1.0.0"
