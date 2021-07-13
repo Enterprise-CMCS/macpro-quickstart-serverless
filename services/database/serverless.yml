@@ -15,7 +15,6 @@ custom:
       - master
       - val
       - production
-  dynamodbBackupEnabled: ${ssm:/configuration/${self:custom.stage}/dynamodbBackup/enabled~true, ssm:/configuration/default/dynamodbBackup/enabled~true}
   tableName: ${self:custom.stage}-amendments
   dynamodb:
     stages:
@@ -56,7 +55,7 @@ resources:
       Properties:
         TableName: ${self:custom.tableName}-atomic-counter
         PointInTimeRecoverySpecification:
-          PointInTimeRecoveryEnabled: ${self:custom.dynamodbBackupEnabled}
+          PointInTimeRecoveryEnabled: true
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S
