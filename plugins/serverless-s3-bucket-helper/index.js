@@ -13,8 +13,9 @@ class ServerlessPlugin {
 
     this.hooks = {
       // This will ensure versioning is enabled for the serverless deployment bucket.
-      "aws:deploy:deploy:createStack":
-        this.enableVersioningForBuckets.bind(this),
+      "aws:deploy:deploy:createStack": this.enableVersioningForBuckets.bind(
+        this
+      ),
 
       // This will ensure versioning is enabled for all buckets.
       "before:deploy:deploy": this.enableVersioningForBuckets.bind(this),
@@ -26,8 +27,8 @@ class ServerlessPlugin {
 }
 
 function setPropertyForTypes(types, property, value) {
-  const template =
-    this.serverless.service.provider.compiledCloudFormationTemplate;
+  const template = this.serverless.service.provider
+    .compiledCloudFormationTemplate;
   Object.keys(template.Resources).forEach(function (key) {
     if (types.includes(template.Resources[key]["Type"])) {
       template.Resources[key]["Properties"][property] = value;
