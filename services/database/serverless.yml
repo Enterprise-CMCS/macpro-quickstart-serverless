@@ -36,7 +36,7 @@ resources:
       Properties:
         TableName: ${self:custom.tableName}
         PointInTimeRecoverySpecification:
-          PointInTimeRecoveryEnabled: ${self:custom.dynamodbBackupEnabled}
+          PointInTimeRecoveryEnabled: true
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
         AttributeDefinitions:
