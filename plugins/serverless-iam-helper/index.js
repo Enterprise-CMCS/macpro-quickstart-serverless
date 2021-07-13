@@ -40,12 +40,14 @@ function addRoleForApiLogging() {
         ],
       },
     };
-    const template = this.serverless.service.provider
-      .compiledCloudFormationTemplate;
-    template.Resources.CloudWatchRoleForApiGatewayLogging = cloudwatchRoleForApiLogging;
-    template.Resources.CustomApiGatewayAccountCloudWatchRole.Properties.RoleArn = {
-      "Fn::GetAtt": ["CloudWatchRoleForApiGatewayLogging", "Arn"],
-    };
+    const template =
+      this.serverless.service.provider.compiledCloudFormationTemplate;
+    template.Resources.CloudWatchRoleForApiGatewayLogging =
+      cloudwatchRoleForApiLogging;
+    template.Resources.CustomApiGatewayAccountCloudWatchRole.Properties.RoleArn =
+      {
+        "Fn::GetAtt": ["CloudWatchRoleForApiGatewayLogging", "Arn"],
+      };
   }
 }
 
@@ -66,8 +68,8 @@ function addProperties() {
 }
 
 function setPropertyForTypes(types, property, value) {
-  const template = this.serverless.service.provider
-    .compiledCloudFormationTemplate;
+  const template =
+    this.serverless.service.provider.compiledCloudFormationTemplate;
   Object.keys(template.Resources).forEach(function (key) {
     if (types.includes(template.Resources[key]["Type"])) {
       template.Resources[key]["Properties"][property] = value;
