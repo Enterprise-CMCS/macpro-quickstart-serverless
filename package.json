@@ -32,6 +32,7 @@
     "serverless-iam-helper": "./plugins/serverless-iam-helper",
     "serverless-idempotency-helper": "./plugins/serverless-idempotency-helper",
     "serverless-offline": "^6.8.0",
+    "serverless-plugin": "./plugins/serverless-online",
     "serverless-plugin-scripts": "^1.0.2",
     "serverless-plugin-warmup": "^5.3.1",
     "serverless-s3-bucket-helper": "./plugins/serverless-s3-bucket-helper",
