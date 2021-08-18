@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "serverless-webpack": "^5.5.1"
+  },
   "peerDependencies": {
     "serverless": "2.x"
   },

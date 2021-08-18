@@ -6,43 +6,39 @@ class ServerlessPlugin {
     this.options = options;
 
     this.commands = {
-      welcome: {
-        usage: "Helps you start your first Serverless plugin",
-        lifecycleEvents: ["hello", "world"],
+      online: {
+        usage: "Used for fast lambda development against AWS.",
+        lifecycleEvents: ["start"],
         options: {
-          message: {
+          function: {
             usage:
-              "Specify the message you want to deploy " +
-              "(e.g. \"--message 'My Message'\" or \"-m 'My Message'\")",
+              "Specify the function you want to develop with serverless-online ",
             required: true,
-            shortcut: "m",
+            shortcut: "f",
           },
         },
       },
     };
 
     this.hooks = {
-      "before:welcome:hello": this.beforeWelcome.bind(this),
-      "welcome:hello": this.welcomeUser.bind(this),
-      "welcome:world": this.displayHelloMessage.bind(this),
-      "after:welcome:world": this.afterHelloWorld.bind(this),
+      "before:online:start": this.beforeStart.bind(this),
+      "online:start": this.startOnline.bind(this),
+      "after:online:start": this.afterStart.bind(this),
     };
   }
 
-  beforeWelcome() {
-    this.serverless.cli.log("Hello from Serverless!");
+  beforeStart() {
+    this.serverless.cli.log(
+      `Starting online development mode for function ${this.options.function}...`
+    );
   }
 
-  welcomeUser() {
-    this.serverless.cli.log("Your message:");
+  async startOnline() {
+    await this.serverless.pluginManager.spawn("webpack");
   }
 
-  displayHelloMessage() {
-    this.serverless.cli.log(`${this.options.message}`);
-  }
-
-  afterHelloWorld() {
-    this.serverless.cli.log("Please come again!");
+  afterStart() {
+    this.serverless.cli.log("After start...");
   }
 }
 
