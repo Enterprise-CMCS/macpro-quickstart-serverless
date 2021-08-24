@@ -33,13 +33,13 @@ class ServerlessPlugin {
   }
 
   async start() {
-    this.serverless.cli.log(
+    this.log(
       `Preparing online development mode for function ${this.options.function}...`
     );
     this.serverless.service.package.individually = false;
     await this.serverless.pluginManager.spawn("deploy:function");
 
-    this.serverless.cli.log(
+    this.log(
       `Function ${this.options.function} deployed successfully.  Watching for changes...`
     );
 
@@ -49,17 +49,13 @@ class ServerlessPlugin {
       ignoreInitial: true,
     });
     watcher.on("all", async (event, path) => {
-      this.serverless.cli.log(
-        `'${event}' event detected for ${path}.  Redeploying...`
-      );
+      this.log(`'${event}' event detected for ${path}.  Redeploying...`);
       delete this.serverless.service.custom.webpack;
       try {
         await this.serverless.pluginManager.spawn("deploy:function");
       } catch (error) {
         console.error(error);
-        this.serverless.cli.log(
-          `Error during deploy function command.  See above.`
-        );
+        this.log(`Error during deploy function command.  See above.`);
       }
     });
   }
@@ -73,7 +69,7 @@ class ServerlessPlugin {
     if (process.env.NODE_ENV === "test" && skipExit === undefined) {
       return;
     }
-    this.serverless.cli.log(`Halting serverless-online`);
+    this.log(`Halting serverless-online`);
 
     const eventModules = [];
 
@@ -98,7 +94,11 @@ class ServerlessPlugin {
         // with child_process methods
         .on("SIGTERM", () => resolve("SIGTERM"));
     });
-    this.serverless.cli.log(`Got ${command} signal. Online Halting...`);
+    this.log(`Got ${command} signal. Online Halting...`);
+  }
+
+  log(msg) {
+    this.serverless.cli.log(`[SLS-ONLINE]:  ${msg}`);
   }
 }
 
