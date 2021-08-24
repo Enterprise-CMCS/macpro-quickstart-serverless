@@ -43,6 +43,8 @@ class ServerlessPlugin {
       `Function ${this.options.function} deployed successfully.  Watching for changes...`
     );
 
+    this.streamLogs();
+
     var watcher = chokidar.watch(".", {
       ignored: ["node_modules", ".webpack", ".serverless"],
       awaitWriteFinish: true,
@@ -99,6 +101,12 @@ class ServerlessPlugin {
 
   log(msg) {
     this.serverless.cli.log(`[SLS-ONLINE]:  ${msg}`);
+  }
+
+  async streamLogs() {
+    this.options.tail = true;
+    this.options.interval = 100;
+    await this.serverless.pluginManager.spawn("logs");
   }
 }
 
