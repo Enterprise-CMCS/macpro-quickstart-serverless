@@ -39,6 +39,10 @@ class ServerlessPlugin {
     this.serverless.service.package.individually = false;
     await this.serverless.pluginManager.spawn("deploy:function");
 
+    this.serverless.cli.log(
+      `Function ${this.options.function} deployed successfully.  Watching for changes...`
+    );
+
     var watcher = chokidar.watch(".", {
       ignored: ["node_modules", ".webpack", ".serverless"],
       awaitWriteFinish: true,
