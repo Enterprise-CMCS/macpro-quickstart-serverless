@@ -26,9 +26,9 @@ class ServerlessPlugin {
 
     this.hooks = {
       "online:start:init": this.start.bind(this),
-      // 'online:start:ready': this.ready.bind(this),
-      // 'online:start': this._startWithExplicitEnd.bind(this),
-      // 'online:start:end': this.end.bind(this),
+      "online:start:ready": this.ready.bind(this),
+      "online:start": this._startWithExplicitEnd.bind(this),
+      "online:start:end": this.end.bind(this),
     };
   }
 
@@ -57,7 +57,14 @@ class ServerlessPlugin {
       .on("change", async (path) => {
         console.log("File", path, "has been changed.  Redeploying...");
         delete this.serverless.service.custom.webpack;
-        await this.serverless.pluginManager.spawn("deploy:function");
+        try {
+          await this.serverless.pluginManager.spawn("deploy:function");
+        } catch (error) {
+          console.error(error);
+          this.serverless.cli.log(
+            `Error during deploy function command.  See above.`
+          );
+        }
       })
       .on("unlink", async (path) => {
         console.log("File", path, "has been removed.  Redeploying...");
@@ -71,9 +78,6 @@ class ServerlessPlugin {
 
   async ready() {
     await this._listenForTermination();
-    if (process.env.NODE_ENV !== "test") {
-      await this._listenForTermination();
-    }
   }
 
   async end(skipExit) {
@@ -81,8 +85,7 @@ class ServerlessPlugin {
     if (process.env.NODE_ENV === "test" && skipExit === undefined) {
       return;
     }
-
-    serverlessLog("Halting offline server");
+    this.serverless.cli.log(`Halting serverless-online`);
 
     const eventModules = [];
 
@@ -132,8 +135,7 @@ class ServerlessPlugin {
         // with child_process methods
         .on("SIGTERM", () => resolve("SIGTERM"));
     });
-
-    serverlessLog(`Got ${command} signal. Offline Halting...`);
+    this.serverless.cli.log(`Got ${command} signal. Online Halting...`);
   }
 
   // async _createLambda(lambdas, skipStart) {
