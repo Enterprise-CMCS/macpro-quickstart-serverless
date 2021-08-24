@@ -32,10 +32,6 @@ class ServerlessPlugin {
     };
   }
 
-  async deployFunction() {
-    console.log(this);
-  }
-
   async start() {
     this.serverless.cli.log(
       `Preparing online development mode for function ${this.options.function}...`
