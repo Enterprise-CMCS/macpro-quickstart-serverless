@@ -47,7 +47,9 @@ class ServerlessPlugin {
 
     var watcher = chokidar.watch(".", {
       ignored: ["node_modules", ".webpack", ".serverless"],
-      awaitWriteFinish: true,
+      awaitWriteFinish: {
+        stabilityThreshold: 200,
+      },
       ignoreInitial: true,
     });
     watcher.on("all", async (event, path) => {
