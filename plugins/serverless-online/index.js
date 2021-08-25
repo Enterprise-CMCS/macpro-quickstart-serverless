@@ -34,17 +34,20 @@ class ServerlessPlugin {
 
   async start() {
     this.log(
-      `Preparing online development mode for function ${this.options.function}...`
+      `Starting serverless-online development mode for function ${this.options.function}...`
     );
+
+    // This plugin is not compatible with packaging individually.
+    // While using this plugin, functions are packaged together.
     this.serverless.service.package.individually = false;
-    await this.serverless.pluginManager.spawn("deploy:function");
 
-    this.log(
-      `Function ${this.options.function} deployed successfully.  Watching for changes...`
-    );
+    // Initial 'deploy function' call.
+    this.deployFunction();
 
+    // Start streaming logs to the console.
     this.streamLogs();
 
+    // Watch the service directory, and re 'deploy function' for any events.
     var watcher = chokidar.watch(".", {
       ignored: ["node_modules", ".webpack", ".serverless"],
       awaitWriteFinish: {
@@ -54,16 +57,7 @@ class ServerlessPlugin {
     });
     watcher.on("all", async (event, path) => {
       this.log(`'${event}' event detected for ${path}.  Redeploying...`);
-      delete this.serverless.service.custom.webpack;
-      try {
-        await this.serverless.pluginManager.spawn("deploy:function");
-        this.log(
-          `Function ${this.options.function} deployed successfully.  Watching for changes...`
-        );
-      } catch (error) {
-        console.error(error);
-        this.log(`Error during deploy function command.  See above.`);
-      }
+      this.deployFunction();
     });
   }
 
@@ -102,6 +96,19 @@ class ServerlessPlugin {
         .on("SIGTERM", () => resolve("SIGTERM"));
     });
     this.log(`Got ${command} signal. Online Halting...`);
+  }
+
+  async deployFunction() {
+    delete this.serverless.service.custom.webpack;
+    try {
+      await this.serverless.pluginManager.spawn("deploy:function");
+      this.log(
+        `Function ${this.options.function} deployed successfully.  Watching for changes...`
+      );
+    } catch (error) {
+      console.error(error);
+      this.log(`Error during deploy function command.  See above.`);
+    }
   }
 
   log(msg) {
