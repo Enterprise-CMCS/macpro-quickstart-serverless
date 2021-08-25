@@ -57,6 +57,9 @@ class ServerlessPlugin {
       delete this.serverless.service.custom.webpack;
       try {
         await this.serverless.pluginManager.spawn("deploy:function");
+        this.log(
+          `Function ${this.options.function} deployed successfully.  Watching for changes...`
+        );
       } catch (error) {
         console.error(error);
         this.log(`Error during deploy function command.  See above.`);
