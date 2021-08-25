@@ -1,10 +1,21 @@
 # Serverless Online
 
-This plugin is meant to facilitate faster development against AWS.
+This plugin is meant to facilitate faster lambda development against AWS.
 
 ## Usage
 
-WIP
+```
+...
+
+plugins:
+  - serverless-online
+
+...
+
+
+sls online --function myFunctionName --stage myStage
+
+```
 
 ## Background
 
