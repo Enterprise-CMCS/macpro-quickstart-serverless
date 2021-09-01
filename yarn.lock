@@ -2043,6 +2043,13 @@
   dependencies:
     "@types/yargs-parser" "*"
 
+"@types/yauzl@^2.9.1":
+  version "2.9.2"
+  resolved "https://registry.yarnpkg.com/@types/yauzl/-/yauzl-2.9.2.tgz#c48e5d56aff1444409e39fa164b0b4d4552a7b7a"
+  integrity sha512-8uALY5LTvSuHgloDVUvWP3pIauILm+8/0pDMokuDYIoNsOkSwd5AiHBTSEJjKTDcZr5z8UpgOWZkxBF4iJftoA==
+  dependencies:
+    "@types/node" "*"
+
 "@typescript-eslint/eslint-plugin@^4.5.0":
   version "4.26.0"
   resolved "https://registry.yarnpkg.com/@typescript-eslint/eslint-plugin/-/eslint-plugin-4.26.0.tgz#12bbd6ebd5e7fabd32e48e1e60efa1f3554a3242"
@@ -4866,6 +4873,17 @@ extglob@^2.0.4:
     regex-not "^1.0.0"
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
+
+extract-zip@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/extract-zip/-/extract-zip-2.0.1.tgz#663dca56fe46df890d5f131ef4a06d22bb8ba13a"
+  integrity sha512-GDhU9ntwuKyGXdZBUgTIe+vXnWj0fppUEtMDL0+idd5Sta8TGpHssn/eusA9mrPr9qNDym6SxAYZjNvCn/9RBg==
+  dependencies:
+    debug "^4.1.1"
+    get-stream "^5.1.0"
+    yauzl "^2.10.0"
+  optionalDependencies:
+    "@types/yauzl" "^2.9.1"
 
 extsprintf@1.3.0:
   version "1.3.0"
@@ -9307,12 +9325,18 @@ serverless-dotenv-plugin@^3.0.0:
     dotenv-expand "^5.1.0"
 
 serverless-iam-helper@CMSgov/serverless-iam-helper:
-  version "0.0.0"
-  resolved "https://codeload.github.com/CMSgov/serverless-iam-helper/tar.gz/7631bc48b53c7139236c002fa51069f577b643ff"
+  version "1.0.0"
+  resolved "https://codeload.github.com/CMSgov/serverless-iam-helper/tar.gz/36b0b2bb07394b188714712c58e2a094206cb1d7"
+  dependencies:
+    lodash "^4.17.21"
 
 serverless-idempotency-helper@CMSgov/serverless-idempotency-helper:
-  version "0.0.0"
-  resolved "https://codeload.github.com/CMSgov/serverless-idempotency-helper/tar.gz/fc5c3e22bf8259b1e02090b5723157d2ecb63412"
+  version "1.0.0"
+  resolved "https://codeload.github.com/CMSgov/serverless-idempotency-helper/tar.gz/22a96de1495fea2d295cadb966e503aefbc1b086"
+  dependencies:
+    bestzip "^2.2.0"
+    extract-zip "^2.0.1"
+    lodash "^4.17.21"
 
 serverless-offline@^6.8.0:
   version "6.9.0"
@@ -9360,8 +9384,8 @@ serverless-plugin-warmup@^5.3.1:
   integrity sha512-+nY6VCTLf/VjwkwAudtCXE/neaYSKy+9NmnYTSL0y8ZGfKB6u9Hrh9J2vqYEcam6eQFnCAEsch9iTs/dbU2vGg==
 
 serverless-s3-bucket-helper@CMSgov/serverless-s3-bucket-helper:
-  version "0.0.0"
-  resolved "https://codeload.github.com/CMSgov/serverless-s3-bucket-helper/tar.gz/e24b18b67fa9ea501b9b4e9bb6eaf47cf390088a"
+  version "1.0.0"
+  resolved "https://codeload.github.com/CMSgov/serverless-s3-bucket-helper/tar.gz/6316e139c4c4742c44911aaaf71585ea69f92c17"
 
 serverless-stack-termination-protection@^1.0.4:
   version "1.0.4"
@@ -11167,7 +11191,7 @@ yargs@^16.1.1, yargs@^16.2.0:
     y18n "^5.0.5"
     yargs-parser "^20.2.2"
 
-yauzl@^2.4.2:
+yauzl@^2.10.0, yauzl@^2.4.2:
   version "2.10.0"
   resolved "https://registry.yarnpkg.com/yauzl/-/yauzl-2.10.0.tgz#c7eb17c93e112cb1086fa6d8e51fb0667b79a5f9"
   integrity sha1-x+sXyT4RLLEIb6bY5R+wZnt5pfk=
