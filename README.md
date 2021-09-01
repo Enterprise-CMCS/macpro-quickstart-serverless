@@ -18,6 +18,8 @@ Our product is promoted through branches. Master is merged to val to affect a ma
 
 ## Local Dev
 
+asdf
+
 Run all the services locally with the command `./dev local`
 
 See the Requirements section if the command asks for any prerequisites you don't have installed.
