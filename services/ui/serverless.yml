@@ -247,7 +247,7 @@ resources:
         Value:
           Fn::If:
             - CreateCustomCloudFrontDomain
-            - https://${env:CLOUDFRONT_DOMAIN_NAME, ""}/
+            - https://${self:custom.cloudfrontDomainName, ""}/
             - Fn::Join:
                 - ""
                 - - https://
