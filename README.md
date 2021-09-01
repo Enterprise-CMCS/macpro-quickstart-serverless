@@ -2,8 +2,6 @@
 
 A serverless form submission application built and deployed to AWS with the Serverless Application Framework.
 
-iasdf
-
 ## Release
 
 Our product is promoted through branches. Master is merged to val to affect a master release, and val is merged to production to affect a production release. Please use the buttons below to promote/release code to higher environments.<br />
