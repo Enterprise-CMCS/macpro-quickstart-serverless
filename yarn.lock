@@ -2044,9 +2044,9 @@
     "@types/yargs-parser" "*"
 
 "@types/yauzl@^2.9.1":
-  version "2.9.1"
-  resolved "https://registry.yarnpkg.com/@types/yauzl/-/yauzl-2.9.1.tgz#d10f69f9f522eef3cf98e30afb684a1e1ec923af"
-  integrity sha512-A1b8SU4D10uoPjwb0lnHmmu8wZhR9d+9o2PKBQT2jU5YPTKsxac6M2qGAdY7VcL+dHHhARVUDmeg0rOrcd9EjA==
+  version "2.9.2"
+  resolved "https://registry.yarnpkg.com/@types/yauzl/-/yauzl-2.9.2.tgz#c48e5d56aff1444409e39fa164b0b4d4552a7b7a"
+  integrity sha512-8uALY5LTvSuHgloDVUvWP3pIauILm+8/0pDMokuDYIoNsOkSwd5AiHBTSEJjKTDcZr5z8UpgOWZkxBF4iJftoA==
   dependencies:
     "@types/node" "*"
 
@@ -6928,9 +6928,9 @@ jsprim@^1.2.2:
     verror "1.10.0"
 
 jszip@^3.5.0, jszip@^3.6.0:
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/jszip/-/jszip-3.6.0.tgz#839b72812e3f97819cc13ac4134ffced95dd6af9"
-  integrity sha512-jgnQoG9LKnWO3mnVNBnfhkh0QknICd1FGSrXcgrl67zioyJ4wgx25o9ZqwNtrROSflGBCGYnJfjrIyRIby1OoQ==
+  version "3.7.1"
+  resolved "https://registry.yarnpkg.com/jszip/-/jszip-3.7.1.tgz#bd63401221c15625a1228c556ca8a68da6fda3d9"
+  integrity sha512-ghL0tz1XG9ZEmRMcEN2vt7xabrDdqHHeykgARpmZ0BiIctWxM47Vt63ZO2dnp4QYt/xJVLLy5Zv1l/xRdh2byg==
   dependencies:
     lie "~3.3.0"
     pako "~1.0.2"
@@ -9324,13 +9324,15 @@ serverless-dotenv-plugin@^3.0.0:
     dotenv "^8.2.0"
     dotenv-expand "^5.1.0"
 
-serverless-iam-helper@./plugins/serverless-iam-helper:
+serverless-iam-helper@CMSgov/serverless-iam-helper:
   version "1.0.0"
+  resolved "https://codeload.github.com/CMSgov/serverless-iam-helper/tar.gz/36b0b2bb07394b188714712c58e2a094206cb1d7"
   dependencies:
     lodash "^4.17.21"
 
-serverless-idempotency-helper@./plugins/serverless-idempotency-helper:
+serverless-idempotency-helper@CMSgov/serverless-idempotency-helper:
   version "1.0.0"
+  resolved "https://codeload.github.com/CMSgov/serverless-idempotency-helper/tar.gz/22a96de1495fea2d295cadb966e503aefbc1b086"
   dependencies:
     bestzip "^2.2.0"
     extract-zip "^2.0.1"
@@ -9384,8 +9386,9 @@ serverless-plugin-warmup@^5.3.1:
   resolved "https://registry.yarnpkg.com/serverless-plugin-warmup/-/serverless-plugin-warmup-5.3.1.tgz#cc8ca43452c5468a79a7b5447c84267035fa8d1e"
   integrity sha512-+nY6VCTLf/VjwkwAudtCXE/neaYSKy+9NmnYTSL0y8ZGfKB6u9Hrh9J2vqYEcam6eQFnCAEsch9iTs/dbU2vGg==
 
-serverless-s3-bucket-helper@./plugins/serverless-s3-bucket-helper:
+serverless-s3-bucket-helper@CMSgov/serverless-s3-bucket-helper:
   version "1.0.0"
+  resolved "https://codeload.github.com/CMSgov/serverless-s3-bucket-helper/tar.gz/6316e139c4c4742c44911aaaf71585ea69f92c17"
 
 serverless-stack-termination-protection@^1.0.4:
   version "1.0.4"
@@ -10156,9 +10159,9 @@ tar-stream@^2.2.0:
     readable-stream "^3.1.1"
 
 tar@^6.0.2, tar@^6.1.0:
-  version "6.1.5"
-  resolved "https://registry.yarnpkg.com/tar/-/tar-6.1.5.tgz#6e25bee1cfda94317aedc3f5d49290ae68361d73"
-  integrity sha512-FiK6MQyyaqd5vHuUjbg/NpO8BuEGeSXcmlH7Pt/JkugWS8s0w8nKybWjHDJiwzCAIKZ66uof4ghm4tBADjcqRA==
+  version "6.1.11"
+  resolved "https://registry.yarnpkg.com/tar/-/tar-6.1.11.tgz#6760a38f003afa1b2ffd0ffe9e9abbd0eab3d621"
+  integrity sha512-an/KZQzQUkZCkuoAA64hM92X0Urb6VpRhAFllDzz44U2mcD5scmT3zBc4VgVpkugF580+DQn8eAFSyoQt0tznA==
   dependencies:
     chownr "^2.0.0"
     fs-minipass "^2.0.0"
