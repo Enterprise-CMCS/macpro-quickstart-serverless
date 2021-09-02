@@ -9,6 +9,7 @@ plugins:
   - serverless-stack-termination-protection
   - serverless-iam-helper
   - serverless-s3-bucket-helper
+  - serverless-online
 
 provider:
   name: aws

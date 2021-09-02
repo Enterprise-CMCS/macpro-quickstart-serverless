@@ -16,6 +16,7 @@ plugins:
   - serverless-idempotency-helper
   - serverless-iam-helper
   - serverless-s3-bucket-helper
+  - serverless-online
 
 custom:
   stage: ${opt:stage, self:provider.stage}
