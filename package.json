@@ -32,7 +32,7 @@
     "serverless-iam-helper": "CMSgov/serverless-iam-helper",
     "serverless-idempotency-helper": "CMSgov/serverless-idempotency-helper",
     "serverless-offline": "^6.8.0",
-    "serverless-online": "./plugins/serverless-online",
+    "serverless-online": "CMSgov/serverless-online",
     "serverless-plugin-scripts": "^1.0.2",
     "serverless-plugin-warmup": "^5.3.1",
     "serverless-s3-bucket-helper": "CMSgov/serverless-s3-bucket-helper",
