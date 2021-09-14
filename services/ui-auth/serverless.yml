@@ -1,3 +1,4 @@
+# Refer to the README.md file in within this service directory to configure all ssm parameters required for this service.
 service: ui-auth
 
 frameworkVersion: "2"
@@ -9,27 +10,33 @@ provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
+  iam:
+    role:
+      path: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
+      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "*"
+          Resource: !GetAtt CognitoUserPool.Arn
 
 plugins:
   - serverless-stack-termination-protection
   - serverless-plugin-scripts
   - serverless-bundle
+  - serverless-idempotency-helper
+  - serverless-iam-helper
+  - serverless-s3-bucket-helper
+  - serverless-online
 
 custom:
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
-  iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
-  iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
   serverlessTerminationProtection:
-    stages: # This is a list of common names for important envs that should not be destroyed.  You can remove the stage names your project doesn't use; this list is meant to be inclusive.
+    stages:
       - master
       - val
       - production
-      - develop
-      - main
-      - impl
-      - val
-      - prod
   sesSourceEmailAddress: ${ssm:/configuration/${self:custom.stage}/sesSourceEmailAddress~true, ssm:/configuration/default/sesSourceEmailAddress~true, ""}
   attachments_bucket_arn: ${cf:uploads-${self:custom.stage}.AttachmentsBucketArn}
   api_gateway_rest_api_name: ${cf:app-api-${self:custom.stage}.ApiGatewayRestApiName}
@@ -40,7 +47,7 @@ custom:
   scripts:
     hooks:
       deploy:finalize: |
-        if [ ${self:custom.bootstrapUsersEnabled} == "true" ];
+        if [ ${self:custom.bootstrapUsersEnabled} = "true" ];
         then
           serverless invoke --stage ${self:custom.stage} --function bootstrapUsers
         fi
@@ -48,7 +55,6 @@ custom:
 functions:
   bootstrapUsers:
     handler: handlers/createUsers.handler
-    role: LambdaApiRole
     environment:
       userPoolId: !Ref CognitoUserPool
       bootstrapUsersPassword: ${self:custom.bootstrapUsersPassword}
@@ -60,50 +66,12 @@ resources:
         - Fn::Equals:
             - ""
             - ${self:custom.sesSourceEmailAddress}
-    CreatePermissionsBoundary:
-      Fn::Not:
-        - Fn::Equals:
-            - ""
-            - ${self:custom.iamPermissionsBoundaryPolicy}
     BackWithOkta:
       Fn::Not:
         - Fn::Equals:
             - ""
             - ${self:custom.okta_metadata_url}
   Resources:
-    LambdaApiRole: # Why isn't this with the function as an iamRoleStatements?  https://github.com/serverless/serverless/issues/6485
-      Type: "AWS::IAM::Role"
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: "Allow"
-              Principal:
-                Service: "lambda.amazonaws.com"
-              Action: "sts:AssumeRole"
-        Path: ${self:custom.iamPath}
-        PermissionsBoundary:
-          Fn::If:
-            - CreatePermissionsBoundary
-            - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
-            - !Ref AWS::NoValue
-        ManagedPolicyArns:
-          - arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole
-        Policies:
-          - PolicyName: "LambdaApiRolePolicy"
-            PolicyDocument:
-              Version: "2012-10-17"
-              Statement:
-                - Effect: "Allow"
-                  Action:
-                    - logs:CreateLogGroup
-                    - logs:CreateLogStream
-                    - logs:PutLogEvents
-                  Resource: "arn:aws:logs:*:*:*"
-                - Effect: "Allow"
-                  Action:
-                    - "*"
-                  Resource: !GetAtt CognitoUserPool.Arn
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
       Properties:
@@ -122,11 +90,11 @@ resources:
           - Name: given_name
             AttributeDataType: String
             Mutable: true
-            Required: false
+            Required: true
           - Name: family_name
             AttributeDataType: String
             Mutable: true
-            Required: false
+            Required: true
           - Name: phone_number
             AttributeDataType: String
             Mutable: true
@@ -138,7 +106,7 @@ resources:
         UserPoolId: !Ref CognitoUserPool
         ExplicitAuthFlows:
           - ADMIN_NO_SRP_AUTH
-        GenerateSecret: false
+        GenerateSecret: false # pragma: allowlist secret
         AllowedOAuthFlows:
           - implicit
         AllowedOAuthFlowsUserPoolClient: true
@@ -202,12 +170,6 @@ resources:
     CognitoAuthRole:
       Type: AWS::IAM::Role
       Properties:
-        Path: ${self:custom.iamPath}
-        PermissionsBoundary:
-          Fn::If:
-            - CreatePermissionsBoundary
-            - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
-            - !Ref AWS::NoValue
         AssumeRolePolicyDocument:
           Version: "2012-10-17"
           Statement:

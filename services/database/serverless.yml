@@ -5,20 +5,16 @@ frameworkVersion: "2"
 plugins:
   - serverless-dynamodb-local
   - serverless-stack-termination-protection
+  - serverless-s3-bucket-helper
 
 custom:
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
   serverlessTerminationProtection:
-    stages: # This is a list of common names for important envs that should not be destroyed.  You can remove the stage names your project doesn't use; this list is meant to be inclusive.
+    stages:
       - master
       - val
       - production
-      - develop
-      - main
-      - impl
-      - val
-      - prod
   tableName: ${self:custom.stage}-amendments
   dynamodb:
     stages:
@@ -39,6 +35,8 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:custom.tableName}
+        PointInTimeRecoverySpecification:
+          PointInTimeRecoveryEnabled: true
         StreamSpecification:
           StreamViewType: NEW_AND_OLD_IMAGES
         AttributeDefinitions:
@@ -56,6 +54,8 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:custom.tableName}-atomic-counter
+        PointInTimeRecoverySpecification:
+          PointInTimeRecoveryEnabled: true
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S

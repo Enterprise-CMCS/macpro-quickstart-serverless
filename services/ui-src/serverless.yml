@@ -7,6 +7,7 @@ plugins:
   - serverless-s3-sync
   - serverless-cloudfront-invalidate
   - serverless-stack-termination-protection
+  - serverless-s3-bucket-helper
 
 provider:
   name: aws
@@ -17,15 +18,10 @@ custom:
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
   serverlessTerminationProtection:
-    stages: # This is a list of common names for important envs that should not be destroyed.  You can remove the stage names your project doesn't use; this list is meant to be inclusive.
+    stages:
       - master
       - val
       - production
-      - develop
-      - main
-      - impl
-      - val
-      - prod
   api_region: ${cf:app-api-${self:custom.stage}.Region}
   api_url: ${cf:app-api-${self:custom.stage}.ApiGatewayRestApiUrl}
   cognito_region: ${cf:ui-auth-${self:custom.stage}.Region}
@@ -47,10 +43,6 @@ custom:
       items:
         - "/*"
   scripts:
-    commands:
-      testUnit: |
-        set -e
-        yarn run coverage
     hooks:
       # Build the static archive and populate the config
       package:initialize: |

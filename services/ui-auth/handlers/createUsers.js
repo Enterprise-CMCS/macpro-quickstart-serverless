@@ -12,7 +12,6 @@ async function myHandler(event, context, callback) {
       UserPoolId: userPoolId,
       Username: users[i].username,
       DesiredDeliveryMediums: ["EMAIL"],
-      TemporaryPassword: "Abc@321456!",
       UserAttributes: users[i].attributes,
     };
     var passwordData = {
