@@ -1,3 +1,4 @@
+# Refer to the README.md file in within this service directory to configure all ssm parameters required for this service.
 service: uploads
 
 frameworkVersion: "2"
@@ -6,27 +7,46 @@ plugins:
   - serverless-plugin-scripts
   - serverless-s3-local
   - serverless-stack-termination-protection
+  - serverless-iam-helper
+  - serverless-s3-bucket-helper
+  - serverless-online
 
 provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
+  iam:
+    role:
+      path: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
+      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
+      statements:
+        - Effect: "Allow"
+          Action:
+            - s3:GetObject
+            - s3:GetObjectTagging
+            - s3:PutObject
+            - s3:PutObjectAcl
+            - s3:PutObjectTagging
+            - s3:PutObjectVersionTagging
+            - s3:ListBucket
+          Resource:
+            - !Sub arn:aws:s3:::${self:service.name}-${self:custom.stage}-attachments-${AWS::AccountId}/*
+            - !Sub arn:aws:s3:::${self:service.name}-${self:custom.stage}-avscan-${AWS::AccountId}/*
+        - Effect: "Allow"
+          Action:
+            - s3:ListBucket
+          Resource:
+            - !Sub arn:aws:s3:::${self:service.name}-${self:custom.stage}-attachments-${AWS::AccountId}
+            - !Sub arn:aws:s3:::${self:service.name}-${self:custom.stage}-avscan-${AWS::AccountId}/*
 
 custom:
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
-  iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
-  iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
   serverlessTerminationProtection:
-    stages: # This is a list of common names for important envs that should not be destroyed.  You can remove the stage names your project doesn't use; this list is meant to be inclusive.
+    stages:
       - master
       - val
       - production
-      - develop
-      - main
-      - impl
-      - val
-      - prod
   scripts:
     hooks:
       # This script is run locally when running 'serverless deploy'
@@ -52,7 +72,6 @@ functions:
   avScan:
     handler: src/antivirus.lambdaHandleEvent
     name: ${self:service.name}-${self:custom.stage}-avScan
-    role: BucketAVScanRole
     timeout: 300 # 300 seconds = 5 minutes. Average scan is 25 seconds.
     memorySize: 3008
     layers:
@@ -64,7 +83,6 @@ functions:
     handler: src/download-definitions.lambdaHandleEvent
     events:
       - schedule: cron(0 */6 * * ? *)
-    role: BucketAVDownloadRole
     timeout: 300 # 300 seconds = 5 minutes
     memorySize: 1024
     layers:
@@ -74,17 +92,15 @@ functions:
       PATH_TO_AV_DEFINITIONS: "lambda/s3-antivirus/av-definitions"
 
 resources:
-  Conditions:
-    CreatePermissionsBoundary:
-      Fn::Not:
-        - Fn::Equals:
-            - ""
-            - ${self:custom.iamPermissionsBoundaryPolicy}
   Resources:
     AttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: !Sub ${self:service.name}-${self:custom.stage}-attachments-${AWS::AccountId}
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
         CorsConfiguration: # Set the CORS policy
           CorsRules:
             - AllowedOrigins:
@@ -118,7 +134,31 @@ resources:
                 StringNotEquals:
                   s3:ExistingObjectTag/virusScanStatus:
                     - "CLEAN"
-                  aws:PrincipalArn: !GetAtt BucketAVScanRole.Arn
+                  aws:PrincipalArn: !GetAtt IamRoleLambdaExecution.Arn
+            - Action: "s3:PutObject"
+              Effect: Deny
+              Principal: "*"
+              NotResource:
+                - !Sub ${AttachmentsBucket.Arn}/*.jpg
+                - !Sub ${AttachmentsBucket.Arn}/*.png
+                - !Sub ${AttachmentsBucket.Arn}/*.gif
+                - !Sub ${AttachmentsBucket.Arn}/*.jpeg
+                - !Sub ${AttachmentsBucket.Arn}/*.bmp
+                - !Sub ${AttachmentsBucket.Arn}/*.csv
+                - !Sub ${AttachmentsBucket.Arn}/*.doc
+                - !Sub ${AttachmentsBucket.Arn}/*.docx
+                - !Sub ${AttachmentsBucket.Arn}/*.odp
+                - !Sub ${AttachmentsBucket.Arn}/*.ods
+                - !Sub ${AttachmentsBucket.Arn}/*.odt
+                - !Sub ${AttachmentsBucket.Arn}/*.pdf
+                - !Sub ${AttachmentsBucket.Arn}/*.ppt
+                - !Sub ${AttachmentsBucket.Arn}/*.pptx
+                - !Sub ${AttachmentsBucket.Arn}/*.rtf
+                - !Sub ${AttachmentsBucket.Arn}/*.tif
+                - !Sub ${AttachmentsBucket.Arn}/*.tiff
+                - !Sub ${AttachmentsBucket.Arn}/*.txt
+                - !Sub ${AttachmentsBucket.Arn}/*.xls
+                - !Sub ${AttachmentsBucket.Arn}/*.xlsx
     LambdaInvokePermission:
       Type: AWS::Lambda::Permission
       Properties:
@@ -131,93 +171,11 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: !Sub ${self:service.name}-${self:custom.stage}-avscan-${AWS::AccountId}
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
         AccessControl: Private
-    BucketAVScanRole:
-      Type: "AWS::IAM::Role"
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: "Allow"
-              Principal:
-                Service: "lambda.amazonaws.com"
-              Action: "sts:AssumeRole"
-        Path: ${self:custom.iamPath}
-        PermissionsBoundary:
-          Fn::If:
-            - CreatePermissionsBoundary
-            - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
-            - !Ref AWS::NoValue
-        Policies:
-          - PolicyName: "BucketAVScanRolePolicy"
-            PolicyDocument:
-              Version: "2012-10-17"
-              Statement:
-                - Effect: "Allow"
-                  Action:
-                    - logs:CreateLogGroup
-                    - logs:CreateLogStream
-                    - logs:PutLogEvents
-                  Resource: "arn:aws:logs:*:*:*"
-                - Effect: "Allow"
-                  Action:
-                    - s3:GetObject
-                    - s3:GetObjectTagging
-                    - s3:PutObject
-                    - s3:PutObjectAcl
-                    - s3:PutObjectTagging
-                    - s3:PutObjectVersionTagging
-                    - s3:ListBucket
-                  Resource: !Sub arn:aws:s3:::${self:service.name}-${self:custom.stage}-attachments-${AWS::AccountId}/*
-                - Effect: "Allow"
-                  Action:
-                    - s3:ListBucket
-                  Resource: !Sub arn:aws:s3:::${self:service.name}-${self:custom.stage}-attachments-${AWS::AccountId}
-                - Effect: "Allow"
-                  Action:
-                    - s3:GetObject
-                  Resource: !Sub ${ClamDefsBucket.Arn}/*
-    BucketAVDownloadRole:
-      Type: "AWS::IAM::Role"
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: "Allow"
-              Principal:
-                Service: "lambda.amazonaws.com"
-              Action: "sts:AssumeRole"
-        Path: ${self:custom.iamPath}
-        PermissionsBoundary:
-          Fn::If:
-            - CreatePermissionsBoundary
-            - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
-            - !Ref AWS::NoValue
-        Policies:
-          - PolicyName: "BucketAVDownloadRolePolicy"
-            PolicyDocument:
-              Version: "2012-10-17"
-              Statement:
-                - Effect: "Allow"
-                  Action:
-                    - logs:CreateLogGroup
-                    - logs:CreateLogStream
-                    - logs:PutLogEvents
-                  Resource: "arn:aws:logs:*:*:*"
-                - Effect: "Allow"
-                  Action:
-                    - s3:GetObject
-                    - s3:GetObjectTagging
-                    - s3:PutObject
-                    - s3:PutObjectAcl
-                    - s3:PutObjectTagging
-                    - s3:PutObjectVersionTagging
-                    - s3:ListBucket
-                  Resource: !Sub ${ClamDefsBucket.Arn}/*
-                - Effect: "Allow"
-                  Action:
-                    - s3:ListBucket
-                  Resource: !GetAtt ClamDefsBucket.Arn
   Outputs:
     AttachmentsBucketName: # Print out the name of the bucket that is created
       Value: !Ref AttachmentsBucket

@@ -11,12 +11,8 @@ export const main = handler(async (event, context) => {
   const data = JSON.parse(event.body);
   console.log(JSON.stringify(event, null, 2));
 
-  const nextValue = await dynamoDb
-    .increment(data.territory)
-    .done(function (value) {})
-    .fail(function (error) {
-      console.log(error);
-    });
+  var nextValue = (await dynamoDb.increment(data.territory)).Attributes
+    .lastValue.N;
 
   const params = {
     TableName: process.env.tableName,

@@ -1,3 +1,4 @@
+# Refer to the README.md file in within this service directory to configure all ssm parameters required for this service.
 service: stream-functions
 
 frameworkVersion: "2"
@@ -9,27 +10,40 @@ plugins:
   - serverless-bundle
   - serverless-dotenv-plugin
   - serverless-stack-termination-protection
+  - serverless-idempotency-helper
+  - serverless-s3-bucket-helper
+  - serverless-online
 
 provider:
   name: aws
   runtime: nodejs12.x
   region: us-east-1
+  iam:
+    role:
+      path: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
+      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
+      statements:
+        - Effect: "Allow"
+          Action:
+            - dynamodb:DescribeStream
+            - dynamodb:GetRecords
+            - dynamodb:GetShardIterator
+            - dynamodb:ListStreams
+          Resource: ${self:custom.tableStreamArn}
+        - Effect: "Allow"
+          Action:
+            - ses:SendEmail
+            - ses:SendRawEmail
+          Resource: "*"
 
 custom:
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
-  iamPath: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
-  iamPermissionsBoundaryPolicy: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
   serverlessTerminationProtection:
-    stages: # This is a list of common names for important envs that should not be destroyed.  You can remove the stage names your project doesn't use; this list is meant to be inclusive.
+    stages:
       - master
       - val
       - production
-      - develop
-      - main
-      - impl
-      - val
-      - prod
   tableStreamArn: ${cf:database-${self:custom.stage}.AmendmentsTableStreamArn}
   sesSourceEmailAddress: ${ssm:/configuration/${self:custom.stage}/sesSourceEmailAddress~true, ssm:/configuration/default/sesSourceEmailAddress~true, "admin@example.com"}
   reviewerEmailAddress: ${ssm:/configuration/${self:custom.stage}/reviewerEmailAddress~true, ssm:/configuration/default/reviewerEmailAddress~true, "reviewteam@example.com"}
@@ -42,7 +56,6 @@ functions:
           arn: ${self:custom.tableStreamArn}
           startingPosition: LATEST
           maximumRetryAttempts: 2
-    role: LambdaEmailerRole
     environment:
       emailSource: ${self:custom.sesSourceEmailAddress}
     maximumRetryAttempts: 2
@@ -53,56 +66,7 @@ functions:
           arn: ${self:custom.tableStreamArn}
           startingPosition: LATEST
           maximumRetryAttempts: 2
-    role: LambdaEmailerRole
     environment:
       emailSource: ${self:custom.sesSourceEmailAddress}
       reviewerEmail: ${self:custom.reviewerEmailAddress}
     maximumRetryAttempts: 2
-
-resources:
-  Conditions:
-    CreatePermissionsBoundary:
-      Fn::Not:
-        - Fn::Equals:
-            - ""
-            - ${self:custom.iamPermissionsBoundaryPolicy}
-  Resources:
-    LambdaEmailerRole: # Why isn't this with the function as an iamRoleStatements?  https://github.com/serverless/serverless/issues/6485
-      Type: "AWS::IAM::Role"
-      Properties:
-        AssumeRolePolicyDocument:
-          Version: "2012-10-17"
-          Statement:
-            - Effect: "Allow"
-              Principal:
-                Service: "lambda.amazonaws.com"
-              Action: "sts:AssumeRole"
-        Path: ${self:custom.iamPath}
-        PermissionsBoundary:
-          Fn::If:
-            - CreatePermissionsBoundary
-            - !Sub arn:aws:iam::${AWS::AccountId}:policy${self:custom.iamPermissionsBoundaryPolicy}
-            - !Ref AWS::NoValue
-        Policies:
-          - PolicyName: "LambdaRolePolicy"
-            PolicyDocument:
-              Version: "2012-10-17"
-              Statement:
-                - Effect: "Allow"
-                  Action:
-                    - logs:CreateLogGroup
-                    - logs:CreateLogStream
-                    - logs:PutLogEvents
-                  Resource: "arn:aws:logs:*:*:*"
-                - Effect: "Allow"
-                  Action:
-                    - dynamodb:DescribeStream
-                    - dynamodb:GetRecords
-                    - dynamodb:GetShardIterator
-                    - dynamodb:ListStreams
-                  Resource: ${self:custom.tableStreamArn}
-                - Effect: "Allow"
-                  Action:
-                    - ses:SendEmail
-                    - ses:SendRawEmail
-                  Resource: "*"

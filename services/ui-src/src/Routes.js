@@ -30,8 +30,8 @@ export default function Routes() {
     let s3Client = new AWS.S3({
       s3ForcePathStyle: true,
       apiVersion: "2006-03-01",
-      accessKeyId: "S3RVER", // This specific key is required when working offline
-      secretAccessKey: "S3RVER",
+      accessKeyId: "S3RVER", // This specific key is required when working offline   pragma: allowlist secret
+      secretAccessKey: "S3RVER", // pragma: allowlist secret
       params: { Bucket: config.s3.BUCKET },
       endpoint: new AWS.Endpoint(localEndpoint),
     });
