@@ -9411,9 +9411,9 @@ serverless-plugin-warmup@^5.3.1:
   resolved "https://registry.yarnpkg.com/serverless-plugin-warmup/-/serverless-plugin-warmup-5.3.1.tgz#cc8ca43452c5468a79a7b5447c84267035fa8d1e"
   integrity sha512-+nY6VCTLf/VjwkwAudtCXE/neaYSKy+9NmnYTSL0y8ZGfKB6u9Hrh9J2vqYEcam6eQFnCAEsch9iTs/dbU2vGg==
 
-serverless-s3-bucket-helper@CMSgov/serverless-s3-bucket-helper#ede9639b9cba10980654d0e817ad6f0ad6b84587:
+serverless-s3-bucket-helper@CMSgov/serverless-s3-bucket-helper#0.1.1:
   version "1.0.0"
-  resolved "https://codeload.github.com/CMSgov/serverless-s3-bucket-helper/tar.gz/ede9639b9cba10980654d0e817ad6f0ad6b84587"
+  resolved "https://codeload.github.com/CMSgov/serverless-s3-bucket-helper/tar.gz/f0f6d6a1ffe54e292f0afc93777764bce16a4037"
 
 serverless-stack-termination-protection@^1.0.4:
   version "1.0.4"
