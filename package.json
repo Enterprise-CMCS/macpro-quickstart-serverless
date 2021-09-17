@@ -35,7 +35,7 @@
     "serverless-online": "CMSgov/serverless-online",
     "serverless-plugin-scripts": "^1.0.2",
     "serverless-plugin-warmup": "^5.3.1",
-    "serverless-s3-bucket-helper": "CMSgov/serverless-s3-bucket-helper#0.1.0",
+    "serverless-s3-bucket-helper": "CMSgov/serverless-s3-bucket-helper#ede9639b9cba10980654d0e817ad6f0ad6b84587",
     "serverless-stack-termination-protection": "^1.0.4",
     "typescript": "^4.0.5",
     "yargs": "^16.1.1"
