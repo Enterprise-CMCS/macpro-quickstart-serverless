@@ -4,7 +4,8 @@ on:
   push:
     branches:
       # List of all branches which should control underlying infrastructure.
-      - master
+      # - master
+      - sechub # DELETE THIS LINE AND UNCOMMENT THE LINE ABOVE PRIOR TO MERGE.
 
 jobs:
   deploy:
