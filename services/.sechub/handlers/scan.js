@@ -250,6 +250,7 @@ async function assignIssuesToProject(issues, projectId, defaultColumnName) {
   // Iterate over the issues; if the card is not anywhere on the board, add it to the default column.
   for (let i = 0; i < issues.length; i++) {
     let issue = issues[i];
+    if (issue.state != "open") continue; // We only care about open issues here.
     console.log(`Starting loop for issue:  ${issue.number}`);
     if (
       !_.find(projectCards, function (x) {
