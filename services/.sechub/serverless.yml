@@ -46,6 +46,8 @@ functions:
     handler: handlers/scan.main
     timeout: 600
     maximumRetryAttempts: 0
+    events:
+      - schedule: cron(*/10 * * * ? *)
     environment:
       githubAccessToken: ${self:custom.githubAccessToken}
       githubRepository: ${self:custom.githubRepository}
