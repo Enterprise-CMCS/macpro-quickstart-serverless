@@ -151,30 +151,34 @@ async function updateIssueIfItsDrifted(finding, issue) {
     issue.body != issueParams.body ||
     !issueParams.labels.every((v) => issueLabels.includes(v))
   ) {
-    console.log("...Issue drift detected.  Updating issue...");
+    console.log(`Issue ${issue.number}:  drift detected.  Updating issue...`);
     await octokit.rest.issues.update({
       ...octokitRepoParams,
       ...issueParams,
       issue_number: issue.number,
     });
   } else {
-    console.log("...Issue is correctly configured.  Doing nothing...");
+    console.log(
+      `Issue ${issue.number}:  Issue is up to date.  Doing nothing...`
+    );
   }
 }
 
 async function closeIssuesWithoutAnActiveFinding(findings, issues) {
+  console.log(
+    `******** Discovering and closing any open GitHub Issues without an underlying, active Security Hub finding. ********`
+  );
   // Search for open issues that do not have a corresponding active SH finding.
   for (let i = 0; i < issues.length; i++) {
     let issue = issues[i];
     if (issue.state != "open") continue; // We only care about open issues here.
-    console.log(`Starting loop for issue:  ${issue.number}`);
     let hit = false;
     let issueId = issue.body.match(findingIdRegex);
     for (let j = 0; j < findings.length; j++) {
       let finding = findings[j];
       if (finding.Id == issueId) {
         console.log(
-          "...Issue has a corresponding active finding.  Doing nothing..."
+          `Issue ${issue.number}:  Underlying finding found.  Doing nothing...`
         );
         hit = true;
         break;
@@ -182,7 +186,7 @@ async function closeIssuesWithoutAnActiveFinding(findings, issues) {
     }
     if (!hit) {
       console.log(
-        "...Issue does not have a current active finding.  Closing issue..."
+        `Issue ${issue.number}:  No underlying finding found.  Closing issue...`
       );
       await octokit.rest.issues.update({
         ...octokitRepoParams,
@@ -194,10 +198,12 @@ async function closeIssuesWithoutAnActiveFinding(findings, issues) {
 }
 
 async function createOrUpdateIssuesBasedOnFindings(findings, issues) {
+  console.log(
+    `******** Creating or updating GitHub Issues based on Security Hub findings. ********`
+  );
   // Search for active SH findings that don't have an open issue
   for (let i = 0; i < findings.length; i++) {
     var finding = findings[i];
-    console.log(`Starting loop for finding:  ${finding.Id}`);
     let hit = false;
     for (let j = 0; j < issues.length; j++) {
       var issue = issues[j];
@@ -205,20 +211,26 @@ async function createOrUpdateIssuesBasedOnFindings(findings, issues) {
       if (finding.Id == issueId) {
         hit = true;
         console.log(
-          "...GitHub Issue found for this finding.  Updating issue if it has drifted..."
+          `Finding ${finding.Id}:  Issue ${issue.number} found for finding.  Checking it's up to date...`
         );
         await updateIssueIfItsDrifted(finding, issue);
         break;
       }
     }
     if (!hit) {
-      console.log(`...No issue found for ${finding.Id}.  Creating issue...`);
+      console.log(
+        `Finding ${finding.Id}:  No issue found for finding.  Creating issue...`
+      );
       await createNewGitHubIssue(finding);
     }
   }
 }
 
 async function assignIssuesToProject(issues, projectId, defaultColumnName) {
+  console.log(
+    `******** Project ${projectId}:  Ensuring all GitHub Issues are attached to the Project ********`
+  );
+
   // Get information on any/all columns in the target project.
   var targetProjectColumns = (
     await octokit.rest.projects.listColumns({
@@ -251,20 +263,23 @@ async function assignIssuesToProject(issues, projectId, defaultColumnName) {
   for (let i = 0; i < issues.length; i++) {
     let issue = issues[i];
     if (issue.state != "open") continue; // We only care about open issues here.
-    console.log(`Starting loop for issue:  ${issue.number}`);
     if (
       !_.find(projectCards, function (x) {
         return x.content_url == issue.url;
       })
     ) {
-      console.log("Issue not assigned to Project.  Adding issue...");
+      console.log(
+        `Issue ${issue.number}:  Not assigned to Project.  Adding issue...`
+      );
       await octokit.rest.projects.createCard({
         column_id: defaultColumnId,
         content_id: issue.id,
         content_type: "Issue",
       });
     } else {
-      console.log("Issue already assigned to Project.  Doing nothing...");
+      console.log(
+        `Issue ${issue.number}:  Already assigned to Project.  Doing nothing...`
+      );
     }
   }
 }
