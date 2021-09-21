@@ -42,8 +42,8 @@ provider:
           Resource:
             - !Sub arn:aws:securityhub:*:${AWS::AccountId}:hub/default
 functions:
-  scan:
-    handler: handlers/scan.main
+  sync:
+    handler: handlers/sync.main
     timeout: 600
     maximumRetryAttempts: 0
     events:

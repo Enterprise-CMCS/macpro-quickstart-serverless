@@ -296,7 +296,7 @@ async function assignIssuesToOrganizationProjects(issues, projects) {
   }
 }
 
-async function scan(event) {
+async function sync(event) {
   const findings = await getAllActiveFindings();
   var issues = await getAllIssues();
   await closeIssuesWithoutAnActiveFinding(findings, issues);
@@ -306,4 +306,4 @@ async function scan(event) {
   await assignIssuesToOrganizationProjects(issues, orgProjects);
 }
 
-exports.main = scan;
+exports.main = sync;
