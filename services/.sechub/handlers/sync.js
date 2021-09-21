@@ -168,23 +168,19 @@ async function closeIssuesWithoutAnActiveFinding(findings, issues) {
   console.log(
     `******** Discovering and closing any open GitHub Issues without an underlying, active Security Hub finding. ********`
   );
+
+  // Store all finding ids in an array
+  var findingsIds = _.map(findings, "Id");
   // Search for open issues that do not have a corresponding active SH finding.
   for (let i = 0; i < issues.length; i++) {
     let issue = issues[i];
     if (issue.state != "open") continue; // We only care about open issues here.
-    let hit = false;
     let issueId = issue.body.match(findingIdRegex);
-    for (let j = 0; j < findings.length; j++) {
-      let finding = findings[j];
-      if (finding.Id == issueId) {
-        console.log(
-          `Issue ${issue.number}:  Underlying finding found.  Doing nothing...`
-        );
-        hit = true;
-        break;
-      }
-    }
-    if (!hit) {
+    if (issueId && findingsIds.includes(issueId[0])) {
+      console.log(
+        `Issue ${issue.number}:  Underlying finding found.  Doing nothing...`
+      );
+    } else {
       console.log(
         `Issue ${issue.number}:  No underlying finding found.  Closing issue...`
       );
