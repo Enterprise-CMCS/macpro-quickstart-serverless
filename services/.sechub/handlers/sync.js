@@ -255,15 +255,18 @@ async function assignIssuesToProject(issues, projectId, defaultColumnName) {
     projectCards.push(...cards);
   }
 
-  // Iterate over the issues; if the card is not anywhere on the board, add it to the default column.
+  // Store all cards' content_urls in an array
+  const projectCardsContentUrls = _.map(projectCards, "content_url");
+
+  // Iterate over the issues; if the issue is not on the board, add it to the default column.
   for (let i = 0; i < issues.length; i++) {
     let issue = issues[i];
     if (issue.state != "open") continue; // We only care about open issues here.
-    if (
-      !_.find(projectCards, function (x) {
-        return x.content_url == issue.url;
-      })
-    ) {
+    if (projectCardsContentUrls.includes(issue.url)) {
+      console.log(
+        `Issue ${issue.number}:  Already assigned to Project.  Doing nothing...`
+      );
+    } else {
       console.log(
         `Issue ${issue.number}:  Not assigned to Project.  Adding issue...`
       );
@@ -272,10 +275,6 @@ async function assignIssuesToProject(issues, projectId, defaultColumnName) {
         content_id: issue.id,
         content_type: "Issue",
       });
-    } else {
-      console.log(
-        `Issue ${issue.number}:  Already assigned to Project.  Doing nothing...`
-      );
     }
   }
 }
