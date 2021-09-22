@@ -1,4 +1,4 @@
-name: Deploy Infra
+name: Deploy Support
 
 on:
   push:
@@ -46,7 +46,7 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: "**/node_modules"
-          key: deploy-infra-${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock', 'plugins/**') }}
+          key: deploy-support-${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock', 'plugins/**') }}
       - name: set path
         run: |
           echo "PATH=$(pwd)/node_modules/.bin/:$PATH" >> $GITHUB_ENV
@@ -54,7 +54,7 @@ jobs:
         run: |
           # When deploying multiple copies of this quickstart to the same AWS Account (not ideal), a prefix helps prevent stepping on each other.
           # This can optionally be set as an GitHub Actions Secret
-          ./deployInfra.sh $STAGE_PREFIX$branch_name
+          ./deploySupport.sh $STAGE_PREFIX$branch_name
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         if: env.SLACK_WEBHOOK_URL != '' && contains(fromJson('["master", "val", "production"]'), env.branch_name) && failure ()
