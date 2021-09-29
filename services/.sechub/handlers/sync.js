@@ -232,6 +232,20 @@ async function createOrUpdateIssuesBasedOnFindings(findings, issues) {
   }
 }
 
+async function getAllCardsForColumn(columnId) {
+  let cards = [];
+  for await (const response of octokit.paginate.iterator(
+    octokit.rest.projects.listCards,
+    {
+      ...octokitRepoParams,
+      column_id: columnId,
+    }
+  )) {
+    cards.push(...response.data);
+  }
+  return cards;
+}
+
 async function assignIssuesToProject(issues, projectId, defaultColumnName) {
   console.log(
     `******** Project ${projectId}:  Ensuring all GitHub Issues are attached to the Project ********`
@@ -257,11 +271,7 @@ async function assignIssuesToProject(issues, projectId, defaultColumnName) {
   // Iterate over the Project's columns, and put all cards into a single array.
   var projectCards = [];
   for (let i = 0; i < targetColumnIds.length; i++) {
-    let cards = (
-      await octokit.rest.projects.listCards({
-        column_id: targetColumnIds[i],
-      })
-    ).data;
+    let cards = await getAllCardsForColumn(targetColumnIds[i]);
     projectCards.push(...cards);
   }
 
