@@ -54,7 +54,7 @@ exports.main = function (event, context, done) {
   };
   let child = execFile(
     "./prince",
-    ["-", "-o", "-"],
+    ["-", "-o", "-", "--pdf-profile=PDF/UA-1"],
     opts,
     function (err, stdout, stderr) {
       if (err) {
