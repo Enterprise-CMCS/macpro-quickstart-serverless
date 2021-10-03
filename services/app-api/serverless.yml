@@ -17,6 +17,7 @@ plugins:
   - serverless-iam-helper
   - serverless-s3-bucket-helper
   - serverless-online
+  - serverless-plugin-scripts
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -36,12 +37,16 @@ custom:
     version: V2
   warmup:
     default:
-      enabled: true
+      enabled: false
       prewarm: true
       events:
         - schedule: rate(${ssm:/configuration/${self:custom.stage}/warmup/schedule~true, ssm:/configuration/default/warmup/schedule~true, "4 minutes"})
       concurrency: ${ssm:/configuration/${self:custom.stage}/warmup/concurrency~true, ssm:/configuration/default/warmup/concurrency~true, 5}
-
+  scripts:
+    hooks:
+      package:initialize: |
+        set -e
+        curl -L --output lambda_layer.zip https://www.princexml.com/download/prince-14.2-aws-lambda.zip && zip lambda_layer.zip etc/fontconfig/fonts.conf
 provider:
   name: aws
   runtime: nodejs12.x
@@ -68,6 +73,12 @@ provider:
   environment:
     tableName: ${self:custom.tableName}
     atomicCounterTableName: ${self:custom.atomicCounterTableName}
+
+layers:
+  prince:
+    name: prince-${self:custom.stage}
+    package:
+      artifact: lambda_layer.zip
 
 functions:
   create:
@@ -110,6 +121,19 @@ functions:
           method: delete
           cors: true
           authorizer: aws_iam
+  prince:
+    handler: handlers/prince.main
+    timeout: 30
+    memorySize: 3008
+    maximumRetryAttempts: 0
+    layers:
+      - !Ref PrinceLambdaLayer
+    events:
+      - http:
+          path: prince
+          method: post
+          cors: true
+          # authorizer: aws_iam
 
 resources:
   Resources:
