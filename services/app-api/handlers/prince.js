@@ -1,3 +1,5 @@
+import handler from "./../libs/handler-lib";
+
 var execFile = require("child_process").execFile;
 function tinyMultipartParser(data) {
   // assume first line is boundary
@@ -32,7 +34,7 @@ function tinyMultipartParser(data) {
   return output.join("\n");
 }
 
-exports.main = function (event, context, done) {
+export const main = handler((event, context, done) => {
   // If this invocation is a prewarm, do nothing and return.
   if (event.source == "serverless-plugin-warmup") {
     console.log("Warmed up!");
@@ -79,4 +81,4 @@ exports.main = function (event, context, done) {
   );
   child.stdin.write(html);
   child.stdin.end();
-};
+});
