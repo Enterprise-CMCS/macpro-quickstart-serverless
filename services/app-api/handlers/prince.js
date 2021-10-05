@@ -1,5 +1,3 @@
-import handler from "./../libs/handler-lib";
-
 var execFile = require("child_process").execFile;
 function tinyMultipartParser(data) {
   // assume first line is boundary
@@ -34,7 +32,7 @@ function tinyMultipartParser(data) {
   return output.join("\n");
 }
 
-export const main = handler((event, context, done) => {
+exports.main = function (event, context, done) {
   // If this invocation is a prewarm, do nothing and return.
   if (event.source == "serverless-plugin-warmup") {
     console.log("Warmed up!");
@@ -74,11 +72,15 @@ export const main = handler((event, context, done) => {
       done(null, {
         isBase64Encoded: true,
         statusCode: 200,
-        headers: { "Content-Type": "application/pdf" },
+        headers: {
+          "Content-Type": "application/pdf",
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Credentials": true,
+        },
         body: stdout.toString("base64"),
       });
     }
   );
   child.stdin.write(html);
   child.stdin.end();
-});
+};
