@@ -35,6 +35,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const myHtmlRef = useRef();
+  const printHtmlRef = useRef();
 
   useEffect(() => {
     function loadAmendment() {
@@ -136,9 +137,53 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
 
   async function handlePrintAccessiblePdf(event) {
     event.preventDefault();
-    let html = myHtmlRef.current.outerHTML;
+    let html = myHtmlRef.current.innerHTML;
+    console.log(typeof html);
+    console.log(html);
     const pdf = await getAccessiblePdf(html);
     openPdf(pdf);
+    // var html = printableHtml().outHTML;
+    // var parser = new DOMParser();
+    // var doc = parser.parseFromString(html, 'text/plain');
+    // console.log(typeof(doc));
+    // console.log(doc);
+    // var html = printableHtml();
+    // var parser = new DOMParser();
+    // var doc = parser.parseFromString(html, 'text/html');
+    // console.log(html);
+    // console.log(typeof(html));
+    // console.log(doc);
+    // var blah = parser.parseFromString(myHtmlRef.current.outerHTML, 'text/html');
+    // console.log(JSON.stringify(blah, null, 2));
+    // console.log(parser.parseFromString(myHtmlRef.current.outerHTML, 'text/html'));
+    // console.log(typeof(parser.parseFromString(myHtmlRef.current.outerHTML, 'text/html')));
+
+    // var asdf = printableHtml();
+    // console.log(typeof(asdf));
+    // console.log(asdf.get('print-page'));
+    // var converted = asdf.html();
+    // console.log(converted);
+    // const pdf = await getAccessiblePdf(asdf);
+    // openPdf(converted);
+    // console.log(asdf.innerHTML);
+    // var parser = new DOMParser();
+    // var doc = parser.parseFromString(asdf, 'text/html');
+    // console.log(JSON.stringify(asdf));
+    // console.log(printableHtml().current.outerHTML);
+  }
+
+  function printableHtml() {
+    return (
+      <div className="print-page" ref={printHtmlRef}>
+        <html lang="en">
+          <meta charset="utf-8" />
+          <head>
+            <title>My First Accessible PDF</title>
+          </head>
+          <body>heyo captain jack</body>
+        </html>
+      </div>
+    );
   }
 
   async function handleDelete(event) {
