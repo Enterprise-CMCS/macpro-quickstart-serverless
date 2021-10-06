@@ -16,7 +16,7 @@ export const main = handler(async (event, context) => {
   fs.writeFileSync("/tmp/input", html);
   try {
     // ["-", "-o", "-", "--pdf-profile=PDF/UA-1"],
-    let result = execSync(`/opt/prince /tmp/input -o -`);
+    let result = execSync(`/opt/prince /tmp/input -o - --pdf-profile=PDF/UA-1`);
     return result.toString("base64");
   } catch (err) {
     console.log(err);

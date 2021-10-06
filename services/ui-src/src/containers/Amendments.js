@@ -8,7 +8,7 @@ import Select from "react-select";
 import Switch from "react-ios-switch";
 import { territoryList } from "../libs/territoryLib";
 import * as url from "url";
-// import inlineCss from 'inline-css';
+import ReactDOMServer from "react-dom/server";
 import {
   getAmendment,
   updateAmendment,
@@ -35,8 +35,6 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
   const [comments, setComments] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const myHtmlRef = useRef();
-  const printHtmlRef = useRef();
 
   useEffect(() => {
     function loadAmendment() {
@@ -138,23 +136,34 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
 
   async function handlePrintAccessiblePdf(event) {
     event.preventDefault();
-    let html = document.querySelector("html").outerHTML;
+    // let html = document.querySelector("html").innerHTML;
+    let html = printableHtml();
     console.log(html);
     const pdf = await getAccessiblePdf(btoa(html));
     openPdf(pdf);
   }
 
   function printableHtml() {
-    return (
-      <div className="print-page" ref={printHtmlRef}>
-        <html lang="en">
-          <meta charset="utf-8" />
-          <head>
-            <title>My First Accessible PDF</title>
-          </head>
-          <body>heyo captain jack</body>
-        </html>
-      </div>
+    return ReactDOMServer.renderToStaticMarkup(
+      <html lang="en">
+        <head>
+          <title>APS print page</title>
+        </head>
+        <body>
+          <img
+            alt="SC state logo"
+            src="https://i.pinimg.com/originals/c4/52/04/c4520440b727695b5aca89e7afa2e7e3.jpg"
+            width="50"
+          />
+          <h1>Amendment to Planned Settlement (APS)</h1>
+          <p>&nbsp;</p>
+          <p>APD-ID:&nbsp;&nbsp;{transmittalNumber}</p>
+          <p>Submitter:&nbsp;&nbsp;{firstName + " " + lastName}</p>
+          <p>Submitter Email:&nbsp;&nbsp;{email}</p>
+          <p>Urgent?:&nbsp;&nbsp;{urgent.toString()}</p>
+          <p>Comments:&nbsp;&nbsp;{comments}</p>
+        </body>
+      </html>
     );
   }
 
@@ -206,7 +215,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
   }
 
   return (
-    <div className="Amendments" ref={myHtmlRef}>
+    <div className="Amendments">
       {amendment && (
         <form onSubmit={handleSubmit}>
           <FormGroup controlId="transmittalNumber">
