@@ -19,6 +19,6 @@ export const main = handler(async (event, context) => {
     let result = execSync(`/opt/prince /tmp/input -o -`);
     return result.toString("base64");
   } catch (err) {
-    console.log("sdterr: ", err.stderr.toString());
+    console.log(err);
   }
 });
