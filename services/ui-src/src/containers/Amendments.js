@@ -321,7 +321,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
             Delete
           </LoaderButton>
           <LoaderButton block bsSize="large" onClick={handlePrintAccessiblePdf}>
-            Open accessible PDF for printing
+            Print
           </LoaderButton>
         </form>
       )}
