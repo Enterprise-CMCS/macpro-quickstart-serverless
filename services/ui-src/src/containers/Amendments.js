@@ -138,7 +138,6 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
     event.preventDefault();
     let html = myHtmlRef.current.outerHTML;
     const pdf = await getAccessiblePdf(html);
-    console.log(`pdf:  ${pdf}`);
     openPdf(pdf);
   }
 
