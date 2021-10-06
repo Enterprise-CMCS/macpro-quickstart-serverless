@@ -8,6 +8,7 @@ import Select from "react-select";
 import Switch from "react-ios-switch";
 import { territoryList } from "../libs/territoryLib";
 import * as url from "url";
+// import inlineCss from 'inline-css';
 import {
   getAmendment,
   updateAmendment,
@@ -137,39 +138,10 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
 
   async function handlePrintAccessiblePdf(event) {
     event.preventDefault();
-    let html = myHtmlRef.current.innerHTML;
-    console.log(typeof html);
+    let html = document.querySelector("html").outerHTML;
     console.log(html);
-    const pdf = await getAccessiblePdf(html);
+    const pdf = await getAccessiblePdf(btoa(html));
     openPdf(pdf);
-    // var html = printableHtml().outHTML;
-    // var parser = new DOMParser();
-    // var doc = parser.parseFromString(html, 'text/plain');
-    // console.log(typeof(doc));
-    // console.log(doc);
-    // var html = printableHtml();
-    // var parser = new DOMParser();
-    // var doc = parser.parseFromString(html, 'text/html');
-    // console.log(html);
-    // console.log(typeof(html));
-    // console.log(doc);
-    // var blah = parser.parseFromString(myHtmlRef.current.outerHTML, 'text/html');
-    // console.log(JSON.stringify(blah, null, 2));
-    // console.log(parser.parseFromString(myHtmlRef.current.outerHTML, 'text/html'));
-    // console.log(typeof(parser.parseFromString(myHtmlRef.current.outerHTML, 'text/html')));
-
-    // var asdf = printableHtml();
-    // console.log(typeof(asdf));
-    // console.log(asdf.get('print-page'));
-    // var converted = asdf.html();
-    // console.log(converted);
-    // const pdf = await getAccessiblePdf(asdf);
-    // openPdf(converted);
-    // console.log(asdf.innerHTML);
-    // var parser = new DOMParser();
-    // var doc = parser.parseFromString(asdf, 'text/html');
-    // console.log(JSON.stringify(asdf));
-    // console.log(printableHtml().current.outerHTML);
   }
 
   function printableHtml() {
