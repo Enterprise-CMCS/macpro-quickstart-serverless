@@ -8,7 +8,12 @@ import Select from "react-select";
 import Switch from "react-ios-switch";
 import { territoryList } from "../libs/territoryLib";
 import * as url from "url";
-import { getAmendment, updateAmendment, deleteAmendment } from "../libs/api";
+import {
+  getAmendment,
+  updateAmendment,
+  deleteAmendment,
+  getAccessiblePdf,
+} from "../libs/api";
 import {
   capitalize,
   validateAmendmentForm,
@@ -29,6 +34,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
   const [comments, setComments] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const myHtmlRef = useRef();
 
   useEffect(() => {
     function loadAmendment() {
@@ -111,6 +117,31 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
     }
   }
 
+  // async function handlePrint(event) {
+  //   event.preventDefault();
+  //   window.print();
+  // };
+
+  const openPdf = (basePdf) => {
+    let byteCharacters = atob(basePdf);
+    let byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    let byteArray = new Uint8Array(byteNumbers);
+    let file = new Blob([byteArray], { type: "application/pdf;base64" });
+    let fileURL = URL.createObjectURL(file);
+    window.open(fileURL).print();
+  };
+
+  async function handlePrintAccessiblePdf(event) {
+    event.preventDefault();
+    let html = myHtmlRef.current.outerHTML;
+    const pdf = await getAccessiblePdf(html);
+    console.log(`pdf:  ${pdf}`);
+    openPdf(pdf);
+  }
+
   async function handleDelete(event) {
     event.preventDefault();
 
@@ -159,7 +190,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
   }
 
   return (
-    <div className="Amendments">
+    <div className="Amendments" ref={myHtmlRef}>
       {amendment && (
         <form onSubmit={handleSubmit}>
           <FormGroup controlId="transmittalNumber">
@@ -263,6 +294,9 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
             isLoading={isDeleting}
           >
             Delete
+          </LoaderButton>
+          <LoaderButton block bsSize="large" onClick={handlePrintAccessiblePdf}>
+            Open accessible PDF for printing
           </LoaderButton>
         </form>
       )}
