@@ -22,48 +22,4 @@ export const main = handler(async (event, context) => {
   } catch (err) {
     console.log("sdterr: ", err.stderr.toString());
   }
-  // let child = execFileSync(
-  //   "./prince",
-  //   // ["-", "-o", "-", "--pdf-profile=PDF/UA-1"],
-  //   ["-", "-o", "-"],
-  //
-  //   opts,
-  //   function (err, stdout, stderr) {
-  //     if (err) {
-  //       return err;
-  //     }
-  //     if (
-  //       err === null &&
-  //       stderr.toString().match(/prince:\s+error:\s+([^\n]+)/)
-  //     ) {
-  //       return (
-  //         new Error(stderr.toString().match(/prince:\s+error:\s+([^\n]+)/)[1])
-  //       );
-  //     }
-  //     console.log(stdout.toString("base64"));
-  //     return {
-  //       isBase64Encoded: true,
-  //       statusCode: 200,
-  //       headers: {
-  //         "Content-Type": "application/pdf",
-  //         "Access-Control-Allow-Origin": "*",
-  //         "Access-Control-Allow-Credentials": true,
-  //       },
-  //       body: stdout.toString("base64"),
-  //     };
-  //   }
-  // );
-  // // child.stdin.write(html);
-  // // child.stdin.end();
-  // console.log(child.stdout);
-  // return {
-  //   isBase64Encoded: true,
-  //   statusCode: 200,
-  //   headers: {
-  //     "Content-Type": "application/pdf",
-  //     "Access-Control-Allow-Origin": "*",
-  //     "Access-Control-Allow-Credentials": true,
-  //   },
-  // body: child.stdout.toString("base64"),
-  // };
 });
