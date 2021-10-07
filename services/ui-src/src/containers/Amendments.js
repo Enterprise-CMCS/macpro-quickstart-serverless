@@ -155,6 +155,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
             src="https://i.pinimg.com/originals/c4/52/04/c4520440b727695b5aca89e7afa2e7e3.jpg"
             width="50"
           />
+          <p style={{ "border-top": "1px solid black" }}>&nbsp;</p>
           <h1>Amendment to Planned Settlement (APS)</h1>
           <p>&nbsp;</p>
           <p>APD-ID:&nbsp;&nbsp;{transmittalNumber}</p>
