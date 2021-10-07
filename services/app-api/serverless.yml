@@ -37,7 +37,7 @@ custom:
     version: V2
   warmup:
     default:
-      enabled: false
+      enabled: true
       prewarm: true
       events:
         - schedule: rate(${ssm:/configuration/${self:custom.stage}/warmup/schedule~true, ssm:/configuration/default/warmup/schedule~true, "4 minutes"})
