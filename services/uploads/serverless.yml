@@ -65,6 +65,7 @@ custom:
         # the attachments bucket has no name, so we need to make one up on our own
 layers:
   clamDefs:
+    name: clamDefs-${self:custom.stage}
     package:
       artifact: lambda_layer.zip
 
