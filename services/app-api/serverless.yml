@@ -133,7 +133,7 @@ functions:
           path: prince
           method: post
           cors: true
-          authorizer: aws_iam
+          # authorizer: aws_iam
 
 resources:
   Resources:
