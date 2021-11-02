@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "react-bootstrap";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./LoaderButton.css";
 
 export default function LoaderButton({
@@ -15,7 +15,7 @@ export default function LoaderButton({
       disabled={disabled || isLoading}
       {...props}
     >
-      {isLoading && <FontAwesomeIcon icon={'refresh'} className="spinning"/> }
+      {isLoading && <FontAwesomeIcon icon={"refresh"} className="spinning" />}
       {props.children}
     </Button>
   );

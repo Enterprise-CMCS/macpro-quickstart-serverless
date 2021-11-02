@@ -19,12 +19,14 @@ function Header({ handleLogout, isAuthenticated, handleLogin }) {
                 <Bootstrap.NavDropdown.Item href="/profile">
                   Profile
                 </Bootstrap.NavDropdown.Item>
-                <Bootstrap.NavDropdown.Item onClick={ handleLogout }>
+                <Bootstrap.NavDropdown.Item onClick={handleLogout}>
                   Logout
                 </Bootstrap.NavDropdown.Item>
               </Bootstrap.NavDropdown>
             ) : (
-              <Bootstrap.Nav.Link onClick={ handleLogin }>Login</Bootstrap.Nav.Link>
+              <Bootstrap.Nav.Link onClick={handleLogin}>
+                Login
+              </Bootstrap.Nav.Link>
             )}
           </Bootstrap.Navbar.Collapse>
         </Bootstrap.Container>

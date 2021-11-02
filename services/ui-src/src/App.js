@@ -73,7 +73,7 @@ function App() {
           isAuthenticated={isAuthenticated}
           handleLogout={handleLogout}
           handleLogin={handleLogin}
-          />
+        />
         <AppContext.Provider value={{ isAuthenticated, userHasAuthenticated }}>
           <Routes />
           <Footer />
