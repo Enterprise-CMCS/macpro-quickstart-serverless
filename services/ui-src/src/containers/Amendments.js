@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { onError } from "../libs/errorLib";
-import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import "./Amendments.css";
 import Select from "react-select";
@@ -163,7 +163,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
       {amendment && (
         <form onSubmit={handleSubmit}>
           <FormGroup controlId="transmittalNumber">
-            <ControlLabel>APS ID &nbsp;(Transmittal Number)</ControlLabel>
+            <FormLabel>APS ID &nbsp;(Transmittal Number)</FormLabel>
             <FormControl
               disabled={true}
               value={transmittalNumber}
@@ -171,11 +171,11 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
             />
           </FormGroup>
           <FormGroup controlId="name">
-            <ControlLabel>Submitter</ControlLabel>
+            <FormLabel>Submitter</FormLabel>
             <FormControl value={firstName + " " + lastName} disabled={true} />
           </FormGroup>
           {/*<FormGroup controlId="firstName">*/}
-          {/*    <ControlLabel>First Name</ControlLabel>*/}
+          {/*    <FormLabel>First Name</FormLabel>*/}
           {/*    <FormControl*/}
           {/*        value={firstName}*/}
           {/*        disabled={true}*/}
@@ -183,7 +183,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
           {/*    />*/}
           {/*</FormGroup>*/}
           {/*<FormGroup controlId="lastName">*/}
-          {/*    <ControlLabel>Last Name</ControlLabel>*/}
+          {/*    <FormLabel>Last Name</FormLabel>*/}
           {/*    <FormControl*/}
           {/*        value={lastName}*/}
           {/*        disabled={true}*/}
@@ -191,7 +191,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
           {/*    />*/}
           {/*</FormGroup>*/}
           <FormGroup controlId="email">
-            <ControlLabel>Submitter Email</ControlLabel>
+            <FormLabel>Submitter Email</FormLabel>
             <FormControl
               value={email}
               disabled={true}
@@ -199,7 +199,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
             />
           </FormGroup>
           <FormGroup controlId="territory">
-            <ControlLabel>State/Territory</ControlLabel>
+            <FormLabel>State/Territory</FormLabel>
             <Select
               name="form-field-name"
               value={territoryList.filter(function (option) {
@@ -211,7 +211,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
             />
           </FormGroup>
           <FormGroup controlId="urgent">
-            <ControlLabel>This APS is classified as urgent &nbsp;</ControlLabel>
+            <FormLabel>This APS is classified as urgent &nbsp;</FormLabel>
             <Switch
               controlId="urgent"
               checked={urgent}
@@ -220,7 +220,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
           </FormGroup>
           {amendment.attachment && (
             <FormGroup>
-              <ControlLabel>Attachment</ControlLabel>
+              <FormLabel>Attachment</FormLabel>
               <FormControl.Static>
                 <button
                   className="link-lookalike"
@@ -232,11 +232,11 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
             </FormGroup>
           )}
           <FormGroup controlId="file">
-            {!amendment.attachment && <ControlLabel>Attachment</ControlLabel>}
+            {!amendment.attachment && <FormLabel>Attachment</FormLabel>}
             <FormControl onChange={handleFileChange} type="file" />
           </FormGroup>
           <FormGroup controlId="comments">
-            <ControlLabel>Additional Comments</ControlLabel>
+            <FormLabel>Additional Comments</FormLabel>
             <FormControl
               componentClass="textarea"
               value={comments}

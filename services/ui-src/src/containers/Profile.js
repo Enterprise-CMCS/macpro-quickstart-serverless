@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { onError } from "../libs/errorLib";
-import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import "./Profile.css";
 import PhoneInput from "react-phone-input-2";
@@ -77,19 +77,19 @@ export default function Profile() {
     <div className="Profile">
       <form onSubmit={handleSubmit}>
         <FormGroup controlId="email">
-          <ControlLabel>Email</ControlLabel>
+          <FormLabel>Email</FormLabel>
           <FormControl value={email} disabled={true} />
         </FormGroup>
         <FormGroup controlId="firstName">
-          <ControlLabel>First Name</ControlLabel>
+          <FormLabel>First Name</FormLabel>
           <FormControl value={firstName} disabled={true} />
         </FormGroup>
         <FormGroup controlId="lastName">
-          <ControlLabel>Last Name</ControlLabel>
+          <FormLabel>Last Name</FormLabel>
           <FormControl value={lastName} disabled={true} />
         </FormGroup>
         <FormGroup controlId="phoneNumber">
-          <ControlLabel>Phone</ControlLabel>
+          <FormLabel>Phone</FormLabel>
           <PhoneInput
             value={phoneNumber}
             country="us"
