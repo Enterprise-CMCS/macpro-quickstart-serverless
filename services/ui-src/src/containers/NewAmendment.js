@@ -2,6 +2,7 @@ import React, { useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { FormGroup, FormControl, FormLabel, Container } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
+import { Breadcrumbs } from "../components/Breadcrumbs";
 import { onError } from "../libs/errorLib";
 import "./NewAmendment.css";
 import { createAmendment } from "../libs/api";
@@ -67,6 +68,7 @@ export default function NewAmendment({ fileUpload }) {
 
   return (
     <Container className="NewAmendment">
+      <Breadcrumbs />
       <form onSubmit={handleSubmit}>
         <FormGroup controlId="email">
           <FormLabel>Contact Email</FormLabel>
@@ -124,10 +126,7 @@ export default function NewAmendment({ fileUpload }) {
           />
         </FormGroup>
         <LoaderButton
-          block
           type="submit"
-          bsSize="large"
-          bsStyle="primary"
           isLoading={isLoading}
           disabled={
             !validateAmendmentForm(email, firstName, lastName, territory)

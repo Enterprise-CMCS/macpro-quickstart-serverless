@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import { onError } from "../libs/errorLib";
-import { FormGroup, FormControl, FormLabel, Container } from "react-bootstrap";
-import LoaderButton from "../components/LoaderButton";
-import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import PhoneInput from "react-phone-input-2";
+import { FormGroup, FormControl, FormLabel, Container } from "react-bootstrap";
+import { onError } from "../libs/errorLib";
+import LoaderButton from "../components/LoaderButton";
+import { Breadcrumbs } from "../components/Breadcrumbs";
 import { currentUserInfo, updateCurrentUserAttributes } from "../libs/user";
 import { capitalize } from "../libs/helpers";
 
@@ -74,6 +75,7 @@ export default function Profile() {
 
   return (
     <Container>
+      <Breadcrumbs />
       <form onSubmit={handleSubmit}>
         <FormGroup controlId="email">
           <FormLabel>Email</FormLabel>
@@ -99,10 +101,7 @@ export default function Profile() {
           />
         </FormGroup>
         <LoaderButton
-          block
           type="submit"
-          bsSize="large"
-          bsStyle="primary"
           isLoading={isLoading}
           disabled={!validateForm()}
         >

@@ -10,13 +10,15 @@ export default function LoaderButton({
   ...props
 }) {
   return (
-    <Button
-      className={`LoaderButton ${className}`}
-      disabled={disabled || isLoading}
-      {...props}
-    >
-      {isLoading && <FontAwesomeIcon icon={"refresh"} className="spinning" />}
-      {props.children}
-    </Button>
+    <div className="d-grid mt-4">
+      <Button
+        className={`LoaderButton ${className}`}
+        disabled={disabled || isLoading}
+        {...props}
+      >
+        {isLoading && <FontAwesomeIcon icon={"refresh"} className="spinning" />}
+        {props.children}
+      </Button>
+    </div>
   );
 }

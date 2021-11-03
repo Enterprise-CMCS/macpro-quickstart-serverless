@@ -1,8 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { onError } from "../libs/errorLib";
-import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
+import { FormGroup, FormControl, FormLabel, Container } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
+import { Breadcrumbs } from "../components/Breadcrumbs";
 import "./Amendments.css";
 import Select from "react-select";
 import Switch from "react-ios-switch";
@@ -159,7 +160,8 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
   }
 
   return (
-    <div className="Amendments">
+    <Container className="Amendments">
+      <Breadcrumbs />
       {amendment && (
         <form onSubmit={handleSubmit}>
           <FormGroup controlId="transmittalNumber">
@@ -244,10 +246,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
             />
           </FormGroup>
           <LoaderButton
-            block
             type="submit"
-            bsSize="large"
-            bsStyle="primary"
             isLoading={isLoading}
             disabled={
               !validateAmendmentForm(email, firstName, lastName, territory)
@@ -255,17 +254,11 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
           >
             Save
           </LoaderButton>
-          <LoaderButton
-            block
-            bsSize="large"
-            bsStyle="danger"
-            onClick={handleDelete}
-            isLoading={isDeleting}
-          >
+          <LoaderButton onClick={handleDelete} isLoading={isDeleting}>
             Delete
           </LoaderButton>
         </form>
       )}
-    </div>
+    </Container>
   );
 }
