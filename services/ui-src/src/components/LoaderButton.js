@@ -10,7 +10,7 @@ export default function LoaderButton({
   ...props
 }) {
   return (
-    <div className="d-grid mt-4">
+    <div className="d-grid mt-4" data-testid="loader-button">
       <Button
         className={`LoaderButton ${className}`}
         disabled={disabled || isLoading}
