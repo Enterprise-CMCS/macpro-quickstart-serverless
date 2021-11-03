@@ -1,112 +1,112 @@
 .nav-bar {
-    @extend .ds-u-align-items--center;
-    @extend .ds-u-flex-wrap--nowrap;
-    background-color: $color-primary;
-    min-height: 70px;
-  
-    #oneMacLogo {
-      @extend .ds-u-margin-right--6;
-      max-height: 4rem;
-    }
-  
-    .nav-left {
-      @extend .ds-u-display--flex;
-      @extend .ds-u-flex-wrap--wrap;
-      align-items: center;
-  
-      a {
-        color: $color-white;
-        font-weight: bold;
-        border: none;
-        margin-right: 50px;
-        &:hover {
-          color: rgba($color-base-inverse, 0.8);
-        }
-  
-        &:active {
-          color: rgba($color-base-inverse, 0.6);
-        }
-      }
-    }
-  
-    .nav-right {
-      @extend .ds-u-display--flex;
-      @extend .ds-u-justify-content--end;
-      @extend .ds-u-flex-wrap--wrap;
-      font-weight: bold;
-  
-      label {
-        margin-right: 2rem;
-        margin-top: 0px;
-      }
-  
-      button.dropdown {
-        color: $color-white;
-        font-weight: bold;
-        border: none;
-        outline: none;
-        padding-right: 0px;
-        background-color: $color-primary;
-        &:hover {
-          color: rgba($color-base-inverse, 0.8);
-        }
-  
-        &:active {
-          color: rgba($color-base-inverse, 0.6);
-        }
-      }
-  
-      button {
-        background-color: $color-primary;
-      }
-  
-      a {
-        color: black;
-        text-decoration: none;
-        background-color: white;
-        &:hover {
-          text-decoration: underline;
-          background-color: $color-gray-lightest;
-        }
-      }
-  
-      .register-link {
-        border-style: none;
-      }
-  
-      .dev-login {
-        padding-left: 25px;
-      }
-    }
+  @extend .ds-u-align-items--center;
+  @extend .ds-u-flex-wrap--nowrap;
+  background-color: $color-primary;
+  min-height: 70px;
+
+  #oneMacLogo {
+    @extend .ds-u-margin-right--6;
+    max-height: 4rem;
   }
 
-  .white-text {
-    color: $color-white;
-    @extend .white-link;
-  }
-  
-  .dropdown-menu a {
-    color: $color-base;
-  }
-  
-  .white-link {
+  .nav-left {
+    @extend .ds-u-display--flex;
+    @extend .ds-u-flex-wrap--wrap;
+    align-items: center;
+
     a {
       color: $color-white;
+      font-weight: bold;
+      border: none;
+      margin-right: 50px;
       &:hover {
-        color: $color-gray-lighter;
+        color: rgba($color-base-inverse, 0.8);
+      }
+
+      &:active {
+        color: rgba($color-base-inverse, 0.6);
       }
     }
   }
 
-  a.nav-link {
+  .nav-right {
+    @extend .ds-u-display--flex;
+    @extend .ds-u-justify-content--end;
+    @extend .ds-u-flex-wrap--wrap;
+    font-weight: bold;
+
+    label {
+      margin-right: 2rem;
+      margin-top: 0px;
+    }
+
+    button.dropdown {
+      color: $color-white;
+      font-weight: bold;
+      border: none;
+      outline: none;
+      padding-right: 0px;
+      background-color: $color-primary;
+      &:hover {
+        color: rgba($color-base-inverse, 0.8);
+      }
+
+      &:active {
+        color: rgba($color-base-inverse, 0.6);
+      }
+    }
+
+    button {
+      background-color: $color-primary;
+    }
+
+    a {
+      color: black;
+      text-decoration: none;
+      background-color: white;
+      &:hover {
+        text-decoration: underline;
+        background-color: $color-gray-lightest;
+      }
+    }
+
+    .register-link {
+      border-style: none;
+    }
+
+    .dev-login {
+      padding-left: 25px;
+    }
+  }
+}
+
+.white-text {
+  color: $color-white;
+  @extend .white-link;
+}
+
+.dropdown-menu a {
+  color: $color-base;
+}
+
+.white-link {
+  a {
     color: $color-white;
     &:hover {
       color: $color-gray-lighter;
     }
-    &::after {
-      color: $color-gray-lighter;
-    }
-    &:focus {
-      color: $color-gray-lighter;
-    }
   }
+}
+
+a.nav-link {
+  color: $color-white;
+  &:hover {
+    color: $color-gray-lighter;
+  }
+  &::after {
+    color: $color-gray-lighter;
+  }
+  &:focus {
+    color: $color-gray-lighter;
+  }
+}
