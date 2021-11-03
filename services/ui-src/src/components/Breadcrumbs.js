@@ -1,17 +1,18 @@
+import React from "react";
 import { Breadcrumb } from "react-bootstrap";
-import { Link, useRouteMatch, useParams } from "react-router-dom";
+import { Link, useRouteMatch } from "react-router-dom";
 import { routes } from "../Routes";
 import "./Breadcrumb.css";
 
 export const Breadcrumbs = () => {
-  const routeMatch = useRouteMatch();
-  const params = useParams();
+  const route = useRouteMatch();
+
   const items = routes
-    .filter(({ path }) => routeMatch.path.includes(path))
+    .filter(({ path }) => route.path.includes(path))
     .map(({ path, ...rest }) => ({
-      path: Object.keys(params).length
-        ? Object.keys(params).reduce(
-            (path, param) => path.replace(`:${param}`, params[param]),
+      path: Object.keys(route.params).length
+        ? Object.keys(route.params).reduce(
+            (path, param) => path.replace(`:${param}`, route.params[param]),
             path
           )
         : path,
