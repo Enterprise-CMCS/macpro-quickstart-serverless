@@ -1,4 +1,4 @@
-import { routes } from "./routes";
+import { routes } from "./Routes";
 
 const expected = [
   "Home: /",
