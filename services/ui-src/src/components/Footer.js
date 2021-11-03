@@ -1,5 +1,5 @@
 import React from "react";
-import * as Bootstrap from "react-bootstrap";
+import { Container } from "react-bootstrap";
 import { helpDeskContact } from "../libs/contacts";
 import { HelpSection } from "./HelpSection";
 
@@ -8,7 +8,7 @@ function Footer() {
     <footer>
       <HelpSection />
       <section className="footer-top-container">
-        <Bootstrap.Container>
+        <Container>
           <div className="footer-wrapper footer-top-wrapper">
             <div>
               <img src="/footer/logo-MedicaidGov.svg" alt="Medicaid.gov logo" />
@@ -27,10 +27,10 @@ function Footer() {
               </div>
             </div>
           </div>
-        </Bootstrap.Container>
+        </Container>
       </section>
       <div className="footer-bottom-container">
-        <Bootstrap.Container>
+        <Container>
           <div className="footer-wrapper">
             <div>
               Email{" "}
@@ -45,7 +45,7 @@ function Footer() {
             </div>
             <div>7500 Security Boulevard Baltimore, MD 21244</div>
           </div>
-        </Bootstrap.Container>
+        </Container>
       </div>
     </footer>
   );
