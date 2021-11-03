@@ -1,0 +1,64 @@
+.footer-top-container,
+.footer-bottom-container {
+  .header-wrapper,
+  .footer-wrapper {
+    @extend .ds-u-display--flex;
+    @extend .ds-u-align-items--center;
+    @extend .ds-u-justify-content--between;
+    width: 100%;
+  }
+
+  @media only screen and (max-width: $width-lg) {
+    .footer-wrapper {
+      flex-direction: column;
+    }
+
+    .footer-top-wrapper {
+      > * {
+        margin-top: 40px;
+      }
+    }
+  }
+}
+
+.footer-top-container {
+  @extend .ds-u-padding-top--0;
+  @extend .ds-u-lg-padding-top--2;
+  @extend .ds-u-padding-bottom--3;
+  background: $color-primary-alt-lightest;
+}
+.footer-bottom-container {
+  @extend .ds-u-padding-y--1;
+  background: $color-primary;
+  color: $color-white;
+  margin: 0;
+  width: 100%;
+  max-width: none;
+  font-family: Open Sans;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 2.1;
+  letter-spacing: 0;
+}
+.footer-government-blurb {
+  @extend .ds-u-display--flex;
+  @extend .ds-u-align-items--center;
+  max-width: 480px;
+}
+.footer-fed-gov-logo {
+  min-width: 80px;
+}
+.footer-fed-gov-text {
+  font-family: Open Sans;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 21px;
+  letter-spacing: 0px;
+  text-align: justify;
+  max-width: 720px;
+}
+.footer-email {
+  color: $color-white;
+}

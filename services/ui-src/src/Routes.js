@@ -40,22 +40,24 @@ export default function Routes() {
   }
 
   return (
-    <Switch>
-      <Route exact path="/">
-        <Home />
-      </Route>
-      <AuthenticatedRoute exact path="/profile">
-        <Profile />
-      </AuthenticatedRoute>
-      <AuthenticatedRoute exact path="/amendments/new">
-        <NewAmendment fileUpload={s3Upload} />
-      </AuthenticatedRoute>
-      <AuthenticatedRoute exact path="/amendments/:id">
-        <Amendments fileUpload={s3Upload} fileURLResolver={s3URLResolver} />
-      </AuthenticatedRoute>
-      <Route>
-        <NotFound />
-      </Route>
-    </Switch>
+    <main id="main-wrapper">
+      <Switch>
+        <Route exact path="/">
+          <Home />
+        </Route>
+        <AuthenticatedRoute exact path="/profile">
+          <Profile />
+        </AuthenticatedRoute>
+        <AuthenticatedRoute exact path="/amendments/new">
+          <NewAmendment fileUpload={s3Upload} />
+        </AuthenticatedRoute>
+        <AuthenticatedRoute exact path="/amendments/:id">
+          <Amendments fileUpload={s3Upload} fileURLResolver={s3URLResolver} />
+        </AuthenticatedRoute>
+        <Route>
+          <NotFound />
+        </Route>
+      </Switch>
+    </main>
   );
 }

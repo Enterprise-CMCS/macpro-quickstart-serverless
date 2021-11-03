@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { onError } from "../libs/errorLib";
-import { FormGroup, FormControl, FormLabel } from "react-bootstrap";
+import { FormGroup, FormControl, FormLabel, Container } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
-import "./Profile.css";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import { currentUserInfo, updateCurrentUserAttributes } from "../libs/user";
@@ -74,7 +73,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="Profile">
+    <Container>
       <form onSubmit={handleSubmit}>
         <FormGroup controlId="email">
           <FormLabel>Email</FormLabel>
@@ -110,6 +109,6 @@ export default function Profile() {
           Save
         </LoaderButton>
       </form>
-    </div>
+    </Container>
   );
 }
