@@ -1,5 +1,5 @@
 import React from "react";
-import { PageHeader } from "./PageHeader";
+import { PageHeader } from "../components/PageHeader";
 import { render, within } from "@testing-library/react";
 
 describe("Test PageHeader.js", () => {

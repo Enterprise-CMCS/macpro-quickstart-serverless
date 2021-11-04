@@ -1,5 +1,5 @@
 import React from "react";
-import Amendments from "./Amendments";
+import Amendments from "../containers/Amendments";
 import { render, screen, act } from "@testing-library/react";
 import { getAmendment } from "../libs/api";
 
