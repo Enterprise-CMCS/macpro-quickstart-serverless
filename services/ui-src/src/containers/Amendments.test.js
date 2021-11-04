@@ -1,6 +1,6 @@
 import React from "react";
 import Amendments from "./Amendments";
-import { render, screen, getByText, act } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import { getAmendment } from "../libs/api";
 
 const fileUpload = () => {};
@@ -61,9 +61,5 @@ describe("Test Amendments.js", () => {
     const inputEl = screen.getByTestId("amendments-email");
     expect(inputEl).toBeInTheDocument();
     expect(inputEl).toHaveAttribute("value", "johnDoe@example.com");
-  });
-
-  test("Should match snapshot", () => {
-    expect(wrapper.asFragment()).toMatchSnapshot();
   });
 });
