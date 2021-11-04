@@ -160,7 +160,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
   }
 
   return (
-    <Container className="Amendments">
+    <Container className="Amendments" data-testid="amendments-container">
       <Breadcrumbs />
       {amendment && (
         <form onSubmit={handleSubmit}>
@@ -176,25 +176,10 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
             <FormLabel>Submitter</FormLabel>
             <FormControl value={firstName + " " + lastName} disabled={true} />
           </FormGroup>
-          {/*<FormGroup controlId="firstName">*/}
-          {/*    <FormLabel>First Name</FormLabel>*/}
-          {/*    <FormControl*/}
-          {/*        value={firstName}*/}
-          {/*        disabled={true}*/}
-          {/*        onChange={e => setFirstName(e.target.value)}*/}
-          {/*    />*/}
-          {/*</FormGroup>*/}
-          {/*<FormGroup controlId="lastName">*/}
-          {/*    <FormLabel>Last Name</FormLabel>*/}
-          {/*    <FormControl*/}
-          {/*        value={lastName}*/}
-          {/*        disabled={true}*/}
-          {/*        onChange={e => setLastName(e.target.value)}*/}
-          {/*    />*/}
-          {/*</FormGroup>*/}
           <FormGroup controlId="email">
             <FormLabel>Submitter Email</FormLabel>
             <FormControl
+              data-testid="amendments-email"
               value={email}
               disabled={true}
               onChange={(e) => setEmail(e.target.value)}
@@ -207,6 +192,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
               value={territoryList.filter(function (option) {
                 return option.value === territory;
               })}
+              data-testid="amendments-territory"
               isDisabled={true}
               onChange={(e) => setTerritory(e.value)}
               options={territoryList}
@@ -240,7 +226,6 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
           <FormGroup controlId="comments">
             <FormLabel>Additional Comments</FormLabel>
             <FormControl
-              componentClass="textarea"
               value={comments}
               onChange={(e) => setComments(e.target.value)}
             />

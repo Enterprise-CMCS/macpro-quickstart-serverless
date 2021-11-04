@@ -27,7 +27,7 @@ jest.mock("react-router-dom", () => ({
 }));
 
 describe("Test Header.js", () => {
-  test("Check the main element, with classname user-profiles, exists", () => {
+  test("Check the main element exists", () => {
     useContextMock.mockReturnValue(true);
     const { getByTestId } = render(<Home />);
     expect(getByTestId("Home-Container")).toBeVisible();

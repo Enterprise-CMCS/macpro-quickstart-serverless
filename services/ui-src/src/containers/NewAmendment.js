@@ -119,7 +119,6 @@ export default function NewAmendment({ fileUpload }) {
         </FormGroup>
         <FormGroup controlId="comments">
           <FormControl
-            componentClass="textarea"
             placeholder="Additional comments here"
             value={comments}
             onChange={(e) => setComments(e.target.value)}
