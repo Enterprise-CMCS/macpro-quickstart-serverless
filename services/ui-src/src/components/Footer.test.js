@@ -4,7 +4,6 @@ import Footer from "./Footer";
 
 describe("Test Footer.js", () => {
   test("Should match snapshot", () => {
-    const wrapper = render(<Footer />);
-    expect(wrapper.asFragment()).toMatchSnapshot();
+    expect(render(<Footer />).asFragment()).toMatchSnapshot();
   });
 });
