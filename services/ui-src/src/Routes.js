@@ -15,47 +15,78 @@ import {
 } from "./libs/awsLib";
 import config from "./config";
 
+// Local Login
+const localLogin = config.LOCAL_LOGIN === "true";
+// Local s3
+const localEndpoint = config.s3.LOCAL_ENDPOINT;
+
+const isLocal = localLogin && localEndpoint;
+
+if (isLocal) {
+  var s3Client = new AWS.S3({
+    s3ForcePathStyle: true,
+    apiVersion: "2006-03-01",
+    accessKeyId: "S3RVER", // This specific key is required when working offline   pragma: allowlist secret
+    secretAccessKey: "S3RVER", // pragma: allowlist secret
+    params: { Bucket: config.s3.BUCKET },
+    endpoint: new AWS.Endpoint(localEndpoint),
+  });
+}
+
+const fileUpload = isLocal ? s3AmplifyUpload : s3LocalUploader(s3Client);
+const fileURLResolver = isLocal ? s3AmplifyGetURL : s3LocalGetURL(s3Client);
+
+export const routes = [
+  {
+    component: Home,
+    name: "Home",
+    path: "/",
+    exact: true,
+    isAuthenticated: false,
+  },
+  {
+    component: Profile,
+    name: "Profile",
+    path: "/profile",
+    exact: true,
+    isAuthenticated: true,
+  },
+  {
+    component: NewAmendment,
+    name: "New Amendment",
+    path: "/amendments/new",
+    exact: true,
+    isAuthenticated: true,
+    fileUpload,
+  },
+  {
+    component: Amendments,
+    name: "View Amendment",
+    path: "/amendments/:id",
+    exact: true,
+    isAuthenticated: true,
+    fileUpload,
+    fileURLResolver,
+  },
+  {
+    component: NotFound,
+    name: "Not Found",
+    isAuthenticated: false,
+  },
+];
+
 export default function Routes() {
-  // This might not be quite the right place for it, but I'm doing
-  // dependency injection here, on the component level.
-  // Local Login
-  const localLogin = config.LOCAL_LOGIN === "true";
-
-  // Local s3
-  const localEndpoint = config.s3.LOCAL_ENDPOINT;
-  let s3Upload = s3AmplifyUpload;
-  let s3URLResolver = s3AmplifyGetURL;
-  if (localLogin && localEndpoint !== "") {
-    // Amplify doesn't allow you to configure the AWS Endpoint, so for local dev we need our own S3Client configured.
-    let s3Client = new AWS.S3({
-      s3ForcePathStyle: true,
-      apiVersion: "2006-03-01",
-      accessKeyId: "S3RVER", // This specific key is required when working offline   pragma: allowlist secret
-      secretAccessKey: "S3RVER", // pragma: allowlist secret
-      params: { Bucket: config.s3.BUCKET },
-      endpoint: new AWS.Endpoint(localEndpoint),
-    });
-    s3Upload = s3LocalUploader(s3Client);
-    s3URLResolver = s3LocalGetURL(s3Client);
-  }
-
   return (
-    <Switch>
-      <Route exact path="/">
-        <Home />
-      </Route>
-      <AuthenticatedRoute exact path="/profile">
-        <Profile />
-      </AuthenticatedRoute>
-      <AuthenticatedRoute exact path="/amendments/new">
-        <NewAmendment fileUpload={s3Upload} />
-      </AuthenticatedRoute>
-      <AuthenticatedRoute exact path="/amendments/:id">
-        <Amendments fileUpload={s3Upload} fileURLResolver={s3URLResolver} />
-      </AuthenticatedRoute>
-      <Route>
-        <NotFound />
-      </Route>
-    </Switch>
+    <main id="main-wrapper">
+      <Switch>
+        {routes.map(({ isAuthenticated, name, ...rest }) =>
+          isAuthenticated ? (
+            <AuthenticatedRoute key={name} {...rest} />
+          ) : (
+            <Route key={name} {...rest} />
+          )
+        )}
+      </Switch>
+    </main>
   );
 }
