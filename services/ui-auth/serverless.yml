@@ -108,7 +108,7 @@ resources:
           - ADMIN_NO_SRP_AUTH
         GenerateSecret: false # pragma: allowlist secret
         AllowedOAuthFlows:
-          - implicit
+          - code
         AllowedOAuthFlowsUserPoolClient: true
         AllowedOAuthScopes:
           - email
