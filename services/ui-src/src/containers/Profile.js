@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
-import "react-phone-input-2/lib/style.css";
-import PhoneInput from "react-phone-input-2";
-import { FormGroup, FormControl, FormLabel, Container } from "react-bootstrap";
 import { onError } from "../libs/errorLib";
+import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
-import { Breadcrumbs } from "../components/Breadcrumbs";
+import "./Profile.css";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 import { currentUserInfo, updateCurrentUserAttributes } from "../libs/user";
 import { capitalize } from "../libs/helpers";
 
@@ -74,23 +74,22 @@ export default function Profile() {
   }
 
   return (
-    <Container>
-      <Breadcrumbs />
+    <div className="Profile">
       <form onSubmit={handleSubmit}>
         <FormGroup controlId="email">
-          <FormLabel>Email</FormLabel>
+          <ControlLabel>Email</ControlLabel>
           <FormControl value={email} disabled={true} />
         </FormGroup>
         <FormGroup controlId="firstName">
-          <FormLabel>First Name</FormLabel>
+          <ControlLabel>First Name</ControlLabel>
           <FormControl value={firstName} disabled={true} />
         </FormGroup>
         <FormGroup controlId="lastName">
-          <FormLabel>Last Name</FormLabel>
+          <ControlLabel>Last Name</ControlLabel>
           <FormControl value={lastName} disabled={true} />
         </FormGroup>
         <FormGroup controlId="phoneNumber">
-          <FormLabel>Phone</FormLabel>
+          <ControlLabel>Phone</ControlLabel>
           <PhoneInput
             value={phoneNumber}
             country="us"
@@ -101,13 +100,16 @@ export default function Profile() {
           />
         </FormGroup>
         <LoaderButton
+          block
           type="submit"
+          bsSize="large"
+          bsStyle="primary"
           isLoading={isLoading}
           disabled={!validateForm()}
         >
           Save
         </LoaderButton>
       </form>
-    </Container>
+    </div>
   );
 }

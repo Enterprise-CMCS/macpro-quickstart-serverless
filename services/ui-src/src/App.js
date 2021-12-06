@@ -1,14 +1,14 @@
+import { LinkContainer } from "react-router-bootstrap";
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
-import { Auth } from "aws-amplify";
+import { Link, useHistory } from "react-router-dom";
+import { Nav, Navbar, NavItem, NavDropdown } from "react-bootstrap";
+import "./App.css";
+import Routes from "./Routes";
 import { AppContext } from "./libs/contextLib";
+import { Auth } from "aws-amplify";
 import { onError } from "./libs/errorLib";
 import { loginLocalUser } from "./libs/user";
-import Routes from "./Routes";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
 import config from "./config";
-
 function App() {
   const [isAuthenticating, setIsAuthenticating] = useState(true);
   const [isAuthenticated, userHasAuthenticated] = useState(false);
@@ -68,15 +68,35 @@ function App() {
 
   return (
     !isAuthenticating && (
-      <div id="app-wrapper">
-        <Header
-          isAuthenticated={isAuthenticated}
-          handleLogout={handleLogout}
-          handleLogin={handleLogin}
-        />
+      <div className="App container">
+        <Navbar fluid collapseOnSelect>
+          <Navbar.Header>
+            <Navbar.Brand>
+              <Link to="/">APS Home</Link>
+            </Navbar.Brand>
+            <Navbar.Toggle />
+          </Navbar.Header>
+          <Navbar.Collapse>
+            <Nav pullRight>
+              {isAuthenticated ? (
+                <>
+                  <NavDropdown id="User" title="My Account">
+                    <LinkContainer to="/profile">
+                      <NavItem>User Profile</NavItem>
+                    </LinkContainer>
+                    <NavItem onClick={handleLogout}>Logout</NavItem>
+                  </NavDropdown>
+                </>
+              ) : (
+                <>
+                  <NavItem onClick={handleLogin}>Login</NavItem>
+                </>
+              )}
+            </Nav>
+          </Navbar.Collapse>
+        </Navbar>
         <AppContext.Provider value={{ isAuthenticated, userHasAuthenticated }}>
           <Routes />
-          <Footer />
         </AppContext.Provider>
       </div>
     )

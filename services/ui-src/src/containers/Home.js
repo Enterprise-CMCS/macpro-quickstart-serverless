@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Container, ListGroup, ListGroupItem } from "react-bootstrap";
-import { PageHeader } from "../components/PageHeader";
-import { Breadcrumbs } from "../components/Breadcrumbs";
+import { PageHeader, ListGroup, ListGroupItem } from "react-bootstrap";
 import { useAppContext } from "../libs/contextLib";
 import { onError } from "../libs/errorLib";
+import "./Home.css";
 import { listAmendments } from "../libs/api";
 import { LinkContainer } from "react-router-bootstrap";
 
@@ -80,9 +79,8 @@ export default function Home() {
   }
 
   return (
-    <Container data-testid="Home-Container">
-      <Breadcrumbs />
+    <div className="Home" data-testid="Home-Container">
       {isAuthenticated ? renderAmendments() : renderLander()}
-    </Container>
+    </div>
   );
 }

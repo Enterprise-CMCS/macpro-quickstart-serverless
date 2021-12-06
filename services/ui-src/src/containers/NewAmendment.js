@@ -1,8 +1,7 @@
 import React, { useRef, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { FormGroup, FormControl, FormLabel, Container } from "react-bootstrap";
+import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
-import { Breadcrumbs } from "../components/Breadcrumbs";
 import { onError } from "../libs/errorLib";
 import "./NewAmendment.css";
 import { createAmendment } from "../libs/api";
@@ -67,11 +66,10 @@ export default function NewAmendment({ fileUpload }) {
   }
 
   return (
-    <Container className="NewAmendment">
-      <Breadcrumbs />
+    <div className="NewAmendment">
       <form onSubmit={handleSubmit}>
         <FormGroup controlId="email">
-          <FormLabel>Contact Email</FormLabel>
+          <ControlLabel>Contact Email</ControlLabel>
           <FormControl
             value={email}
             disabled={true}
@@ -79,7 +77,7 @@ export default function NewAmendment({ fileUpload }) {
           />
         </FormGroup>
         <FormGroup controlId="firstName">
-          <FormLabel>First Name</FormLabel>
+          <ControlLabel>First Name</ControlLabel>
           <FormControl
             value={firstName}
             disabled={true}
@@ -87,7 +85,7 @@ export default function NewAmendment({ fileUpload }) {
           />
         </FormGroup>
         <FormGroup controlId="lastName">
-          <FormLabel>Last Name</FormLabel>
+          <ControlLabel>Last Name</ControlLabel>
           <FormControl
             value={lastName}
             disabled={true}
@@ -95,7 +93,7 @@ export default function NewAmendment({ fileUpload }) {
           />
         </FormGroup>
         <FormGroup controlId="territory">
-          <FormLabel>State/Territory</FormLabel>
+          <ControlLabel>State/Territory</ControlLabel>
           <Select
             name="form-field-name"
             value={territoryList.filter(function (option) {
@@ -106,7 +104,7 @@ export default function NewAmendment({ fileUpload }) {
           />
         </FormGroup>
         <FormGroup controlId="urgent">
-          <FormLabel>This APS is classified as urgent &nbsp;</FormLabel>
+          <ControlLabel>This APS is classified as urgent &nbsp;</ControlLabel>
           <Switch
             controlId="urgent"
             checked={urgent}
@@ -114,18 +112,22 @@ export default function NewAmendment({ fileUpload }) {
           />
         </FormGroup>
         <FormGroup controlId="file">
-          <FormLabel>Attachment</FormLabel>
+          <ControlLabel>Attachment</ControlLabel>
           <FormControl onChange={handleFileChange} type="file" />
         </FormGroup>
         <FormGroup controlId="comments">
           <FormControl
+            componentClass="textarea"
             placeholder="Additional comments here"
             value={comments}
             onChange={(e) => setComments(e.target.value)}
           />
         </FormGroup>
         <LoaderButton
+          block
           type="submit"
+          bsSize="large"
+          bsStyle="primary"
           isLoading={isLoading}
           disabled={
             !validateAmendmentForm(email, firstName, lastName, territory)
@@ -134,6 +136,6 @@ export default function NewAmendment({ fileUpload }) {
           Submit
         </LoaderButton>
       </form>
-    </Container>
+    </div>
   );
 }
