@@ -1,8 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { onError } from "../libs/errorLib";
-import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import { FormGroup, FormControl, FormLabel, Container } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
+import { Breadcrumbs } from "../components/Breadcrumbs";
 import "./Amendments.css";
 import Select from "react-select";
 import Switch from "react-ios-switch";
@@ -216,11 +217,12 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
   }
 
   return (
-    <div className="Amendments">
+    <Container className="Amendments" data-testid="amendments-container">
+      <Breadcrumbs />
       {amendment && (
         <form onSubmit={handleSubmit}>
           <FormGroup controlId="transmittalNumber">
-            <ControlLabel>APS ID &nbsp;(Transmittal Number)</ControlLabel>
+            <FormLabel>APS ID &nbsp;(Transmittal Number)</FormLabel>
             <FormControl
               disabled={true}
               value={transmittalNumber}
@@ -228,47 +230,33 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
             />
           </FormGroup>
           <FormGroup controlId="name">
-            <ControlLabel>Submitter</ControlLabel>
+            <FormLabel>Submitter</FormLabel>
             <FormControl value={firstName + " " + lastName} disabled={true} />
           </FormGroup>
-          {/*<FormGroup controlId="firstName">*/}
-          {/*    <ControlLabel>First Name</ControlLabel>*/}
-          {/*    <FormControl*/}
-          {/*        value={firstName}*/}
-          {/*        disabled={true}*/}
-          {/*        onChange={e => setFirstName(e.target.value)}*/}
-          {/*    />*/}
-          {/*</FormGroup>*/}
-          {/*<FormGroup controlId="lastName">*/}
-          {/*    <ControlLabel>Last Name</ControlLabel>*/}
-          {/*    <FormControl*/}
-          {/*        value={lastName}*/}
-          {/*        disabled={true}*/}
-          {/*        onChange={e => setLastName(e.target.value)}*/}
-          {/*    />*/}
-          {/*</FormGroup>*/}
           <FormGroup controlId="email">
-            <ControlLabel>Submitter Email</ControlLabel>
+            <FormLabel>Submitter Email</FormLabel>
             <FormControl
+              data-testid="amendments-email"
               value={email}
               disabled={true}
               onChange={(e) => setEmail(e.target.value)}
             />
           </FormGroup>
           <FormGroup controlId="territory">
-            <ControlLabel>State/Territory</ControlLabel>
+            <FormLabel>State/Territory</FormLabel>
             <Select
               name="form-field-name"
               value={territoryList.filter(function (option) {
                 return option.value === territory;
               })}
+              data-testid="amendments-territory"
               isDisabled={true}
               onChange={(e) => setTerritory(e.value)}
               options={territoryList}
             />
           </FormGroup>
           <FormGroup controlId="urgent">
-            <ControlLabel>This APS is classified as urgent &nbsp;</ControlLabel>
+            <FormLabel>This APS is classified as urgent &nbsp;</FormLabel>
             <Switch
               controlId="urgent"
               checked={urgent}
@@ -277,7 +265,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
           </FormGroup>
           {amendment.attachment && (
             <FormGroup>
-              <ControlLabel>Attachment</ControlLabel>
+              <FormLabel>Attachment</FormLabel>
               <FormControl.Static>
                 <button
                   className="link-lookalike"
@@ -289,22 +277,18 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
             </FormGroup>
           )}
           <FormGroup controlId="file">
-            {!amendment.attachment && <ControlLabel>Attachment</ControlLabel>}
+            {!amendment.attachment && <FormLabel>Attachment</FormLabel>}
             <FormControl onChange={handleFileChange} type="file" />
           </FormGroup>
           <FormGroup controlId="comments">
-            <ControlLabel>Additional Comments</ControlLabel>
+            <FormLabel>Additional Comments</FormLabel>
             <FormControl
-              componentClass="textarea"
               value={comments}
               onChange={(e) => setComments(e.target.value)}
             />
           </FormGroup>
           <LoaderButton
-            block
             type="submit"
-            bsSize="large"
-            bsStyle="primary"
             isLoading={isLoading}
             disabled={
               !validateAmendmentForm(email, firstName, lastName, territory)
@@ -312,13 +296,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
           >
             Save
           </LoaderButton>
-          <LoaderButton
-            block
-            bsSize="large"
-            bsStyle="danger"
-            onClick={handleDelete}
-            isLoading={isDeleting}
-          >
+          <LoaderButton onClick={handleDelete} isLoading={isDeleting}>
             Delete
           </LoaderButton>
           <LoaderButton block bsSize="large" onClick={handlePrintAccessiblePdf}>
@@ -326,6 +304,6 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
           </LoaderButton>
         </form>
       )}
-    </div>
+    </Container>
   );
 }

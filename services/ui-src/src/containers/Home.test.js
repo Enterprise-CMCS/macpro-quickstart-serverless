@@ -16,8 +16,18 @@ afterEach(() => {
   React.useContext = realUseContext;
 });
 
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"), // use actual for all non-hook parts
+
+  useRouteMatch: () => ({
+    path: "/",
+    url: "/",
+    params: {},
+  }),
+}));
+
 describe("Test Header.js", () => {
-  test("Check the main element, with classname user-profiles, exists", () => {
+  test("Check the main element exists", () => {
     useContextMock.mockReturnValue(true);
     const { getByTestId } = render(<Home />);
     expect(getByTestId("Home-Container")).toBeVisible();

@@ -71,6 +71,10 @@ resources:
         WebsiteConfiguration:
           IndexDocument: index.html
           ErrorDocument: index.html
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
       DeletionPolicy: Delete
     BucketPolicy:
       Type: AWS::S3::BucketPolicy
@@ -193,6 +197,10 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: !Sub ${AWS::AccountId}-${self:service}-${self:custom.stage}-waflogs
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
     Firehose:
       Type: AWS::KinesisFirehose::DeliveryStream
       Properties:

@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test Footer.js Should match snapshot 1`] = `
+<DocumentFragment>
+  <footer>
+    <div
+      class="mb-4 container"
+    >
+      <h3>
+        Do you have questions or need support?
+      </h3>
+      <div
+        class="footer-fed-gov-text"
+      >
+        For technical questions regarding use of this application, please reach out to 
+        <a
+          href="mailto:MDCT_Help@cms.hhs.gov"
+        >
+          MDCT_Help@cms.hhs.gov
+        </a>
+        . For content-related questions, such as about measure specifications or what information to enter in each field, please reach out to 
+        <a
+          href="mailto:MACQualityTA@cms.hhs.gov"
+        >
+          MACQualityTA@cms.hhs.gov
+        </a>
+      </div>
+    </div>
+    <section
+      class="footer-top-container"
+    >
+      <div
+        class="container"
+      >
+        <div
+          class="footer-wrapper footer-top-wrapper"
+        >
+          <div>
+            <img
+              alt="Medicaid.gov logo"
+              src="/footer/logo-MedicaidGov.svg"
+            />
+          </div>
+          <div
+            class="footer-government-blurb"
+          >
+            <div
+              class="footer-fed-gov-container"
+            >
+              <img
+                alt="Department of Health and Human Services logo"
+                src="/footer/depthealthhumanservices_usa.svg"
+              />
+            </div>
+            <div
+              class="footer-fed-gov-text"
+            >
+              A federal government website managed and paid for by the U.S. Centers for Medicare and Medicaid Services and part of the MACPro suite.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div
+      class="footer-bottom-container"
+    >
+      <div
+        class="container"
+      >
+        <div
+          class="footer-wrapper"
+        >
+          <div>
+            Email 
+            <a
+              class="footer-email"
+              href="mailto:MDCT_Help@cms.hhs.gov"
+            >
+               MDCT_Help@cms.hhs.gov
+            </a>
+             for help or feedback.
+          </div>
+          <div>
+            7500 Security Boulevard Baltimore, MD 21244
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</DocumentFragment>
+`;
