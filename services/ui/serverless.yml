@@ -88,6 +88,32 @@ resources:
               Principal:
                 CanonicalUser: !GetAtt CloudFrontOriginAccessIdentity.S3CanonicalUserId
         Bucket: !Ref S3Bucket
+    LoggingBucket:
+      Type: "AWS::S3::Bucket"
+      Properties:
+        BucketName: !Sub ${self:custom.stage}-cloufront-logging
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: "AES256"
+      DeletionPolicy: Delete
+    LoggingBucketPolicy:
+      Type: "AWS::S3::BucketPolicy"
+      Properties:
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action: "s3:PutObject"
+              Resource: !Sub arn:aws:s3:::${LoggingBucket}/*
+              Principal:
+                AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+        Bucket: !Ref LoggingBucket
     CloudFrontWebAcl:
       Type: AWS::WAFv2::WebACL
       Properties:
@@ -166,6 +192,8 @@ resources:
               ResponseCode: 403
               ResponsePagePath: /index.html
           WebACLId: !GetAtt CloudFrontWebAcl.Arn
+          Logging:
+            Bucket: !Sub "${LoggingBucket}.s3.amazonaws.com"
     Route53DnsRecord:
       Type: AWS::Route53::RecordSet
       Condition: CreateDnsRecord
