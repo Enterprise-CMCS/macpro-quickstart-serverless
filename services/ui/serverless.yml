@@ -91,7 +91,7 @@ resources:
     LoggingBucket:
       Type: "AWS::S3::Bucket"
       Properties:
-        BucketName: !Sub ${self:custom.stage}-cloufront-logging
+        BucketName: !Sub ${self:service}-${self:custom.stage}-cloudfront-logs
         PublicAccessBlockConfiguration:
           BlockPublicAcls: true
           BlockPublicPolicy: true
@@ -194,6 +194,7 @@ resources:
           WebACLId: !GetAtt CloudFrontWebAcl.Arn
           Logging:
             Bucket: !Sub "${LoggingBucket}.s3.amazonaws.com"
+            Prefix: AWSLogs/CLOUDFRONT/${self:custom.stage}/
     Route53DnsRecord:
       Type: AWS::Route53::RecordSet
       Condition: CreateDnsRecord
