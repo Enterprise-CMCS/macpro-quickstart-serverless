@@ -91,7 +91,7 @@ resources:
     LoggingBucket:
       Type: "AWS::S3::Bucket"
       Properties:
-        BucketName: !Sub ${self:service}-${self:custom.stage}-cloudfront-logs
+        BucketName: !Sub ${self:service}-${self:custom.stage}-cloudfront-logs-${AWS::AccountId}
         PublicAccessBlockConfiguration:
           BlockPublicAcls: true
           BlockPublicPolicy: true
