@@ -15,12 +15,12 @@ exports.handler = async (event) => {
       response = {
           status: 200,
           response: result.data
-      }
+      };
     }).catch((error) => {
       console.log("Error occured: " + error);
       response = {
         error 
-    }
+    };
   });
   return response;
-}
+};
