@@ -8,16 +8,14 @@ exports.handler = async (event) => {
       url: api_endpoint,
       "data":"test",
       headers:{
-          "Content-Type" : "application/json"
+        "Content-Type" : "application/json"
       }
     }).then((result) => {
-      console.log(result.data);
       response = {
-          status: 200,
-          response: result.data
+        statusCode: 200,
+        response: result.data
       };
     }).catch((error) => {
-      console.log("Error occured: " + error);
       response = {
         error
     };
