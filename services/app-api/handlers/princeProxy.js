@@ -19,7 +19,7 @@ exports.handler = async (event) => {
     }).catch((error) => {
       console.log("Error occured: " + error);
       response = {
-        error 
+        error
     };
   });
   return response;
