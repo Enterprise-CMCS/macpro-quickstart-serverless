@@ -12,8 +12,9 @@ exports.handler = async (event) => {
       }
     }).then((result) => {
       response = {
-        statusCode: 200,
-        response: result.data
+        "statusCode": 200, 
+        "headers": {"Content-Type": "application/json"},
+        "body": result.data
       };
     }).catch((error) => {
       response = {
