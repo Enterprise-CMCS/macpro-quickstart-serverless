@@ -2,7 +2,6 @@ const axios =  require('axios');
 
 exports.handler = async (event) => {
   let response = {};
-  
   let api_endpoint = event['princeApi'];
 
   await axios({ method: 'POST',
@@ -11,17 +10,17 @@ exports.handler = async (event) => {
       headers:{
           "Content-Type" : "application/json"
       }
-  }).then((result) => {
+    }).then((result) => {
       console.log(result.data);
       response = {
           status: 200,
           response: result.data
       }
-  }).catch((error) => {
+    }).catch((error) => {
       console.log("Error occured: " + error);
       response = {
-          error 
-      }
+        error 
+    }
   });
   return response;
 }
