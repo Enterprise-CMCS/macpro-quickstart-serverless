@@ -6,15 +6,14 @@ exports.handler = async (event) => {
 
   await axios({ method: 'POST',
       url: api_endpoint,
-      "data":"test",
-      headers:{
+      data: "test",
+      headers: {
         "Content-Type" : "application/json"
       }
     }).then((result) => {
       response = {
-        "statusCode": 200,
-        "headers": {"Content-Type": "application/json"},
-        "body": result.data
+        statusCode: 200,
+        response: result.data
       };
     }).catch((error) => {
       response = {
