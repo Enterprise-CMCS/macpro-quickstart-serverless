@@ -99,6 +99,8 @@ resources:
             AttributeDataType: String
             Mutable: true
             Required: false
+        AdminCreateUserConfig:
+          AllowAdminCreateUserOnly: True # This setting disables self sign-up for users
     CognitoUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
       Properties:
