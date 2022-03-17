@@ -38,7 +38,6 @@
     "serverless-s3-bucket-helper": "CMSgov/serverless-s3-bucket-helper#0.1.1",
     "serverless-stack-termination-protection": "^1.0.4",
     "typescript": "^4.0.5",
-    "serverless-api-client-certificate": "^1.0.2",
     "yargs": "^16.1.1"
   },
   "dependencies": {}
