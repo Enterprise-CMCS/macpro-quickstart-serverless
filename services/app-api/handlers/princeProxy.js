@@ -10,7 +10,7 @@ export const princeProxy = async (event) => {
 
   await axios({ method: 'POST',
       url: api_endpoint,
-      data: "",
+      data: event['body'],
       headers: {
         "Content-Type" : "application/json"
       }
