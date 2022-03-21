@@ -38,8 +38,8 @@ custom:
     version: V2
   warmup:
     default:
-      enabled: true
-      prewarm: true
+      enabled: false
+      prewarm: false
       events:
         - schedule: rate(${ssm:/configuration/${self:custom.stage}/warmup/schedule~true, ssm:/configuration/default/warmup/schedule~true, "4 minutes"})
       concurrency: ${ssm:/configuration/${self:custom.stage}/warmup/concurrency~true, ssm:/configuration/default/warmup/concurrency~true, 5}
@@ -82,6 +82,8 @@ functions:
     handler: handlers/create.main
     environment:
       clusterArn: ${self:custom.clusterArn}
+      princeApi: ${self:custom.princeApi}
+      
     events:
       - http:
           path: amendments
