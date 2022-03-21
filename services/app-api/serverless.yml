@@ -80,8 +80,6 @@ provider:
 functions:
   create:
     handler: handlers/create.main
-    environment:
-      princeApi: ${self:custom.princeApi}
       
     events:
       - http:
@@ -123,6 +121,8 @@ functions:
           authorizer: aws_iam
   princeProxy:
     handler: handlers/princeProxy.main
+    environment:
+      princeApi: ${self:custom.princeApi}
     timeout: 30
     memorySize: 3008
     maximumRetryAttempts: 0
