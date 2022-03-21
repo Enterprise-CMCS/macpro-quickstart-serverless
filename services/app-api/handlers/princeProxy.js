@@ -24,7 +24,7 @@ export const princeProxy = async (event) => {
         error
     };
   });
-  return response;
+  return response.response;
 };
 
 export const main = handler(princeProxy);
