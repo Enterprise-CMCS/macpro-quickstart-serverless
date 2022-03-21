@@ -20,7 +20,7 @@ plugins:
   - serverless-plugin-scripts
 
 custom:
-  princeApi: ${ssm:/configuration/${self:custom.stage}/prince/api~true, ssm:/configuration/default/prince/api~true)
+  princeApi: ${ssm:/configuration/${self:custom.stage}/prince/api~true, ssm:/configuration/default/prince/api~true}
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
   serverlessTerminationProtection:
