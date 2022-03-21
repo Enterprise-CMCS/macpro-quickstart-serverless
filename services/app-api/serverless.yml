@@ -81,7 +81,6 @@ functions:
   create:
     handler: handlers/create.main
     environment:
-      clusterArn: ${self:custom.clusterArn}
       princeApi: ${self:custom.princeApi}
       
     events:

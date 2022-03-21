@@ -3,9 +3,9 @@ const axios =  require('axios');
 
 export const princeProxy = async (event) => {
   let response = {};
-  let api_endpoint = event['princeApi'];
+  let api_endpoint = process.env.princeApi;
 
-  console.log(event['princeApi']);
+  console.log("Api string", process.env.princeApi);
   console.log(event['body']);
 
   await axios({ method: 'POST',
