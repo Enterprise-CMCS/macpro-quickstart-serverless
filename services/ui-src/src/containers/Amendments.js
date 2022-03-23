@@ -15,8 +15,9 @@ import {
   validateAmendmentForm,
   validateFileAttachment,
 } from "../libs/helpers";
+import { fileUpload, fileURLResolver } from "../libs/file";
 
-export default function Amendments({ fileUpload, fileURLResolver }) {
+export default function Amendments() {
   const file = useRef(null);
   const { id } = useParams();
   const history = useHistory();

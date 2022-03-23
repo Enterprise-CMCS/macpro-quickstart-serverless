@@ -15,8 +15,9 @@ import {
   validateAmendmentForm,
   validateFileAttachment,
 } from "../libs/helpers";
+import { fileUpload } from "../libs/file";
 
-export default function NewAmendment({ fileUpload }) {
+export default function NewAmendment() {
   const file = useRef(null);
   const history = useHistory();
   const [email, setEmail] = useState("");
