@@ -69,7 +69,7 @@ export default function Amendments() {
     }
 
     onLoad();
-  }, [id, fileURLResolver]);
+  }, [id]);
 
   function formatFilename(str) {
     return str.replace(/^\w+-/, "");
