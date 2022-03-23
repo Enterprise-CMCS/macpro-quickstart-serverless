@@ -17,7 +17,7 @@ plugins:
   - serverless-iam-helper
   - serverless-s3-bucket-helper
   - serverless-online
-  - serverless-api-client-certificate
+  - serverless-plugin-scripts
 
 custom:
   stage: ${opt:stage, self:provider.stage}

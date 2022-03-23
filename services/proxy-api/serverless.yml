@@ -80,7 +80,7 @@ provider:
 functions:
   create:
     handler: handlers/create.main
-      
+
     events:
       - http:
           path: amendments
