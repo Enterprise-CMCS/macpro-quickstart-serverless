@@ -4,7 +4,7 @@
  * The following variables have to be set:
  *
  * CLAMAV_BUCKET_NAME: Name of the bucket where ClamAV and its definitions are stored
- * PATH_TO_AV_DEFINITIONS: Path in S3 where the definitions are stored. 3 files are expected (see CLAMAV_DEFINITIONS_FILES)
+  * PATH_TO_AV_DEFINITIONS: Path in S3 where the definitions are stored.
  *
  * The following variables can be overridden:
  *
@@ -35,8 +35,8 @@ const VIRUS_SCAN_TIMESTAMP_KEY =
   process.env.VIRUS_SCAN_TIMESTAMP_KEY || "virusScanTimestamp";
 const MAX_FILE_SIZE = process.env.MAX_FILE_SIZE || "314572800";
 
-// List of CLAMAV definition files. These are the compressed files.
-const CLAMAV_DEFINITIONS_FILES = ["main.cvd", "daily.cvd", "bytecode.cvd"];
+// // List of CLAMAV definition files. These are the compressed files.
+// const CLAMAV_DEFINITIONS_FILES = ["main.cvd", "daily.cvd", "bytecode.cvd"];
 
 module.exports = {
   CLAMAV_BUCKET_NAME: CLAMAV_BUCKET_NAME,
@@ -45,7 +45,7 @@ module.exports = {
   PATH_TO_CLAMAV: PATH_TO_CLAMAV,
   FRESHCLAM_CONFIG: FRESHCLAM_CONFIG,
   FRESHCLAM_WORK_DIR: FRESHCLAM_WORK_DIR,
-  CLAMAV_DEFINITIONS_FILES: CLAMAV_DEFINITIONS_FILES,
+  // CLAMAV_DEFINITIONS_FILES: CLAMAV_DEFINITIONS_FILES,
   STATUS_CLEAN_FILE: STATUS_CLEAN_FILE,
   STATUS_INFECTED_FILE: STATUS_INFECTED_FILE,
   STATUS_ERROR_PROCESSING_FILE: STATUS_ERROR_PROCESSING_FILE,
