@@ -1,6 +1,7 @@
 # proxy-api
 
 ## Prince Proxy
+
 The prince proxy implementation provides a demonstration of a proxy endpoint in our serverless project. For this example, the proxy function is performing a post call to the existing prince api. All requests to proxy will be forwarded to prince. The funtion takes in one parameter; this parameter is the endpoint you want proxied. In this example, the parameter is the prince endpoint which we've stored in SSM as a string and referenced in serverless.yml as princeApi.
 
 ## Configuration - AWS Systems Manager Parameter Store (SSM)

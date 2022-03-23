@@ -1,5 +1,5 @@
 import handler from "./../libs/handler-lib";
-const axios =  require('axios');
+const axios = require("axios");
 
 export const princeProxy = async (event) => {
   let response = {};
@@ -8,22 +8,25 @@ export const princeProxy = async (event) => {
   // console.log("Api string", process.env.princeApi);
   // console.log(event['body']);
 
-  await axios({ method: 'POST',
-      url: api_endpoint,
-      data: event['body'],
-      headers: {
-        "Content-Type" : "application/json"
-      }
-    }).then((result) => {
+  await axios({
+    method: "POST",
+    url: api_endpoint,
+    data: event["body"],
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((result) => {
       response = {
         statusCode: 200,
-        response: result.data
+        response: result.data,
       };
-    }).catch((error) => {
+    })
+    .catch((error) => {
       response = {
-        error
-    };
-  });
+        error,
+      };
+    });
   return response.response;
 };
 
