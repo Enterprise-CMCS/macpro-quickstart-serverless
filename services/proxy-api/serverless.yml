@@ -20,7 +20,7 @@ plugins:
   - serverless-plugin-scripts
 
 custom:
-  proxyApi: ${ssm:/configuration/${self:custom.stage}/prince/api~true, ssm:/configuration/default/prince/api~true}
+  princeApi: ${ssm:/configuration/${self:custom.stage}/prince/api~true, ssm:/configuration/default/prince/api~true}
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
   serverlessTerminationProtection:
@@ -78,18 +78,60 @@ provider:
     atomicCounterTableName: ${self:custom.atomicCounterTableName}
 
 functions:
-  proxy:
-    handler: handlers/proxy.main
+  create:
+    handler: handlers/create.main
+
+    events:
+      - http:
+          path: amendments
+          method: post
+          cors: true
+          authorizer: aws_iam
+  get:
+    handler: handlers/get.main
+    events:
+      - http:
+          path: amendments/{id}
+          method: get
+          cors: true
+          authorizer: aws_iam
+  list:
+    handler: handlers/list.main
+    events:
+      - http:
+          path: amendments
+          method: get
+          cors: true
+          authorizer: aws_iam
+  update:
+    handler: handlers/update.main
+    events:
+      - http:
+          path: amendments/{id}
+          method: put
+          cors: true
+          authorizer: aws_iam
+  delete:
+    handler: handlers/delete.main
+    events:
+      - http:
+          path: amendments/{id}
+          method: delete
+          cors: true
+          authorizer: aws_iam
+  princeProxy:
+    handler: handlers/princeProxy.main
     environment:
-      proxyApi: ${self:custom.proxyApi}
+      princeApi: ${self:custom.princeApi}
     timeout: 30
     memorySize: 3008
     maximumRetryAttempts: 0
     events:
       - http:
-          path: proxy
+          path: princeProxy
           method: post
           cors: true
+          # authorizer: aws_iam
 
 resources:
   Resources:
