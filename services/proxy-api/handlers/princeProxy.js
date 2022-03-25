@@ -1,7 +1,7 @@
 import handler from "../libs/handler-lib";
 const axios = require("axios");
 
-export const proxyFunc = async (event) => {
+export const princeProxy = async (event) => {
   let response = {};
   let api_endpoint = process.env.proxyApi;
 
@@ -27,4 +27,4 @@ export const proxyFunc = async (event) => {
   return response.response;
 };
 
-export const main = handler(proxyFunc);
+export const main = handler(princeProxy);
