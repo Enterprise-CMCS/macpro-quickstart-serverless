@@ -1,8 +1,4 @@
-# proxy-api
-
-## Prince Proxy
-
-The prince proxy implementation provides a demonstration of a proxy endpoint in our serverless project. For this example, the proxy function is performing a post call to the existing prince api. All requests to proxy will be forwarded to prince. The funtion takes in one parameter; this parameter is the endpoint you want proxied. In this example, the parameter is the prince endpoint which we've stored in SSM as a string and referenced in serverless.yml as princeApi.
+# app-api
 
 ## Configuration - AWS Systems Manager Parameter Store (SSM)
 
@@ -30,3 +26,7 @@ The above syntax says "look for an ssm parameter at /configuration/<branch name>
 In the above tabular documentation, you will see columns for "Accepts default?" and "Accepts a branch override?". These columns relate to the above convention of searching for a branch specific override but falling back to a default parameter. It's important to note if a parameter can accept a default or can accept an override, because not all can do both. For example, a parameter used to specify Okta App information cannot be set as a default, because Okta can only support one environment (branch) at a time; so, okta_metadata_url is a good example of a parameter that can only be specified on a branch by branch basis, and never as a default.
 
 In the above documentation, you will also see the Parameter value denoted as ".../iam/path", for example. This notation is meant to represent the core of the parameter's expected path. The "..." prefix is meant to be a placeholder for either "/configuration/default" (in the case of a default value) or "/configuration/myfavoritebranch" (in the case of specifying a branch specific override for the myfavoritebranch branch.
+
+### Prince Proxy
+
+The prince proxy implementation provides a demonstration of a proxy endpoint in our serverless project. For this example, the proxy function is performing a post call to the existing prince api. All requests to proxy will be forwarded to prince. The funtion takes in one parameter; this parameter is the endpoint you want proxied. In this example, the parameter is the prince endpoint which we've stored in SSM as a string and referenced in serverless.yml as princeApi.

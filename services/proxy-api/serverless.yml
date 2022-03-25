@@ -20,7 +20,7 @@ plugins:
   - serverless-plugin-scripts
 
 custom:
-  princeApi: ${ssm:/configuration/${self:custom.stage}/prince/api~true, ssm:/configuration/default/prince/api~true}
+  proxyApi: ${ssm:/configuration/${self:custom.stage}/prince/api~true, ssm:/configuration/default/prince/api~true}
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
   serverlessTerminationProtection:
@@ -28,10 +28,6 @@ custom:
       - master
       - val
       - production
-  tableName: ${env:AMENDMENTS_TABLE_NAME, cf:database-${self:custom.stage}.AmendmentsTableName}
-  tableArn: ${env:AMENDMENTS_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsTableArn}
-  atomicCounterTableName: ${env:AMENDMENTS_COUNTER_TABLE_NAME, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableName}
-  atomicCounterTableArn: ${env:AMENDMENTS_COUNTER_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableArn}
   webAclName: ${self:service}-${self:custom.stage}-webacl
   associateWaf:
     name: ${self:custom.webAclName}
@@ -43,11 +39,6 @@ custom:
       events:
         - schedule: rate(${ssm:/configuration/${self:custom.stage}/warmup/schedule~true, ssm:/configuration/default/warmup/schedule~true, "4 minutes"})
       concurrency: ${ssm:/configuration/${self:custom.stage}/warmup/concurrency~true, ssm:/configuration/default/warmup/concurrency~true, 5}
-  scripts:
-    hooks:
-      package:initialize: |
-        set -e
-        curl -L --output lambda_layer.zip https://www.princexml.com/download/prince-14.2-aws-lambda.zip && zip lambda_layer.zip etc/fontconfig/fonts.conf
 provider:
   name: aws
   runtime: nodejs12.x
@@ -60,78 +51,20 @@ provider:
     role:
       path: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
       permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
-      statements:
-        - Effect: "Allow"
-          Action:
-            - dynamodb:DescribeTable
-            - dynamodb:Query
-            - dynamodb:Scan
-            - dynamodb:GetItem
-            - dynamodb:PutItem
-            - dynamodb:UpdateItem
-            - dynamodb:DeleteItem
-          Resource:
-            - ${self:custom.tableArn}
-            - ${self:custom.atomicCounterTableArn}
-  environment:
-    tableName: ${self:custom.tableName}
-    atomicCounterTableName: ${self:custom.atomicCounterTableName}
 
 functions:
-  create:
-    handler: handlers/create.main
-
-    events:
-      - http:
-          path: amendments
-          method: post
-          cors: true
-          authorizer: aws_iam
-  get:
-    handler: handlers/get.main
-    events:
-      - http:
-          path: amendments/{id}
-          method: get
-          cors: true
-          authorizer: aws_iam
-  list:
-    handler: handlers/list.main
-    events:
-      - http:
-          path: amendments
-          method: get
-          cors: true
-          authorizer: aws_iam
-  update:
-    handler: handlers/update.main
-    events:
-      - http:
-          path: amendments/{id}
-          method: put
-          cors: true
-          authorizer: aws_iam
-  delete:
-    handler: handlers/delete.main
-    events:
-      - http:
-          path: amendments/{id}
-          method: delete
-          cors: true
-          authorizer: aws_iam
-  princeProxy:
-    handler: handlers/princeProxy.main
+  proxyFunc:
+    handler: handlers/proxyFunc.main
     environment:
-      princeApi: ${self:custom.princeApi}
+      proxyApi: ${self:custom.proxyApi}
     timeout: 30
     memorySize: 3008
     maximumRetryAttempts: 0
     events:
       - http:
-          path: princeProxy
+          path: proxy
           method: post
           cors: true
-          # authorizer: aws_iam
 
 resources:
   Resources:

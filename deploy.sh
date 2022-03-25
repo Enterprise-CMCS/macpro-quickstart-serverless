@@ -12,6 +12,7 @@ services=(
   'ui'
   'ui-auth'
   'ui-src'
+  'proxy-api'
 )
 
 install_deps() {
