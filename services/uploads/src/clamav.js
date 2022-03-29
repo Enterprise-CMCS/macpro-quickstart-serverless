@@ -13,18 +13,18 @@ const S3 = new AWS.S3();
  * returns a list of keys
  */
 async function listBucketFiles(bucketName) {
-    try {
-        const listFilesResult = await S3.listObjectsV2({
-            Bucket: bucketName,
-        }).promise();
+  try {
+    const listFilesResult = await S3.listObjectsV2({
+      Bucket: bucketName,
+    }).promise();
 
-        const keys = listFilesResult.Contents.map((c) => c.Key);
-        return keys;
-    } catch (err) {
-        utils.generateSystemMessage(`Error listing files`);
-        console.log(err);
-        throw err;
-    }
+    const keys = listFilesResult.Contents.map((c) => c.Key);
+    return keys;
+  } catch (err) {
+    utils.generateSystemMessage(`Error listing files`);
+    console.log(err);
+    throw err;
+  }
 }
 
 /**
@@ -41,10 +41,7 @@ function updateAVDefinitonsWithFreshclam() {
     utils.generateSystemMessage("Update message");
     console.log(executionResult.toString());
 
-    console.log(
-      'Downloaded:',
-      fs.readdirSync(constants.FRESHCLAM_WORK_DIR)
-    );
+    console.log("Downloaded:", fs.readdirSync(constants.FRESHCLAM_WORK_DIR));
 
     if (executionResult.stderr) {
       utils.generateSystemMessage("stderr");
@@ -63,84 +60,49 @@ function updateAVDefinitonsWithFreshclam() {
  * The definitions are stored on the local disk, ensure there's enough space.
  */
 async function downloadAVDefinitions() {
-  // const downloadPromises = constants.CLAMAV_DEFINITIONS_FILES.map(
-  //   (filenameToDownload) => {
-  //     return new Promise((resolve, reject) => {
-  //       let destinationFile = path.join("/tmp/", filenameToDownload);
   // list all the files in that bucket
-        utils.generateSystemMessage('Downloading Definitions');
-        const allFileKeys = await listBucketFiles(constants.CLAMAV_BUCKET_NAME);
+  utils.generateSystemMessage("Downloading Definitions");
+  const allFileKeys = await listBucketFiles(constants.CLAMAV_BUCKET_NAME);
 
-        // utils.generateSystemMessage(
-        //   `Downloading ${filenameToDownload} from S3 to ${destinationFile}`
-        // );
-        const definitionFileKeys = allFileKeys
-           .filter((key) => key.startsWith(constants.PATH_TO_AV_DEFINITIONS))
-           .map((fullPath) => path.basename(fullPath));
-
-        let localFileWriteStream = fs.createWriteStream(destinationFile);
-
-        let options = {
-          Bucket: constants.CLAMAV_BUCKET_NAME,
-          Key: `${constants.PATH_TO_AV_DEFINITIONS}/${filenameToDownload}`,
-        };
-
-  //       let s3ReadStream = S3.getObject(options)
-  //         .createReadStream()
-  //         .on("end", function () {
-  //           utils.generateSystemMessage(
-  //             `Finished download ${filenameToDownload}`
-  //           );
-  //           resolve();
-  //         })
-  //         .on("error", function (err) {
-  //           utils.generateSystemMessage(
-  //             `Error downloading definition file ${filenameToDownload}`
-  //           );
-  //           console.log(err);
-  //           reject();
-  //         });
-  //
-  //       s3ReadStream.pipe(localFileWriteStream);
-  //     });
-  //   }
-  // );
+  const definitionFileKeys = allFileKeys
+    .filter((key) => key.startsWith(constants.PATH_TO_AV_DEFINITIONS))
+    .map((fullPath) => path.basename(fullPath));
 
   // download each file in the bucket.
-   const downloadPromises = definitionFileKeys.map((filenameToDownload) => {
-       return new Promise((resolve, reject) => {
-           let destinationFile = path.join('/tmp/', filenameToDownload);
+  const downloadPromises = definitionFileKeys.map((filenameToDownload) => {
+    return new Promise((resolve, reject) => {
+      let destinationFile = path.join("/tmp/", filenameToDownload);
 
-           utils.generateSystemMessage(
-               `Downloading ${filenameToDownload} from S3 to ${destinationFile}`
-           );
+      utils.generateSystemMessage(
+        `Downloading ${filenameToDownload} from S3 to ${destinationFile}`
+      );
 
-           let localFileWriteStream = fs.createWriteStream(destinationFile);
+      let localFileWriteStream = fs.createWriteStream(destinationFile);
 
-           let options = {
-               Bucket: constants.CLAMAV_BUCKET_NAME,
-               Key: `${constants.PATH_TO_AV_DEFINITIONS}/${filenameToDownload}`,
-           };
+      let options = {
+        Bucket: constants.CLAMAV_BUCKET_NAME,
+        Key: `${constants.PATH_TO_AV_DEFINITIONS}/${filenameToDownload}`,
+      };
 
-           let s3ReadStream = S3.getObject(options)
-               .createReadStream()
-               .on('end', function () {
-                   utils.generateSystemMessage(
-                       `Finished download ${filenameToDownload}`
-                   );
-                   resolve();
-               })
-               .on('error', function (err) {
-                   utils.generateSystemMessage(
-                       `Error downloading definition file ${filenameToDownload}`
-                   );
-                   console.log(err);
-                   reject();
-               });
+      let s3ReadStream = S3.getObject(options)
+        .createReadStream()
+        .on("end", function () {
+          utils.generateSystemMessage(
+            `Finished download ${filenameToDownload}`
+          );
+          resolve();
+        })
+        .on("error", function (err) {
+          utils.generateSystemMessage(
+            `Error downloading definition file ${filenameToDownload}`
+          );
+          console.log(err);
+          reject();
+        });
 
-           s3ReadStream.pipe(localFileWriteStream);
-       });
-   });
+      s3ReadStream.pipe(localFileWriteStream);
+    });
+  });
 
   return await Promise.all(downloadPromises);
 }
@@ -149,98 +111,71 @@ async function downloadAVDefinitions() {
  * Uploads the AV definitions to the S3 bucket.
  */
 async function uploadAVDefinitions() {
-  // const uploadPromises = constants.CLAMAV_DEFINITIONS_FILES.map(
-  //   (filenameToUpload) => {
-  //     return new Promise((resolve, reject) => {
-  //       utils.generateSystemMessage(
-  //         `Uploading updated definitions for file ${filenameToUpload} ---`
-  //       );
+  // delete all the definitions currently in the bucket.
+  // first list them.
+  utils.generateSystemMessage("Uploading Definitions");
+  const s3AllFullKeys = await listBucketFiles(constants.CLAMAV_BUCKET_NAME);
 
-        // delete all the definitions currently in the bucket.
-        // first list them.
-       utils.generateSystemMessage('Uploading Definitions');
-       const s3AllFullKeys = await listBucketFiles(constants.CLAMAV_BUCKET_NAME);
+  const s3DefinitionFileFullKeys = s3AllFullKeys.filter((key) =>
+    key.startsWith(constants.PATH_TO_AV_DEFINITIONS)
+  );
 
-        // let options = {
-        //   Bucket: constants.CLAMAV_BUCKET_NAME,
-        //   Key: `${constants.PATH_TO_AV_DEFINITIONS}/${filenameToUpload}`,
-        //   Body: fs.createReadStream(path.join("/tmp/", filenameToUpload)),
-        //   ACL: "private",
-        // };
-        //
-        // S3.putObject(options, function (err, data) {
-        //   if (err) {
-        //     utils.generateSystemMessage(
-        //       `--- Error uploading ${filenameToUpload} ---`
-        //     );
-        //     console.log(err);
-        //     reject();
-        //     return;
-        //   }
-        //   resolve();
-
-        const s3DefinitionFileFullKeys = s3AllFullKeys.filter((key) =>
-        key.startsWith(constants.PATH_TO_AV_DEFINITIONS)
-    );
-
-    // If there are any s3 Definition files in the s3 bucket, delete them.
-    if (s3DefinitionFileFullKeys.length != 0) {
-        try {
-            await S3.deleteObjects({
-                Bucket: constants.CLAMAV_BUCKET_NAME,
-                Delete: {
-                    Objects: s3DefinitionFileFullKeys.map((k) => {
-                        return { Key: k };
-                    }),
-                },
-            }).promise();
-            utils.generateSystemMessage(
-                `Deleted extant definitions: ${s3DefinitionFileFullKeys}`
-            );
-        } catch (err) {
-            utils.generateSystemMessage(
-                `Error deleting current definition files: ${s3DefinitionFileFullKeys}`
-            );
-            console.log(err);
-            throw err;
-        }
+  // If there are any s3 Definition files in the s3 bucket, delete them.
+  if (s3DefinitionFileFullKeys.length != 0) {
+    try {
+      await S3.deleteObjects({
+        Bucket: constants.CLAMAV_BUCKET_NAME,
+        Delete: {
+          Objects: s3DefinitionFileFullKeys.map((k) => {
+            return { Key: k };
+          }),
+        },
+      }).promise();
+      utils.generateSystemMessage(
+        `Deleted extant definitions: ${s3DefinitionFileFullKeys}`
+      );
+    } catch (err) {
+      utils.generateSystemMessage(
+        `Error deleting current definition files: ${s3DefinitionFileFullKeys}`
+      );
+      console.log(err);
+      throw err;
     }
+  }
 
-    // list all the files in the work dir for upload
-    const definitionFiles = fs.readdirSync(constants.FRESHCLAM_WORK_DIR);
+  // list all the files in the work dir for upload
+  const definitionFiles = fs.readdirSync(constants.FRESHCLAM_WORK_DIR);
 
-    const uploadPromises = definitionFiles.map((filenameToUpload) => {
-        return new Promise((resolve, reject) => {
-            utils.generateSystemMessage(
-                `Uploading updated definitions for file ${filenameToUpload} ---`
-            );
+  const uploadPromises = definitionFiles.map((filenameToUpload) => {
+    return new Promise((resolve, reject) => {
+      utils.generateSystemMessage(
+        `Uploading updated definitions for file ${filenameToUpload} ---`
+      );
 
-            let options = {
-                Bucket: constants.CLAMAV_BUCKET_NAME,
-                Key: `${constants.PATH_TO_AV_DEFINITIONS}/${filenameToUpload}`,
-                Body: fs.createReadStream(
-                    path.join(constants.FRESHCLAM_WORK_DIR, filenameToUpload)
-                ),
-                ACL: 'public-read',
-            };
+      let options = {
+        Bucket: constants.CLAMAV_BUCKET_NAME,
+        Key: `${constants.PATH_TO_AV_DEFINITIONS}/${filenameToUpload}`,
+        Body: fs.createReadStream(
+          path.join(constants.FRESHCLAM_WORK_DIR, filenameToUpload)
+        ),
+      };
 
-            S3.putObject(options, function (err, data) {
-                if (err) {
-                    utils.generateSystemMessage(
-                        `--- Error uploading ${filenameToUpload} ---`
-                    );
-                    console.log(err);
-                    reject();
-                    return;
-                }
-                resolve();
-                utils.generateSystemMessage(
-                    `--- Finished uploading ${filenameToUpload} ---`
-                );
-            });
-        });
+      S3.putObject(options, function (err, data) {
+        if (err) {
+          utils.generateSystemMessage(
+            `--- Error uploading ${filenameToUpload} ---`
+          );
+          console.log(err);
+          reject();
+          return;
+        }
+        resolve();
+        utils.generateSystemMessage(
+          `--- Finished uploading ${filenameToUpload} ---`
+        );
+      });
     });
-
+  });
 
   return await Promise.all(uploadPromises);
 }
@@ -258,9 +193,8 @@ async function uploadAVDefinitions() {
  */
 function scanLocalFile(pathToFile) {
   try {
-    // execSync(
-      let avResult = execSync(
-      `${constants.PATH_TO_CLAMAV} -v -a --stdout -d /tmp/ '/tmp/download/${pathToFile}'`
+    let avResult = execSync(
+      `${constants.PATH_TO_CLAMAV} -v -a --stdout -d /tmp/ ${pathToFile}`
     );
 
     utils.generateSystemMessage("SUCCESSFUL SCAN, FILE CLEAN");
