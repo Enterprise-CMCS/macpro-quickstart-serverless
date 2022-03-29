@@ -48,9 +48,6 @@ export function deleteAmendment(id) {
 export function getAccessiblePdf(html) {
   const opts = requestOptions();
   opts.body = html;
-  console.log(API);
-  console.log(Storage);
-  console.log(API.post("amendments", `/amendments`, opts));
-  console.log(API.post("proxy", `/proxyFunc`, opts));
+  console.log(API.endpoints);
   return API.post("proxy", `/proxyFunc`, opts);
 }

@@ -51,6 +51,7 @@ custom:
         SKIP_PREFLIGHT_CHECK=true yarn run build
         export API_REGION=${self:custom.api_region}
         export API_URL=${self:custom.api_url}
+        export PROXY_API_URL=${self:custom.proxy_api_url}
         export COGNITO_REGION=${self:custom.cognito_region}
         export COGNITO_IDENTITY_POOL_ID=${self:custom.cognito_identity_pool_id}
         export COGNITO_USER_POOL_ID=${self:custom.cognito_user_pool_id}
