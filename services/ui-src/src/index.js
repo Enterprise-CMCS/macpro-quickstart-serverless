@@ -36,7 +36,7 @@ Amplify.configure({
         region: config.apiGateway.REGION,
       },
       {
-        name: "proxy",
+        name: "proxyFunc",
         endpoint: config.apiGateway.PROXY_URL,
         region: config.apiGateway.REGION,
       },
