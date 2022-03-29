@@ -24,6 +24,7 @@ custom:
       - production
   api_region: ${cf:app-api-${self:custom.stage}.Region}
   api_url: ${cf:app-api-${self:custom.stage}.ApiGatewayRestApiUrl}
+  proxy_api_url: ${cf:proxy-api-${self:custom.stage}.ApiGatewayRestApiUrl}
   cognito_region: ${cf:ui-auth-${self:custom.stage}.Region}
   cognito_identity_pool_id: ${cf:ui-auth-${self:custom.stage}.IdentityPoolId}
   cognito_user_pool_id: ${cf:ui-auth-${self:custom.stage}.UserPoolId}
