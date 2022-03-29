@@ -210,14 +210,12 @@ export default function Amendments() {
           {amendment.attachment && (
             <FormGroup>
               <FormLabel>Attachment</FormLabel>
-              <FormControl.Static>
-                <button
-                  className="link-lookalike"
-                  onClick={(e) => openAttachment(e, amendment.attachmentURL)}
-                >
-                  {formatFilename(amendment.attachment)}
-                </button>
-              </FormControl.Static>
+              <button
+                className="link-lookalike"
+                onClick={(e) => openAttachment(e, amendment.attachmentURL)}
+              >
+                {formatFilename(amendment.attachment)}
+              </button>
             </FormGroup>
           )}
           <FormGroup controlId="file">
