@@ -48,5 +48,5 @@ export function deleteAmendment(id) {
 export function getAccessiblePdf(html) {
   const opts = requestOptions();
   opts.body = html;
-  return API.post("amendments", `/princeProxy`, opts);
+  return API.post("amendments", `/proxyFunc`, opts);
 }
