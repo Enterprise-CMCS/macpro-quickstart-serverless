@@ -1,4 +1,4 @@
-import handler from "../libs/handler-lib";
+import handler from "../../app-api/libs/handler-lib";
 const axios = require("axios");
 
 export const proxyFunc = async (event) => {
