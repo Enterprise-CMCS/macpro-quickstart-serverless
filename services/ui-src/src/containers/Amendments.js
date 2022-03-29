@@ -15,8 +15,9 @@ import {
   validateAmendmentForm,
   validateFileAttachment,
 } from "../libs/helpers";
+import { fileUpload, fileURLResolver } from "../libs/file";
 
-export default function Amendments({ fileUpload, fileURLResolver }) {
+export default function Amendments() {
   const file = useRef(null);
   const { id } = useParams();
   const history = useHistory();
@@ -68,7 +69,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
     }
 
     onLoad();
-  }, [id, fileURLResolver]);
+  }, [id]);
 
   function formatFilename(str) {
     return str.replace(/^\w+-/, "");
@@ -209,14 +210,12 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
           {amendment.attachment && (
             <FormGroup>
               <FormLabel>Attachment</FormLabel>
-              <FormControl.Static>
-                <button
-                  className="link-lookalike"
-                  onClick={(e) => openAttachment(e, amendment.attachmentURL)}
-                >
-                  {formatFilename(amendment.attachment)}
-                </button>
-              </FormControl.Static>
+              <button
+                className="link-lookalike"
+                onClick={(e) => openAttachment(e, amendment.attachmentURL)}
+              >
+                {formatFilename(amendment.attachment)}
+              </button>
             </FormGroup>
           )}
           <FormGroup controlId="file">
