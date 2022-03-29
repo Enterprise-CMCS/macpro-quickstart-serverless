@@ -1,4 +1,4 @@
-import { API, Storage } from "aws-amplify";
+import { API } from "aws-amplify";
 import config from "../config";
 import { getLocalUserInfo } from "./user";
 
@@ -48,6 +48,5 @@ export function deleteAmendment(id) {
 export function getAccessiblePdf(html) {
   const opts = requestOptions();
   opts.body = html;
-  console.log(API.endpoints);
   return API.post("proxy", `/proxyFunc`, opts);
 }
