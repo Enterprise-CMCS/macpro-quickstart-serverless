@@ -54,7 +54,7 @@ provider:
 
 functions:
   princeProxy:
-    handler: handlers/princeProxy.main
+    handler: handlers/proxyFunc.main
     environment:
       proxyApi: ${self:custom.proxyApi}
     timeout: 30
@@ -62,7 +62,7 @@ functions:
     maximumRetryAttempts: 0
     events:
       - http:
-          path: princeProxy
+          path: proxyFunc
           method: post
           cors: true
 
