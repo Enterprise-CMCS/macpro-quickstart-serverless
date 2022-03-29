@@ -50,5 +50,7 @@ export function getAccessiblePdf(html) {
   opts.body = html;
   console.log(API);
   console.log(Storage);
+  console.log(API.post("amendments", `/amendments`, opts));
+  console.log(API.post("proxy", `/proxyFunc`, opts));
   return API.post("proxy", `/proxyFunc`, opts);
 }
