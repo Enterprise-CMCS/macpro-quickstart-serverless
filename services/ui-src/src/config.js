@@ -9,6 +9,7 @@ const configToExport = {
   apiGateway: {
     REGION: window._env_.API_REGION,
     URL: window._env_.API_URL,
+    PROXY_URL: window._env_.PROXY_API_URL,
   },
   cognito: {
     REGION: window._env_.COGNITO_REGION,
