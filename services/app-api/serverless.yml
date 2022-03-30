@@ -35,18 +35,17 @@ custom:
   associateWaf:
     name: ${self:custom.webAclName}
     version: V2
+  serverlessApiClientCertificate:
+    rotateCerts: true
+    daysLeft: 30
   warmup:
     default:
-      enabled: false
-      prewarm: false
+      enabled: true
+      prewarm: true
       events:
         - schedule: rate(${ssm:/configuration/${self:custom.stage}/warmup/schedule~true, ssm:/configuration/default/warmup/schedule~true, "4 minutes"})
       concurrency: ${ssm:/configuration/${self:custom.stage}/warmup/concurrency~true, ssm:/configuration/default/warmup/concurrency~true, 5}
-  scripts:
-    hooks:
-      package:initialize: |
-        set -e
-        curl -L --output lambda_layer.zip https://www.princexml.com/download/prince-14.2-aws-lambda.zip && zip lambda_layer.zip etc/fontconfig/fonts.conf
+
 provider:
   name: aws
   runtime: nodejs12.x
@@ -79,7 +78,6 @@ provider:
 functions:
   create:
     handler: handlers/create.main
-
     events:
       - http:
           path: amendments
