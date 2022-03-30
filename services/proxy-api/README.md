@@ -29,4 +29,4 @@ In the above documentation, you will also see the Parameter value denoted as "..
 
 ### Proxy Walkthrough
 
-The proxy implementation provides a demonstration of a proxy endpoint in our serverless project. For this example, the proxy function is performing a post call to the existing api. The funtion takes in one parameter; this parameter is the endpoint you want proxied. In this example, the parameter is the existing endpoint which we've stored in SSM as a string and referenced in serverless.yml as proxyApi.
+The proxy implementation provides a demonstration of a proxy endpoint in our serverless project. For this example, the proxy function is performing a post call to the existing api. The funtion takes in one argument, which is the base64 payload. There is an SSM parameter that the proxy.js function uses; this parameter is the endpoint you want proxied. In this example, the parameter is the existing endpoint which we've stored in SSM as a string and referenced in serverless.yml as proxyApi.
