@@ -52,6 +52,11 @@ has-flag@^3.0.0:
   resolved "https://registry.yarnpkg.com/has-flag/-/has-flag-3.0.0.tgz#b5d454dc2199ae225699f3467e5a07f3b955bafd"
   integrity sha1-tdRU3CGZriJWmfNGfloH87lVuv0=
 
+serverless-api-client-certificate@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/serverless-api-client-certificate/-/serverless-api-client-certificate-1.0.2.tgz#9113f3ad3862faf8615a37733ca09a1409ced8dd"
+  integrity sha512-snlEA1129NpZGYc0ra1eae17dKPYOXrju7cN+ku8roo6XOSMvNPe4XmEf0vVojoVHburXmI+Yx7y8DgJYeM2Fg==
+
 serverless-associate-waf@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/serverless-associate-waf/-/serverless-associate-waf-1.2.1.tgz#30efcfe94038a34fba6a00a954df43e176b8ccc9"
