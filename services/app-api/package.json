@@ -17,7 +17,6 @@
     "serverless-api-client-certificate": "1.0.2"
   },
   "dependencies": {
-    "axios": "^0.26.1",
     "uuid": "^7.0.3"
   }
 }
