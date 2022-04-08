@@ -26,7 +26,7 @@
     "@types/yargs": "^15.0.10",
     "aws-sdk": "^2.923.0",
     "dotenv": "^8.2.0",
-    "serverless": "^2.43.1",
+    "serverless": "^2.72.3",
     "serverless-bundle": "^4.3.1",
     "serverless-dotenv-plugin": "^3.0.0",
     "serverless-iam-helper": "CMSgov/serverless-iam-helper",
