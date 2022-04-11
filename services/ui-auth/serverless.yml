@@ -86,7 +86,7 @@ resources:
             - EmailSendingAccount: DEVELOPER
               SourceArn: !Sub arn:aws:ses:us-east-1:${AWS::AccountId}:identity/${self:custom.sesSourceEmailAddress}
             - !Ref AWS::NoValue
-        Schemas:
+        Schema:
           - Name: given_name
             AttributeDataType: String
             Mutable: true
