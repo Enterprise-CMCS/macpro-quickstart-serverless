@@ -26,7 +26,7 @@
     "@types/yargs": "^15.0.10",
     "aws-sdk": "^2.923.0",
     "dotenv": "^8.2.0",
-    "serverless": "^2.72.3",
+    "serverless": "^3.12.0",
     "serverless-bundle": "^4.3.1",
     "serverless-dotenv-plugin": "^3.0.0",
     "serverless-iam-helper": "CMSgov/serverless-iam-helper",
@@ -40,7 +40,9 @@
     "typescript": "^4.0.5",
     "yargs": "^16.1.1"
   },
-  "dependencies": {},
+  "dependencies": {
+    "global": "^4.4.0"
+  },
   "//resolutions": {
     "comment": "resolutions below are work arounds to upgrade vuln dependencies for serverless v2 until we upgrade to v3.  These don't actually get packed with the Lamba as they are for dev only, but still doing for clean dependabot"
   },

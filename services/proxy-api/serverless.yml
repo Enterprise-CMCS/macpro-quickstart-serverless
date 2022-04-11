@@ -1,7 +1,7 @@
 # Refer to the README.md file in within this service directory to configure all ssm parameters required for this service.
-service: proxy-api
+service: stream-functions
 
-frameworkVersion: "2"
+frameworkVersion: "3"
 
 package:
   individually: true
@@ -9,18 +9,34 @@ package:
 plugins:
   - serverless-bundle
   - serverless-dotenv-plugin
-  - serverless-plugin-warmup
-  - serverless-associate-waf
-  - serverless-offline
   - serverless-stack-termination-protection
   - serverless-idempotency-helper
-  - serverless-iam-helper
   - serverless-s3-bucket-helper
   - serverless-online
-  - serverless-plugin-scripts
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  iam:
+    role:
+      path: ${ssm:/configuration/${self:custom.stage}/iam/path, ssm:/configuration/default/iam/path, "/"}
+      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy, ssm:/configuration/default/iam/permissionsBoundaryPolicy, ""}
+      statements:
+        - Effect: "Allow"
+          Action:
+            - dynamodb:DescribeStream
+            - dynamodb:GetRecords
+            - dynamodb:GetShardIterator
+            - dynamodb:ListStreams
+          Resource: ${self:custom.tableStreamArn}
+        - Effect: "Allow"
+          Action:
+            - ses:SendEmail
+            - ses:SendRawEmail
+          Resource: "*"
 
 custom:
-  proxyApi: ${ssm:/configuration/${self:custom.stage}/prince/api~true, ssm:/configuration/default/prince/api~true}
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
   serverlessTerminationProtection:
@@ -28,95 +44,29 @@ custom:
       - master
       - val
       - production
-  webAclName: ${self:service}-${self:custom.stage}-webacl
-  associateWaf:
-    name: ${self:custom.webAclName}
-    version: V2
-  warmup:
-    default:
-      enabled: true
-      prewarm: true
-      events:
-        - schedule: rate(${ssm:/configuration/${self:custom.stage}/warmup/schedule~true, ssm:/configuration/default/warmup/schedule~true, "4 minutes"})
-      concurrency: ${ssm:/configuration/${self:custom.stage}/warmup/concurrency~true, ssm:/configuration/default/warmup/concurrency~true, 5}
-provider:
-  name: aws
-  runtime: nodejs12.x
-  region: us-east-1
-  tracing:
-    apiGateway: true
-  logs:
-    restApi: true
-  iam:
-    role:
-      path: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
-      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
+  tableStreamArn: ${cf:database-${self:custom.stage}.AmendmentsTableStreamArn}
+  sesSourceEmailAddress: ${ssm:/configuration/${self:custom.stage}/sesSourceEmailAddress, ssm:/configuration/default/sesSourceEmailAddress, "admin@example.com"}
+  reviewerEmailAddress: ${ssm:/configuration/${self:custom.stage}/reviewerEmailAddress, ssm:/configuration/default/reviewerEmailAddress, "reviewteam@example.com"}
 
 functions:
-  princeProxy:
-    handler: handlers/proxyFunc.main
-    environment:
-      proxyApi: ${self:custom.proxyApi}
-    timeout: 30
-    memorySize: 3008
-    maximumRetryAttempts: 0
+  emailSubmitter:
+    handler: handlers/emailSubmitter.handler
     events:
-      - http:
-          path: proxyFunc
-          method: post
-          cors: true
-
-resources:
-  Resources:
-    GatewayResponseDefault4XX:
-      Type: "AWS::ApiGateway::GatewayResponse"
-      Properties:
-        ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
-        ResponseType: DEFAULT_4XX
-        RestApiId: !Ref ApiGatewayRestApi
-    GatewayResponseDefault5XX:
-      Type: "AWS::ApiGateway::GatewayResponse"
-      Properties:
-        ResponseParameters:
-          gatewayresponse.header.Access-Control-Allow-Origin: "'*'"
-          gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
-        ResponseType: DEFAULT_5XX
-        RestApiId: !Ref ApiGatewayRestApi
-    ApiGwWebAcl:
-      Type: AWS::WAFv2::WebACL
-      Properties:
-        Name: ${self:custom.webAclName}
-        DefaultAction:
-          Block: {}
-        Rules:
-          - Action:
-              Allow: {}
-            Name: ${self:custom.webAclName}-allow-usa-plus-territories
-            Priority: 0
-            Statement:
-              GeoMatchStatement:
-                CountryCodes:
-                  - GU # Guam
-                  - PR # Puerto Rico
-                  - US # USA
-                  - UM # US Minor Outlying Islands
-                  - VI # US Virgin Islands
-                  - MP # Northern Mariana Islands
-            VisibilityConfig:
-              SampledRequestsEnabled: true
-              CloudWatchMetricsEnabled: true
-              MetricName: WafWebAcl
-        Scope: REGIONAL
-        VisibilityConfig:
-          CloudWatchMetricsEnabled: true
-          SampledRequestsEnabled: true
-          MetricName: ${self:custom.stage}-webacl
-  Outputs:
-    ApiGatewayRestApiName:
-      Value: !Ref ApiGatewayRestApi
-    ApiGatewayRestApiUrl:
-      Value: !Sub https://${ApiGatewayRestApi}.execute-api.${self:provider.region}.amazonaws.com/${self:custom.stage}
-    Region:
-      Value: !Sub ${AWS::Region}
+      - stream:
+          arn: ${self:custom.tableStreamArn}
+          startingPosition: LATEST
+          maximumRetryAttempts: 2
+    environment:
+      emailSource: ${self:custom.sesSourceEmailAddress}
+    maximumRetryAttempts: 2
+  emailReviewer:
+    handler: handlers/emailReviewer.handler
+    events:
+      - stream:
+          arn: ${self:custom.tableStreamArn}
+          startingPosition: LATEST
+          maximumRetryAttempts: 2
+    environment:
+      emailSource: ${self:custom.sesSourceEmailAddress}
+      reviewerEmail: ${self:custom.reviewerEmailAddress}
+    maximumRetryAttempts: 2
