@@ -7,8 +7,8 @@ package:
   individually: true
 
 plugins:
-  - serverless-bundle
-  # - serverless-dotenv-plugin
+  # - serverless-bundle
+  - serverless-dotenv-plugin
   - serverless-plugin-warmup
   - serverless-associate-waf
   - serverless-offline
