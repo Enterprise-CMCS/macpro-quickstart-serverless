@@ -12,8 +12,8 @@ plugins:
   - serverless-plugin-warmup
   - serverless-associate-waf
   - serverless-offline
-  - serverless-stack-termination-protection
-  # - serverless-idempotency-helper
+  # - serverless-stack-termination-protection
+  - serverless-idempotency-helper
   - serverless-iam-helper
   - serverless-s3-bucket-helper
   - serverless-online
