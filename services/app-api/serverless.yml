@@ -7,10 +7,10 @@ package:
   individually: true
 
 plugins:
-  # - serverless-bundle
+  - serverless-bundle
   - serverless-dotenv-plugin
   - serverless-plugin-warmup
-  - serverless-associate-waf
+  # - serverless-associate-waf
   - serverless-offline
   - serverless-stack-termination-protection
   - serverless-idempotency-helper
