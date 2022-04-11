@@ -16,7 +16,7 @@ plugins:
   - serverless-idempotency-helper
   - serverless-iam-helper
   - serverless-s3-bucket-helper
-  - serverless-online
+  # - serverless-online
   - serverless-api-client-certificate
 
 custom:
