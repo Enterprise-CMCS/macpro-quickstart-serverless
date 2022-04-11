@@ -15,8 +15,8 @@ plugins:
   - serverless-stack-termination-protection
   - serverless-idempotency-helper
   - serverless-iam-helper
-  - serverless-s3-bucket-helper
-  # - serverless-online
+  # - serverless-s3-bucket-helper
+  - serverless-online
   - serverless-api-client-certificate
 
 custom:
