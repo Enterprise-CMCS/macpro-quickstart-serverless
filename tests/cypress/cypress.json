@@ -1,0 +1,15 @@
+{
+  "experimentalStudio": true,
+  "baseUrl": "https://dwvboc39mygbu.cloudfront.net",
+  "redirectionLimit": 20,
+  "retries": 5,
+  "watchForFileChanges": true,
+  "testFiles": ["**/*.feature", "**/*.spec.js"],
+  "fixturesFolder": "fixtures",
+  "pluginsFile": "plugins/index.js",
+  "screenshotsFolder": "screenshots",
+  "videosFolder": "videos",
+  "downloadsFolder": "downloads",
+  "supportFile": "support/index.js",
+  "defaultCommandTimeout": 20000
+}
