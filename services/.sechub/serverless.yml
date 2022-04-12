@@ -1,6 +1,6 @@
 service: sechub
 
-frameworkVersion: "2"
+frameworkVersion: "3"
 
 package:
   individually: true
@@ -21,11 +21,11 @@ custom:
       - master
       - val
       - production
-  githubAccessToken: ${ssm:/configuration/${self:custom.stage}/sechub/githubAccessToken~true, ssm:/configuration/default/sechub/githubAccessToken~true}
-  githubRepository: ${ssm:/configuration/${self:custom.stage}/sechub/githubRepository~true, ssm:/configuration/default/sechub/githubRepository~true, env:GITHUB_REPOSITORY}
-  githubRepositoryProjects: ${ssm:/configuration/${self:custom.stage}/sechub/githubRepositoryProjects~true, ssm:/configuration/default/sechub/githubRepositoryProjects~true, ""}
-  githubOrganizationProjects: ${ssm:/configuration/${self:custom.stage}/sechub/githubOrganizationProjects~true, ssm:/configuration/default/sechub/githubOrganizationProjects~true, ""}
-  severity: ${ssm:/configuration/${self:custom.stage}/sechub/severity~true, ssm:/configuration/default/sechub/severity~true, "CRITICAL,HIGH"}
+  githubAccessToken: ${ssm:/configuration/${self:custom.stage}/sechub/githubAccessToken, ssm:/configuration/default/sechub/githubAccessToken}
+  githubRepository: ${ssm:/configuration/${self:custom.stage}/sechub/githubRepository, ssm:/configuration/default/sechub/githubRepository, env:GITHUB_REPOSITORY}
+  githubRepositoryProjects: ${ssm:/configuration/${self:custom.stage}/sechub/githubRepositoryProjects, ssm:/configuration/default/sechub/githubRepositoryProjects, ""}
+  githubOrganizationProjects: ${ssm:/configuration/${self:custom.stage}/sechub/githubOrganizationProjects, ssm:/configuration/default/sechub/githubOrganizationProjects, ""}
+  severity: ${ssm:/configuration/${self:custom.stage}/sechub/severity, ssm:/configuration/default/sechub/severity, "CRITICAL,HIGH"}
 
 provider:
   name: aws
@@ -33,8 +33,8 @@ provider:
   region: us-east-1
   iam:
     role:
-      path: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
-      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
+      path: ${ssm:/configuration/${self:custom.stage}/iam/path, ssm:/configuration/default/iam/path, "/"}
+      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy, ssm:/configuration/default/iam/permissionsBoundaryPolicy, ""}
       statements:
         - Effect: "Allow"
           Action:
