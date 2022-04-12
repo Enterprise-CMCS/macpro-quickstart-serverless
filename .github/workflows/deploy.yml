@@ -93,7 +93,8 @@ jobs:
           SLACK_COLOR: ${{job.status}}
           SLACK_FOOTER: ""
           MSG_MINIMAL: actions url,commit,ref
- cypress-test:
+  
+   cypress-test:
     name: Cypress Tests
     needs: deploy
     if: ${{ github.ref != 'refs/heads/prod' }}
