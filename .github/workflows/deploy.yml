@@ -151,7 +151,7 @@ jobs:
         uses: cypress-io/github-action@v2.11.7
         with:
           working-directory: tests/cypress
-          spec: integration/${{ matrix.containers }}
+          spec: cypress/integration/${{ matrix.containers }}
           browser: chrome
           headless: true
           config: baseUrl=${{ env.APPLICATION_ENDPOINT }}
