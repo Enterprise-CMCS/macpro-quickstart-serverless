@@ -103,7 +103,7 @@ jobs:
       matrix:
         containers:
         []
-    steps:
+  steps:
       - name: set branch_name
         run: echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
       - uses: actions/checkout@v1
