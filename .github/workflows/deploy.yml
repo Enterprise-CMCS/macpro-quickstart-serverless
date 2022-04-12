@@ -101,10 +101,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        containers:
-        [
-          firstTest.spec.js,
-        ]
+        containers: [firstTest.spec.js]
     steps:
       - name: set branch_name
         run: echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
