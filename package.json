@@ -28,7 +28,7 @@
     "cypress": "^9.5.3",
     "cypress-cucumber-preprocessor": "^4.3.1",
     "dotenv": "^8.2.0",
-    "serverless": "^2.43.1",
+    "serverless": "^2.72.3",
     "serverless-bundle": "^4.3.1",
     "serverless-dotenv-plugin": "^3.0.0",
     "serverless-iam-helper": "CMSgov/serverless-iam-helper",
@@ -47,6 +47,14 @@
     "cypress-axe": "^0.14.0"
   },
   "cypress-cucumber-preprocessor": {
-    "nonGlobalStepDefinitions": true
+    "nonGlobalStepDefinitions": true,
+  "dependencies": {},
+  "//resolutions": {
+    "comment": "resolutions below are work arounds to upgrade vuln dependencies for serverless v2 until we upgrade to v3.  These don't actually get packed with the Lamba as they are for dev only, but still doing for clean dependabot"
+  },
+  "resolutions": {
+    "ansi-regex": "5.0.1",
+    "nanoid": "3.1.31",
+    "simple-git": "3.3.0"
   }
 }
