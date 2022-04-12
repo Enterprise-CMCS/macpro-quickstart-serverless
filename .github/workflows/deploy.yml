@@ -93,7 +93,6 @@ jobs:
           SLACK_COLOR: ${{job.status}}
           SLACK_FOOTER: ""
           MSG_MINIMAL: actions url,commit,ref
-  
  cypress-test:
     name: Cypress Tests
     needs: deploy
