@@ -93,7 +93,7 @@ jobs:
           SLACK_COLOR: ${{job.status}}
           SLACK_FOOTER: ""
           MSG_MINIMAL: actions url,commit,ref
- cypress-test:
+  cypress-test:
     name: Cypress Tests
     needs: deploy
     if: ${{ github.ref != 'refs/heads/prod' }}
@@ -102,7 +102,7 @@ jobs:
       fail-fast: false
       matrix:
         containers:
-          []
+        []
     steps:
       - name: set branch_name
         run: echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
