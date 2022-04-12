@@ -48,14 +48,14 @@
   },
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true,
-  "dependencies": {},
-  "//resolutions": {
-    "comment": "resolutions below are work arounds to upgrade vuln dependencies for serverless v2 until we upgrade to v3.  These don't actually get packed with the Lamba as they are for dev only, but still doing for clean dependabot"
-  },
-  "resolutions": {
-    "ansi-regex": "5.0.1",
-    "nanoid": "3.1.31",
-    "simple-git": "3.3.0"
+    "dependencies": {},
+    "//resolutions": {
+      "comment": "resolutions below are work arounds to upgrade vuln dependencies for serverless v2 until we upgrade to v3.  These don't actually get packed with the Lamba as they are for dev only, but still doing for clean dependabot"
+    },
+    "resolutions": {
+      "ansi-regex": "5.0.1",
+      "nanoid": "3.1.31",
+      "simple-git": "3.3.0"
+    }
   }
-}
 }
