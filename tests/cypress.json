@@ -1,3 +1,4 @@
 {
-  "baseUrl": "https://dwvboc39mygbu.cloudfront.net"
+  "baseUrl": "https://dwvboc39mygbu.cloudfront.net",
+  "experimentalStudio": true
 }

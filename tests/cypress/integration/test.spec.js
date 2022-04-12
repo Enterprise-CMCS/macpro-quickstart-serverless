@@ -4,7 +4,9 @@ describe("Test", () => {
   });
 
   it("Test", () => {
-    //inside the it block is where we will add the steps for the test
-    //these steps can be added by using cypress studios as well
+    /* ==== Generated with Cypress Studio ==== */
+    cy.get("h1").should("have.text", "APS Submission App");
+    cy.get("h3").should("have.text", "Do you have questions or need support?");
+    /* ==== End Cypress Studio ==== */
   });
 });
