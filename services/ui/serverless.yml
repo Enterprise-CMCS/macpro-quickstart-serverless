@@ -1,7 +1,7 @@
 # Refer to the README.md file in within this service directory to configure all ssm parameters required for this service.
 service: ui
 
-frameworkVersion: "2"
+frameworkVersion: "3"
 
 provider:
   name: aws
@@ -9,8 +9,8 @@ provider:
   region: us-east-1
   iam:
     role:
-      path: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
-      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
+      path: ${ssm:/configuration/${self:custom.stage}/iam/path, ssm:/configuration/default/iam/path, "/"}
+      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy, ssm:/configuration/default/iam/permissionsBoundaryPolicy, ""}
 
 plugins:
   - serverless-plugin-scripts
@@ -26,10 +26,10 @@ custom:
       - master
       - val
       - production
-  route53HostedZoneId: ${ssm:/configuration/${self:custom.stage}/route53/hostedZoneId~true, ssm:/configuration/default/route53/hostedZoneId~true, ""}
-  route53DomainName: ${ssm:/configuration/${self:custom.stage}/route53/domainName~true, ""}
-  cloudfrontCertificateArn: ${ssm:/configuration/${self:custom.stage}/cloudfront/certificateArn~true, ssm:/configuration/default/cloudfront/certificateArn~true, ""}
-  cloudfrontDomainName: ${ssm:/configuration/${self:custom.stage}/cloudfront/domainName~true, ""}
+  route53HostedZoneId: ${ssm:/configuration/${self:custom.stage}/route53/hostedZoneId, ssm:/configuration/default/route53/hostedZoneId, ""}
+  route53DomainName: ${ssm:/configuration/${self:custom.stage}/route53/domainName, ""}
+  cloudfrontCertificateArn: ${ssm:/configuration/${self:custom.stage}/cloudfront/certificateArn, ssm:/configuration/default/cloudfront/certificateArn, ""}
+  cloudfrontDomainName: ${ssm:/configuration/${self:custom.stage}/cloudfront/domainName, ""}
   webAclName: ${self:service}-${self:custom.stage}-webacl
   firehoseStreamName: aws-waf-logs-${self:service}-${self:custom.stage}-firehose
   scripts:
