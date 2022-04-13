@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "cd tests/cypress && npm test && cd -",
+    "test": "cd tests/cypress && yarn test && cd -",
     "test:ci": "cd tests/cypress && yarn run test:ci"
   },
   "repository": {

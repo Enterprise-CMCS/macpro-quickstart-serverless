@@ -7,7 +7,7 @@
     "start": "cd ../../ && ./dev local && cd -",
     "test:ci": "cypress install && cypress run --browser chrome --headless",
     "cypress": "cypress open",
-    "test": "concurrently --kill-others \"npm start\" \"npm run cypress\""
+    "test": "concurrently --kill-others \"yarn start\" \"yarn run cypress\""
   },
   "author": "",
   "license": "ISC",
