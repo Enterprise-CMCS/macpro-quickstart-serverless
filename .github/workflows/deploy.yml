@@ -128,6 +128,7 @@ jobs:
             services/ui-auth/node_modules
             services/ui-src/node_modules
             node_modules
+            ~/.cache
           key: ${{ runner.os }}-${{ hashFiles('combined-yarn.txt') }}
       - name: Install dependencies
         run: yarn install --frozen-lockfile
