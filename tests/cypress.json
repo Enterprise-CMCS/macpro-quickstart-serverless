@@ -1,4 +1,4 @@
 {
-  "baseUrl": "https://dwvboc39mygbu.cloudfront.net",
+  "baseUrl": "http://localhost:3000/",
   "experimentalStudio": true
 }

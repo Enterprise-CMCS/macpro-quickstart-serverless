@@ -1,6 +1,6 @@
 {
   "experimentalStudio": true,
-  "baseUrl": "https://dwvboc39mygbu.cloudfront.net",
+  "baseUrl": "http://localhost:3000/",
   "redirectionLimit": 20,
   "retries": 5,
   "watchForFileChanges": true,

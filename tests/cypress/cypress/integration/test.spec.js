@@ -1,6 +1,6 @@
 describe("Test", () => {
   beforeEach(() => {
-    cy.visit("https://dwvboc39mygbu.cloudfront.net/");
+    cy.visit("/");
   });
 
   it("Test", () => {
