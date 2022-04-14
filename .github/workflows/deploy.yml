@@ -46,8 +46,10 @@ jobs:
           node-version: ${{ steps.node_version.outputs.NODE_VERSION }}
       - uses: actions/cache@v2
         with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock', 'plugins/**') }}
+          path: |
+            "**/node_modules"
+            "~/.cache/Cypress"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock', 'plugins/**') }}-2
       - name: set path
         run: |
           echo "PATH=$(pwd)/node_modules/.bin/:$PATH" >> $GITHUB_ENV
@@ -111,8 +113,10 @@ jobs:
           node-version: ${{ steps.node_version.outputs.NODE_VERSION }}
       - uses: actions/cache@v2
         with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock', 'plugins/**') }}
+          path: |
+            "**/node_modules"
+            "~/.cache/Cypress"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock', 'plugins/**') }}-2
       - name: set path
         run: |
           echo "PATH=$(pwd)/node_modules/.bin/:$PATH" >> $GITHUB_ENV
@@ -167,8 +171,10 @@ jobs:
           node-version: ${{ steps.node_version.outputs.NODE_VERSION }}
       - uses: actions/cache@v2
         with:
-          path: "**/node_modules"
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock', 'plugins/**') }}
+          path: |
+            "**/node_modules"
+            "~/.cache/Cypress"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock', 'plugins/**') }}-2
       - name: set path
         run: |
           echo "PATH=$(pwd)/node_modules/.bin/:$PATH" >> $GITHUB_ENV
