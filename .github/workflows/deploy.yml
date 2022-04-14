@@ -112,26 +112,26 @@ jobs:
           STAGE_PREFIX: ${{ secrets.STAGE_PREFIX }}
           COGNITO_TEST_USERS_PASSWORD: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_COGNITO_TEST_USERS_PASSWORD] || secrets.COGNITO_TEST_USERS_PASSWORD }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: read .nvmrc
+        id: node_version
+        run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
       - uses: actions/setup-node@v1
         with:
-          node-version: "12.x"
-      - name: Combine yarn.lock files to single file
-        run: find services -maxdepth 3 -name yarn.lock | xargs cat yarn.lock > combined-yarn.txt
-      - name: cache service dependencies
-        uses: actions/cache@v2
+          node-version: ${{ steps.node_version.outputs.NODE_VERSION }}
+      - uses: actions/cache@v2
         with:
-          path: |
-            services/app-api/node_modules
-            services/uploads/node_modules
-            services/stream-functions/node_modules
-            services/ui/node_modules
-            services/ui-auth/node_modules
-            services/ui-src/node_modules
-            node_modules
-            ~/.cache
-          key: ${{ runner.os }}-${{ hashFiles('combined-yarn.txt') }}
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
+          path: "**/node_modules"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock', 'plugins/**') }}
+      # - name: Combine yarn.lock files to single file
+      #   run: find services -maxdepth 3 -name yarn.lock | xargs cat yarn.lock > combined-yarn.txt
+      # - name: cache service dependencies
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: |
+      #       ~/.cache
+      #     key: ${{ runner.os }}-${{ hashFiles('combined-yarn.txt') }}
+      # - name: Install dependencies
+      #   run: yarn install --frozen-lockfile
       - name: set path
         run: |
           echo "PATH=$(pwd)/node_modules/.bin/:$PATH" >> $GITHUB_ENV
@@ -181,9 +181,12 @@ jobs:
           STAGE_PREFIX: ${{ secrets.STAGE_PREFIX }}
           COGNITO_TEST_USERS_PASSWORD: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_COGNITO_TEST_USERS_PASSWORD] || secrets.COGNITO_TEST_USERS_PASSWORD }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: read .nvmrc
+        id: node_version
+        run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
       - uses: actions/setup-node@v1
         with:
-          node-version: "12.x"
+          node-version: ${{ steps.node_version.outputs.NODE_VERSION }}
       - name: Combine yarn.lock files to single file
         run: find services -maxdepth 3 -name yarn.lock | xargs cat yarn.lock > combined-yarn.txt
       - name: cache service dependencies
