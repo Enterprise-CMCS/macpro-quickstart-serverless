@@ -9,7 +9,13 @@ import Select from "react-select";
 import Switch from "react-ios-switch";
 import { territoryList } from "../libs/territoryLib";
 import * as url from "url";
-import { getAmendment, updateAmendment, deleteAmendment } from "../libs/api";
+import ReactDOMServer from "react-dom/server";
+import {
+  getAmendment,
+  updateAmendment,
+  deleteAmendment,
+  getAccessiblePdf,
+} from "../libs/api";
 import {
   capitalize,
   validateAmendmentForm,
@@ -111,6 +117,57 @@ export default function Amendments() {
       onError(e);
       setIsLoading(false);
     }
+  }
+
+  // async function handlePrint(event) {
+  //   event.preventDefault();
+  //   window.print();
+  // };
+
+  const openPdf = (basePdf) => {
+    let byteCharacters = atob(basePdf);
+    let byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    let byteArray = new Uint8Array(byteNumbers);
+    let file = new Blob([byteArray], { type: "application/pdf;base64" });
+    let fileURL = URL.createObjectURL(file);
+    window.open(fileURL);
+  };
+
+  async function handlePrintAccessiblePdf(event) {
+    event.preventDefault();
+    // let html = document.querySelector("html").innerHTML;
+    let html = printableHtml();
+    console.log(html);
+    const pdf = await getAccessiblePdf(btoa(html));
+    openPdf(pdf);
+  }
+
+  function printableHtml() {
+    return ReactDOMServer.renderToStaticMarkup(
+      <html lang="en">
+        <head>
+          <title>APS print page</title>
+        </head>
+        <body>
+          <img
+            alt="SC state logo"
+            src="https://i.pinimg.com/originals/c4/52/04/c4520440b727695b5aca89e7afa2e7e3.jpg"
+            width="50"
+          />
+          <p style={{ "border-top": "1px solid black" }}>&nbsp;</p>
+          <h1>Amendment to Planned Settlement (APS)</h1>
+          <p>&nbsp;</p>
+          <p>APD-ID:&nbsp;&nbsp;{transmittalNumber}</p>
+          <p>Submitter:&nbsp;&nbsp;{firstName + " " + lastName}</p>
+          <p>Submitter Email:&nbsp;&nbsp;{email}</p>
+          <p>Urgent?:&nbsp;&nbsp;{urgent.toString()}</p>
+          <p>Comments:&nbsp;&nbsp;{comments}</p>
+        </body>
+      </html>
+    );
   }
 
   async function handleDelete(event) {
@@ -240,6 +297,9 @@ export default function Amendments() {
           </LoaderButton>
           <LoaderButton onClick={handleDelete} isLoading={isDeleting}>
             Delete
+          </LoaderButton>
+          <LoaderButton block bsSize="large" onClick={handlePrintAccessiblePdf}>
+            Print
           </LoaderButton>
         </form>
       )}
