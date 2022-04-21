@@ -63,7 +63,7 @@ jobs:
         with:
           coverageLocations: |
             ${{github.workspace}}/services/ui-src/coverage/lcov.info:lcov
-      - name: Store unit test results
+      - name: Store unit test reults
         uses: actions/upload-artifact@v2
         with:
           name: unit_test_results
@@ -73,21 +73,6 @@ jobs:
           # When deploying multiple copies of this quickstart to the same AWS Account (not ideal), a prefix helps prevent stepping on each other.
           # This can optionally be set as an GitHub Actions Secret
           ./deploy.sh $STAGE_PREFIX$branch_name
-<<<<<<< HEAD
-      - name: Run Nightwatch suite
-        run: |
-          pushd services
-          export APPLICATION_ENDPOINT=`./output.sh ui CloudFrontEndpointUrl $STAGE_PREFIX$branch_name`
-          popd
-          ./test.sh
-      - name: Store test results
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v2
-        with:
-          name: test_results
-          path: tests/nightwatch/tests_output
-=======
->>>>>>> master
       - name: Slack Notification
         uses: rtCamp/action-slack-notify@v2
         if: env.SLACK_WEBHOOK_URL != '' && contains(fromJson('["master", "val", "production"]'), env.branch_name) && failure ()
