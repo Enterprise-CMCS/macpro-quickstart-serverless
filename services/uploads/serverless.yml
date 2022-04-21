@@ -9,6 +9,7 @@ plugins:
   - serverless-stack-termination-protection
   - serverless-iam-helper
   - serverless-s3-bucket-helper
+  - serverless-online
 
 provider:
   name: aws
@@ -97,15 +98,11 @@ resources:
     AttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:
-<<<<<<< HEAD
-        BucketName: !Sub ${self:service.name}-${self:custom.stage}-attachments-${AWS::AccountId}
-=======
         BucketName: !Sub ${self:service}-${self:custom.stage}-attachments-${AWS::AccountId}
         BucketEncryption:
           ServerSideEncryptionConfiguration:
             - ServerSideEncryptionByDefault:
                 SSEAlgorithm: AES256
->>>>>>> master
         CorsConfiguration: # Set the CORS policy
           CorsRules:
             - AllowedOrigins:
