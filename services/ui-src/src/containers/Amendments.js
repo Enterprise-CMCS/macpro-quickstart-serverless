@@ -8,7 +8,6 @@ import "./Amendments.css";
 import Select from "react-select";
 import Switch from "react-ios-switch";
 import { territoryList } from "../libs/territoryLib";
-import * as url from "url";
 import ReactDOMServer from "react-dom/server";
 import {
   getAmendment,
@@ -194,27 +193,30 @@ export default function Amendments() {
 
   function openAttachment(event, attachmentURL) {
     event.preventDefault();
-    var http = require("http");
-    const uri = url.parse(attachmentURL);
-    var options = {
-      hostname: uri.hostname,
-      port: uri.port,
-      path: `${uri.pathname}${uri.search}`,
-      protocol: uri.protocol,
-      method: "GET",
-    };
-    var req = http.request(options, function (res) {
-      req.abort(); // The presigned S3 URL is only valid for GET requests, but we only want the headers.
-      if (res.statusCode.toString() === "403") {
-        window.open(
-          process.env.PUBLIC_URL + "/scan-in-progress.html",
-          "_blank"
-        );
-      } else {
-        window.open(attachmentURL, "_blank");
-      }
-    });
-    req.end();
+
+    // fix this
+
+    // var http = require("http");
+    // const uri = url.parse(attachmentURL);
+    // var options = {
+    //   hostname: uri.hostname,
+    //   port: uri.port,
+    //   path: `${uri.pathname}${uri.search}`,
+    //   protocol: uri.protocol,
+    //   method: "GET",
+    // };
+    // var req = http.request(options, function (res) {
+    //   req.abort(); // The presigned S3 URL is only valid for GET requests, but we only want the headers.
+    //   if (res.statusCode.toString() === "403") {
+    //     window.open(
+    //       process.env.PUBLIC_URL + "/scan-in-progress.html",
+    //       "_blank"
+    //     );
+    //   } else {
+    //     window.open(attachmentURL, "_blank");
+    //   }
+    // });
+    // req.end();
   }
 
   return (
