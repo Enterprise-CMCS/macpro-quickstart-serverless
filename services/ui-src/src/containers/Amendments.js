@@ -204,8 +204,15 @@ export default function Amendments() {
       method: "GET",
     };
     axios(options)
-      .then((result) => {
-        window.open(attachmentURL, "_blank");
+      .then((res) => {
+        if (res.statusCode.toString() === "403") {
+          window.open(
+            process.env.PUBLIC_URL + "/scan-in-progress.html",
+            "_blank"
+          );
+        } else {
+          window.open(attachmentURL, "_blank");
+        }
       })
       .catch((error) => {
         if (error.statusCode.toString() === "403") {
