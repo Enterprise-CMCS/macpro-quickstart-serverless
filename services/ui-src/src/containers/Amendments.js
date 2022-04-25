@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
+import axios from "axios";
 import { onError } from "../libs/errorLib";
 import { FormGroup, FormControl, FormLabel, Container } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
@@ -194,7 +195,6 @@ export default function Amendments() {
 
   function openAttachment(event, attachmentURL) {
     event.preventDefault();
-    var http = require("http");
     const uri = url.parse(attachmentURL);
     var options = {
       hostname: uri.hostname,
@@ -203,18 +203,18 @@ export default function Amendments() {
       protocol: uri.protocol,
       method: "GET",
     };
-    var req = http.request(options, function (res) {
-      req.abort(); // The presigned S3 URL is only valid for GET requests, but we only want the headers.
-      if (res.statusCode.toString() === "403") {
-        window.open(
-          process.env.PUBLIC_URL + "/scan-in-progress.html",
-          "_blank"
-        );
-      } else {
+    axios(options)
+      .then((result) => {
         window.open(attachmentURL, "_blank");
-      }
-    });
-    req.end();
+      })
+      .catch((error) => {
+        if (error.statusCode.toString() === "403") {
+          window.open(
+            process.env.PUBLIC_URL + "/scan-in-progress.html",
+            "_blank"
+          );
+        }
+      });
   }
 
   return (
