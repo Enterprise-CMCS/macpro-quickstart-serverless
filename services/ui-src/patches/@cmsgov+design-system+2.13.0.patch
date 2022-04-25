@@ -1,0 +1,13 @@
+diff --git a/node_modules/@cmsgov/design-system/dist/scss/components/_Pagination.scss b/node_modules/@cmsgov/design-system/dist/scss/components/_Pagination.scss
+index 10da57c..bdf4b0d 100644
+--- a/node_modules/@cmsgov/design-system/dist/scss/components/_Pagination.scss
++++ b/node_modules/@cmsgov/design-system/dist/scss/components/_Pagination.scss
+@@ -9,7 +9,7 @@ $pagination-overflow-color: $color-gray;
+ $pagination-page-count-color: $color-gray;
+ 
+ .ds-c-pagination {
+-  align-items: end;
++  align-items: flex-end;
+   display: flex;
+   justify-content: space-between;
+   ul {
