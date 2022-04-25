@@ -9,6 +9,7 @@ import "./Amendments.css";
 import Select from "react-select";
 import Switch from "react-ios-switch";
 import { territoryList } from "../libs/territoryLib";
+import * as url from "url";
 import ReactDOMServer from "react-dom/server";
 import {
   getAmendment,
