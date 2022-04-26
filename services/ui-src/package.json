@@ -3,7 +3,7 @@
   "description": "",
   "version": "1.0.0",
   "dependencies": {
-    "@cmsgov/design-system": "^2.9.0",
+    "@cmsgov/design-system": "^3.3.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",
@@ -12,8 +12,6 @@
     "bootstrap": "^5.1.3",
     "enzyme": "^3.11.0",
     "enzyme-adapter-react-16": "^1.15.6",
-    "patch-package": "^6.4.7",
-    "postinstall-postinstall": "^2.1.0",
     "react": "^17.0.1",
     "react-bootstrap": "^2.0.1",
     "react-dom": "^17.0.1",
@@ -29,8 +27,7 @@
     "build": "react-scripts build",
     "coverage": "jest --coverage",
     "test": "jest --setupFiles dotenv/config",
-    "eject": "react-scripts eject",
-    "postinstall": "patch-package"
+    "eject": "react-scripts eject"
   },
   "jest": {
     "coverageReporters": [
