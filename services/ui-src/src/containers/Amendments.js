@@ -1,6 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
-import axios from "axios";
 import { onError } from "../libs/errorLib";
 import { FormGroup, FormControl, FormLabel, Container } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
@@ -203,9 +202,9 @@ export default function Amendments() {
       protocol: uri.protocol,
       method: "GET",
     };
-    axios(options)
+    fetch(uri, options)
       .then((res) => {
-        if (res.statusCode.toString() === "403") {
+        if (res.json().statusCode.toString() === "403") {
           window.open(
             process.env.PUBLIC_URL + "/scan-in-progress.html",
             "_blank"
@@ -214,12 +213,14 @@ export default function Amendments() {
           window.open(attachmentURL, "_blank");
         }
       })
-      .catch((error) => {
-        if (error.statusCode.toString() === "403") {
+      .catch((err) => {
+        if (err.json().statusCode.toString() === "403") {
           window.open(
             process.env.PUBLIC_URL + "/scan-in-progress.html",
             "_blank"
           );
+        } else {
+          window.open(attachmentURL, "_blank");
         }
       });
   }
