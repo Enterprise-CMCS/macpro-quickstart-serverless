@@ -204,14 +204,7 @@ export default function Amendments() {
     };
     fetch(uri, options)
       .then((res) => {
-        if (res.json().statusCode.toString() === "403") {
-          window.open(
-            process.env.PUBLIC_URL + "/scan-in-progress.html",
-            "_blank"
-          );
-        } else {
-          window.open(attachmentURL, "_blank");
-        }
+        window.open(attachmentURL, "_blank");
       })
       .catch((err) => {
         if (err.json().statusCode.toString() === "403") {
@@ -219,8 +212,6 @@ export default function Amendments() {
             process.env.PUBLIC_URL + "/scan-in-progress.html",
             "_blank"
           );
-        } else {
-          window.open(attachmentURL, "_blank");
         }
       });
   }
