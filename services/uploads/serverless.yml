@@ -86,7 +86,7 @@ functions:
     events:
       - schedule: cron(15 1 * * ? *)
     timeout: 300 # 300 seconds = 5 minutes
-    memorySize: 3072
+    memorySize: 1024
     layers:
       - !Ref ClamDefsLambdaLayer
     environment:
