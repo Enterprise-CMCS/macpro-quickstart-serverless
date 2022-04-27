@@ -116,8 +116,6 @@ resources:
                 - DELETE
                 - HEAD
               MaxAge: 3000
-              ExposedHeaders:
-                - ETag
         NotificationConfiguration:
           LambdaConfigurations:
             - Event: s3:ObjectCreated:Put
