@@ -194,7 +194,6 @@ export default function Amendments() {
 
   function openAttachment(event, attachmentURL) {
     event.preventDefault();
-    var http = require("http");
     const uri = url.parse(attachmentURL);
     var options = {
       hostname: uri.hostname,
@@ -203,18 +202,18 @@ export default function Amendments() {
       protocol: uri.protocol,
       method: "GET",
     };
-    var req = http.request(options, function (res) {
-      req.abort(); // The presigned S3 URL is only valid for GET requests, but we only want the headers.
-      if (res.statusCode.toString() === "403") {
-        window.open(
-          process.env.PUBLIC_URL + "/scan-in-progress.html",
-          "_blank"
-        );
-      } else {
+    fetch(uri, options)
+      .then((res) => {
         window.open(attachmentURL, "_blank");
-      }
-    });
-    req.end();
+      })
+      .catch((err) => {
+        if (err.json().statusCode.toString() === "403") {
+          window.open(
+            process.env.PUBLIC_URL + "/scan-in-progress.html",
+            "_blank"
+          );
+        }
+      });
   }
 
   return (
