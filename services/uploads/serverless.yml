@@ -29,6 +29,7 @@ provider:
             - s3:PutObjectTagging
             - s3:PutObjectVersionTagging
             - s3:ListBucket
+            - s3:DeleteObject
           Resource:
             - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-attachments-${AWS::AccountId}/*
             - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-avscan-${AWS::AccountId}/*
@@ -37,7 +38,7 @@ provider:
             - s3:ListBucket
           Resource:
             - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-attachments-${AWS::AccountId}
-            - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-avscan-${AWS::AccountId}/*
+            - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-avscan-${AWS::AccountId}
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -52,7 +53,7 @@ custom:
       # This script is run locally when running 'serverless deploy'
       package:initialize: |
         set -e
-        curl -L --output lambda_layer.zip https://github.com/CMSgov/lambda-clamav-layer/releases/download/0.5/lambda_layer.zip
+        curl -L --output lambda_layer.zip https://github.com/CMSgov/lambda-clamav-layer/releases/download/0.7/lambda_layer.zip
       deploy:finalize: |
         rm lambda_layer.zip
         serverless invoke --stage ${self:custom.stage} --function avDownloadDefinitions -t Event
@@ -83,7 +84,7 @@ functions:
   avDownloadDefinitions:
     handler: src/download-definitions.lambdaHandleEvent
     events:
-      - schedule: cron(0 */6 * * ? *)
+      - schedule: cron(15 1 * * ? *)
     timeout: 300 # 300 seconds = 5 minutes
     memorySize: 1024
     layers:
