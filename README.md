@@ -52,12 +52,11 @@ Running tests locally
 
 ## Setting Up Deployments via GitHub Actions
 
-Deployments via GitHub Actions can authenticate using either static aws user credentials (an access key id and secret access key pair) or via [Open ID Connect (OIDC)](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect). It is recommended to set up Open ID Connect for deployments for your AWS accounts to prevent having to maintain a seperate static user within AWS. For information on setting up OIDC for GitHub actions, see [.github/oidc](.github/oidc).
+Deployments via GitHub Actions authenticate via [Open ID Connect (OIDC)](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect). A developer with appropriate permissions must set up Open ID Connect and a role to assume, so deployments may assume that role. For information on setting up OIDC for GitHub actions, see [.github/oidc](.github/oidc). For instructions on setting this up for new projects built from this template, see below.
 
 ## Setup Deployments for GitHub Actions:
 
 Deployments via GitHub Actions authenticate using [Open ID Connect (OIDC)](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect). This prevents needing to maintain a separate static user within AWS for the deployments.
-
 
 1. For each AWS environment, create an parameters file with the settings needed for your deployments. Example files are provided in [.github/oidc/](.github/oidc/). Ensure you set the permissions boundary to match the one needed for your environment, and that you update the list of ManagedPolicyARNs to the IAM policies your deployment roles will need (note: multiple managed policies can be provided within the comma-separated list).
 
