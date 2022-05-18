@@ -50,6 +50,28 @@ Running tests locally
 
 - todo
 
+## Setting Up Deployments via GitHub Actions
+
+Deployments via GitHub Actions authenticate via [Open ID Connect (OIDC)](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect). A developer with appropriate permissions must set up Open ID Connect and a role to assume, so deployments may assume that role. For information on setting up OIDC for GitHub actions, see [.github/oidc](.github/oidc). For instructions on setting this up for new projects built from this template, see below.
+
+## Setup Deployments for GitHub Actions:
+
+Deployments via GitHub Actions authenticate using [Open ID Connect (OIDC)](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect). This prevents needing to maintain a separate static user within AWS for the deployments.
+
+1. For each AWS environment, create an parameters file with the settings needed for your deployments. Example files are provided in [.github/oidc/](.github/oidc/). Ensure you set the permissions boundary to match the one needed for your environment, and that you update the list of ManagedPolicyARNs to the IAM policies your deployment roles will need (note: multiple managed policies can be provided within the comma-separated list).
+
+   What to set for SubjectClaimFilters will depend on your environment setup. The provided examples assume that you wish to allow any branch to be able to deploy to the dev AWS environment, but only want the `val` and `production` branches to be able to deploy to the `val` and `production` AWS environments. For more options on setting the subject claim filters, see [About security hardening with OpenID Connect: Example subject claims](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#example-subject-claims).
+
+2. With the environment files created, setup the OIDC role in each AWS environment using [the provided CloudFormation template](.github/oidc/github-actions-oidc-template.yml). This can be done via the aws cli when configured for the particular AWS environment you are targeting (you can use `aws sts get-caller-identity` to double check which account you are currently configured for with the aws cli). Ensure to change the PATH_TO_ENVIRONMENT.json reference to the parameter file you created above for the environment you are targeting.
+
+   ```
+   $ aws cloudformation deploy --template-file .github/oidc/github-actions-oidc-template.yml --stack-name github-actions-oidc-role --parameter-overrides file://PATH_TO_ENVIRONMENT.json --capabilities CAPABILITY_IAM --no-execute-changeset
+   ```
+
+   The above will first create a CloudFormation change set within your AWS environment that you can then review before applying. If you wish to deploy without the changeset, modify the command above to remove the `--no-execute-changeset` flag.
+
+3. The outputs of the cloudformation stacks created above will have a ServiceRoleARN output whose value is the ARN of role to use for GitHub Actions. Set this value to the appropriate AWS_OIDC_ROLE_TO_ASSUME secret within GitHub secrets. (For example, set the dev output for AWS_OIDC_ROLE_TO_ASSUME, the val output for VAL_AWS_OIDC_ROLE_TO_ASSUME, and the production output for PRODUCTION_AWS_OIDC_ROLE_TO_ASSUME within GitHub secrets).
+
 ## Requirements
 
 Node - we enforce using a specific version of node, specified in the file `.nvmrc`. This version matches the Lambda runtime. We recommend managing node versions using [NVM](https://github.com/nvm-sh/nvm#installing-and-updating).

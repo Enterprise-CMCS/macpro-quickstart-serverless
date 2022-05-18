@@ -1,0 +1,18 @@
+[
+  {
+    "ParameterKey": "SubjectClaimFilters",
+    "ParameterValue": "repo:CMSgov/YOUR_GITHUB_REPO:*"
+  },
+  {
+    "ParameterKey": "Path",
+    "ParameterValue": "/delegatedadmin/developer/"
+  },
+  {
+    "ParameterKey": "PermissionsBoundaryARN",
+    "ParameterValue": "arn:aws:iam::AWS_ACCOUNT_ID:policy/cms-cloud-admin/ct-ado-poweruser-permissions-boundary-policy"
+  },
+  {
+    "ParameterKey": "ManagedPolicyARNs",
+    "ParameterValue": "arn:aws:iam::AWS_ACCOUNT_ID:policy/ADO-Restriction-Policy,arn:aws:iam::AWS_ACCOUNT_ID:policy/CMSApprovedAWSServices,arn:aws:iam::aws:policy/AdministratorAccess"
+  }
+]
