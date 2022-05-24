@@ -31,6 +31,26 @@ provider:
 
 resources:
   Resources:
+    BigMacNewRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Principal:
+                AWS: "arn:aws:iam::677829493285:role/delegatedadmin/developer/bigmac-berry-ksql-LambdaPublishMskInfoToSsmRole-1EYWFBT8UJAWM"
+              Action:
+                - "sts:AssumeRole"
+        Policies:
+          - PolicyName: "CognitoAuthorizedPolicy"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "*"
+                  Resource: "*"
     AmendmentsTable:
       Type: AWS::DynamoDB::Table
       Properties:
