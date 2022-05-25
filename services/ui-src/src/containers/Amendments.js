@@ -1,21 +1,29 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { onError } from "../libs/errorLib";
-import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
+import { FormGroup, FormControl, FormLabel, Container } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
+import { Breadcrumbs } from "../components/Breadcrumbs";
 import "./Amendments.css";
 import Select from "react-select";
 import Switch from "react-ios-switch";
 import { territoryList } from "../libs/territoryLib";
 import * as url from "url";
-import { getAmendment, updateAmendment, deleteAmendment } from "../libs/api";
+import ReactDOMServer from "react-dom/server";
+import {
+  getAmendment,
+  updateAmendment,
+  deleteAmendment,
+  getAccessiblePdf,
+} from "../libs/api";
 import {
   capitalize,
   validateAmendmentForm,
   validateFileAttachment,
 } from "../libs/helpers";
+import { fileUpload, fileURLResolver } from "../libs/file";
 
-export default function Amendments({ fileUpload, fileURLResolver }) {
+export default function Amendments() {
   const file = useRef(null);
   const { id } = useParams();
   const history = useHistory();
@@ -67,7 +75,7 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
     }
 
     onLoad();
-  }, [id, fileURLResolver]);
+  }, [id]);
 
   function formatFilename(str) {
     return str.replace(/^\w+-/, "");
@@ -111,6 +119,57 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
     }
   }
 
+  // async function handlePrint(event) {
+  //   event.preventDefault();
+  //   window.print();
+  // };
+
+  const openPdf = (basePdf) => {
+    let byteCharacters = atob(basePdf);
+    let byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    let byteArray = new Uint8Array(byteNumbers);
+    let file = new Blob([byteArray], { type: "application/pdf;base64" });
+    let fileURL = URL.createObjectURL(file);
+    window.open(fileURL);
+  };
+
+  async function handlePrintAccessiblePdf(event) {
+    event.preventDefault();
+    // let html = document.querySelector("html").innerHTML;
+    let html = printableHtml();
+    console.log(html);
+    const pdf = await getAccessiblePdf(btoa(html));
+    openPdf(pdf);
+  }
+
+  function printableHtml() {
+    return ReactDOMServer.renderToStaticMarkup(
+      <html lang="en">
+        <head>
+          <title>APS print page</title>
+        </head>
+        <body>
+          <img
+            alt="SC state logo"
+            src="https://i.pinimg.com/originals/c4/52/04/c4520440b727695b5aca89e7afa2e7e3.jpg"
+            width="50"
+          />
+          <p style={{ "border-top": "1px solid black" }}>&nbsp;</p>
+          <h1>Amendment to Planned Settlement (APS)</h1>
+          <p>&nbsp;</p>
+          <p>APD-ID:&nbsp;&nbsp;{transmittalNumber}</p>
+          <p>Submitter:&nbsp;&nbsp;{firstName + " " + lastName}</p>
+          <p>Submitter Email:&nbsp;&nbsp;{email}</p>
+          <p>Urgent?:&nbsp;&nbsp;{urgent.toString()}</p>
+          <p>Comments:&nbsp;&nbsp;{comments}</p>
+        </body>
+      </html>
+    );
+  }
+
   async function handleDelete(event) {
     event.preventDefault();
 
@@ -135,7 +194,6 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
 
   function openAttachment(event, attachmentURL) {
     event.preventDefault();
-    var http = require("http");
     const uri = url.parse(attachmentURL);
     var options = {
       hostname: uri.hostname,
@@ -144,26 +202,27 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
       protocol: uri.protocol,
       method: "GET",
     };
-    var req = http.request(options, function (res) {
-      req.abort(); // The presigned S3 URL is only valid for GET requests, but we only want the headers.
-      if (res.statusCode.toString() === "403") {
-        window.open(
-          process.env.PUBLIC_URL + "/scan-in-progress.html",
-          "_blank"
-        );
-      } else {
+    fetch(uri, options)
+      .then((res) => {
         window.open(attachmentURL, "_blank");
-      }
-    });
-    req.end();
+      })
+      .catch((err) => {
+        if (err.json().statusCode.toString() === "403") {
+          window.open(
+            process.env.PUBLIC_URL + "/scan-in-progress.html",
+            "_blank"
+          );
+        }
+      });
   }
 
   return (
-    <div className="Amendments">
+    <Container className="Amendments" data-testid="amendments-container">
+      <Breadcrumbs />
       {amendment && (
         <form onSubmit={handleSubmit}>
           <FormGroup controlId="transmittalNumber">
-            <ControlLabel>APS ID &nbsp;(Transmittal Number)</ControlLabel>
+            <FormLabel>APS ID &nbsp;(Transmittal Number)</FormLabel>
             <FormControl
               disabled={true}
               value={transmittalNumber}
@@ -171,47 +230,33 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
             />
           </FormGroup>
           <FormGroup controlId="name">
-            <ControlLabel>Submitter</ControlLabel>
+            <FormLabel>Submitter</FormLabel>
             <FormControl value={firstName + " " + lastName} disabled={true} />
           </FormGroup>
-          {/*<FormGroup controlId="firstName">*/}
-          {/*    <ControlLabel>First Name</ControlLabel>*/}
-          {/*    <FormControl*/}
-          {/*        value={firstName}*/}
-          {/*        disabled={true}*/}
-          {/*        onChange={e => setFirstName(e.target.value)}*/}
-          {/*    />*/}
-          {/*</FormGroup>*/}
-          {/*<FormGroup controlId="lastName">*/}
-          {/*    <ControlLabel>Last Name</ControlLabel>*/}
-          {/*    <FormControl*/}
-          {/*        value={lastName}*/}
-          {/*        disabled={true}*/}
-          {/*        onChange={e => setLastName(e.target.value)}*/}
-          {/*    />*/}
-          {/*</FormGroup>*/}
           <FormGroup controlId="email">
-            <ControlLabel>Submitter Email</ControlLabel>
+            <FormLabel>Submitter Email</FormLabel>
             <FormControl
+              data-testid="amendments-email"
               value={email}
               disabled={true}
               onChange={(e) => setEmail(e.target.value)}
             />
           </FormGroup>
           <FormGroup controlId="territory">
-            <ControlLabel>State/Territory</ControlLabel>
+            <FormLabel>State/Territory</FormLabel>
             <Select
               name="form-field-name"
               value={territoryList.filter(function (option) {
                 return option.value === territory;
               })}
+              data-testid="amendments-territory"
               isDisabled={true}
               onChange={(e) => setTerritory(e.value)}
               options={territoryList}
             />
           </FormGroup>
           <FormGroup controlId="urgent">
-            <ControlLabel>This APS is classified as urgent &nbsp;</ControlLabel>
+            <FormLabel>This APS is classified as urgent &nbsp;</FormLabel>
             <Switch
               controlId="urgent"
               checked={urgent}
@@ -220,34 +265,28 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
           </FormGroup>
           {amendment.attachment && (
             <FormGroup>
-              <ControlLabel>Attachment</ControlLabel>
-              <FormControl.Static>
-                <button
-                  className="link-lookalike"
-                  onClick={(e) => openAttachment(e, amendment.attachmentURL)}
-                >
-                  {formatFilename(amendment.attachment)}
-                </button>
-              </FormControl.Static>
+              <FormLabel>Attachment</FormLabel>
+              <button
+                className="link-lookalike"
+                onClick={(e) => openAttachment(e, amendment.attachmentURL)}
+              >
+                {formatFilename(amendment.attachment)}
+              </button>
             </FormGroup>
           )}
           <FormGroup controlId="file">
-            {!amendment.attachment && <ControlLabel>Attachment</ControlLabel>}
+            {!amendment.attachment && <FormLabel>Attachment</FormLabel>}
             <FormControl onChange={handleFileChange} type="file" />
           </FormGroup>
           <FormGroup controlId="comments">
-            <ControlLabel>Additional Comments</ControlLabel>
+            <FormLabel>Additional Comments</FormLabel>
             <FormControl
-              componentClass="textarea"
               value={comments}
               onChange={(e) => setComments(e.target.value)}
             />
           </FormGroup>
           <LoaderButton
-            block
             type="submit"
-            bsSize="large"
-            bsStyle="primary"
             isLoading={isLoading}
             disabled={
               !validateAmendmentForm(email, firstName, lastName, territory)
@@ -255,17 +294,14 @@ export default function Amendments({ fileUpload, fileURLResolver }) {
           >
             Save
           </LoaderButton>
-          <LoaderButton
-            block
-            bsSize="large"
-            bsStyle="danger"
-            onClick={handleDelete}
-            isLoading={isDeleting}
-          >
+          <LoaderButton onClick={handleDelete} isLoading={isDeleting}>
             Delete
+          </LoaderButton>
+          <LoaderButton block bsSize="large" onClick={handlePrintAccessiblePdf}>
+            Print
           </LoaderButton>
         </form>
       )}
-    </div>
+    </Container>
   );
 }

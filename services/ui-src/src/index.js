@@ -1,11 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
-import App from "./App";
-import * as serviceWorker from "./serviceWorker";
 import { BrowserRouter as Router } from "react-router-dom";
 import { Amplify } from "aws-amplify";
+import App from "./App";
+import * as serviceWorker from "./serviceWorker";
 import config from "./config";
+
+import "./index.scss";
 
 Amplify.configure({
   Auth: {
@@ -19,7 +20,7 @@ Amplify.configure({
       redirectSignIn: config.cognito.REDIRECT_SIGNIN,
       redirectSignOut: config.cognito.REDIRECT_SIGNOUT,
       scope: ["email", "openid"],
-      responseType: "token",
+      responseType: "code",
     },
   },
   Storage: {
@@ -32,6 +33,11 @@ Amplify.configure({
       {
         name: "amendments",
         endpoint: config.apiGateway.URL,
+        region: config.apiGateway.REGION,
+      },
+      {
+        name: "proxy",
+        endpoint: config.apiGateway.PROXY_URL,
         region: config.apiGateway.REGION,
       },
     ],

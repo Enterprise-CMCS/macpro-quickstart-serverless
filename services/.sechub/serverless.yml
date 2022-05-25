@@ -1,0 +1,57 @@
+service: sechub
+
+frameworkVersion: "3"
+
+package:
+  individually: true
+
+plugins:
+  - serverless-bundle
+  - serverless-stack-termination-protection
+  - serverless-idempotency-helper
+  - serverless-iam-helper
+  - serverless-s3-bucket-helper
+  - serverless-online
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
+  serverlessTerminationProtection:
+    stages:
+      - master
+      - val
+      - production
+  githubAccessToken: ${ssm:/configuration/${self:custom.stage}/sechub/githubAccessToken, ssm:/configuration/default/sechub/githubAccessToken}
+  githubRepository: ${ssm:/configuration/${self:custom.stage}/sechub/githubRepository, ssm:/configuration/default/sechub/githubRepository, env:GITHUB_REPOSITORY}
+  githubRepositoryProjects: ${ssm:/configuration/${self:custom.stage}/sechub/githubRepositoryProjects, ssm:/configuration/default/sechub/githubRepositoryProjects, ""}
+  githubOrganizationProjects: ${ssm:/configuration/${self:custom.stage}/sechub/githubOrganizationProjects, ssm:/configuration/default/sechub/githubOrganizationProjects, ""}
+  severity: ${ssm:/configuration/${self:custom.stage}/sechub/severity, ssm:/configuration/default/sechub/severity, "CRITICAL,HIGH"}
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+  iam:
+    role:
+      path: ${ssm:/configuration/${self:custom.stage}/iam/path, ssm:/configuration/default/iam/path, "/"}
+      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy, ssm:/configuration/default/iam/permissionsBoundaryPolicy, ""}
+      statements:
+        - Effect: "Allow"
+          Action:
+            - securityhub:GetFindings
+          Resource:
+            - !Sub arn:aws:securityhub:*:${AWS::AccountId}:hub/default
+functions:
+  sync:
+    handler: handlers/sync.main
+    timeout: 600
+    maximumRetryAttempts: 0
+    events:
+      - schedule: cron(*/10 * * * ? *)
+    environment:
+      githubAccessToken: ${self:custom.githubAccessToken}
+      githubRepository: ${self:custom.githubRepository}
+      githubRepositoryProjects: ${self:custom.githubRepositoryProjects}
+      githubOrganizationProjects: ${self:custom.githubOrganizationProjects}
+      severity: ${self:custom.severity}
+      stage: ${self:custom.stage}

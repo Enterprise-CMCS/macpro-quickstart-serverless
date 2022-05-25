@@ -1,16 +1,16 @@
 # Refer to the README.md file in within this service directory to configure all ssm parameters required for this service.
 service: ui
 
-frameworkVersion: "2"
+frameworkVersion: "3"
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs14.x
   region: us-east-1
   iam:
     role:
-      path: ${ssm:/configuration/${self:custom.stage}/iam/path~true, ssm:/configuration/default/iam/path~true, "/"}
-      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy~true, ssm:/configuration/default/iam/permissionsBoundaryPolicy~true, ""}
+      path: ${ssm:/configuration/${self:custom.stage}/iam/path, ssm:/configuration/default/iam/path, "/"}
+      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy, ssm:/configuration/default/iam/permissionsBoundaryPolicy, ""}
 
 plugins:
   - serverless-plugin-scripts
@@ -26,10 +26,10 @@ custom:
       - master
       - val
       - production
-  route53HostedZoneId: ${ssm:/configuration/${self:custom.stage}/route53/hostedZoneId~true, ssm:/configuration/default/route53/hostedZoneId~true, ""}
-  route53DomainName: ${ssm:/configuration/${self:custom.stage}/route53/domainName~true, ""}
-  cloudfrontCertificateArn: ${ssm:/configuration/${self:custom.stage}/cloudfront/certificateArn~true, ssm:/configuration/default/cloudfront/certificateArn~true, ""}
-  cloudfrontDomainName: ${ssm:/configuration/${self:custom.stage}/cloudfront/domainName~true, ""}
+  route53HostedZoneId: ${ssm:/configuration/${self:custom.stage}/route53/hostedZoneId, ssm:/configuration/default/route53/hostedZoneId, ""}
+  route53DomainName: ${ssm:/configuration/${self:custom.stage}/route53/domainName, ""}
+  cloudfrontCertificateArn: ${ssm:/configuration/${self:custom.stage}/cloudfront/certificateArn, ssm:/configuration/default/cloudfront/certificateArn, ""}
+  cloudfrontDomainName: ${ssm:/configuration/${self:custom.stage}/cloudfront/domainName, ""}
   webAclName: ${self:service}-${self:custom.stage}-webacl
   firehoseStreamName: aws-waf-logs-${self:service}-${self:custom.stage}-firehose
   scripts:
@@ -71,6 +71,10 @@ resources:
         WebsiteConfiguration:
           IndexDocument: index.html
           ErrorDocument: index.html
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
       DeletionPolicy: Delete
     BucketPolicy:
       Type: AWS::S3::BucketPolicy
@@ -84,6 +88,32 @@ resources:
               Principal:
                 CanonicalUser: !GetAtt CloudFrontOriginAccessIdentity.S3CanonicalUserId
         Bucket: !Ref S3Bucket
+    LoggingBucket:
+      Type: "AWS::S3::Bucket"
+      Properties:
+        BucketName: !Sub ${self:service}-${self:custom.stage}-cloudfront-logs-${AWS::AccountId}
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: "AES256"
+      DeletionPolicy: Delete
+    LoggingBucketPolicy:
+      Type: "AWS::S3::BucketPolicy"
+      Properties:
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action: "s3:PutObject"
+              Resource: !Sub arn:aws:s3:::${LoggingBucket}/*
+              Principal:
+                AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+        Bucket: !Ref LoggingBucket
     CloudFrontWebAcl:
       Type: AWS::WAFv2::WebACL
       Properties:
@@ -162,6 +192,9 @@ resources:
               ResponseCode: 403
               ResponsePagePath: /index.html
           WebACLId: !GetAtt CloudFrontWebAcl.Arn
+          Logging:
+            Bucket: !Sub "${LoggingBucket}.s3.amazonaws.com"
+            Prefix: AWSLogs/CLOUDFRONT/${self:custom.stage}/
     Route53DnsRecord:
       Type: AWS::Route53::RecordSet
       Condition: CreateDnsRecord
@@ -193,6 +226,10 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: !Sub ${AWS::AccountId}-${self:service}-${self:custom.stage}-waflogs
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
     Firehose:
       Type: AWS::KinesisFirehose::DeliveryStream
       Properties:

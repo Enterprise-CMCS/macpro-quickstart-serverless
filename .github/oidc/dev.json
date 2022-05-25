@@ -1,0 +1,18 @@
+[
+  {
+    "ParameterKey": "SubjectClaimFilters",
+    "ParameterValue": "repo:CMSgov/macpro-quickstart-serverless:*"
+  },
+  {
+    "ParameterKey": "Path",
+    "ParameterValue": "/delegatedadmin/developer/"
+  },
+  {
+    "ParameterKey": "PermissionsBoundaryARN",
+    "ParameterValue": "arn:aws:iam::666736308865:policy/cms-cloud-admin/ct-ado-poweruser-permissions-boundary-policy"
+  },
+  {
+    "ParameterKey": "ManagedPolicyARNs",
+    "ParameterValue": "arn:aws:iam::666736308865:policy/ADO-Restriction-Policy,arn:aws:iam::666736308865:policy/CMSApprovedAWSServices,arn:aws:iam::aws:policy/AdministratorAccess"
+  }
+]

@@ -1,12 +1,13 @@
 import util from "util";
 import AWS from "aws-sdk";
+import * as debugLib from "./debug-lib";
 
 let logs;
 
 // Log AWS SDK calls
 AWS.config.logger = { log: debug };
 
-export default function debug() {
+export function debug() {
   logs.push({
     date: new Date(),
     string: util.format.apply(null, arguments),
@@ -17,7 +18,7 @@ export function init(event, context) {
   logs = [];
 
   // Log API event
-  debug("API event", {
+  debugLib.debug("API event", {
     body: event.body,
     pathParameters: event.pathParameters,
     queryStringParameters: event.queryStringParameters,
