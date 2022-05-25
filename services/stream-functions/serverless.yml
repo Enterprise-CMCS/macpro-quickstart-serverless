@@ -1,0 +1,72 @@
+# Refer to the README.md file in within this service directory to configure all ssm parameters required for this service.
+service: stream-functions
+
+frameworkVersion: "3"
+
+package:
+  individually: true
+
+plugins:
+  - serverless-bundle
+  - serverless-dotenv-plugin
+  - serverless-stack-termination-protection
+  - serverless-idempotency-helper
+  - serverless-s3-bucket-helper
+  - serverless-online
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+  iam:
+    role:
+      path: ${ssm:/configuration/${self:custom.stage}/iam/path, ssm:/configuration/default/iam/path, "/"}
+      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy, ssm:/configuration/default/iam/permissionsBoundaryPolicy, ""}
+      statements:
+        - Effect: "Allow"
+          Action:
+            - dynamodb:DescribeStream
+            - dynamodb:GetRecords
+            - dynamodb:GetShardIterator
+            - dynamodb:ListStreams
+          Resource: ${self:custom.tableStreamArn}
+        - Effect: "Allow"
+          Action:
+            - ses:SendEmail
+            - ses:SendRawEmail
+          Resource: "*"
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
+  serverlessTerminationProtection:
+    stages:
+      - master
+      - val
+      - production
+  tableStreamArn: ${cf:database-${self:custom.stage}.AmendmentsTableStreamArn}
+  sesSourceEmailAddress: ${ssm:/configuration/${self:custom.stage}/sesSourceEmailAddress, ssm:/configuration/default/sesSourceEmailAddress, "admin@example.com"}
+  reviewerEmailAddress: ${ssm:/configuration/${self:custom.stage}/reviewerEmailAddress, ssm:/configuration/default/reviewerEmailAddress, "reviewteam@example.com"}
+
+functions:
+  emailSubmitter:
+    handler: handlers/emailSubmitter.handler
+    events:
+      - stream:
+          arn: ${self:custom.tableStreamArn}
+          startingPosition: LATEST
+          maximumRetryAttempts: 2
+    environment:
+      emailSource: ${self:custom.sesSourceEmailAddress}
+    maximumRetryAttempts: 2
+  emailReviewer:
+    handler: handlers/emailReviewer.handler
+    events:
+      - stream:
+          arn: ${self:custom.tableStreamArn}
+          startingPosition: LATEST
+          maximumRetryAttempts: 2
+    environment:
+      emailSource: ${self:custom.sesSourceEmailAddress}
+      reviewerEmail: ${self:custom.reviewerEmailAddress}
+    maximumRetryAttempts: 2

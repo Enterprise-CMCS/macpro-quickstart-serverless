@@ -1,0 +1,66 @@
+service: ui-src
+
+frameworkVersion: "3"
+
+plugins:
+  - serverless-plugin-scripts
+  - serverless-s3-sync
+  - serverless-cloudfront-invalidate
+  - serverless-stack-termination-protection
+  - serverless-s3-bucket-helper
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
+  serverlessTerminationProtection:
+    stages:
+      - master
+      - val
+      - production
+  api_region: ${cf:app-api-${self:custom.stage}.Region}
+  api_url: ${cf:app-api-${self:custom.stage}.ApiGatewayRestApiUrl}
+  proxy_api_url: ${cf:proxy-api-${self:custom.stage}.ApiGatewayRestApiUrl}
+  cognito_region: ${cf:ui-auth-${self:custom.stage}.Region}
+  cognito_identity_pool_id: ${cf:ui-auth-${self:custom.stage}.IdentityPoolId}
+  cognito_user_pool_id: ${cf:ui-auth-${self:custom.stage}.UserPoolId}
+  cognito_user_pool_client_id: ${cf:ui-auth-${self:custom.stage}.UserPoolClientId}
+  cognito_user_pool_client_domain: ${cf:ui-auth-${self:custom.stage}.UserPoolClientDomain}
+  s3_attachments_bucket_region: ${cf:uploads-${self:custom.stage}.Region}
+  s3_attachments_bucket_name: ${cf:uploads-${self:custom.stage}.AttachmentsBucketName}
+  ui_s3_bucket_name: ${cf:ui-${self:custom.stage}.S3BucketName}
+  ui_cloudfront_distribution_id: ${cf:ui-${self:custom.stage}.CloudFrontDistributionId}
+  application_endpoint_url: ${cf:ui-${self:custom.stage}.ApplicationEndpointUrl}
+  s3Sync:
+    - bucketName: ${self:custom.ui_s3_bucket_name}
+      localDir: ./build
+      deleteRemoved: true
+  cloudfrontInvalidate:
+    - distributionId: ${self:custom.ui_cloudfront_distribution_id}
+      items:
+        - "/*"
+  scripts:
+    hooks:
+      # Build the static archive and populate the config
+      package:initialize: |
+        set -e
+        SKIP_PREFLIGHT_CHECK=true yarn run build
+        export API_REGION=${self:custom.api_region}
+        export API_URL=${self:custom.api_url}
+        export PROXY_API_URL=${self:custom.proxy_api_url}
+        export COGNITO_REGION=${self:custom.cognito_region}
+        export COGNITO_IDENTITY_POOL_ID=${self:custom.cognito_identity_pool_id}
+        export COGNITO_USER_POOL_ID=${self:custom.cognito_user_pool_id}
+        export COGNITO_USER_POOL_CLIENT_ID=${self:custom.cognito_user_pool_client_id}
+        export COGNITO_USER_POOL_CLIENT_DOMAIN=${self:custom.cognito_user_pool_client_domain}
+        export COGNITO_REDIRECT_SIGNIN=${self:custom.application_endpoint_url}
+        export COGNITO_REDIRECT_SIGNOUT=${self:custom.application_endpoint_url}
+        export S3_ATTACHMENTS_BUCKET_REGION=${self:custom.s3_attachments_bucket_region}
+        export S3_ATTACHMENTS_BUCKET_NAME=${self:custom.s3_attachments_bucket_name}
+        export LOCAL_LOGIN=false
+        ./env.sh
+        cp public/env-config.js build/env-config.js

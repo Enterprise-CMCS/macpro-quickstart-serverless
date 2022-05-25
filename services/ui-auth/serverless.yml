@@ -1,0 +1,221 @@
+# Refer to the README.md file in within this service directory to configure all ssm parameters required for this service.
+service: ui-auth
+
+frameworkVersion: "3"
+
+package:
+  individually: true
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+  iam:
+    role:
+      path: ${ssm:/configuration/${self:custom.stage}/iam/path, ssm:/configuration/default/iam/path, "/"}
+      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy, ssm:/configuration/default/iam/permissionsBoundaryPolicy, ""}
+      statements:
+        - Effect: "Allow"
+          Action:
+            - "*"
+          Resource: !GetAtt CognitoUserPool.Arn
+
+plugins:
+  - serverless-stack-termination-protection
+  - serverless-plugin-scripts
+  - serverless-bundle
+  - serverless-idempotency-helper
+  - serverless-iam-helper
+  - serverless-s3-bucket-helper
+  - serverless-online
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
+  serverlessTerminationProtection:
+    stages:
+      - master
+      - val
+      - production
+  sesSourceEmailAddress: ${ssm:/configuration/${self:custom.stage}/sesSourceEmailAddress, ssm:/configuration/default/sesSourceEmailAddress, ""}
+  attachments_bucket_arn: ${cf:uploads-${self:custom.stage}.AttachmentsBucketArn}
+  api_gateway_rest_api_name: ${cf:app-api-${self:custom.stage}.ApiGatewayRestApiName}
+  okta_metadata_url: ${ssm:/configuration/${self:custom.stage}/okta_metadata_url, ""}
+  application_endpoint_url: ${cf:ui-${self:custom.stage}.ApplicationEndpointUrl}
+  bootstrapUsersEnabled: ${ssm:/configuration/${self:custom.stage}/cognito/bootstrapUsers/enabled, ssm:/configuration/default/cognito/bootstrapUsers/enabled, ""}
+  bootstrapUsersPassword: ${ssm:/configuration/${self:custom.stage}/cognito/bootstrapUsers/password, ssm:/configuration/default/cognito/bootstrapUsers/password, ""}
+  scripts:
+    hooks:
+      deploy:finalize: |
+        if [ ${self:custom.bootstrapUsersEnabled} = "true" ];
+        then
+          serverless invoke --stage ${self:custom.stage} --function bootstrapUsers
+        fi
+
+functions:
+  bootstrapUsers:
+    handler: handlers/createUsers.handler
+    environment:
+      userPoolId: !Ref CognitoUserPool
+      bootstrapUsersPassword: ${self:custom.bootstrapUsersPassword}
+
+resources:
+  Conditions:
+    CreateEmailConfiguration:
+      Fn::Not:
+        - Fn::Equals:
+            - ""
+            - ${self:custom.sesSourceEmailAddress}
+    BackWithOkta:
+      Fn::Not:
+        - Fn::Equals:
+            - ""
+            - ${self:custom.okta_metadata_url}
+  Resources:
+    CognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: ${self:custom.stage}-user-pool
+        UsernameAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+        EmailConfiguration:
+          Fn::If:
+            - CreateEmailConfiguration
+            - EmailSendingAccount: DEVELOPER
+              SourceArn: !Sub arn:aws:ses:us-east-1:${AWS::AccountId}:identity/${self:custom.sesSourceEmailAddress}
+            - !Ref AWS::NoValue
+        Schema:
+          - Name: given_name
+            AttributeDataType: String
+            Mutable: true
+            Required: true
+          - Name: family_name
+            AttributeDataType: String
+            Mutable: true
+            Required: true
+          - Name: phone_number
+            AttributeDataType: String
+            Mutable: true
+            Required: false
+    CognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: ${self:custom.stage}-user-pool-client
+        UserPoolId: !Ref CognitoUserPool
+        ExplicitAuthFlows:
+          - ADMIN_NO_SRP_AUTH
+        GenerateSecret: false # pragma: allowlist secret
+        AllowedOAuthFlows:
+          - code
+        AllowedOAuthFlowsUserPoolClient: true
+        AllowedOAuthScopes:
+          - email
+          - openid
+          - aws.cognito.signin.user.admin # Needed to call Auth.currentUserInfo()
+        CallbackURLs:
+          - ${self:custom.application_endpoint_url}
+          - http://localhost:3000/
+        DefaultRedirectURI: ${self:custom.application_endpoint_url}
+        LogoutURLs:
+          - ${self:custom.application_endpoint_url}
+          - http://localhost:3000/
+        SupportedIdentityProviders:
+          - COGNITO
+          - Fn::If:
+              - BackWithOkta
+              - !Ref OktaUserPoolIdentityProvider
+              - !Ref AWS::NoValue
+    UserPoolDomain:
+      Type: AWS::Cognito::UserPoolDomain
+      Properties:
+        Domain:
+          Fn::Join:
+            - ""
+            - - ${self:custom.stage}-login-
+              - Ref: CognitoUserPoolClient
+        UserPoolId:
+          Ref: CognitoUserPool
+    OktaUserPoolIdentityProvider:
+      Condition: BackWithOkta
+      Type: AWS::Cognito::UserPoolIdentityProvider
+      Properties:
+        AttributeMapping:
+          email: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress
+          given_name: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname
+          family_name: http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname
+        IdpIdentifiers:
+          - IdpIdentifier
+        ProviderDetails:
+          MetadataURL: ${self:custom.okta_metadata_url}
+        ProviderName: Okta
+        ProviderType: SAML
+        UserPoolId:
+          Ref: CognitoUserPool
+    CognitoIdentityPool:
+      Type: AWS::Cognito::IdentityPool
+      Properties:
+        IdentityPoolName: ${self:custom.stage}IdentityPool
+        AllowUnauthenticatedIdentities: false
+        CognitoIdentityProviders:
+          - ClientId: !Ref CognitoUserPoolClient
+            ProviderName: !GetAtt CognitoUserPool.ProviderName
+    CognitoIdentityPoolRoles:
+      Type: AWS::Cognito::IdentityPoolRoleAttachment
+      Properties:
+        IdentityPoolId: !Ref CognitoIdentityPool
+        Roles:
+          authenticated: !GetAtt CognitoAuthRole.Arn
+    CognitoAuthRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Principal:
+                Federated: "cognito-identity.amazonaws.com"
+              Action:
+                - "sts:AssumeRoleWithWebIdentity"
+              Condition:
+                StringEquals:
+                  "cognito-identity.amazonaws.com:aud": !Ref CognitoIdentityPool
+                "ForAnyValue:StringLike":
+                  "cognito-identity.amazonaws.com:amr": authenticated
+        Policies:
+          - PolicyName: "CognitoAuthorizedPolicy"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "mobileanalytics:PutEvents"
+                    - "cognito-sync:*"
+                    - "cognito-identity:*"
+                  Resource: "*"
+                - Effect: "Allow"
+                  Action:
+                    - "execute-api:Invoke"
+                  Resource: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${self:custom.api_gateway_rest_api_name}/*
+                - Effect: "Allow"
+                  Action:
+                    - "s3:*"
+                  Resource:
+                    # Must use Join here.  See: https://github.com/serverless/serverless/issues/3565
+                    - Fn::Join:
+                        - ""
+                        - - ${self:custom.attachments_bucket_arn}/private/
+                          - "$"
+                          - "{cognito-identity.amazonaws.com:sub}/*"
+  Outputs:
+    UserPoolId:
+      Value: !Ref CognitoUserPool
+    UserPoolClientId:
+      Value: !Ref CognitoUserPoolClient
+    UserPoolClientDomain:
+      Value: !Sub ${UserPoolDomain}.auth.${AWS::Region}.amazoncognito.com
+    IdentityPoolId:
+      Value: !Ref CognitoIdentityPool
+    Region:
+      Value: !Sub ${AWS::Region}

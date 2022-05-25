@@ -1,0 +1,303 @@
+# Refer to the README.md file in within this service directory to configure all ssm parameters required for this service.
+service: ui
+
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+  iam:
+    role:
+      path: ${ssm:/configuration/${self:custom.stage}/iam/path, ssm:/configuration/default/iam/path, "/"}
+      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy, ssm:/configuration/default/iam/permissionsBoundaryPolicy, ""}
+
+plugins:
+  - serverless-plugin-scripts
+  - serverless-stack-termination-protection
+  - serverless-iam-helper
+  - serverless-s3-bucket-helper
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
+  serverlessTerminationProtection:
+    stages:
+      - master
+      - val
+      - production
+  route53HostedZoneId: ${ssm:/configuration/${self:custom.stage}/route53/hostedZoneId, ssm:/configuration/default/route53/hostedZoneId, ""}
+  route53DomainName: ${ssm:/configuration/${self:custom.stage}/route53/domainName, ""}
+  cloudfrontCertificateArn: ${ssm:/configuration/${self:custom.stage}/cloudfront/certificateArn, ssm:/configuration/default/cloudfront/certificateArn, ""}
+  cloudfrontDomainName: ${ssm:/configuration/${self:custom.stage}/cloudfront/domainName, ""}
+  webAclName: ${self:service}-${self:custom.stage}-webacl
+  firehoseStreamName: aws-waf-logs-${self:service}-${self:custom.stage}-firehose
+  scripts:
+    hooks:
+      # Associate the WAF ACL with the Firehose Delivery Stream
+      deploy:finalize: |
+        wafAclArn=`aws wafv2 list-web-acls --scope CLOUDFRONT | jq -r '.WebACLs | .[] | select(.Name=="${self:custom.webAclName}") | .ARN'`
+        firehoseStreamArn=`aws firehose describe-delivery-stream --delivery-stream-name ${self:custom.firehoseStreamName} | jq -r '.DeliveryStreamDescription.DeliveryStreamARN'`
+        aws wafv2 put-logging-configuration \
+          --logging-configuration ResourceArn=$wafAclArn,LogDestinationConfigs=$firehoseStreamArn \
+          --region ${self:provider.region}
+
+resources:
+  Conditions:
+    CreateDnsRecord:
+      Fn::And:
+        - Fn::Not:
+            - Fn::Equals:
+                - ""
+                - ${self:custom.route53HostedZoneId}
+        - Fn::Not:
+            - Fn::Equals:
+                - ""
+                - ${self:custom.route53DomainName}
+    CreateCustomCloudFrontDomain:
+      Fn::And:
+        - Fn::Not:
+            - Fn::Equals:
+                - ""
+                - ${self:custom.cloudfrontCertificateArn}
+        - Fn::Not:
+            - Fn::Equals:
+                - ""
+                - ${self:custom.cloudfrontDomainName}
+  Resources:
+    S3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: index.html
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
+      DeletionPolicy: Delete
+    BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action: "s3:GetObject"
+              Resource: !Sub arn:aws:s3:::${S3Bucket}/*
+              Principal:
+                CanonicalUser: !GetAtt CloudFrontOriginAccessIdentity.S3CanonicalUserId
+        Bucket: !Ref S3Bucket
+    LoggingBucket:
+      Type: "AWS::S3::Bucket"
+      Properties:
+        BucketName: !Sub ${self:service}-${self:custom.stage}-cloudfront-logs-${AWS::AccountId}
+        PublicAccessBlockConfiguration:
+          BlockPublicAcls: true
+          BlockPublicPolicy: true
+          IgnorePublicAcls: true
+          RestrictPublicBuckets: true
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: "AES256"
+      DeletionPolicy: Delete
+    LoggingBucketPolicy:
+      Type: "AWS::S3::BucketPolicy"
+      Properties:
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action: "s3:PutObject"
+              Resource: !Sub arn:aws:s3:::${LoggingBucket}/*
+              Principal:
+                AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
+        Bucket: !Ref LoggingBucket
+    CloudFrontWebAcl:
+      Type: AWS::WAFv2::WebACL
+      Properties:
+        Name: ${self:custom.webAclName}
+        DefaultAction:
+          Block: {}
+        Rules:
+          - Action:
+              Allow: {}
+            Name: ${self:custom.webAclName}-allow-usa-plus-territories
+            Priority: 0
+            Statement:
+              GeoMatchStatement:
+                CountryCodes:
+                  - GU # Guam
+                  - PR # Puerto Rico
+                  - US # USA
+                  - UM # US Minor Outlying Islands
+                  - VI # US Virgin Islands
+                  - MP # Northern Mariana Islands
+            VisibilityConfig:
+              SampledRequestsEnabled: true
+              CloudWatchMetricsEnabled: true
+              MetricName: WafWebAcl
+        Scope: CLOUDFRONT
+        VisibilityConfig:
+          CloudWatchMetricsEnabled: true
+          SampledRequestsEnabled: true
+          MetricName: ${self:custom.stage}-webacl
+    CloudFrontOriginAccessIdentity:
+      Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+      Properties:
+        CloudFrontOriginAccessIdentityConfig:
+          Comment: OAI to prevent direct public access to the bucket
+    CloudFrontDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Comment: CloudFront Distro for the static website hosted in S3
+          Aliases:
+            Fn::If:
+              - CreateCustomCloudFrontDomain
+              - - ${self:custom.cloudfrontDomainName}
+              - !Ref AWS::NoValue
+          Origins:
+            - DomainName: !GetAtt S3Bucket.DomainName
+              Id: S3Origin
+              S3OriginConfig:
+                OriginAccessIdentity: !Sub origin-access-identity/cloudfront/${CloudFrontOriginAccessIdentity}
+          Enabled: true
+          HttpVersion: "http2"
+          DefaultRootObject: index.html
+          DefaultCacheBehavior:
+            AllowedMethods:
+              - GET
+              - HEAD
+            Compress: true
+            TargetOriginId: S3Origin
+            ForwardedValues:
+              QueryString: true
+              Cookies:
+                Forward: none
+            ViewerProtocolPolicy: redirect-to-https
+            FunctionAssociations:
+              - EventType: viewer-response
+                FunctionARN: !GetAtt HstsCloudfrontFunction.FunctionMetadata.FunctionARN
+          ViewerCertificate:
+            Fn::If:
+              - CreateCustomCloudFrontDomain
+              - AcmCertificateArn: ${self:custom.cloudfrontCertificateArn}
+                MinimumProtocolVersion: TLSv1
+                SslSupportMethod: sni-only
+              - CloudFrontDefaultCertificate: true
+          CustomErrorResponses:
+            - ErrorCode: 403
+              ResponseCode: 403
+              ResponsePagePath: /index.html
+          WebACLId: !GetAtt CloudFrontWebAcl.Arn
+          Logging:
+            Bucket: !Sub "${LoggingBucket}.s3.amazonaws.com"
+            Prefix: AWSLogs/CLOUDFRONT/${self:custom.stage}/
+    Route53DnsRecord:
+      Type: AWS::Route53::RecordSet
+      Condition: CreateDnsRecord
+      Properties:
+        HostedZoneId: ${self:custom.route53HostedZoneId}
+        Name: ${self:custom.route53DomainName}
+        AliasTarget:
+          DNSName: !GetAtt CloudFrontDistribution.DomainName
+          HostedZoneId: Z2FDTNDATAQYW2
+          EvaluateTargetHealth: false
+        Type: A
+    HstsCloudfrontFunction:
+      Type: AWS::CloudFront::Function
+      Properties:
+        AutoPublish: true
+        FunctionCode: |
+          function handler(event) {
+            var response = event.response;
+            var headers = response.headers;
+            headers['strict-transport-security'] = { value: 'max-age=63072000; includeSubdomains; preload'};
+            return response;
+          }
+        FunctionConfig:
+          Comment: This function adds headers to implement HSTS
+          Runtime: cloudfront-js-1.0
+        Name: hsts-${self:custom.stage}
+    ###############This code block enables logging on waf and sends all logs to s3.##################################
+    WaflogsUploadBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: !Sub ${AWS::AccountId}-${self:service}-${self:custom.stage}-waflogs
+        BucketEncryption:
+          ServerSideEncryptionConfiguration:
+            - ServerSideEncryptionByDefault:
+                SSEAlgorithm: AES256
+    Firehose:
+      Type: AWS::KinesisFirehose::DeliveryStream
+      Properties:
+        DeliveryStreamName: ${self:custom.firehoseStreamName}
+        ExtendedS3DestinationConfiguration:
+          RoleARN: !GetAtt DeliveryRole.Arn
+          BucketARN: !GetAtt WaflogsUploadBucket.Arn
+          Prefix: AWSLogs/WAF/${self:custom.stage}/
+          BufferingHints:
+            IntervalInSeconds: 300
+            SizeInMBs: 5
+          CompressionFormat: UNCOMPRESSED
+    DeliveryRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Sid: ""
+              Effect: Allow
+              Principal:
+                Service: firehose.amazonaws.com
+              Action: "sts:AssumeRole"
+              Condition:
+                StringEquals:
+                  "sts:ExternalId": !Ref "AWS::AccountId"
+    DeliveryPolicy:
+      Type: AWS::IAM::Policy
+      Properties:
+        PolicyName: "firehose_delivery_policy"
+        PolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - "s3:AbortMultipartUpload"
+                - "s3:GetBucketLocation"
+                - "s3:GetObject"
+                - "s3:ListBucket"
+                - "s3:ListBucketMultipartUploads"
+                - "s3:PutObject"
+              Resource:
+                - !Sub ${WaflogsUploadBucket.Arn}/*
+                - !Sub ${WaflogsUploadBucket.Arn}/*
+        Roles:
+          - !Ref DeliveryRole
+    ApplicationEndpointUrl:
+      Type: AWS::SSM::Parameter
+      Properties:
+        Name: /${self:custom.stage}/ui/application_endpoint
+        Type: String
+        Value:
+          Fn::If:
+            - CreateCustomCloudFrontDomain
+            - https://${self:custom.cloudfrontDomainName, ""}/
+            - Fn::Join:
+                - ""
+                - - https://
+                  - Fn::GetAtt:
+                      - CloudFrontDistribution
+                      - DomainName
+                  - "/"
+  Outputs:
+    S3BucketName:
+      Value: !Ref S3Bucket
+    CloudFrontDistributionId:
+      Value: !Ref CloudFrontDistribution
+    CloudFrontEndpointUrl:
+      Value: !Sub https://${CloudFrontDistribution.DomainName}
+    ApplicationEndpointUrl:
+      Value: !GetAtt ApplicationEndpointUrl.Value

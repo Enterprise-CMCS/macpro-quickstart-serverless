@@ -1,0 +1,87 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Description: >
+  Creates and OIDC provider and role for use with GitHub Actions.
+  For more information on using OIDC to connect to AWS from GitHub Actions,
+  see https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services.
+
+Parameters:
+  GithubActionsThumbprint:
+    Type: CommaDelimitedList
+    Default: 6938fd4d98bab03faadb97b34396831e3780aea1
+    Description: >
+      Comma seperated list of thumbprints for GitHub Actions tokens.
+      Default comes from https://github.blog/changelog/2022-01-13-github-actions-update-on-oidc-based-deployments-to-aws/
+  AudienceList:
+    Type: CommaDelimitedList
+    Default: sts.amazonaws.com
+    Description: >
+      Comma seperated list of allowed audience for the tokens.
+      Default is audience for the official AWS configure action from https://github.com/aws-actions/configure-aws-credentials
+  SubjectClaimFilters:
+    Type: CommaDelimitedList
+    Default: "repo:CMSgov/macpro-quickstart-serverless:*"
+    Description: >
+      Subject claim filter for valid tokens.
+      Default allows any branch or tag of the CMSgov/macpro-quickstart-serverless to assume the role.
+      See https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#example-subject-claims
+      for examples of fitlering by branch or deployment environment.
+  Path:
+    Type: String
+    Description: IAM Path required for the role
+  PermissionsBoundaryARN:
+    Type: String
+    Description: Permission Boundary arn to use for the role
+  ManagedPolicyARNs:
+    Type: CommaDelimitedList
+    Description: Comma separated list for arns for managed policies to attach to the role
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: "GitHub Action Info"
+        Parameters:
+          - SubjectClaimFilters
+          - GithubActionsThumbprint
+          - AudienceList
+      - Label:
+          default: "AWS IAM Info"
+        Parameters:
+          - Path
+          - PermissionsBoundaryARN
+          - ManagedPolicyARNs
+
+Resources:
+  GitHubIdentityProvider:
+    Type: AWS::IAM::OIDCProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ThumbprintList: !Ref GithubActionsThumbprint
+      ClientIdList: !Ref AudienceList
+  GitHubActionsServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: RoleForGitHubActions
+            Effect: Allow
+            Principal:
+              Federated: !GetAtt GitHubIdentityProvider.Arn
+            Action:
+              - "sts:AssumeRoleWithWebIdentity"
+            Condition:
+              StringEquals:
+                "token.actions.githubusercontent.com:aud": !Ref AudienceList
+              StringLike:
+                "token.actions.githubusercontent.com:sub": !Ref SubjectClaimFilters
+      Description: Service Role for use in GitHub Actions
+      Path: !Ref Path
+      PermissionsBoundary: !Ref PermissionsBoundaryARN
+      ManagedPolicyArns: !Ref ManagedPolicyARNs
+
+Outputs:
+  ServiceRoleARN:
+    Description: arn of service role for use in GitHub actions
+    Value: !GetAtt GitHubActionsServiceRole.Arn

@@ -1,0 +1,78 @@
+service: database
+
+frameworkVersion: "3"
+
+plugins:
+  - serverless-dynamodb-local
+  - serverless-stack-termination-protection
+  - serverless-s3-bucket-helper
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
+  serverlessTerminationProtection:
+    stages:
+      - master
+      - val
+      - production
+  tableName: ${self:custom.stage}-amendments
+  dynamodb:
+    stages:
+      - local
+    start:
+      port: 8000
+      inMemory: true
+      migrate: true
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+
+resources:
+  Resources:
+    AmendmentsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tableName}
+        PointInTimeRecoverySpecification:
+          PointInTimeRecoveryEnabled: true
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: amendmentId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId
+            KeyType: HASH
+          - AttributeName: amendmentId
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST # Set the capacity to auto-scale
+    AmendmentsAtomicCounterTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tableName}-atomic-counter
+        PointInTimeRecoverySpecification:
+          PointInTimeRecoveryEnabled: true
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST # Set the capacity to auto-scale
+  Outputs:
+    AmendmentsTableName:
+      Value: !Ref AmendmentsTable
+    AmendmentsTableArn:
+      Value: !GetAtt AmendmentsTable.Arn
+    AmendmentsTableStreamArn:
+      Value: !GetAtt AmendmentsTable.StreamArn
+    AmendmentsAtomicCounterTableName:
+      Value: !Ref AmendmentsAtomicCounterTable
+    AmendmentsAtomicCounterTableArn:
+      Value: !GetAtt AmendmentsAtomicCounterTable.Arn
+    Region:
+      Value: !Sub ${AWS::Region}

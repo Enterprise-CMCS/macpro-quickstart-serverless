@@ -1,0 +1,39 @@
+html,
+body,
+#root {
+  height: 100%;
+  font-size: 16px; // sets the value of 1rem
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Open Sans", sans-serif;
+  font-size: 16px;
+  color: #333;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "PT Serif", serif;
+}
+
+#app-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+#main-wrapper {
+  flex: 1;
+}
+
+label {
+  @extend .ds-c-label;
+}
