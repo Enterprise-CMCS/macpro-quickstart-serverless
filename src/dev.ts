@@ -14,7 +14,7 @@ async function run_db_locally(runner: LabeledProcessRunner) {
   );
   await runner.run_command_and_output(
     "db svls",
-    ["serverless", "dynamodb", "install",  "--stage", "local"],
+    ["serverless", "dynamodb", "install", "--stage", "local"],
     "services/database"
   );
   runner.run_command_and_output(
