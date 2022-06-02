@@ -73,7 +73,7 @@ export default function Home() {
   function renderAmendments() {
     return (
       <div className="amendments">
-        <PageHeader>Your Awesome APS Submissions</PageHeader>
+        <PageHeader>Your Demo APS Submissions</PageHeader>
         <ListGroup>{!isLoading && renderAmendmentsList(amendments)}</ListGroup>
       </div>
     );
