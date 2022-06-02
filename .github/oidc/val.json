@@ -1,7 +1,7 @@
 [
   {
     "ParameterKey": "SubjectClaimFilters",
-    "ParameterValue": "repo:Enterprise-CMCS/macfc-quickstart:*"
+    "ParameterValue": "repo:Enterprise-CMCS/macfc-quickstart:ref:refs/heads/val"
   },
   {
     "ParameterKey": "Path",
