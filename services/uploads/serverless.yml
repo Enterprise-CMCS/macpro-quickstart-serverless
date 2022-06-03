@@ -109,7 +109,7 @@ functions:
             - b-1.cross-account-msk.9lar98.c24.kafka.us-east-1.amazonaws.com:9094
             - b-2.cross-account-msk.9lar98.c24.kafka.us-east-1.amazonaws.com:9094
             - b-3.cross-account-msk.9lar98.c24.kafka.us-east-1.amazonaws.com:9094
-          enabled: false
+          enabled: true
           startingPosition: TRIM_HORIZON
 
 resources:
