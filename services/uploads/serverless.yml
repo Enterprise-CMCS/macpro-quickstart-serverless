@@ -75,6 +75,7 @@ functions:
   avScan:
     name: ${self:service}-${self:custom.stage}-avScan
     handler: src/antivirus.lambdaHandleEvent
+    role: arn:aws:iam::666736308865:role/delegatedadmin/developer/proxy-api-rs5-poc-us-east-1-default-role
     timeout: 300 # 300 seconds = 5 minutes. Average scan is 25 seconds.
     memorySize: 3008
     layers:
@@ -84,6 +85,7 @@ functions:
       PATH_TO_AV_DEFINITIONS: "lambda/s3-antivirus/av-definitions"
   avDownloadDefinitions:
     handler: src/download-definitions.lambdaHandleEvent
+    role: arn:aws:iam::666736308865:role/delegatedadmin/developer/proxy-api-rs5-poc-us-east-1-default-role
     events:
       - schedule: cron(15 1 * * ? *)
     timeout: 300 # 300 seconds = 5 minutes
