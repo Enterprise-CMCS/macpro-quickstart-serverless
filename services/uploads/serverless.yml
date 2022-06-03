@@ -15,31 +15,30 @@ provider:
   name: aws
   runtime: nodejs14.x
   region: us-east-1
-  role: arn:aws:iam::666736308865:role/delegatedadmin/developer/proxy-api-rs5-poc-us-east-1-default-role
-  # iam:
-  #   role:
-  #     path: ${ssm:/configuration/${self:custom.stage}/iam/path, ssm:/configuration/default/iam/path, "/"}
-  #     permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy, ssm:/configuration/default/iam/permissionsBoundaryPolicy, ""}
-  #     statements:
-  #       - Effect: "Allow"
-  #         Action:
-  #           - s3:GetObject
-  #           - s3:GetObjectTagging
-  #           - s3:PutObject
-  #           - s3:PutObjectAcl
-  #           - s3:PutObjectTagging
-  #           - s3:PutObjectVersionTagging
-  #           - s3:ListBucket
-  #           - s3:DeleteObject
-  #         Resource:
-  #           - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-attachments-${AWS::AccountId}/*
-  #           - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-avscan-${AWS::AccountId}/*
-  #       - Effect: "Allow"
-  #         Action:
-  #           - s3:ListBucket
-  #         Resource:
-  #           - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-attachments-${AWS::AccountId}
-  #           - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-avscan-${AWS::AccountId}
+  iam:
+    role:
+      path: ${ssm:/configuration/${self:custom.stage}/iam/path, ssm:/configuration/default/iam/path, "/"}
+      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy, ssm:/configuration/default/iam/permissionsBoundaryPolicy, ""}
+      statements:
+        - Effect: "Allow"
+          Action:
+            - s3:GetObject
+            - s3:GetObjectTagging
+            - s3:PutObject
+            - s3:PutObjectAcl
+            - s3:PutObjectTagging
+            - s3:PutObjectVersionTagging
+            - s3:ListBucket
+            - s3:DeleteObject
+          Resource:
+            - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-attachments-${AWS::AccountId}/*
+            - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-avscan-${AWS::AccountId}/*
+        - Effect: "Allow"
+          Action:
+            - s3:ListBucket
+          Resource:
+            - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-attachments-${AWS::AccountId}
+            - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-avscan-${AWS::AccountId}
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -75,7 +74,6 @@ functions:
   avScan:
     name: ${self:service}-${self:custom.stage}-avScan
     handler: src/antivirus.lambdaHandleEvent
-    role: arn:aws:iam::666736308865:role/delegatedadmin/developer/proxy-api-rs5-poc-us-east-1-default-role
     timeout: 300 # 300 seconds = 5 minutes. Average scan is 25 seconds.
     memorySize: 3008
     layers:
@@ -85,7 +83,6 @@ functions:
       PATH_TO_AV_DEFINITIONS: "lambda/s3-antivirus/av-definitions"
   avDownloadDefinitions:
     handler: src/download-definitions.lambdaHandleEvent
-    role: arn:aws:iam::666736308865:role/delegatedadmin/developer/proxy-api-rs5-poc-us-east-1-default-role
     events:
       - schedule: cron(15 1 * * ? *)
     timeout: 300 # 300 seconds = 5 minutes
@@ -95,30 +92,30 @@ functions:
     environment:
       CLAMAV_BUCKET_NAME: !Ref ClamDefsBucket
       PATH_TO_AV_DEFINITIONS: "lambda/s3-antivirus/av-definitions"
-  # func1Nate:
-  #   handler: handlers/func1Nate.main
-  #   role: arn:aws:iam::666736308865:role/delegatedadmin/developer/proxy-api-rs5-poc-us-east-1-default-role # I added this for cross account test
-  #   events:
-  #     - msk:
-  #         arn: arn:aws:kafka:us-east-1:677829493285:cluster/master-msk/7590fbdf-00ae-492a-b1a1-ab47e2398f81-7
-  #         topic: aws.seatool.cmcs.dbHistory
-  #         startingPosition: TRIM_HORIZON
-  #         enabled: true
-  #     - msk:
-  #         arn: arn:aws:kafka:us-east-1:677829493285:cluster/master-msk/7590fbdf-00ae-492a-b1a1-ab47e2398f81-7
-  #         topic: aws.seatool.cmcs.dbo.State_Plan
-  #         startingPosition: TRIM_HORIZON
-  #         enabled: true
-  #     - msk:
-  #         arn: arn:aws:kafka:us-east-1:677829493285:cluster/berry-ksql-msk/75770702-4498-46c4-9252-ed51be2cfe24-24
-  #         topic: aws.seatool.cmcs.dbo.State_Plan_1115
-  #         startingPosition: TRIM_HORIZON
-  #         enabled: true
-  #     - msk:
-  #         arn: arn:aws:kafka:us-east-1:677829493285:cluster/master-msk/7590fbdf-00ae-492a-b1a1-ab47e2398f81-7
-  #         topic: aws.seatool.cmcs.dbo.Action_Officers
-  #         startingPosition: TRIM_HORIZON
-  #         enabled: true
+  func1Nate:
+    handler: handlers/func1Nate.main
+    role: arn:aws:iam::666736308865:role/delegatedadmin/developer/proxy-api-rs5-poc-us-east-1-default-role # I added this for cross account test
+    events:
+      - msk:
+          arn: arn:aws:kafka:us-east-1:677829493285:cluster/master-msk/7590fbdf-00ae-492a-b1a1-ab47e2398f81-7
+          topic: aws.seatool.cmcs.dbHistory
+          startingPosition: TRIM_HORIZON
+          enabled: true
+      - msk:
+          arn: arn:aws:kafka:us-east-1:677829493285:cluster/master-msk/7590fbdf-00ae-492a-b1a1-ab47e2398f81-7
+          topic: aws.seatool.cmcs.dbo.State_Plan
+          startingPosition: TRIM_HORIZON
+          enabled: true
+      - msk:
+          arn: arn:aws:kafka:us-east-1:677829493285:cluster/berry-ksql-msk/75770702-4498-46c4-9252-ed51be2cfe24-24
+          topic: aws.seatool.cmcs.dbo.State_Plan_1115
+          startingPosition: TRIM_HORIZON
+          enabled: true
+      - msk:
+          arn: arn:aws:kafka:us-east-1:677829493285:cluster/master-msk/7590fbdf-00ae-492a-b1a1-ab47e2398f81-7
+          topic: aws.seatool.cmcs.dbo.Action_Officers
+          startingPosition: TRIM_HORIZON
+          enabled: true
 
 resources:
   Resources:
