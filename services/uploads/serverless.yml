@@ -93,30 +93,30 @@ functions:
     environment:
       CLAMAV_BUCKET_NAME: !Ref ClamDefsBucket
       PATH_TO_AV_DEFINITIONS: "lambda/s3-antivirus/av-definitions"
-  func1Nate:
-    handler: handlers/func1Nate.main
-    role: arn:aws:iam::666736308865:role/delegatedadmin/developer/proxy-api-rs5-poc-us-east-1-default-role # I added this for cross account test
-    events:
-      - msk:
-          arn: arn:aws:kafka:us-east-1:677829493285:cluster/master-msk/7590fbdf-00ae-492a-b1a1-ab47e2398f81-7
-          topic: aws.seatool.cmcs.dbHistory
-          startingPosition: TRIM_HORIZON
-          enabled: true
-      - msk:
-          arn: arn:aws:kafka:us-east-1:677829493285:cluster/master-msk/7590fbdf-00ae-492a-b1a1-ab47e2398f81-7
-          topic: aws.seatool.cmcs.dbo.State_Plan
-          startingPosition: TRIM_HORIZON
-          enabled: true
-      - msk:
-          arn: arn:aws:kafka:us-east-1:677829493285:cluster/berry-ksql-msk/75770702-4498-46c4-9252-ed51be2cfe24-24
-          topic: aws.seatool.cmcs.dbo.State_Plan_1115
-          startingPosition: TRIM_HORIZON
-          enabled: true
-      - msk:
-          arn: arn:aws:kafka:us-east-1:677829493285:cluster/master-msk/7590fbdf-00ae-492a-b1a1-ab47e2398f81-7
-          topic: aws.seatool.cmcs.dbo.Action_Officers
-          startingPosition: TRIM_HORIZON
-          enabled: true
+  # func1Nate:
+  #   handler: handlers/func1Nate.main
+  #   role: arn:aws:iam::666736308865:role/delegatedadmin/developer/proxy-api-rs5-poc-us-east-1-default-role # I added this for cross account test
+  #   events:
+  #     - msk:
+  #         arn: arn:aws:kafka:us-east-1:677829493285:cluster/master-msk/7590fbdf-00ae-492a-b1a1-ab47e2398f81-7
+  #         topic: aws.seatool.cmcs.dbHistory
+  #         startingPosition: TRIM_HORIZON
+  #         enabled: true
+  #     - msk:
+  #         arn: arn:aws:kafka:us-east-1:677829493285:cluster/master-msk/7590fbdf-00ae-492a-b1a1-ab47e2398f81-7
+  #         topic: aws.seatool.cmcs.dbo.State_Plan
+  #         startingPosition: TRIM_HORIZON
+  #         enabled: true
+  #     - msk:
+  #         arn: arn:aws:kafka:us-east-1:677829493285:cluster/berry-ksql-msk/75770702-4498-46c4-9252-ed51be2cfe24-24
+  #         topic: aws.seatool.cmcs.dbo.State_Plan_1115
+  #         startingPosition: TRIM_HORIZON
+  #         enabled: true
+  #     - msk:
+  #         arn: arn:aws:kafka:us-east-1:677829493285:cluster/master-msk/7590fbdf-00ae-492a-b1a1-ab47e2398f81-7
+  #         topic: aws.seatool.cmcs.dbo.Action_Officers
+  #         startingPosition: TRIM_HORIZON
+  #         enabled: true
 
 resources:
   Resources:
