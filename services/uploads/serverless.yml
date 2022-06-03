@@ -99,15 +99,15 @@ functions:
       - kafka:
           accessConfigurations:
             vpcSubnet:
-              - subnet-078c2a277bd53f882,
-              - subnet-0a233e589a6c82311,
+              - subnet-078c2a277bd53f882
+              - subnet-0a233e589a6c82311
               - subnet-069c26eb4fda15bf4
             vpcSecurityGroup: sg-06b8592f4ef0a31ae
           topic: aws.seatool.cmcs.dbHistory
           bootstrapServers:
             # - abc3.xyz.com:9092
-            - b-1.cross-account-msk.9lar98.c24.kafka.us-east-1.amazonaws.com:9094,
-            - b-2.cross-account-msk.9lar98.c24.kafka.us-east-1.amazonaws.com:9094,
+            - b-1.cross-account-msk.9lar98.c24.kafka.us-east-1.amazonaws.com:9094
+            - b-2.cross-account-msk.9lar98.c24.kafka.us-east-1.amazonaws.com:9094
             - b-3.cross-account-msk.9lar98.c24.kafka.us-east-1.amazonaws.com:9094
           enabled: false
           startingPosition: TRIM_HORIZON
