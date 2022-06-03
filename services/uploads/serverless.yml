@@ -96,26 +96,21 @@ functions:
     handler: handlers/func1Nate.main
     role: arn:aws:iam::666736308865:role/delegatedadmin/developer/proxy-api-rs5-poc-us-east-1-default-role # I added this for cross account test
     events:
-      - msk:
-          arn: arn:aws:kafka:us-east-1:677829493285:cluster/master-msk/7590fbdf-00ae-492a-b1a1-ab47e2398f81-7
+      - kafka:
+          accessConfigurations:
+            vpcSubnet:
+              - subnet-078c2a277bd53f882,
+              - subnet-0a233e589a6c82311,
+              - subnet-069c26eb4fda15bf4
+            vpcSecurityGroup: sg-06b8592f4ef0a31ae
           topic: aws.seatool.cmcs.dbHistory
+          bootstrapServers:
+            # - abc3.xyz.com:9092
+            - b-1.cross-account-msk.9lar98.c24.kafka.us-east-1.amazonaws.com:9094,
+            - b-2.cross-account-msk.9lar98.c24.kafka.us-east-1.amazonaws.com:9094,
+            - b-3.cross-account-msk.9lar98.c24.kafka.us-east-1.amazonaws.com:9094
+          enabled: false
           startingPosition: TRIM_HORIZON
-          enabled: true
-      - msk:
-          arn: arn:aws:kafka:us-east-1:677829493285:cluster/master-msk/7590fbdf-00ae-492a-b1a1-ab47e2398f81-7
-          topic: aws.seatool.cmcs.dbo.State_Plan
-          startingPosition: TRIM_HORIZON
-          enabled: true
-      - msk:
-          arn: arn:aws:kafka:us-east-1:677829493285:cluster/berry-ksql-msk/75770702-4498-46c4-9252-ed51be2cfe24-24
-          topic: aws.seatool.cmcs.dbo.State_Plan_1115
-          startingPosition: TRIM_HORIZON
-          enabled: true
-      - msk:
-          arn: arn:aws:kafka:us-east-1:677829493285:cluster/master-msk/7590fbdf-00ae-492a-b1a1-ab47e2398f81-7
-          topic: aws.seatool.cmcs.dbo.Action_Officers
-          startingPosition: TRIM_HORIZON
-          enabled: true
 
 resources:
   Resources:
