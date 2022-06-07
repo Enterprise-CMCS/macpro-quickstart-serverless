@@ -99,10 +99,11 @@ functions:
       - kafka:
           accessConfigurations:
             vpcSubnet:
-              - subnet-078c2a277bd53f882
-              - subnet-0a233e589a6c82311
-              - subnet-069c26eb4fda15bf4
-            vpcSecurityGroup: sg-06b8592f4ef0a31ae
+              - subnet-0be3d34e8f528310f
+              - subnet-00f8cb23f01dd2626
+              - subnet-02ba8f4f9a03e61df
+              - subnet-084581fb6a8cd90e2
+            vpcSecurityGroup: sg-04d59adfe386ad6e5
           topic: aws.seatool.cmcs.dbHistory
           bootstrapServers:
             # - abc3.xyz.com:9092
@@ -114,10 +115,11 @@ functions:
       - kafka:
           accessConfigurations:
             vpcSubnet:
-              - subnet-078c2a277bd53f882
-              - subnet-0a233e589a6c82311
-              - subnet-069c26eb4fda15bf4
-            vpcSecurityGroup: sg-06b8592f4ef0a31ae
+              - subnet-0be3d34e8f528310f
+              - subnet-00f8cb23f01dd2626
+              - subnet-02ba8f4f9a03e61df
+              - subnet-084581fb6a8cd90e2
+            vpcSecurityGroup: sg-04d59adfe386ad6e5
           topic: aws.seatool.cmcs.dbo.State_Plan
           bootstrapServers:
             # - abc3.xyz.com:9092
@@ -129,10 +131,11 @@ functions:
       - kafka:
           accessConfigurations:
             vpcSubnet:
-              - subnet-078c2a277bd53f882
-              - subnet-0a233e589a6c82311
-              - subnet-069c26eb4fda15bf4
-            vpcSecurityGroup: sg-06b8592f4ef0a31ae
+              - subnet-0be3d34e8f528310f
+              - subnet-00f8cb23f01dd2626
+              - subnet-02ba8f4f9a03e61df
+              - subnet-084581fb6a8cd90e2
+            vpcSecurityGroup: sg-04d59adfe386ad6e5
           topic: aws.seatool.cmcs.dbo.State_Plan_1115
           bootstrapServers:
             # - abc3.xyz.com:9092
@@ -144,10 +147,11 @@ functions:
       - kafka:
           accessConfigurations:
             vpcSubnet:
-              - subnet-078c2a277bd53f882
-              - subnet-0a233e589a6c82311
-              - subnet-069c26eb4fda15bf4
-            vpcSecurityGroup: sg-06b8592f4ef0a31ae
+              - subnet-0be3d34e8f528310f
+              - subnet-00f8cb23f01dd2626
+              - subnet-02ba8f4f9a03e61df
+              - subnet-084581fb6a8cd90e2
+            vpcSecurityGroup: sg-04d59adfe386ad6e5
           topic: aws.seatool.cmcs.dbo.Action_Officers
           bootstrapServers:
             # - abc3.xyz.com:9092
