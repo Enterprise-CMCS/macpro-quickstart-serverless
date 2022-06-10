@@ -1,10 +1,108 @@
 # macpro-quickstart-serverless ![Build](https://github.com/CMSgov/macpro-quickstart-serverless/workflows/Deploy/badge.svg?branch=master) [![latest release](https://img.shields.io/github/release/cmsgov/macpro-quickstart-serverless.svg)](https://github.com/cmsgov/macpro-quickstart-serverless/releases/latest) [![Maintainability](https://api.codeclimate.com/v1/badges/1449ad929006f559756b/maintainability)](https://codeclimate.com/github/CMSgov/macpro-quickstart-serverless/maintainability) [![CodeQL](https://github.com/CMSgov/macpro-quickstart-serverless/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/CMSgov/macpro-quickstart-serverless/actions/workflows/codeql-analysis.yml) [![Dependabot](https://badgen.net/badge/Dependabot/enabled/green?icon=dependabot)](https://dependabot.com/) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) [![Test Coverage](https://api.codeclimate.com/v1/badges/1449ad929006f559756b/test_coverage)](https://codeclimate.com/github/CMSgov/macpro-quickstart-serverless/test_coverage)
 
-A serverless form submission application built and deployed to AWS with the Serverless Application Framework.
+A serverless form submission application built and deployed to AWS with the [Serverless Application Framework](https://serverless.com). Note: serverless-stack.com is different from serverless.com. This app does not use serverless-stack.com. This app provides a template for deploying your own QuickStart codebase. The [Architecture Diagram](./.images/architecture.svg?raw=true) shows the resources built by the QuickStart template in this repo.
 
+A service-specific README is located in each service folder (services/).
+
+## Pre-Requisites
+
+AWS Account: You'll need an AWS account with appropriate IAM permissions (Admin recommended) to deploy this app in Amazon.
+
+AWS CLI: This is useful for getting insight into your resources. It can provide more features than the AWS console. Instructions for installing and upgrading the AWS CLI are [here](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
+
+NVM: Use Node Version Manager (NVM) to install and manage node. Instructions to install NVM are [here](https://github.com/nvm-sh/nvm#installing-and-updating). Inspect the install script before invoking it with bash.
+
+Node - The file `.nvmrc` contains the node version that is expected to be used with this app. This version matches the Lambda runtime. Use NVM to install this version before running the app.
+```
+# from the root project directory
+$ nvm -v      # verify nvm is installed
+$ nvm install # install Node.js version specificed in .nvmrc
+$ nvm use     
+$ nvm list    # verify the expected Node.js version is active
+```
+
+Yarn - This app uses Yarn as the package manager for Node. Use the node package manager included with Node (NPM) to install Yarn. Instructions for intalling Yarn are [here](https://classic.yarnpkg.com/en/docs/install/). This link includes instructions for installing on Windows.
+```
+# installation on MacOS and Linux
+$ npm install -g yarn  # use to install or upgrade Yarn
+```
+
+Serverless CLI - The app is built on a framework called Serverless (for AWS). Instructions for installing the Serverless CLI are here: [Serverless Getting Started page](https://www.serverless.com/framework/docs/providers/aws/guide/installation/)
+```
+# installation on MacOS and Linux
+$ npm install -g serverless  # use to install or upgrade serverless
+$ serverless -v   # displays version
+$ serverless -h   # displays help menu
+```
+
+## Local Development
+In addition to the pre-requisite tools above, Java must be installed locally to support the local deployment of dynamoDB. (The downloadable version of DynamoDB is an executable .jar file. To run DynamoDB locally, you must have the Jave Runtime Environment (JRE) version 8.x or newer.
+
+Local dev is configured in typescript project in `./src`. The entrypoint is `./src/dev.ts`, it manages running the moving pieces locally: the API, the database, the filestore, and the frontend.
+
+Local dev is built around the Serverless plugin [`serverless-offline`](https://github.com/dherault/serverless-offline). `serverless-offline` runs an API gateway locally, configured by `./services/app-api/serverless.yml` and hot- reloads your lambdas on every save. The plugins [`serverless-dynamodb-local`](https://github.com/99x/serverless-dynamodb-local) and [`serverless-s3-local`](https://github.com/ar90n/serverless-s3-local) stand up the local dynamoDB and local S3 in a similar fashion.
+
+When run locally, auth bypasses Cognito. The frontend mimics login with local storage with a mock user, and sends an id in the `cognito-identity-id` header on every request. `serverless-offline` expects that and sets it as the cognitoId in the requestContext for your lambdas, just like Cognito would in AWS.
+
+### Build and Deploy all Services Locally
+Pre-Requisite: valid short-term access keys for your AWS account pasted in your terminal window
+
+Run *all* the services locally with the command `./dev local`. For example,
+```
+# from root directory of project
+$ ./dev local
+```
+Note: This repo does not support selecting a subset of services to run locally.
+
+The browser is launched on localhost:3000.
+
+### Build and Deploy Only the Frontend Service Locally
+Pre-Requisite: valid short-term access keys for your AWS account pasted in your terminal window
+
+The frontend application is created using [create-react-app](https://github.com/facebook/create-react-app). The code is located in services/ui-src. The browser is launched on localhost:3000.
+
+```
+# ensure that <stage> has already been deployed
+$ aws cloudformation list-stacks | grep <stage>  # confirm the stage is deployed
+# change to services/ui-src directory
+$ cd services/ui-src 
+$ ./configureLocal.sh  <stage> # sets environment variables
+$ npm run start                # start React frontend
+# login using valid credentials
+# to stop frontend, hit Control-C
+$ Control-C
+# close the browser
+```
+
+### Run Tests Locally
+The test command is invoked by `./dev test`. The test command must be implemented by users of this repo (src/dev.ts). The implementation in this repo is a placeholder.
+```
+$ ./dev test
+"Testing 1. 2. 3."
+```
+## Deploy and Destroy all Services to/from AWS
+Pre-Requisite: valid short-term access keys for your AWS account pasted in your terminal window
+
+```
+# from root directory of project 
+$ ./deploy.sh <stage>
+```
+After the deploy completes, verify all resources have been deployed.
+From the AWS console, navigate to Cloudformation. Filter on the stage name.
+From the command line:
+```
+$ aws cloudformation list-stacks | grep <stage>
+```
+To destroy AWS resources on a stage:
+```
+# from root directory of project
+$ ./destroy.sh <stage>
+$ aws cloudformation list-stacks | grep <stage>  # This should return no matches.
+```
+Note: Parameters created in AWS Systems Manager (SSM) parameter store are not destroyed.
 ## Release
 
-Our product is promoted through branches. Master is merged to val to affect a master release, and val is merged to production to affect a production release. Please use the buttons below to promote/release code to higher environments.<br />
+Our product is promoted through branches. A developer branch is merged to the master branch. The master branch is merged to val to affect a val release, and the val branch is merged to production to affect a production release. Please use the buttons below to promote/release code to higher environments.<br />
 
 | branch     | status                                                                                                             | release                                                                                                                                                                                                                                                   |
 | ---------- | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -12,100 +110,36 @@ Our product is promoted through branches. Master is merged to val to affect a ma
 | val        | ![val](https://github.com/CMSgov/macpro-quickstart-serverless/workflows/Deploy/badge.svg?branch=val)               | [![release to val](https://img.shields.io/badge/-Create%20PR-blue.svg)](https://github.com/CMSgov/macpro-quickstart-serverless/compare/val...master?quick_pull=1&template=PULL_REQUEST_TEMPLATE.val.md&title=Release%20to%20Val)                          |
 | production | ![production](https://github.com/CMSgov/macpro-quickstart-serverless/workflows/Deploy/badge.svg?branch=production) | [![release to production](https://img.shields.io/badge/-Create%20PR-blue.svg)](https://github.com/CMSgov/macpro-quickstart-serverless/compare/production...val?quick_pull=1&template=PULL_REQUEST_TEMPLATE.production.md&title=Release%20to%20Production) |
 
-## Architecture
-
-![Architecture Diagram](./.images/architecture.svg?raw=true)
-
-## Local Dev
-
-Run all the services locally with the command `./dev local`
-
-See the Requirements section if the command asks for any prerequisites you don't have installed.
-
-Local dev is configured in typescript project in `./src`. The entrypoint is `./src/dev.ts`, it manages running the moving pieces locally: the API, the database, the filestore, and the frontend.
-
-Local dev is built around the Serverless plugin [`serverless-offline`](https://github.com/dherault/serverless-offline). `serverless-offline` runs an API gateway locally configured by `./services/app-api/serverless.yml` and hot reloads your lambdas on every save. The plugins [`serverless-dynamodb-local`](https://github.com/99x/serverless-dynamodb-local) and [`serverless-s3-local`](https://github.com/ar90n/serverless-s3-local) stand up the local db and local s3 in a similar fashion.
-
-When run locally, auth bypasses Cognito. The frontend mimics login in local storage with a mock user and sends an id in the `cognito-identity-id` header on every request. `serverless-offline` expects that and sets it as the cognitoId in the requestContext for your lambdas, just like Cognito would in AWS.
-
-## Usage
-
-See master build [here](https://github.com/CMSgov/macpro-quickstart-serverless/actions?query=branch%3Amaster)
-
-This application is built and deployed via GitHub Actions.
-
-Want to deploy from your Mac?
-
-- Create an AWS account
-- Install/configure the AWS CLI
-- npm install -g severless
-- brew install yarn
-- sh deploy.sh
-
-Building the app locally
-
-- todo
-
-Running tests locally
-
-- todo
-
-## Setting Up Deployments via GitHub Actions
-
-Deployments via GitHub Actions authenticate via [Open ID Connect (OIDC)](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect). A developer with appropriate permissions must set up Open ID Connect and a role to assume, so deployments may assume that role. For information on setting up OIDC for GitHub actions, see [.github/oidc](.github/oidc). For instructions on setting this up for new projects built from this template, see below.
-
-## Setup Deployments for GitHub Actions:
+## Setup Deployments for GitHub Actions
 
 Deployments via GitHub Actions authenticate using [Open ID Connect (OIDC)](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect). This prevents needing to maintain a separate static user within AWS for the deployments.
 
-1. For each AWS environment, create an parameters file with the settings needed for your deployments. Example files are provided in [.github/oidc/](.github/oidc/). Ensure you set the permissions boundary to match the one needed for your environment, and that you update the list of ManagedPolicyARNs to the IAM policies your deployment roles will need (note: multiple managed policies can be provided within the comma-separated list).
+- For each AWS environment, create a parameters file with the settings needed for your deployments. Example files are provided in [.github/oidc/](.github/oidc/).
+    - The permissions boundary must match the one needed for your environment.
+    - The list of IAM policies (custom and AWS-managed) must provide your role with sufficient permissions (Note: multiple policies can be provided within the comma-separated list).
+    - SubjectClaimFilters depend on your environment setup. The provided examples assume that you wish to allow any branch to be able to deploy to the dev AWS environment, but only want the `val` and `production` branches to be able to deploy to their respective AWS environments. For more options on setting the subject claim filters, see [About security hardening with OpenID Connect: Example subject claims](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#example-subject-claims).
 
-   What to set for SubjectClaimFilters will depend on your environment setup. The provided examples assume that you wish to allow any branch to be able to deploy to the dev AWS environment, but only want the `val` and `production` branches to be able to deploy to the `val` and `production` AWS environments. For more options on setting the subject claim filters, see [About security hardening with OpenID Connect: Example subject claims](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#example-subject-claims).
-
-2. With the environment files created, setup the OIDC role in each AWS environment using [the provided CloudFormation template](.github/oidc/github-actions-oidc-template.yml). This can be done via the aws cli when configured for the particular AWS environment you are targeting (you can use `aws sts get-caller-identity` to double check which account you are currently configured for with the aws cli). Ensure to change the PATH_TO_ENVIRONMENT.json reference to the parameter file you created above for the environment you are targeting.
+- Setup the OIDC role in each AWS environment using [the provided CloudFormation template](.github/oidc/github-actions-oidc-template.yml) and the AWS CLI.
 
    ```
+   # verify the AWS account you are authenticated to
+   $ aws sts get-caller-identity
+   $ aws cloudformation help  # for help with command parameters
+   # view the changes to AWS resources using the flag `--no-execute-changeset`
    $ aws cloudformation deploy --template-file .github/oidc/github-actions-oidc-template.yml --stack-name github-actions-oidc-role --parameter-overrides file://PATH_TO_ENVIRONMENT.json --capabilities CAPABILITY_IAM --no-execute-changeset
+   # verify changes; if OK, deploy changes
+   $ aws cloudformation deploy --template-file .github/oidc/github-actions-oidc-template.yml --stack-name github-actions-oidc-role --parameter-overrides file://PATH_TO_ENVIRONMENT.json --capabilities CAPABILITY_IAM
    ```
 
-   The above will first create a CloudFormation change set within your AWS environment that you can then review before applying. If you wish to deploy without the changeset, modify the command above to remove the `--no-execute-changeset` flag.
+- In GitHub Secrets => Actions, create a repository secret for each role that a job must assume. The secret allows a job to get credentials for a given AWS environment. A job accesses a secret using dot notation: `secrets.SECRET_NAME`. The workflows in .github/workflows reference the DEV secret name (secrets.AWS_OIDC_ROLE_TO_ASSUME).
 
-3. The outputs of the cloudformation stacks created above will have a ServiceRoleARN output whose value is the ARN of role to use for GitHub Actions. Set this value to the appropriate AWS_OIDC_ROLE_TO_ASSUME secret within GitHub secrets. (For example, set the dev output for AWS_OIDC_ROLE_TO_ASSUME, the val output for VAL_AWS_OIDC_ROLE_TO_ASSUME, and the production output for PRODUCTION_AWS_OIDC_ROLE_TO_ASSUME within GitHub secrets).
+AWS Environment | Secret Name                        | Secret Value (Serivce Role ARN) |
+----------------|------------------------------------|---------------------------------|
+DEV             | AWS_OIDC_ROLE_TO_ASSUME            |                                 |
+VAL             | VAL_AWS_OIDC_ROLE_TO_ASSUME        |                                 |
+PROD            | PRODUCTION_AWS_OIDC_ROLE_TO_ASSUME |                                 |
 
-## Requirements
 
-Node - we enforce using a specific version of node, specified in the file `.nvmrc`. This version matches the Lambda runtime. We recommend managing node versions using [NVM](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-Serverless - Get help installing it here: [Serverless Getting Started page](https://www.serverless.com/framework/docs/providers/aws/guide/installation/)
-
-Yarn - in order to install dependencies, you need to [install yarn](https://classic.yarnpkg.com/en/docs/install/).
-
-AWS Account: You'll need an AWS account with appropriate IAM permissions (admin recommended) to deploy this app in Amazon.
-
-If you are on a Mac, you should be able to install all the dependencies like so:
-
-```
-# install nvm
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
-
-# select the version specified in .nvmrc
-nvm install
-nvm use
-
-# install yarn
-brew install yarn
-
-# run dev
-./dev local
-```
-
-## Dependencies
-
-None.
-
-## Examples
-
-None.
 
 ## Contributing / To-Do
 
@@ -151,7 +185,7 @@ Join here: https://join.slack.com/t/macproquickst-ugp3045/shared_invite/zt-mdxpb
 
 ### Contributors
 
-This project made possible by the [Serverless Stack](https://serverless-stack.com/) and its authors/contributors. The extremely detailed tutorial, code examples, and serverless pattern is where this project started. I can't recommend this resource enough.
+This project was initially inspired by the [Serverless Stack](https://serverless-stack.com/) and its authors/contributors. However, it is **not** based on [Serverless Stack](https://serverless-stack.com/). It **is** based on [serverless.com](https://serverless.com).
 
 | [![Mike Dial][dial_avatar]][dial_homepage]<br/>[Mike Dial][dial_homepage] | [![Seth Sacher][sacher_avatar]][sacher_homepage]<br/>[Seth Sacher][sacher_homepage] |
 | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
