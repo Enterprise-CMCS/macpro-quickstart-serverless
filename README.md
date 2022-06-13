@@ -1,18 +1,24 @@
 # macpro-quickstart-serverless ![Build](https://github.com/CMSgov/macpro-quickstart-serverless/workflows/Deploy/badge.svg?branch=master) [![latest release](https://img.shields.io/github/release/cmsgov/macpro-quickstart-serverless.svg)](https://github.com/cmsgov/macpro-quickstart-serverless/releases/latest) [![Maintainability](https://api.codeclimate.com/v1/badges/1449ad929006f559756b/maintainability)](https://codeclimate.com/github/CMSgov/macpro-quickstart-serverless/maintainability) [![CodeQL](https://github.com/CMSgov/macpro-quickstart-serverless/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/CMSgov/macpro-quickstart-serverless/actions/workflows/codeql-analysis.yml) [![Dependabot](https://badgen.net/badge/Dependabot/enabled/green?icon=dependabot)](https://dependabot.com/) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) [![Test Coverage](https://api.codeclimate.com/v1/badges/1449ad929006f559756b/test_coverage)](https://codeclimate.com/github/CMSgov/macpro-quickstart-serverless/test_coverage)
 
-A serverless form submission application built and deployed to AWS with the [Serverless Application Framework](https://serverless.com). Note: serverless-stack.com is different from serverless.com. This app does not use serverless-stack.com. This app provides a template for deploying your own QuickStart codebase. The [Architecture Diagram](./.images/architecture.svg?raw=true) shows the resources built by the QuickStart template in this repo.
+A serverless form submission application built and deployed to AWS with the [Serverless Application Framework](https://serverless.com). This app provides a template for deploying your own QuickStart codebase. The [Architecture Diagram](./.images/architecture.svg?raw=true) shows the resources built by the QuickStart template in this repo.
 
 A service-specific README is located in each service folder (services/).
 
+Note: serverless-stack.com is different from serverless.com. This app does *not* use serverless-stack.com.
+
 ## Pre-Requisites
 
-AWS Account: You'll need an AWS account with appropriate IAM permissions (Admin recommended) to deploy this app in Amazon.
+### AWS Account
+You'll need an AWS account with appropriate IAM permissions (Admin is recommended) to deploy this app to AWS.
 
-AWS CLI: This is useful for getting insight into your resources. It can provide more features than the AWS console. Instructions for installing and upgrading the AWS CLI are [here](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
+### AWS CLI
+This is useful for getting insight into your resources. Instructions for installing and upgrading the AWS CLI are [here](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
 
-NVM: Use Node Version Manager (NVM) to install and manage node. Instructions to install NVM are [here](https://github.com/nvm-sh/nvm#installing-and-updating). Inspect the install script before invoking it with bash.
+### NVM
+Use Node Version Manager (NVM) to install and manage node. Instructions to install NVM are [here](https://github.com/nvm-sh/nvm#installing-and-updating). Inspect the install script before invoking it with bash.
 
-Node - The file `.nvmrc` contains the node version that is expected to be used with this app. This version matches the Lambda runtime. Use NVM to install this version before running the app.
+### Node
+The file `.nvmrc` contains the node version that is expected to be used with this app. This version matches the Lambda runtime. Use NVM to install this version before running the app.
 ```
 # from the root project directory
 $ nvm -v      # verify nvm is installed
@@ -21,13 +27,15 @@ $ nvm use
 $ nvm list    # verify the expected Node.js version is active
 ```
 
-Yarn - This app uses Yarn as the package manager for Node. Use the node package manager included with Node (NPM) to install Yarn. Instructions for intalling Yarn are [here](https://classic.yarnpkg.com/en/docs/install/). This link includes instructions for installing on Windows.
+### Yarn
+This app uses Yarn as the package manager for Node. Use the node package manager included with Node (NPM) to install Yarn. Instructions for installing Yarn are [here](https://classic.yarnpkg.com/en/docs/install/). This link includes instructions for installing on Windows.
 ```
 # installation on MacOS and Linux
 $ npm install -g yarn  # use to install or upgrade Yarn
 ```
 
-Serverless CLI - The app is built on a framework called Serverless (for AWS). Instructions for installing the Serverless CLI are here: [Serverless Getting Started page](https://www.serverless.com/framework/docs/providers/aws/guide/installation/)
+### Serverless CLI
+The app is built on a framework called Serverless (for AWS). Instructions for installing the Serverless CLI, using AWS as the cloud provider, are here: [Serverless Getting Started page](https://www.serverless.com/framework/docs/providers/aws/guide/installation/)
 ```
 # installation on MacOS and Linux
 $ npm install -g serverless  # use to install or upgrade serverless
@@ -36,7 +44,7 @@ $ serverless -h   # displays help menu
 ```
 
 ## Local Development
-In addition to the pre-requisite tools above, Java must be installed locally to support the local deployment of dynamoDB. (The downloadable version of DynamoDB is an executable .jar file. To run DynamoDB locally, you must have the Jave Runtime Environment (JRE) version 8.x or newer.
+In addition to the pre-requisite tools above, Java must be installed locally to support the local deployment of dynamoDB. (The downloadable version of DynamoDB is an executable .jar file. To run DynamoDB locally, you must have the Java Runtime Environment (JRE) version 8.x or newer.
 
 Local dev is configured in typescript project in `./src`. The entrypoint is `./src/dev.ts`, it manages running the moving pieces locally: the API, the database, the filestore, and the frontend.
 
@@ -45,7 +53,8 @@ Local dev is built around the Serverless plugin [`serverless-offline`](https://g
 When run locally, auth bypasses Cognito. The frontend mimics login with local storage with a mock user, and sends an id in the `cognito-identity-id` header on every request. `serverless-offline` expects that and sets it as the cognitoId in the requestContext for your lambdas, just like Cognito would in AWS.
 
 ### Build and Deploy all Services Locally
-Pre-Requisite: valid short-term access keys for your AWS account pasted in your terminal window
+#### Pre-Requisites
+- valid short-term access keys for your AWS account pasted in your terminal window
 
 Run *all* the services locally with the command `./dev local`. For example,
 ```
@@ -57,12 +66,14 @@ Note: This repo does not support selecting a subset of services to run locally.
 The browser is launched on localhost:3000.
 
 ### Build and Deploy Only the Frontend Service Locally
-Pre-Requisite: valid short-term access keys for your AWS account pasted in your terminal window
+#### Pre-Requisites
+- valid short-term access keys for your AWS account pasted in your terminal window
+- a QuickStart stack, <stack>, deployed and running in AWS
 
-The frontend application is created using [create-react-app](https://github.com/facebook/create-react-app). The code is located in services/ui-src. The browser is launched on localhost:3000.
+The local frontend application is created using [create-react-app](https://github.com/facebook/create-react-app). The code is located in services/ui-src. The browser is launched on localhost:3000. The frontend connects to the backend services running in AWS.
 
 ```
-# ensure that <stage> has already been deployed
+# ensure that <stage> has already been deployed  # This is necessary since only the frontend is deployed locally
 $ aws cloudformation list-stacks | grep <stage>  # confirm the stage is deployed
 # change to services/ui-src directory
 $ cd services/ui-src 
@@ -71,7 +82,6 @@ $ npm run start                # start React frontend
 # login using valid credentials
 # to stop frontend, hit Control-C
 $ Control-C
-# close the browser
 ```
 
 ### Run Tests Locally
@@ -81,19 +91,20 @@ $ ./dev test
 "Testing 1. 2. 3."
 ```
 ## Deploy and Destroy all Services to/from AWS
-Pre-Requisite: valid short-term access keys for your AWS account pasted in your terminal window
+### Pre-Requisites
+- valid short-term access keys for your AWS account pasted in your terminal window
 
 ```
 # from root directory of project 
 $ ./deploy.sh <stage>
 ```
-After the deploy completes, verify all resources have been deployed.
+After the deployment completes, verify all resources have been deployed.
 From the AWS console, navigate to Cloudformation. Filter on the stage name.
 From the command line:
 ```
 $ aws cloudformation list-stacks | grep <stage>
 ```
-To destroy AWS resources on a stage:
+To destroy AWS resources for a stage:
 ```
 # from root directory of project
 $ ./destroy.sh <stage>
@@ -141,7 +152,7 @@ PROD            | PRODUCTION_AWS_OIDC_ROLE_TO_ASSUME |                          
 
 
 
-## Contributing / To-Do
+## How To Contribute
 
 See current open [issues](https://github.com/CMSgov/macpro-quickstart-serverless/issues) or check out the [project board](https://github.com/CMSgov/macpro-quickstart-serverless/projects/1).
 
@@ -177,15 +188,13 @@ To set the SLACK_WEBHOOK_URL:
 
 - Go to https://api.slack.com/apps
 - Create new app : fill in the information
-- Add features and funtionality----Incoming webhooks--- activative incoming webooks--- Add new webhook to workspace.
+- Add features and functionality----Incoming webhooks--- activate incoming webooks--- Add new webhook to workspace.
 - copy new webhook url and set it as SLACK_WEBHOOK_URL in github actions secret.
 
 Please join the macpro-quickstart-serverless slack channel to get all build status and also contribute to any ongoing discussions.
 Join here: https://join.slack.com/t/macproquickst-ugp3045/shared_invite/zt-mdxpbtkk-SrLRi_yzJrXX3uYgvrbjlg
 
 ### Contributors
-
-This project was initially inspired by the [Serverless Stack](https://serverless-stack.com/) and its authors/contributors. However, it is **not** based on [Serverless Stack](https://serverless-stack.com/). It **is** based on [serverless.com](https://serverless.com).
 
 | [![Mike Dial][dial_avatar]][dial_homepage]<br/>[Mike Dial][dial_homepage] | [![Seth Sacher][sacher_avatar]][sacher_homepage]<br/>[Seth Sacher][sacher_homepage] |
 | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
