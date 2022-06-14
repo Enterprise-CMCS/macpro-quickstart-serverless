@@ -4,38 +4,47 @@ A serverless form submission application, built and deployed to AWS with the [Se
 
 A service-specific README is located in each service folder (services/).
 
-Note: serverless-stack.com is different from serverless.com. This app does *not* use serverless-stack.com.
+Note: serverless-stack.com is different from serverless.com. This app does _not_ use serverless-stack.com.
 
 ## Pre-Requisites
 
 ### AWS Account
+
 You'll need an AWS account with appropriate IAM permissions (Admin is recommended) to deploy this app to AWS.
 
 ### AWS CLI
+
 This is useful for getting insight into your resources. Instructions for installing and upgrading the AWS CLI are [here](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
 
 ### NVM
+
 Use Node Version Manager (NVM) to install and manage Node. Instructions to install NVM are [here](https://github.com/nvm-sh/nvm#installing-and-updating). Inspect the install script before invoking it with bash.
 
 ### Node
+
 The file `.nvmrc` contains the Node version that is expected to be used with this app. This version matches the Lambda runtime. Use NVM to install this version before running the app.
+
 ```
 # from the root project directory
 $ nvm -v      # verify nvm is installed
 $ nvm install # install Node.js version specificed in .nvmrc
-$ nvm use     
+$ nvm use
 $ nvm list    # verify the expected Node.js version is active
 ```
 
 ### Yarn
+
 This app uses Yarn as the package manager for Node. Use the Node package manager included with Node (NPM) to install Yarn. Instructions for installing Yarn are [here](https://classic.yarnpkg.com/en/docs/install/). This link includes instructions for installing on Windows.
+
 ```
 # installation on MacOS and Linux
 $ npm install -g yarn  # use to install or upgrade Yarn
 ```
 
 ### Serverless CLI
+
 The app is built on a framework called Serverless (for AWS). Instructions for installing the Serverless CLI, using AWS as the cloud provider, are here: [Serverless Getting Started page](https://www.serverless.com/framework/docs/providers/aws/guide/installation/)
+
 ```
 # installation on MacOS and Linux
 $ npm install -g serverless  # use to install or upgrade serverless
@@ -44,6 +53,7 @@ $ serverless -h   # displays help menu
 ```
 
 ## Local Development
+
 In addition to the pre-requisite tools above, Java must be installed locally to support the local deployment of DynamoDB. (The downloadable version of DynamoDB is an executable .jar file. To run DynamoDB locally, you must have the Java Runtime Environment (JRE) version 8.x or newer.
 
 Local dev is configured in typescript project in `./src`. The entry point is `./src/dev.ts`, it manages running the moving pieces locally: the API, the database, the filestore, and the frontend.
@@ -53,20 +63,26 @@ Local dev is built around the Serverless plugin [`serverless-offline`](https://g
 When run locally, auth bypasses Cognito. The frontend mimics login using local storage with a mock user, and sends an id in the `cognito-identity-id` header on every request. `serverless-offline` expects that and sets it as the cognitoId in the requestContext for your lambdas, just like Cognito would in AWS.
 
 ### Build and Deploy all Services Locally
+
 #### Pre-Requisites
+
 - valid short-term access keys for your AWS account pasted in your terminal window
 
-Run *all* the services locally with the command `./dev local`. For example,
+Run _all_ the services locally with the command `./dev local`. For example,
+
 ```
 # from root directory of project
 $ ./dev local
 ```
+
 Note: This repo does not support selecting a subset of services to run locally.
 
 You can view the app on localhost:3000.
 
 ### Build and Deploy Only the Frontend Service Locally
+
 #### Pre-Requisites
+
 - valid short-term access keys for your AWS account pasted in your terminal window
 - a QuickStart stack, <stack>, deployed and running in AWS
 
@@ -77,7 +93,7 @@ You can view the app on localhost:3000.
 # ensure that <stage> has already been deployed  # This is necessary since only the frontend is deployed locally
 $ aws cloudformation list-stacks | grep <stage>  # confirm the stage is deployed
 # change to services/ui-src directory
-$ cd services/ui-src 
+$ cd services/ui-src
 $ ./configureLocal.sh  <stage> # sets environment variables
 $ npm run start                # start React frontend
 # login using valid credentials
@@ -85,32 +101,43 @@ $ npm run start                # start React frontend
 ```
 
 ### Run Tests Locally
+
 The test command is invoked by `./dev test`. The test command must be implemented by users of this repo (src/dev.ts). The implementation in this repo is a placeholder.
+
 ```
 $ ./dev test
 "Testing 1. 2. 3."
 ```
+
 ## Deploy and Destroy all Services to/from AWS
+
 ### Pre-Requisites
+
 - valid short-term access keys for your AWS account pasted in your terminal window
 
 ```
-# from root directory of project 
+# from root directory of project
 $ ./deploy.sh <stage>
 ```
+
 After the deployment completes, verify all resources have been deployed.
 From the AWS console, navigate to Cloudformation. Filter on the stage name.
 From the command line:
+
 ```
 $ aws cloudformation list-stacks | grep <stage>
 ```
+
 To destroy AWS resources for a stage:
+
 ```
 # from root directory of project
 $ ./destroy.sh <stage>
 $ aws cloudformation list-stacks | grep <stage>  # This should return no matches.
 ```
+
 Note: Parameters created in AWS Systems Manager (SSM) parameter store are not destroyed.
+
 ## Release
 
 Our product is promoted through branches. A developer branch is merged to the master branch. The master branch is merged to val to affect a val release, and the val branch is merged to production to affect a production release. Please use the buttons below to promote/release code to higher environments.<br />
@@ -126,31 +153,30 @@ Our product is promoted through branches. A developer branch is merged to the ma
 Deployments via GitHub Actions authenticate using [Open ID Connect (OIDC)](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect). This prevents needing to maintain a separate static user within AWS for the deployments.
 
 - For each AWS environment, create a parameters file with the settings needed for your deployments. Example files are provided in [.github/oidc/](.github/oidc/).
-    - The permissions boundary must match the one needed for your environment.
-    - The list of IAM policies (custom and AWS-managed) must provide your role with sufficient permissions (Note: multiple policies can be provided within the comma-separated list).
-    - SubjectClaimFilters depend on your environment setup. The provided examples assume that you wish to allow any branch to be able to deploy to the dev AWS environment, but only want the `val` and `production` branches to be able to deploy to their respective AWS environments. For more options on setting the subject claim filters, see [About security hardening with OpenID Connect: Example subject claims](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#example-subject-claims).
+
+  - The permissions boundary must match the one needed for your environment.
+  - The list of IAM policies (custom and AWS-managed) must provide your role with sufficient permissions (Note: multiple policies can be provided within the comma-separated list).
+  - SubjectClaimFilters depend on your environment setup. The provided examples assume that you wish to allow any branch to be able to deploy to the dev AWS environment, but only want the `val` and `production` branches to be able to deploy to their respective AWS environments. For more options on setting the subject claim filters, see [About security hardening with OpenID Connect: Example subject claims](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect#example-subject-claims).
 
 - Setup the OIDC role in each AWS environment using [the provided CloudFormation template](.github/oidc/github-actions-oidc-template.yml) and the AWS CLI.
 
-   ```
-   # verify the AWS account you are authenticated to
-   $ aws sts get-caller-identity
-   $ aws cloudformation help  # for help with command parameters
-   # view the changes to AWS resources using the flag `--no-execute-changeset`
-   $ aws cloudformation deploy --template-file .github/oidc/github-actions-oidc-template.yml --stack-name github-actions-oidc-role --parameter-overrides file://PATH_TO_ENVIRONMENT.json --capabilities CAPABILITY_IAM --no-execute-changeset
-   # verify changes; if OK, deploy changes
-   $ aws cloudformation deploy --template-file .github/oidc/github-actions-oidc-template.yml --stack-name github-actions-oidc-role --parameter-overrides file://PATH_TO_ENVIRONMENT.json --capabilities CAPABILITY_IAM
-   ```
+  ```
+  # verify the AWS account you are authenticated to
+  $ aws sts get-caller-identity
+  $ aws cloudformation help  # for help with command parameters
+  # view the changes to AWS resources using the flag `--no-execute-changeset`
+  $ aws cloudformation deploy --template-file .github/oidc/github-actions-oidc-template.yml --stack-name github-actions-oidc-role --parameter-overrides file://PATH_TO_ENVIRONMENT.json --capabilities CAPABILITY_IAM --no-execute-changeset
+  # verify changes; if OK, deploy changes
+  $ aws cloudformation deploy --template-file .github/oidc/github-actions-oidc-template.yml --stack-name github-actions-oidc-role --parameter-overrides file://PATH_TO_ENVIRONMENT.json --capabilities CAPABILITY_IAM
+  ```
 
 - In GitHub Secrets => Actions, create a repository secret for each role that a job must assume. The secret allows a job to get credentials for a given AWS environment. A job accesses a secret using dot notation: `secrets.SECRET_NAME`. The workflows in .github/workflows reference the DEV secret name (secrets.AWS_OIDC_ROLE_TO_ASSUME).
 
-AWS Environment | Secret Name                        | Secret Value (Serivce Role ARN) |
-----------------|------------------------------------|---------------------------------|
-DEV             | AWS_OIDC_ROLE_TO_ASSUME            |                                 |
-VAL             | VAL_AWS_OIDC_ROLE_TO_ASSUME        |                                 |
-PROD            | PRODUCTION_AWS_OIDC_ROLE_TO_ASSUME |                                 |
-
-
+| AWS Environment | Secret Name                        | Secret Value (Serivce Role ARN) |
+| --------------- | ---------------------------------- | ------------------------------- |
+| DEV             | AWS_OIDC_ROLE_TO_ASSUME            |                                 |
+| VAL             | VAL_AWS_OIDC_ROLE_TO_ASSUME        |                                 |
+| PROD            | PRODUCTION_AWS_OIDC_ROLE_TO_ASSUME |                                 |
 
 ## How To Contribute
 
