@@ -6,7 +6,6 @@ plugins:
   - serverless-dynamodb-local
   - serverless-stack-termination-protection
   - serverless-s3-bucket-helper
-  - serverless-iam-helper
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -29,10 +28,6 @@ provider:
   name: aws
   runtime: nodejs14.x
   region: us-east-1
-  iam:
-    role:
-      path: ${ssm:/configuration/${self:custom.stage}/iam/path, ssm:/configuration/default/iam/path, "/"}
-      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy, ssm:/configuration/default/iam/permissionsBoundaryPolicy, ""}
 
 resources:
   Resources:
