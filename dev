@@ -31,7 +31,7 @@ fi
 # check serverless is installed globally.
 if ! which serverless > /dev/null ; then
 	echo "installing serverless globally"
-	yarn install -g serverless
+	yarn global add serverless
 fi
 
 # have to ensure that yarn install is up to date.
