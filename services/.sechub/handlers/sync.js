@@ -332,8 +332,10 @@ async function sync(event) {
   await closeIssuesWithoutAnActiveFinding(findings, issues);
   await createOrUpdateIssuesBasedOnFindings(findings, issues);
   issues = await getAllIssues(); // Refetch all issues before assigning to projects
-  await assignIssuesToRepositoryProjects(issues, repoProjects);
-  await assignIssuesToOrganizationProjects(issues, orgProjects);
+  if (repoProjects.length)
+    await assignIssuesToRepositoryProjects(issues, repoProjects);
+  if (orgProjects.length)
+    await assignIssuesToOrganizationProjects(issues, orgProjects);
 }
 
 exports.main = sync;
