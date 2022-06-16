@@ -14,7 +14,6 @@ exports.handler = function (event, context, callback) {
 Hi ${record.dynamodb.NewImage.firstName.S},
 
 We are writing to let you know we've received your Amendment to Planned Settlement (APS) submission!
-It is under review.
 No additional action is needed on your part.
 
 APS ID: ${record.dynamodb.NewImage.transmittalNumber.S}
@@ -35,7 +34,6 @@ APS Team
   Hi ${record.dynamodb.NewImage.firstName.S},
 
   We are writing to let you know we've received an update to your Amendment to Planned Settlement (APS) submission!
-  It is under review.
   No additional action is needed on your part.
 
   APS ID: ${record.dynamodb.NewImage.transmittalNumber.S}
@@ -56,8 +54,7 @@ APS Team
   Hi ${record.dynamodb.OldImage.firstName.S},
 
   We received a request to delete your Amendment to Planned Settlement (APS) submission.
-  We are writing to let you know that we have processed that request.
-  No additional action is needed on your part.
+  We are writing to let you know that your Amendment has been deleted.
 
   APS ID: ${record.dynamodb.OldImage.transmittalNumber.S}
 
