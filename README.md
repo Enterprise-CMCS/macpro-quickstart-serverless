@@ -146,6 +146,14 @@ To set the SLACK_WEBHOOK_URL:
 - Add features and funtionality----Incoming webhooks--- activative incoming webooks--- Add new webhook to workspace.
 - copy new webhook url and set it as SLACK_WEBHOOK_URL in github actions secret.
 
+SLACK_WEBHOOK CREATION (NEW Process):
+
+1. Put in a Jira ticket
+   - Go to https://jira.cms.gov/servicedesk/customer/portal/1
+   - Select I need help with Jira, Confluence, Slack, or GitHub. You need the following EUA Job Code to access OC Jira: JIRA_Users
+   - If you are able to login to https://jira.cms.gov/servicedesk/customer/portal/1/create/11 you are good to go.
+2. One of the tools team member will create the Slack App and provide the webhook information back to ADO's.
+
 Please join the macpro-quickstart-serverless slack channel to get all build status and also contribute to any ongoing discussions.
 Join here: https://join.slack.com/t/macproquickst-ugp3045/shared_invite/zt-mdxpbtkk-SrLRi_yzJrXX3uYgvrbjlg
 
