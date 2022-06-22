@@ -119,11 +119,9 @@ resources:
                 mkdir -p /usr/local/share/kafka/plugins &&
                 curl -k -SL -O "https://repo1.maven.org/maven2/io/debezium/debezium-connector-sqlserver/1.9.0.Final/debezium-connector-sqlserver-1.9.0.Final-plugin.tar.gz" &&
                 tar -xf debezium-connector-sqlserver-1.9.0.Final-plugin.tar.gz -C /usr/local/share/kafka/plugins &&
+                curl -k -SL -o /etc/kafka-connect/jars/aws-msk-iam-auth-1.1.3-all.jar "https://github.com/aws/aws-msk-iam-auth/releases/download/v1.1.3/aws-msk-iam-auth-1.1.3-all.jar" &&
                 /etc/confluent/docker/run
             Environment:
-              - Name: CONNECT_BOOTSTRAP_SERVERS
-                Value: >-
-                  ${self:custom.bootstrapBrokerStringTls}
               - Name: CONNECT_GROUP_ID
                 Value: mgmt.connect.${self:service}-${self:custom.stage}
               - Name: CONNECT_CONFIG_STORAGE_TOPIC
@@ -141,21 +139,44 @@ resources:
               - Name: CONNECT_INTERNAL_VALUE_CONVERTER
                 Value: org.apache.kafka.connect.json.JsonConverter
               - Name: CONNECT_PLUGIN_PATH
-                Value: /usr/share/java,/usr/local/share/kafka/plugins
+                Value: /usr/share/java,/usr/local/share/kafka/plugins,/etc/kafka-connect/jars
+              - Name: CUB_CLASSPATH
+                Value: /etc/confluent/docker/docker-utils.jar:/etc/kafka-connect/jars/aws-msk-iam-auth-1.1.3-all.jar
+              - Name: CONNECT_BOOTSTRAP_SERVERS
+                Value: >-
+                  ${self:custom.bootstrapBrokerStringTls}
               - Name: CONNECT_SECURITY_PROTOCOL
-                Value: SSL
+                Value: SASL_SSL
+              - Name: CONNECT_SASL_MECHANISM
+                Value: AWS_MSK_IAM
+              - Name: CONNECT_SASL_JAAS_CONFIG
+                Value: software.amazon.msk.auth.iam.IAMLoginModule required;
+              - Name: CONNECT_SASL_CLIENT_CALLBACK_HANDLER_CLASS
+                Value: software.amazon.msk.auth.iam.IAMClientCallbackHandler
               # Producer/Consumer configs below
               # Thank you to https://github.com/confluentinc/kafka-connect-jdbc/issues/161
               - Name: CONNECT_PRODUCER_BOOTSTRAP_SERVERS
                 Value: >-
                   ${self:custom.bootstrapBrokerStringTls}
               - Name: CONNECT_PRODUCER_SECURITY_PROTOCOL
-                Value: SSL
+                Value: SASL_SSL
+              - Name: CONNECT_PRODUCER_SASL_MECHANISM
+                Value: AWS_MSK_IAM
+              - Name: CONNECT_PRODUCER_SASL_JAAS_CONFIG
+                Value: software.amazon.msk.auth.iam.IAMLoginModule required;
+              - Name: CONNECT_PRODUCER_SASL_CLIENT_CALLBACK_HANDLER_CLASS
+                Value: software.amazon.msk.auth.iam.IAMClientCallbackHandler
               - Name: CONNECT_CONSUMER_BOOTSTRAP_SERVERS
                 Value: >-
                   ${self:custom.bootstrapBrokerStringTls}
               - Name: CONNECT_CONSUMER_SECURITY_PROTOCOL
-                Value: SSL
+                Value: SASL_SSL
+              - Name: CONNECT_CONSUMER_SASL_MECHANISM
+                Value: AWS_MSK_IAM
+              - Name: CONNECT_CONSUMER_SASL_JAAS_CONFIG
+                Value: software.amazon.msk.auth.iam.IAMLoginModule required;
+              - Name: CONNECT_CONSUMER_SASL_CLIENT_CALLBACK_HANDLER_CLASS
+                Value: software.amazon.msk.auth.iam.IAMClientCallbackHandler
             LogConfiguration:
               LogDriver: awslogs
               Options:
