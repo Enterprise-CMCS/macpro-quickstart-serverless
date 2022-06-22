@@ -48,6 +48,7 @@ custom:
       - master
       - val
       - production
+  crossAccountRoleArn: arn:aws:iam::677829493285:role/delegatedadmin/developer/bigmac-mskiam-quickstart # This needs to be parameterized during implementation.
 
 functions:
   configureConnectors:
@@ -102,6 +103,15 @@ resources:
               Action: "sts:AssumeRole"
         ManagedPolicyArns:
           - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+        Policies:
+          - PolicyName: "AssumeCrossAccountRolePolicy"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "sts:AssumeRole"
+                  Resource: ${self:custom.crossAccountRoleArn}
     KafkaConnectWorkerTaskDefinition:
       Type: "AWS::ECS::TaskDefinition"
       Properties:
@@ -150,7 +160,7 @@ resources:
               - Name: CONNECT_SASL_MECHANISM
                 Value: AWS_MSK_IAM
               - Name: CONNECT_SASL_JAAS_CONFIG
-                Value: software.amazon.msk.auth.iam.IAMLoginModule required;
+                Value: software.amazon.msk.auth.iam.IAMLoginModule required awsRoleArn="${self:custom.crossAccountRoleArn}";
               - Name: CONNECT_SASL_CLIENT_CALLBACK_HANDLER_CLASS
                 Value: software.amazon.msk.auth.iam.IAMClientCallbackHandler
               # Producer/Consumer configs below
