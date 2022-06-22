@@ -1,6 +1,6 @@
 # Terminology
 
-The terms `branch` and `stage` are equivalent. When a user pushes code to a git `branch`, the QuickStart deploys multiple services by invoking `serverless deploy --stage <branch>` for each service being deployed.
+The terms `branch` and `stage` are equivalent. When a user pushes code to a git `branch`, the QuickStart deploys multiple services by invoking `serverless deploy --stage <branch>` for each service being deployed. `branch` names must be less than 27 characters.
 
 For each service, the QuickStart generates a cloudformation template that AWS deploys to build a `cloudformation stack`. For a given stage, the names of each cloudformation stack follow the pattern `<service-name>-<stage>`.
 

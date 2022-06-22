@@ -114,6 +114,7 @@ $ ./dev test
 ### Pre-Requisites
 
 - valid short-term access keys for your AWS account pasted in your terminal window
+- stage names must be less than 27 characters
 
 ```
 # from root directory of project
