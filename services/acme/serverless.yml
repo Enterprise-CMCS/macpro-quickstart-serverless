@@ -1,0 +1,231 @@
+service: acme
+
+frameworkVersion: "3"
+
+package:
+  individually: true
+
+plugins:
+  - serverless-bundle
+  - serverless-dotenv-plugin
+  - serverless-plugin-scripts
+  - serverless-stack-termination-protection
+  - serverless-idempotency-helper
+  - serverless-s3-bucket-helper
+  - serverless-online
+  - serverless-iam-helper
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  region: us-east-1
+  iam:
+    role:
+      path: ${ssm:/configuration/${self:custom.stage}/iam/path, ssm:/configuration/default/iam/path, "/"}
+      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy, ssm:/configuration/default/iam/permissionsBoundaryPolicy, ""}
+      statements:
+        - Effect: "Allow"
+          Action:
+            - ecs:ListTasks
+            - ecs:DescribeTasks
+          Resource: "*"
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
+  bootstrapBrokerStringTls: ${ssm:/configuration/${self:custom.stage}/bootstrapBrokerStringTls, ssm:/configuration/default/bootstrapBrokerStringTls}
+  vpcId: ${ssm:/configuration/${self:custom.stage}/vpc/id, ssm:/configuration/default/vpc/id}
+  privateSubnets:
+    - ${ssm:/configuration/${self:custom.stage}/vpc/subnets/private/a/id, ssm:/configuration/default/vpc/subnets/private/a/id}
+    - ${ssm:/configuration/${self:custom.stage}/vpc/subnets/private/b/id, ssm:/configuration/default/vpc/subnets/private/b/id}
+    - ${ssm:/configuration/${self:custom.stage}/vpc/subnets/private/c/id, ssm:/configuration/default/vpc/subnets/private/c/id}
+  scripts:
+    hooks:
+      deploy:finalize: |
+        serverless invoke --stage ${self:custom.stage} --function configureConnectors
+  serverlessTerminationProtection:
+    stages: # Apply CloudFormation termination protection for these stages
+      - master
+      - val
+      - production
+  crossAccountRoleArn: arn:aws:iam::677829493285:role/delegatedadmin/developer/bigmac-mskiam-quickstart # This needs to be parameterized during implementation.
+
+functions:
+  configureConnectors:
+    handler: handlers/configureConnectors.handler
+    environment:
+      cluster: !Ref KafkaConnectCluster
+    maximumRetryAttempts: 2
+    timeout: 120
+    vpc:
+      securityGroupIds:
+        - Ref: LambdaConfigureConnectorsSecurityGroup
+      subnetIds: ${self:custom.privateSubnets}
+
+resources:
+  Resources:
+    KafkaConnectWorkerLogGroup:
+      Type: "AWS::Logs::LogGroup"
+      Properties:
+        LogGroupName: /aws/fargate/${self:service}-${self:custom.stage}-kafka-connect
+    KafkaConnectWorkerSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Security Group for the Fargate Connect Workers.
+        VpcId: ${self:custom.vpcId}
+    KafkaConnectWorkerSecurityGroupIngressLambda:
+      Type: AWS::EC2::SecurityGroupIngress
+      Properties:
+        GroupId: !Sub "${KafkaConnectWorkerSecurityGroup}"
+        IpProtocol: tcp
+        FromPort: 8083
+        ToPort: 8083
+        SourceSecurityGroupId: !Sub "${LambdaConfigureConnectorsSecurityGroup}"
+    KafkaConnectWorkerSecurityGroupIngressCluster:
+      Type: AWS::EC2::SecurityGroupIngress
+      Properties:
+        GroupId: !Sub "${KafkaConnectWorkerSecurityGroup}"
+        IpProtocol: tcp
+        FromPort: 8083
+        ToPort: 8083
+        SourceSecurityGroupId: !Sub "${KafkaConnectWorkerSecurityGroup}"
+    KafkaConnectWorkerRole:
+      Type: "AWS::IAM::Role"
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: "Allow"
+              Principal:
+                Service:
+                  - "ecs.amazonaws.com"
+                  - "ecs-tasks.amazonaws.com"
+              Action: "sts:AssumeRole"
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+        Policies:
+          - PolicyName: "AssumeCrossAccountRolePolicy"
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: "Allow"
+                  Action:
+                    - "sts:AssumeRole"
+                  Resource: ${self:custom.crossAccountRoleArn}
+    KafkaConnectWorkerTaskDefinition:
+      Type: "AWS::ECS::TaskDefinition"
+      Properties:
+        ContainerDefinitions:
+          - Name: ${self:service}-${self:custom.stage}-worker
+            Image: "confluentinc/cp-kafka-connect:5.2.4"
+            Memory: 4096
+            Cpu: 2048
+            Command:
+              - bash
+              - "-c"
+              - |
+                export CONNECT_REST_HOST_NAME=`curl $ECS_CONTAINER_METADATA_URI_V4 | sed -e 's/.*IPv4Addresses":\["\(.*\)"\],"AttachmentIndex.*/\1/'` &&
+                export CONNECT_REST_ADVERTISED_HOST_NAME=$CONNECT_REST_HOST_NAME &&
+                mkdir -p /usr/local/share/kafka/plugins &&
+                curl -k -SL -o /etc/kafka-connect/jars/aws-msk-iam-auth-1.1.3-all.jar "https://github.com/aws/aws-msk-iam-auth/releases/download/v1.1.3/aws-msk-iam-auth-1.1.3-all.jar" &&
+                /etc/confluent/docker/run
+            Environment:
+              - Name: CONNECT_GROUP_ID
+                Value: mgmt.connect.${self:service}-${self:custom.stage}
+              - Name: CONNECT_CONFIG_STORAGE_TOPIC
+                Value: mgmt.connect.${self:service}-${self:custom.stage}.config
+              - Name: CONNECT_OFFSET_STORAGE_TOPIC
+                Value: mgmt.connect.${self:service}-${self:custom.stage}.offsets
+              - Name: CONNECT_STATUS_STORAGE_TOPIC
+                Value: mgmt.connect.${self:service}-${self:custom.stage}.status
+              - Name: CONNECT_KEY_CONVERTER
+                Value: org.apache.kafka.connect.json.JsonConverter
+              - Name: CONNECT_VALUE_CONVERTER
+                Value: org.apache.kafka.connect.json.JsonConverter
+              - Name: CONNECT_INTERNAL_KEY_CONVERTER
+                Value: org.apache.kafka.connect.json.JsonConverter
+              - Name: CONNECT_INTERNAL_VALUE_CONVERTER
+                Value: org.apache.kafka.connect.json.JsonConverter
+              - Name: CONNECT_PLUGIN_PATH
+                Value: /usr/share/java,/usr/local/share/kafka/plugins,/etc/kafka-connect/jars
+              - Name: CUB_CLASSPATH
+                Value: /etc/confluent/docker/docker-utils.jar:/etc/kafka-connect/jars/aws-msk-iam-auth-1.1.3-all.jar
+              - Name: CONNECT_BOOTSTRAP_SERVERS
+                Value: >-
+                  ${self:custom.bootstrapBrokerStringTls}
+              - Name: CONNECT_SECURITY_PROTOCOL
+                Value: SASL_SSL
+              - Name: CONNECT_SASL_MECHANISM
+                Value: AWS_MSK_IAM
+              - Name: CONNECT_SASL_JAAS_CONFIG
+                Value: software.amazon.msk.auth.iam.IAMLoginModule required awsRoleArn="${self:custom.crossAccountRoleArn}";
+              - Name: CONNECT_SASL_CLIENT_CALLBACK_HANDLER_CLASS
+                Value: software.amazon.msk.auth.iam.IAMClientCallbackHandler
+              # Producer/Consumer configs below
+              # Thank you to https://github.com/confluentinc/kafka-connect-jdbc/issues/161
+              - Name: CONNECT_PRODUCER_BOOTSTRAP_SERVERS
+                Value: >-
+                  ${self:custom.bootstrapBrokerStringTls}
+              - Name: CONNECT_PRODUCER_SECURITY_PROTOCOL
+                Value: SASL_SSL
+              - Name: CONNECT_PRODUCER_SASL_MECHANISM
+                Value: AWS_MSK_IAM
+              - Name: CONNECT_PRODUCER_SASL_JAAS_CONFIG
+                Value: software.amazon.msk.auth.iam.IAMLoginModule required;
+              - Name: CONNECT_PRODUCER_SASL_CLIENT_CALLBACK_HANDLER_CLASS
+                Value: software.amazon.msk.auth.iam.IAMClientCallbackHandler
+              - Name: CONNECT_CONSUMER_BOOTSTRAP_SERVERS
+                Value: >-
+                  ${self:custom.bootstrapBrokerStringTls}
+              - Name: CONNECT_CONSUMER_SECURITY_PROTOCOL
+                Value: SASL_SSL
+              - Name: CONNECT_CONSUMER_SASL_MECHANISM
+                Value: AWS_MSK_IAM
+              - Name: CONNECT_CONSUMER_SASL_JAAS_CONFIG
+                Value: software.amazon.msk.auth.iam.IAMLoginModule required;
+              - Name: CONNECT_CONSUMER_SASL_CLIENT_CALLBACK_HANDLER_CLASS
+                Value: software.amazon.msk.auth.iam.IAMClientCallbackHandler
+            LogConfiguration:
+              LogDriver: awslogs
+              Options:
+                awslogs-region: !Sub "${AWS::Region}"
+                awslogs-group: !Sub "${KafkaConnectWorkerLogGroup}"
+                awslogs-stream-prefix: fargate
+        Family: ${self:service}-${self:custom.stage}-kafka-connect-worker
+        NetworkMode: awsvpc
+        ExecutionRoleArn: !GetAtt KafkaConnectWorkerRole.Arn
+        TaskRoleArn: !GetAtt KafkaConnectWorkerRole.Arn
+        RequiresCompatibilities:
+          - FARGATE
+        Memory: 4GB
+        Cpu: 2048
+    KafkaConnectCluster:
+      Type: "AWS::ECS::Cluster"
+    KafkaConnectService:
+      Type: "AWS::ECS::Service"
+      Properties:
+        Cluster: !Sub "${KafkaConnectCluster}"
+        DeploymentConfiguration:
+          MaximumPercent: 100
+          MinimumHealthyPercent: 0
+        LaunchType: FARGATE
+        ServiceName: kafka-connect
+        DesiredCount: 1
+        TaskDefinition: !Sub "${KafkaConnectWorkerTaskDefinition}"
+        NetworkConfiguration:
+          AwsvpcConfiguration:
+            AssignPublicIp: DISABLED
+            SecurityGroups:
+              - !Sub "${KafkaConnectWorkerSecurityGroup}"
+            Subnets: ${self:custom.privateSubnets}
+    LambdaConfigureConnectorsSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Security Group for configuring the connector.
+        VpcId: ${self:custom.vpcId}
+  Outputs:
+    KafkaConnectWorkerSecurityGroupId:
+      Description: |
+        The ID of the security group attached to the Kafka Connect cluster tasks.
+        This can be used by other resources to attach additional ingress rules.
+      Value: !Ref KafkaConnectWorkerSecurityGroup

@@ -1,6 +1,5 @@
 {
   "name": "macpro-quickstart-serverless",
-  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
