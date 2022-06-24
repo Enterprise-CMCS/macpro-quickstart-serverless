@@ -10,7 +10,7 @@ The .sechub (Security Hub) service is triggered by a cron event. The service sca
 
 For details on the GitHub Actions workflow that implements this service, see this [PR](https://github.com/CMSgov/macpro-quickstart-serverless/pull/319) in the [CMSgov/mapcro-quickstart-serverless repo](https://github.com/CMSgov/macpro-quickstart-serverless).
 
-The reference docs for AWS resources referenced in serverless.yml are here:
+The reference docs for AWS resources referenced in `serverless.yml` are here:
 
 - [functions](https://www.serverless.com/framework/docs/providers/aws/guide/functions)
 

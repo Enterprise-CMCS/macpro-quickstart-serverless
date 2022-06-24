@@ -2,7 +2,7 @@
 
 ## Terminology
 
-The term `service` refers to the infrastructure resources and application code defined in a serverless.yml file. The QuickStart app is composed of multiple serverless.yml files; each one is in its own folder, representing a named serice. Information on the syntax of a serverless.yml file, for use with AWS, is [here](https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml).
+The term `service` refers to the infrastructure resources and application code defined in a `serverless.yml` file. The QuickStart app is composed of multiple `serverless.yml` files; each one is in its own folder, representing a named serice. Information on the syntax of a `serverless.yml` file, for use with AWS, is [here](https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml).
 
 The terms `branch` and `stage` are equivalent. When a user pushes code to a git `branch`, the QuickStart deploys multiple services by invoking `serverless deploy --stage <branch>` for each service being deployed. A `branch` name must be less than 27 characters.
 

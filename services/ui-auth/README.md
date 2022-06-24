@@ -1,6 +1,6 @@
 # ui-auth
 
-This service uses AWS Cognito to authenticate users that sign-in to the QuickStart. Details about how the QuickStart configures the AWS Cognito service are [here](https://confluenceent.cms.gov/x/uKufEw). Changes to how the QuickStart configures Cognito must be copied to [the confluence doc](https://confluenceent.cms.gov/x/uKufEw). _The details are important for QuickStart teams to review. Teams should verify the configuration is correct and secure and appropriate for their application_.
+This service uses AWS Cognito to authenticate users that sign-in to the QuickStart. Details about how the QuickStart configures the AWS Cognito service are [here](https://confluenceent.cms.gov/x/uKufEw). Changes to how the QuickStart configures Cognito must be copied to [the confluence doc](https://confluenceent.cms.gov/x/uKufEw). _The details are important for QuickStart teams to review. Teams should verify the configuration is correct, secure, and appropriate for their application_.
 
 This service:
 
@@ -19,7 +19,7 @@ This service:
     - `"cognito-identity:*"`, `"cognito-sync:*"`, and `"mobileanalytics:PutEvents"` actions
 - [supports `Okta federated users`](https://confluenceent.cms.gov/x/uKufEw#QuickStartService:uiauth-Sign-InExperience:Okta); i.e., users that use Okta (SAML) as their IdP
 
-The reference docs for AWS resources referenced in serverless.yml are:
+The reference docs for AWS resources referenced in `serverless.yml` are:
 
 - [Cognito](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_Cognito.html)
 - [IAM](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_IAM.html)

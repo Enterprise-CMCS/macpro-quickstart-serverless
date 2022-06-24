@@ -6,7 +6,7 @@ This service sends a notification email to the person who submitted the change a
 - an item was modified
 - an item was deleted
 
-The reference docs for AWS resources referenced in serverless.yml are here:
+The reference docs for AWS resources referenced in `serverless.yml` are here:
 
 - [functions](https://www.serverless.com/framework/docs/providers/aws/guide/functions)
 

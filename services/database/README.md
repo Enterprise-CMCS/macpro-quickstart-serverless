@@ -9,7 +9,7 @@ The names of each database table are constructed from the stage parameter:
 The app-api service references these tables.
 The stream-functions service depends on [DynamoDB Streams](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.html) from the amendments table.
 
-The reference docs for AWS resources referenced in serverless.yml are:
+The reference docs for AWS resources referenced in `serverless.yml` are:
 
 - [DynamoDB](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html).
 

@@ -12,7 +12,7 @@ The app-api service is a REST API with the following endpoints and methods:
 
 The app-api service endpoints reference DynamoDB tables created by the database service.
 
-The reference docs for AWS resources referenced in serverless.yml are here:
+The reference docs for AWS resources referenced in `serverless.yml` are here:
 
 - [DynamoDB](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-dynamodb-table.html)
 - [API Gateway Response](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-gatewayresponse.html)

@@ -8,7 +8,7 @@ The service:
 - scans all files that are uploaded/updated to the User Attachments bucket
 - tags each scanned file with scanned status
 
-The reference docs for AWS resources referenced in serverless.yml are here:
+The reference docs for AWS resources referenced in `serverless.yml` are here:
 
 - [S3](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_S3.html)
 - [Lambda](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_Lambda.html)

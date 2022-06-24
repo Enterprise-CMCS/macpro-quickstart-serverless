@@ -7,7 +7,7 @@ This service creates resources used to resolve the website domain name and allow
 - Web Application Firewall Access Control List (ACL)
 - CloudFront endpoint
 
-The reference docs for AWS resources referenced in serverless.yml are listed below:
+The reference docs for AWS resources referenced in `serverless.yml` are listed below:
 
 - [S3](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_S3.html)
 - [WAFv2](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_WAFv2.html)
