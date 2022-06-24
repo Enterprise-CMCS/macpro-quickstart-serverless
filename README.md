@@ -1,6 +1,6 @@
 # macpro-quickstart-serverless ![Build](https://github.com/CMSgov/macpro-quickstart-serverless/workflows/Deploy/badge.svg?branch=master) [![latest release](https://img.shields.io/github/release/cmsgov/macpro-quickstart-serverless.svg)](https://github.com/cmsgov/macpro-quickstart-serverless/releases/latest) [![Maintainability](https://api.codeclimate.com/v1/badges/1449ad929006f559756b/maintainability)](https://codeclimate.com/github/CMSgov/macpro-quickstart-serverless/maintainability) [![CodeQL](https://github.com/CMSgov/macpro-quickstart-serverless/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/CMSgov/macpro-quickstart-serverless/actions/workflows/codeql-analysis.yml) [![Dependabot](https://badgen.net/badge/Dependabot/enabled/green?icon=dependabot)](https://dependabot.com/) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) [![Test Coverage](https://api.codeclimate.com/v1/badges/1449ad929006f559756b/test_coverage)](https://codeclimate.com/github/CMSgov/macpro-quickstart-serverless/test_coverage)
 
-A serverless form submission application, built and deployed to AWS with the [Serverless Application Framework](https://serverless.com). This app provides a template for deploying your own QuickStart codebase. The [Architecture Diagram](./.images/architecture.svg?raw=true) shows the resources built by the QuickStart template in this repo.
+A serverless form submission application, built and deployed to AWS with the [Serverless Application Framework](https://serverless.com). This QuickStart app provides a template for deploying your own QuickStart codebase. The [Architecture Diagram](./.images/architecture.svg?raw=true) shows the resources built by the QuickStart template in this repo.
 
 A service-specific README is located in each service folder (services/).
 
@@ -114,6 +114,7 @@ $ ./dev test
 ### Pre-Requisites
 
 - valid short-term access keys for your AWS account pasted in your terminal window
+- stage names must be less than 27 characters
 
 ```
 # from root directory of project
@@ -121,7 +122,7 @@ $ ./deploy.sh <stage>
 ```
 
 After the deployment completes, verify all resources have been deployed.
-From the AWS console, navigate to Cloudformation. Filter on the stage name.
+From the AWS console, navigate to CloudFormation. Filter on the stage name.
 From the command line:
 
 ```
@@ -172,7 +173,7 @@ Deployments via GitHub Actions authenticate using [Open ID Connect (OIDC)](https
 
 - In GitHub Secrets => Actions, create a repository secret for each role that a job must assume. The secret allows a job to get credentials for a given AWS environment. A job accesses a secret using dot notation: `secrets.SECRET_NAME`. The workflows in .github/workflows reference the DEV secret name (secrets.AWS_OIDC_ROLE_TO_ASSUME).
 
-| AWS Environment | Secret Name                        | Secret Value (Serivce Role ARN) |
+| AWS Environment | Secret Name                        | Secret Value (Service Role ARN) |
 | --------------- | ---------------------------------- | ------------------------------- |
 | DEV             | AWS_OIDC_ROLE_TO_ASSUME            |                                 |
 | VAL             | VAL_AWS_OIDC_ROLE_TO_ASSUME        |                                 |
@@ -188,7 +189,7 @@ To contribute:
 
 - Fork this repository
 - Make changes in your fork
-- Open a pull request targetting this repository
+- Open a pull request targeting this repository
 
 Pull requests are being accepted.
 
@@ -208,7 +209,7 @@ work worldwide through the CC0 1.0 Universal public domain dedication.
 
 ## Slack channel
 
-To enable slack integration, set a value for SLACK_WEBHOOK_URL in github actions secret.
+To enable slack integration, set a value for SLACK_WEBHOOK_URL in GitHub actions secret.
 
 To set the SLACK_WEBHOOK_URL:
 
