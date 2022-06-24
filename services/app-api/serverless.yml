@@ -1,4 +1,4 @@
-# Refer to the README.md file in within this service directory to configure all ssm parameters required for this service.
+# Refer to this service's README to configure all required SSM parameters.
 service: app-api
 
 frameworkVersion: "3"
