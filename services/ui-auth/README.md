@@ -4,19 +4,19 @@ This service uses AWS Cognito to authenticate users that sign-in to the QuickSta
 
 This service:
 
-- [creates one Cognito user pool and configures it as an identity provider](https://confluenceent.cms.gov/x/uKufEw#QuickStartService:uiauth-CognitoUserPool) (IdP) 
+- [creates one Cognito user pool and configures it as an identity provider](https://confluenceent.cms.gov/x/uKufEw#QuickStartService:uiauth-CognitoUserPool) (IdP)
   - [creates users in the user pool, if enabled](https://confluenceent.cms.gov/x/uKufEw#QuickStartService:uiauth-BootstrappedUsers)
   - allows new users to sign-up for an account
   - [configures the sign-in experience](https://confluenceent.cms.gov/x/uKufEw#QuickStartService:uiauth-Sign-InExperience:HostedUI)
-- [integrates the QuickStart app with the Cognito user pool](https://confluenceent.cms.gov/x/uKufEw#QuickStartService:uiauth-CognitoUserPoolClient) 
+- [integrates the QuickStart app with the Cognito user pool](https://confluenceent.cms.gov/x/uKufEw#QuickStartService:uiauth-CognitoUserPoolClient)
 - [creates one Cognito identity pool](https://confluenceent.cms.gov/x/uKufEw#QuickStartService:uiauth-CognitoIdentityPool), configured with the Cognito user pool as its IdP
   - registers each authenticated user in the user pool with the identity pool; in the context of the identity pool, a user is called a `federated identity` or simply an `identity`
   - associates the identity pool with an AWS IAM role
   - each authenticated ` identity` can assume this role
   - the role has permissions to perform:
-      - all actions on the API Gateway
-      - all actions on the `private` folder in the S3 attachments bucket,
-      - `"cognito-identity:*"`, `"cognito-sync:*"`, and `"mobileanalytics:PutEvents"` actions
+    - all actions on the API Gateway
+    - all actions on the `private` folder in the S3 attachments bucket,
+    - `"cognito-identity:*"`, `"cognito-sync:*"`, and `"mobileanalytics:PutEvents"` actions
 - [supports `Okta federated users`](https://confluenceent.cms.gov/x/uKufEw#QuickStartService:uiauth-Sign-InExperience:Okta); i.e., users that use Okta (SAML) as their IdP
 
 The reference docs for AWS resources referenced in serverless.yml are:
