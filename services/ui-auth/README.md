@@ -12,7 +12,7 @@ This service:
 - [creates one Cognito identity pool](https://confluenceent.cms.gov/x/uKufEw#QuickStartService:uiauth-CognitoIdentityPool), configured with the Cognito user pool as its IdP
   - registers each authenticated user in the user pool with the identity pool; in the context of the identity pool, a user is called a `federated identity` or simply an `identity`
   - associates the identity pool with an AWS IAM role
-  - each authenticated ` identity` can assume this role
+  - each authenticated `identity` can assume this role
   - the role has permissions to perform:
     - all actions on the API Gateway
     - all actions on the `private` folder in the S3 attachments bucket,
