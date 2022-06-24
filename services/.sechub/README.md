@@ -3,14 +3,15 @@
 The .sechub (Security Hub) service is triggered by a cron event. The service scans a GitHub repository and
 
 1. gets all active Security Hub findings
-    - for findings already associated with an issue: it updates the issue, if necessary
-    - for findings without an issue: it creates an issue for the finding
+   - for findings already associated with an issue: it updates the issue, if necessary
+   - for findings without an issue: it creates an issue for the finding
 2. assign findings issues to repository projects
 3. assign findings issues to organization projects
 
 For details on the GitHub Actions workflow that implements this service, see this [PR](https://github.com/CMSgov/macpro-quickstart-serverless/pull/319) in the [CMSgov/mapcro-quickstart-serverless repo](https://github.com/CMSgov/macpro-quickstart-serverless).
 
 The reference docs for AWS resources referenced in serverless.yml are here:
+
 - [functions](https://www.serverless.com/framework/docs/providers/aws/guide/functions)
 
 ## Service-Specific Configuration Parameters
