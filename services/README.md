@@ -1,4 +1,6 @@
-# Terminology
+# services
+
+## Terminology
 
 The term `service` refers to the infrastructure resources and application code defined in a serverless.yml file. The QuickStart app is composed of multiple serverless.yml files; each one is in its own folder, representing a named serice. Information on the syntax of a serverless.yml file, for use with AWS, is [here](https://www.serverless.com/framework/docs/providers/aws/guide/serverless.yml).
 
@@ -8,7 +10,7 @@ For each service, the QuickStart generates a CloudFormation template that AWS de
 
 The term `environment` is a generic term that implies `branch` or `stage` or the collection of `CloudFormation stacks` that comprise the `stage`.
 
-# Service Configuration
+## Service Configuration
 
 The QuickStart uses [AWS Systems Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html), often referred to as SSM, to inject environment-specific, project-specific, and/or sensitive information into a deployment.
 SSM is an AWS service that allows users to store (optionally) encrypted strings in a directory-like hierarchy. For example, "/my/first/ssm/param" is a valid path for a parameter. Access to SSM and individual parameters are granted via AWS IAM.
@@ -17,15 +19,13 @@ An example of environment-specific information is the id of a VPC into which we 
 
 This project implements a pattern for specifying defaults for variables, while allowing for overrides. The pattern also supports hard-coded values for parameters that don't have a default value. The order of precedence is left-to-right in the list of parameters. The pattern assigns a branch-specific value to a variable, if present; otherwise, it assigns a default value, if present; otherwise, it assigns a hard-coded value. Here is an example of applying the pattern to the sesSourceEmailAddress variable:
 
-```
-sesSourceEmailAddress: ${ssm:/configuration/${self:custom.stage}/sesSourceEmailAddress, ssm:/configuration/default/sesSourceEmailAddress, ""}
-```
+`sesSourceEmailAddress: ${ssm:/configuration/${self:custom.stage}/sesSourceEmailAddress, ssm:/configuration/default/sesSourceEmailAddress, ""}`
 
 The above syntax means "look for the SSM parameter at `/configuration/<stage>/sesSourceEmailAddress`; if there isn't one, then continue down the list, until a parameter is found. With this logic, we can specify a default value for this variable that applies to all environments in a given account, but if we wish to set a different value for a specific environment (i.e., a branch), we can create a parameter at the branch-specific path and it takes precedence. For parameters that do not accept a default value, we can use a hard-coded value.
 
 The `...` notation represents the base path common to all parameters. The base path is either `/configuration/default` (for a default value) or `/configuration/<branch>` (for a branch-specific value).
 
-# Service Configuration Parameters Common to All Services
+## Service Configuration Parameters Common to All Services
 
 All services are configured to run:
 
