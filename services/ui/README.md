@@ -1,4 +1,4 @@
-# The ui Service
+# ui
 
 This service creates resources used to resolve the website domain name and allow/deny traffic to the site. These resources include:
 
@@ -23,9 +23,9 @@ The following values are used to configure the deployment of this service (see b
 | --- | :---: | :---: | :---: | --- |
 | .../route53HostedZoneId | N | Y | Y | This is the Id of the Amazon Route53 hosted zone.|
 | .../route53DomainName | N | N | Y | Route53 domain name for the site.|
-| .../cloudfrontCertificateArn | N | Y | Y | The arn for the CloudFront Distribution certificate.|
-| .../cloudfrontDomainName | N | N | Y | The domain name for the CloudFront Distribution.|
+| .../cloudfrontCertificateArn | N | Y | Y | The ARN for the CloudFront distribution certificate.|
+| .../cloudfrontDomainName | N | N | Y | The domain name for the CloudFront distribution.|
 | /{stage}/ui/application_endpoint | Y | N | Y | The URL of the CloudFront endpoint.|
 
-To create a DNS "A" Record, set the route53HostedZoneId and route53DomainName parameters.
-To assign a certificate to the CloudFront application endpoint, create the certificate using AWS Certificate Manager. Then set the cloudfrontCertificateArn and cloudfrontDomainName parameters.
+To create a DNS "A" Record, set the `route53HostedZoneId` and` route53DomainName` parameters.
+To assign a certificate to the CloudFront application endpoint, create the certificate using AWS Certificate Manager. Then set the `cloudfrontCertificateArn` and `cloudfrontDomainName` parameters.
