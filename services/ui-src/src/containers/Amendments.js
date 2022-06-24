@@ -297,9 +297,7 @@ export default function Amendments() {
           <LoaderButton onClick={handleDelete} isLoading={isDeleting}>
             Delete
           </LoaderButton>
-          <LoaderButton block bsSize="large" onClick={handlePrintAccessiblePdf}>
-            Print
-          </LoaderButton>
+          <LoaderButton onClick={handlePrintAccessiblePdf}>Print</LoaderButton>
         </form>
       )}
     </Container>

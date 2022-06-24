@@ -7,17 +7,22 @@ set -eu -o pipefail
 
 # this script checks for all the prereqs and then calls dev.ts
 
+
 # check node exists
 if ! which node > /dev/null ; then
 	echo "node not found on the system. Install version in .nvmrc based on instructions in README"
 	exit 1
 fi
 
+# move to the top level directory of the repo
+TOP_LEVEL_DIR="$(git rev-parse --show-toplevel)"
+cd "$TOP_LEVEL_DIR"
+
 # check node version
 if ! diff .nvmrc <(node -v) > /dev/null ; then
 	echo "Uh Oh! The current node version does not match the version required in .nvmrc"
 	echo "If you have installed nvm, simply running 'nvm use' in this directory should solve the problem"
-	echo "If you don't have nvm yet, the instructions in the README should sort you."
+	echo "If you don't have nvm yet, follow the instructions in the README"
 	echo "** Don't forget to add the bit to your shell profile **"
 	exit 1
 fi
@@ -42,7 +47,7 @@ if [ "yarn.lock" -nt ".yarn_install" ]; then
 fi
 
 # if .env doesn't exist, copy .env_example there
-if [ ! -f .env ]; then 
+if [ ! -f .env ]; then
 	cp .env_example .env
 fi
 

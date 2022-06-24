@@ -1,6 +1,19 @@
 #!/bin/bash
 
+# input: a stage name (note that this script appends "-dev" to the provided stage name)
+#
+# iterates through the list of services defined in this script and:
+# - installs dependencies
+# - deploys the service to the provided stage
+#
+# finally, outputs the CloudFront URL of the deployed application
+
 set -e
+
+if [[ $1 == "" ]] ; then
+    echo 'ERROR:  You must pass a stage to deploy.  Ex. sh deploy.sh my-stage-name'
+    exit 1
+fi
 
 stage=${1:-dev}
 

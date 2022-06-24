@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+# input: a stage to destroy
+#
+# checks if the provided stage is included in a protected list and if so, exits early
+# finds all S3 buckets and CloudFormation stacks associated with the provided stage and deletes them
+
 if [[ $1 == "" ]] ; then
     echo 'ERROR:  You must pass a stage to destroy.  Ex. sh destroy.sh my-stage-name'
     exit 1
