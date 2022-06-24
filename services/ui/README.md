@@ -27,5 +27,5 @@ The following values are used to configure the deployment of this service (see b
 | .../cloudfrontDomainName | N | N | Y | The domain name for the CloudFront distribution.|
 | /{stage}/ui/application_endpoint | Y | N | Y | The URL of the CloudFront endpoint.|
 
-To create a DNS "A" Record, set the `route53HostedZoneId` and` route53DomainName` parameters.
+To create a DNS "A" Record, set the `route53HostedZoneId` and `route53DomainName` parameters.
 To assign a certificate to the CloudFront application endpoint, create the certificate using AWS Certificate Manager. Then set the `cloudfrontCertificateArn` and `cloudfrontDomainName` parameters.
