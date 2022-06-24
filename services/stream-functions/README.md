@@ -1,12 +1,12 @@
-# The stream-functions Service
+# stream-functions
 
-This service sends a notification email to the person who submitted the change and to a list of reviewers who can review the change (after the fact). The change is completed after it is submitted. The changes that trigger a notification email are:
+This service sends a notification email to the person who submitted the change and to a list of reviewers who can review the change (after the fact). The database change is completed immediately after the user submits a change. The changes that trigger a notification email are:
 
 - an item was inserted
 - an item was modified
 - an item was deleted
 
-The `serverless.com` reference docs for the `functions` section in serverless.yml:
+The reference docs for AWS resources referenced in serverless.yml are here:
 
 - [functions](https://www.serverless.com/framework/docs/providers/aws/guide/functions)
 
