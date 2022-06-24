@@ -1,3 +1,4 @@
+# Refer to this service's README to configure all required SSM parameters.
 service: sechub
 
 frameworkVersion: "3"
