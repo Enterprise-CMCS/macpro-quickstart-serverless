@@ -7,6 +7,8 @@ set -eu -o pipefail
 
 # this script checks for all the prereqs and then calls dev.ts
 
+# add/replace .githooks to .git/hooks
+cp -a .githooks/. .git/hooks
 
 # check node exists
 if ! which node > /dev/null ; then

@@ -1,7 +1,7 @@
 [
   {
     "ParameterKey": "SubjectClaimFilters",
-    "ParameterValue": "repo:Enterprise-CMCS/macfc-quickstart:*"
+    "ParameterValue": "repo:CMSgov/macpro-quickstart-serverless:*"
   },
   {
     "ParameterKey": "Path",
@@ -9,10 +9,10 @@
   },
   {
     "ParameterKey": "PermissionsBoundaryARN",
-    "ParameterValue": "arn:aws:iam::037370603820:policy/cms-cloud-admin/ct-ado-poweruser-permissions-boundary-policy"
+    "ParameterValue": "arn:aws:iam::666736308865:policy/cms-cloud-admin/ct-ado-poweruser-permissions-boundary-policy"
   },
   {
     "ParameterKey": "ManagedPolicyARNs",
-    "ParameterValue": "arn:aws:iam::037370603820:policy/ADO-Restriction-Policy,arn:aws:iam::037370603820:policy/CMSApprovedAWSServices,arn:aws:iam::aws:policy/AdministratorAccess"
+    "ParameterValue": "arn:aws:iam::666736308865:policy/ADO-Restriction-Policy,arn:aws:iam::666736308865:policy/CMSApprovedAWSServices,arn:aws:iam::aws:policy/AdministratorAccess"
   }
 ]
