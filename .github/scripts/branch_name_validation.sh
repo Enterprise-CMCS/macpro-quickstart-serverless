@@ -4,10 +4,10 @@ set -e
 
 local_branch=${1}
 
-valid_branch="^[a-z][a-z-0-9-]*$"
+valid_branch="^[a-z][a-z0-9-]*$"
 
 
-if [[ ! $local_branch =~ $valid_branch ]] || [[ $local_branch -gt 128 ]]; then
+if [[ ! $local_branch =~ $valid_branch ]] || [[ ${#local_branch} -gt 128 ]]; then
     echo """
      ------------------------------------------------------------------------------------------------------------------------------
      ERROR:  Please read below
@@ -20,7 +20,7 @@ if [[ ! $local_branch =~ $valid_branch ]] || [[ $local_branch -gt 128 ]]; then
     Therefore, the branch name must be a valid service name. Branch name must be all lower case with no spaces and no underscores.
 
     From Serverless:
-        A service name should only contain alphanumeric (case sensitive) and hyphens. It should start with an alphabetic character and shouldnt exceed 128 characters.
+        A service name should only contain lower-case letters, numbers, and hyphens. It should start with a letter and shouldn't exceed 128 characters.
         For Github Actions support, please push your code to a new branch with a name that meets Serverless' service name requirements.
         So, make a new branch with a name that begins with a letter and is made up of only letters, numbers, and hyphens... then delete this branch.
         ------------------------------------------------------------------------------------------------------------------------------
