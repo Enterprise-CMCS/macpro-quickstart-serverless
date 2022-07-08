@@ -14,11 +14,6 @@ provider:
     role:
       path: ${ssm:/configuration/${self:custom.stage}/iam/path, ssm:/configuration/default/iam/path, "/"}
       permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy, ssm:/configuration/default/iam/permissionsBoundaryPolicy, ""}
-      statements:
-        - Effect: "Allow"
-          Action:
-            - "*"
-          Resource: !GetAtt CognitoUserPool.Arn
 
 plugins:
   - serverless-stack-termination-protection
@@ -28,6 +23,7 @@ plugins:
   - serverless-iam-helper
   - serverless-s3-bucket-helper
   - serverless-online
+  - serverless-iam-roles-per-function
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -44,6 +40,8 @@ custom:
   application_endpoint_url: ${cf:ui-${self:custom.stage}.ApplicationEndpointUrl}
   bootstrapUsersEnabled: ${ssm:/configuration/${self:custom.stage}/cognito/bootstrapUsers/enabled, ssm:/configuration/default/cognito/bootstrapUsers/enabled, ""}
   bootstrapUsersPassword: ${ssm:/configuration/${self:custom.stage}/cognito/bootstrapUsers/password, ssm:/configuration/default/cognito/bootstrapUsers/password, ""}
+  serverless-iam-roles-per-function:
+    defaultInherit: true
   scripts:
     hooks:
       deploy:finalize: |
@@ -55,6 +53,13 @@ custom:
 functions:
   bootstrapUsers:
     handler: handlers/createUsers.handler
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - cognito-idp:AdminCreateUser
+          - cognito-idp:AdminSetUserPassword
+          - cognito-idp:AdminUpdateUserAttributes
+        Resource: !GetAtt CognitoUserPool.Arn
     environment:
       userPoolId: !Ref CognitoUserPool
       bootstrapUsersPassword: ${self:custom.bootstrapUsersPassword}

@@ -18,6 +18,7 @@ plugins:
   - serverless-s3-bucket-helper
   - serverless-online
   - serverless-plugin-scripts
+  - serverless-iam-roles-per-function
 
 custom:
   proxyApi: ${ssm:/configuration/${self:custom.stage}/prince/api, ssm:/configuration/default/prince/api, ""}
@@ -39,6 +40,9 @@ custom:
       events:
         - schedule: rate(${ssm:/configuration/${self:custom.stage}/warmup/schedule, ssm:/configuration/default/warmup/schedule, "4 minutes"})
       concurrency: ${ssm:/configuration/${self:custom.stage}/warmup/concurrency, ssm:/configuration/default/warmup/concurrency, 5}
+  serverless-iam-roles-per-function:
+    defaultInherit: true
+
 provider:
   name: aws
   runtime: nodejs14.x
@@ -55,6 +59,7 @@ provider:
 functions:
   princeProxy:
     handler: handlers/proxyFunc.main
+    iamRoleStatements: # add IAM statements for the function role here
     environment:
       proxyApi: ${self:custom.proxyApi}
     timeout: 30

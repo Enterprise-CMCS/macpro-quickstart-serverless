@@ -10,6 +10,7 @@ plugins:
   - serverless-iam-helper
   - serverless-s3-bucket-helper
   - serverless-online
+  - serverless-iam-roles-per-function
 
 provider:
   name: aws
@@ -19,26 +20,6 @@ provider:
     role:
       path: ${ssm:/configuration/${self:custom.stage}/iam/path, ssm:/configuration/default/iam/path, "/"}
       permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy, ssm:/configuration/default/iam/permissionsBoundaryPolicy, ""}
-      statements:
-        - Effect: "Allow"
-          Action:
-            - s3:GetObject
-            - s3:GetObjectTagging
-            - s3:PutObject
-            - s3:PutObjectAcl
-            - s3:PutObjectTagging
-            - s3:PutObjectVersionTagging
-            - s3:ListBucket
-            - s3:DeleteObject
-          Resource:
-            - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-attachments-${AWS::AccountId}/*
-            - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-avscan-${AWS::AccountId}/*
-        - Effect: "Allow"
-          Action:
-            - s3:ListBucket
-          Resource:
-            - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-attachments-${AWS::AccountId}
-            - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-avscan-${AWS::AccountId}
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -64,6 +45,9 @@ custom:
       - local-uploads # This is a little silly, but I've spent enough time on it.
         # the serverless-s3-local plugin starts any bucket with a BucketName
         # the attachments bucket has no name, so we need to make one up on our own
+  serverless-iam-roles-per-function:
+    defaultInherit: true
+
 layers:
   clamDefs:
     name: clamDefs-${self:custom.stage}
@@ -73,6 +57,23 @@ layers:
 functions:
   avScan:
     name: ${self:service}-${self:custom.stage}-avScan
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - s3:GetObject
+          - s3:PutObjectTagging
+        Resource:
+          - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-attachments-${AWS::AccountId}/*
+      - Effect: "Allow"
+        Action:
+          - s3:GetObject
+        Resource:
+          - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-avscan-${AWS::AccountId}/*
+      - Effect: "Allow"
+        Action:
+          - s3:ListBucket
+        Resource:
+          - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-avscan-${AWS::AccountId}
     handler: src/antivirus.lambdaHandleEvent
     timeout: 300 # 300 seconds = 5 minutes. Average scan is 25 seconds.
     memorySize: 3008
@@ -83,6 +84,19 @@ functions:
       PATH_TO_AV_DEFINITIONS: "lambda/s3-antivirus/av-definitions"
   avDownloadDefinitions:
     handler: src/download-definitions.lambdaHandleEvent
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - s3:GetObject
+          - s3:PutObject
+          - s3:DeleteObject
+        Resource:
+          - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-avscan-${AWS::AccountId}/*
+      - Effect: "Allow"
+        Action:
+          - s3:ListBucket
+        Resource:
+          - !Sub arn:aws:s3:::${self:service}-${self:custom.stage}-avscan-${AWS::AccountId}
     events:
       - schedule: cron(15 1 * * ? *)
     timeout: 300 # 300 seconds = 5 minutes
@@ -136,7 +150,7 @@ resources:
                 StringNotEquals:
                   s3:ExistingObjectTag/virusScanStatus:
                     - "CLEAN"
-                  aws:PrincipalArn: !GetAtt IamRoleLambdaExecution.Arn
+                  aws:PrincipalArn: !GetAtt AvScanIamRoleLambdaExecution.Arn
             - Action: "s3:PutObject"
               Effect: Deny
               Principal: "*"
