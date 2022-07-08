@@ -1,28 +1,36 @@
 # ui-auth
 
-## Configuration - AWS Systems Manager Parameter Store (SSM)
+This service uses AWS Cognito to authenticate users that sign-in to the QuickStart. Details about how the QuickStart configures the AWS Cognito service are [here](https://confluenceent.cms.gov/x/uKufEw). Changes to how the QuickStart configures Cognito must be copied to [the confluence doc](https://confluenceent.cms.gov/x/uKufEw). _The details are important for QuickStart teams to review. Teams should verify the configuration is correct, secure, and appropriate for their application_.
 
-The following values are used to configure the deployment of this service (see below for more background and context).
+This service:
+
+- [creates one Cognito user pool and configures it as an identity provider](https://confluenceent.cms.gov/x/uKufEw#QuickStartService:uiauth-CognitoUserPool) (IdP)
+  - [creates users in the user pool, if enabled](https://confluenceent.cms.gov/x/uKufEw#QuickStartService:uiauth-BootstrappedUsers)
+  - allows new users to sign-up for an account
+  - [configures the sign-in experience](https://confluenceent.cms.gov/x/uKufEw#QuickStartService:uiauth-Sign-InExperience:HostedUI)
+- [integrates the QuickStart app with the Cognito user pool](https://confluenceent.cms.gov/x/uKufEw#QuickStartService:uiauth-CognitoUserPoolClient)
+- [creates one Cognito identity pool](https://confluenceent.cms.gov/x/uKufEw#QuickStartService:uiauth-CognitoIdentityPool), configured with the Cognito user pool as its IdP
+  - registers each authenticated user in the user pool with the identity pool; in the context of the identity pool, a user is called a `federated identity` or simply an `identity`
+  - associates the identity pool with an AWS IAM role
+  - each authenticated `identity` can assume this role
+  - the role has permissions to perform:
+    - all actions on the API Gateway
+    - all actions on the `private` folder in the S3 attachments bucket,
+    - `"cognito-identity:*"`, `"cognito-sync:*"`, and `"mobileanalytics:PutEvents"` actions
+- [supports `Okta federated users`](https://confluenceent.cms.gov/x/uKufEw#QuickStartService:uiauth-Sign-InExperience:Okta); i.e., users that use Okta (SAML) as their IdP
+
+The reference docs for AWS resources referenced in `serverless.yml` are:
+
+- [Cognito](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_Cognito.html)
+- [IAM](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_IAM.html)
+- [functions](https://www.serverless.com/framework/docs/providers/aws/guide/functions)
+
+## Service-Specific Configuration Parameters
+
+The following values are used to configure the deployment of this service.
 | Parameter | Required? | Accepts a default? | Accepts a branch override? | Purpose |
 | --- | :---: | :---: | :---: | --- |
-| .../iam/path | N | Y | Y | Specifies the [IAM Path](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-friendly-names) at which all IAM objects should be created. The default value is "/". The path variable in IAM is used for grouping related users and groups in a unique namespace, usually for organizational purposes.|
-| .../iam/permissionsBoundaryPolicy | N | Y | Y | Specifies the [IAM Permissions Boundary](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_boundaries.html) that should be attached to all IAM objects. A permissions boundary is an advanced feature for using a managed policy to set the maximum permissions that an identity-based policy can grant to an IAM entity. If set, this parmeter should contain the full ARN to the policy.|
-| sesSourceEmailAddress | N | Y | Y | The email address with which the apllication sends the email. This email address must be verified in SES.|
-| okta_metadata_url | N | N | Y | The SAML Metadata url for Okta, gotten from Okta's admin console from the app.|
-
-This project uses [AWS Systems Manager Parameter Store](https://docs.aws.amazon.com/systems-manager/latest/userguide/systems-manager-parameter-store.html), often referred to as simply SSM, to inject environment specific, project specific, and/or sensitive information into the deployment.
-In short, SSM is an AWS service that allows users to store (optionally) encrypted strings in a directory like hierarchy. For example, "/my/first/ssm/param" is a valid path for a parameter. Access to this service and even individual paramters is granted via AWS IAM.
-
-An example of environment specific information is the id of a VPC into which we want to deploy. This VPC id should not be checked in to git, as it may vary from environment to environment, so we would use SSM to store the id information and use the [Serverless Framework's SSM lookup capability](https://www.serverless.com/framework/docs/providers/aws/guide/variables/#reference-variables-using-the-ssm-parameter-store) to fetcn the information at deploy time.
-
-This project has also implemented a pattern for specifying defaults for variables, while allowing for branch (environment specific overrides). That pattern looks like this:
-
-```
-sesSourceEmailAddress: ${ssm:/configuration/${self:custom.stage}/sesSourceEmailAddress~true, ssm:/configuration/default/sesSourceEmailAddress~true}
-```
-
-The above syntax says "look for an ssm parameter at /configuration/<branch name>/sesSourceEmailAddress; if there isn't one, look for a parameter at /configuration/default/sesSourceEmailAddress". With this logic, we can specify a generic value for this variable that would apply to all environments deployed to a given account, but if we wish to set a different value for a specific environment (branch), we can create a parameter at the branch specific path and it will take precedence.
-
-In the above tabular documentation, you will see columns for "Accepts default?" and "Accepts a branch override?". These columns relate to the above convention of searching for a branch specific override but falling back to a default parameter. It's important to note if a parameter can accept a default or can accept an override, because not all can do both. For example, a parameter used to specify Okta App information cannot be set as a default, because Okta can only support one environment (branch) at a time; so, okta_metadata_url is a good example of a parameter that can only be specified on a branch by branch basis, and never as a default.
-
-In the above documentation, you will also see the Parameter value denoted as ".../iam/path", for example. This notation is meant to represent the core of the parameter's expected path. The "..." prefix is meant to be a placeholder for either "/configuration/default" (in the case of a default value) or "/configuration/myfavoritebranch" (in the case of specifying a branch specific override for the myfavoritebranch branch.
+| .../sesSourceEmailAddress | N | Y | Y | The email address from which the application sends email. This email address must be verified in AWS SES.|
+| .../okta_metadata_url | N | N | Y | The SAML Metadata URL for Okta, provided by the Okta team.|
+| .../cognito/bootstrapUsers/enabled | N | N | Y | Enables the creation of bootstrapped users. This is useful for testing. Should not be used in production.|
+| .../cognito/bootstrapUsers/password | N | N | Y | Sets the password used by all bootstrapped users. The password does not expire. Users are defined in `libs/users.json`.|

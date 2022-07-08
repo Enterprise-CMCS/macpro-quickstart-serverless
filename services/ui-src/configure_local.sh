@@ -14,15 +14,15 @@ stage=${1:-dev}
 
 echo "Fetching information for stage $stage..."
 
-api_region=`sh ../output.sh ../app-api Region $stage`
-api_url=`sh ../output.sh ../app-api ApiGatewayRestApiUrl $stage`
-cognito_region=`sh ../output.sh ../ui-auth Region $stage`
-cognito_identity_pool_id=`sh ../output.sh ../ui-auth IdentityPoolId $stage`
-cognito_user_pool_id=`sh ../output.sh ../ui-auth UserPoolId $stage`
-cognito_user_pool_client_id=`sh ../output.sh ../ui-auth UserPoolClientId $stage`
-cognito_user_pool_client_domain=`sh ../output.sh ../ui-auth UserPoolClientDomain $stage`
-s3_attachments_bucket_region=`sh ../output.sh ../uploads Region $stage`
-s3_attachements_bucket_name=`sh ../output.sh ../uploads AttachmentsBucketName $stage`
+api_region=`../output.sh ../app-api Region $stage`
+api_url=`../output.sh ../app-api ApiGatewayRestApiUrl $stage`
+cognito_region=`../output.sh ../ui-auth Region $stage`
+cognito_identity_pool_id=`../output.sh ../ui-auth IdentityPoolId $stage`
+cognito_user_pool_id=`../output.sh ../ui-auth UserPoolId $stage`
+cognito_user_pool_client_id=`../output.sh ../ui-auth UserPoolClientId $stage`
+cognito_user_pool_client_domain=` ../output.sh ../ui-auth UserPoolClientDomain $stage`
+s3_attachments_bucket_region=`../output.sh ../uploads Region $stage`
+s3_attachements_bucket_name=`../output.sh ../uploads AttachmentsBucketName $stage`
 
 export API_REGION=$api_region
 export API_URL=$api_url

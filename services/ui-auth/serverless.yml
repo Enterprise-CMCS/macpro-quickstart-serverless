@@ -1,4 +1,4 @@
-# Refer to the README.md file in within this service directory to configure all ssm parameters required for this service.
+# Refer to this service's README to configure all required SSM parameters.
 service: ui-auth
 
 frameworkVersion: "3"
@@ -47,7 +47,7 @@ custom:
   scripts:
     hooks:
       deploy:finalize: |
-        if [ ${self:custom.bootstrapUsersEnabled} = "true" ];
+        if [ "${self:custom.bootstrapUsersEnabled}" = "true" ];
         then
           serverless invoke --stage ${self:custom.stage} --function bootstrapUsers
         fi
@@ -104,8 +104,6 @@ resources:
       Properties:
         ClientName: ${self:custom.stage}-user-pool-client
         UserPoolId: !Ref CognitoUserPool
-        ExplicitAuthFlows:
-          - ADMIN_NO_SRP_AUTH
         GenerateSecret: false # pragma: allowlist secret
         AllowedOAuthFlows:
           - code

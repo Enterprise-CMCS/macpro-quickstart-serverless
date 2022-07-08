@@ -1,6 +1,6 @@
 {
-  "experimentalStudio": true,
   "baseUrl": "http://localhost:3000/",
+  "integrationFolder": "integration",
   "redirectionLimit": 20,
   "retries": 5,
   "watchForFileChanges": true,

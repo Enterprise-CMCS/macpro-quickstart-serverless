@@ -8,7 +8,7 @@ set -e -o xtrace -o errexit -o pipefail -o nounset -u
 ########################################################################################
 
 if [[ $# -eq 0 ]] ; then
-  echo 'ERROR:  You must pass the name of the branch to lock to the github-lock script.'
+  echo 'ERROR:  You must pass the name of the branch to lock to the github_lock script.'
   exit 1
 fi
 branch=${1}

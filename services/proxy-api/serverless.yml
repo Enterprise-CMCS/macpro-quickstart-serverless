@@ -1,4 +1,4 @@
-# Refer to the README.md file in within this service directory to configure all ssm parameters required for this service.
+# Refer to this service's README to configure all required SSM parameters.
 service: proxy-api
 
 frameworkVersion: "3"
@@ -20,7 +20,7 @@ plugins:
   - serverless-plugin-scripts
 
 custom:
-  proxyApi: ${ssm:/configuration/${self:custom.stage}/prince/api, ssm:/configuration/default/prince/api}
+  proxyApi: ${ssm:/configuration/${self:custom.stage}/prince/api, ssm:/configuration/default/prince/api, ""}
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
   serverlessTerminationProtection:

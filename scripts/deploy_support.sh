@@ -1,9 +1,22 @@
 #!/bin/bash
 
+# input: a stage name (note that this script appends "-dev" to the provided stage name)
+#
+# iterates through the list of services and:
+# - installs dependencies
+# - deploys the service to the provided stage
+
+if [[ $1 == "" ]] ; then
+    echo 'ERROR:  You must pass a stage to deploy.  Ex. sh deploy_support.sh my-stage-name'
+    exit 1
+fi
+
 set -e
 
+stage=${1:-dev}
+
 services=(
-  'ui-src'
+  '.sechub'
 )
 
 install_deps() {
@@ -16,11 +29,11 @@ install_deps() {
   fi
 }
 
-unit_test() {
+deploy() {
   service=$1
   pushd services/$service
   install_deps
-  yarn run coverage
+  serverless deploy  --stage $stage
   popd
 }
 
@@ -29,5 +42,5 @@ export PATH=$(pwd)/node_modules/.bin/:$PATH
 
 for i in "${services[@]}"
 do
-	unit_test $i
+	deploy $i
 done

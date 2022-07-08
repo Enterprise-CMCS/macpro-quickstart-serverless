@@ -26,9 +26,9 @@ jobs:
           fi
       - uses: actions/checkout@v2
       - name: set branch specific variable names
-        run: ./.github/build_vars.sh set_names
+        run: ./.github/scripts/build_vars.sh set_names
       - name: set variable values
-        run: ./.github/build_vars.sh set_values
+        run: ./.github/scripts/build_vars.sh set_values
         env:
           AWS_DEFAULT_REGION: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_DEFAULT_REGION] || secrets.AWS_DEFAULT_REGION }}
           AWS_OIDC_ROLE_TO_ASSUME: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_OIDC_ROLE_TO_ASSUME] || secrets.AWS_OIDC_ROLE_TO_ASSUME }}
@@ -39,7 +39,7 @@ jobs:
           role-to-assume: ${{ env.AWS_OIDC_ROLE_TO_ASSUME }}
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
       - name: lock this branch to prevent concurrent builds
-        run: ./.github/github-lock.sh $branch_name
+        run: ./.github/scripts/github_lock.sh $branch_name
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: ./destroy.sh $STAGE_PREFIX$branch_name
+      - run: ./scripts/destroy.sh $STAGE_PREFIX$branch_name
