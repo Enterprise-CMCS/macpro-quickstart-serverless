@@ -35,6 +35,15 @@ echo "\nCollecting information on stage $stage before attempting a destroy... Th
 
 set -e
 
+# Delete Snyk projects associated with this stage
+projectIds=(`curl -s --request POST --header "Content-Type: application/json" --header "Authorization: token $SNYK_TOKEN" "https://snyk.io/api/v1/org/$SNYK_ORG_ID/projects" | jq -r ".projects[] | select(.branch | . == \"$stage\") | .id"`)
+echo "Found ${#projectIds[@]} Snyk projects associated with $stage"
+
+for id in "${projectIds[@]}"; do
+      echo "Deleting Snyk project $id"
+      curl -s -o/dev/null --request DELETE --header "Authorization: token $SNYK_TOKEN" "https://snyk.io/api/v1/org/$SNYK_ORG_ID/project/$id"
+done
+
 # Find cloudformation stacks associated with stage
 stackList=(`aws cloudformation describe-stacks | jq -r ".Stacks[] | select(.Tags[] | select(.Key==\"STAGE\") | select(.Value==\"$stage\")) | .StackName"`)
 

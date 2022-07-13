@@ -43,3 +43,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: ./scripts/destroy.sh $STAGE_PREFIX$branch_name
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+          SNYK_ORG_ID: ${{ secrets.SNYK_ORG_ID }}
