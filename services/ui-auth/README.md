@@ -27,6 +27,8 @@ The reference docs for AWS resources referenced in `serverless.yml` are:
 
 ## Service-Specific Configuration Parameters
 
+To enable Cognito to send email using AWS SES, you must move your AWS account out of the AWS SES sandbox. Instructions on how to do that are [here](https://docs.aws.amazon.com/ses/latest/dg/request-production-access.html).
+
 The following values are used to configure the deployment of this service.
 | Parameter | Required? | Accepts a default? | Accepts a branch override? | Purpose |
 | --- | :---: | :---: | :---: | --- |

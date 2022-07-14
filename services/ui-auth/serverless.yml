@@ -86,6 +86,20 @@ resources:
             - EmailSendingAccount: DEVELOPER
               SourceArn: !Sub arn:aws:ses:us-east-1:${AWS::AccountId}:identity/${self:custom.sesSourceEmailAddress}
             - !Ref AWS::NoValue
+        EmailVerificationSubject: "Please verify your email address"
+        AccountRecoverySetting:
+          RecoveryMechanisms:
+            - Name: verified_email
+              Priority: 1
+        MfaConfiguration: OFF # ON | OFF | OPTIONAL ; If ON or OPTIONAL, MFA must be implemented in the app; it is not implemented by Cognito user pool
+        Policies:
+          PasswordPolicy:
+            TemporaryPasswordValidityDays: 2
+            MinimumLength: 8
+            RequireLowercase: true
+            RequireNumbers: true
+            RequireSymbols: true
+            RequireUppercase: true
         Schema:
           - Name: given_name
             AttributeDataType: String
