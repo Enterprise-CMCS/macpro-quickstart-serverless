@@ -163,6 +163,27 @@ These tests are defined in the `tests/cypress` folder. They use
 For more info, including how to run these tests locally, see the [testing README](tests/cypress/README.MD).
 Integration and accessibility tests are run automatically as part of the `deploy` GitHub Action.
 
+## Security Scans
+
+### Snyk
+
+QuickStart uses CMS-hosted [Snyk](https://cloud.cms.gov/snyk) to scan for open source vulnerabilities. QuickStart runs Snyk scans in two ways:
+
+- [Snyk Test](https://docs.snyk.io/snyk-cli/commands/test)
+  - this command is run on pushes to the `master` branch, and also with a daily cron job. It scans the `master` branch and uploads the results to the GitHub 'Code Scanning alerts' UI.
+- [Snyk Monitor](https://docs.snyk.io/snyk-cli/test-for-vulnerabilities/monitor-your-projects-at-regular-intervals)
+  - this command is run on pushes to any branch (including `master`). It uploads a snapshot of the branch's current dependencies and vulnerabilities to the CMS-hosted Snyk dashboard, grouped by branch name as [Snyk Projects](https://docs.snyk.io/introducing-snyk/introduction-to-snyk-projects#projects). When the branch is deleted, the corresponding Snyk Projects are also cleaned up.
+
+To configure Snyk for QuickStart:
+
+1. Set up a Snyk Organization for your team by following [these directions](https://cloud.cms.gov/getting-started-snyk)
+2. When the Organization has been created, [create a service account for GitHub Actions](https://docs.snyk.io/features/user-and-group-management/structure-account-for-high-application-performance/service-accounts) and note the service account token
+3. configure GitHub repository secrets for the QuickStart repo:
+
+- SNYK_TOKEN: the token for the service account
+- SNYK_ORG_ID: the ID that identifies your Snyk Organization
+  - [directions for finding the ID](https://docs.snyk.io/products/snyk-code/cli-for-snyk-code/before-you-start-set-the-organization-for-the-cli-tests/finding-the-snyk-id-and-internal-name-of-an-organization)
+
 ## Release
 
 Our product is promoted through branches. A developer branch is merged to the master branch. The master branch is merged to val to affect a val release, and the val branch is merged to production to affect a production release. Please use the buttons below to promote/release code to higher environments.<br />
