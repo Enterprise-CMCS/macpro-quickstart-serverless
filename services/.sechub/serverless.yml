@@ -15,6 +15,7 @@ plugins:
   - serverless-iam-helper
   - serverless-s3-bucket-helper
   - serverless-online
+  - serverless-iam-roles-per-function
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -29,6 +30,8 @@ custom:
   githubRepositoryProjects: ${ssm:/configuration/${self:custom.stage}/sechub/githubRepositoryProjects, ssm:/configuration/default/sechub/githubRepositoryProjects, ""}
   githubOrganizationProjects: ${ssm:/configuration/${self:custom.stage}/sechub/githubOrganizationProjects, ssm:/configuration/default/sechub/githubOrganizationProjects, ""}
   severity: ${ssm:/configuration/${self:custom.stage}/sechub/severity, ssm:/configuration/default/sechub/severity, "CRITICAL,HIGH"}
+  serverless-iam-roles-per-function:
+    defaultInherit: true
 
 provider:
   name: aws
@@ -38,15 +41,16 @@ provider:
     role:
       path: ${ssm:/configuration/${self:custom.stage}/iam/path, ssm:/configuration/default/iam/path, "/"}
       permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy, ssm:/configuration/default/iam/permissionsBoundaryPolicy, ""}
-      statements:
-        - Effect: "Allow"
-          Action:
-            - securityhub:GetFindings
-          Resource:
-            - !Sub arn:aws:securityhub:*:${AWS::AccountId}:hub/default
+
 functions:
   sync:
     handler: handlers/sync.main
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - securityhub:GetFindings
+        Resource:
+          - !Sub arn:aws:securityhub:*:${AWS::AccountId}:hub/default
     timeout: 600
     maximumRetryAttempts: 0
     events:

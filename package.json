@@ -44,7 +44,8 @@
   },
   "dependencies": {
     "axe-core": "^4.4.1",
-    "cypress-axe": "^0.14.0"
+    "cypress-axe": "^0.14.0",
+    "serverless-iam-roles-per-function": "^3.2.0"
   },
   "cypress-cucumber-preprocessor": {
     "nonGlobalStepDefinitions": true,

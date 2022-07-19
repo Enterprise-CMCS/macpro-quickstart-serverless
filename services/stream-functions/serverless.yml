@@ -13,6 +13,7 @@ plugins:
   - serverless-idempotency-helper
   - serverless-s3-bucket-helper
   - serverless-online
+  - serverless-iam-roles-per-function
 
 provider:
   name: aws
@@ -22,19 +23,6 @@ provider:
     role:
       path: ${ssm:/configuration/${self:custom.stage}/iam/path, ssm:/configuration/default/iam/path, "/"}
       permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy, ssm:/configuration/default/iam/permissionsBoundaryPolicy, ""}
-      statements:
-        - Effect: "Allow"
-          Action:
-            - dynamodb:DescribeStream
-            - dynamodb:GetRecords
-            - dynamodb:GetShardIterator
-            - dynamodb:ListStreams
-          Resource: ${self:custom.tableStreamArn}
-        - Effect: "Allow"
-          Action:
-            - ses:SendEmail
-            - ses:SendRawEmail
-          Resource: "*"
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -47,10 +35,20 @@ custom:
   tableStreamArn: ${cf:database-${self:custom.stage}.AmendmentsTableStreamArn}
   sesSourceEmailAddress: ${ssm:/configuration/${self:custom.stage}/sesSourceEmailAddress, ssm:/configuration/default/sesSourceEmailAddress, "admin@example.com"}
   reviewerEmailAddress: ${ssm:/configuration/${self:custom.stage}/reviewerEmailAddress, ssm:/configuration/default/reviewerEmailAddress, "reviewteam@example.com"}
+  serverless-iam-roles-per-function:
+    defaultInherit: true
 
 functions:
   emailSubmitter:
     handler: handlers/emailSubmitter.handler
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - ses:SendEmail
+        Resource: "*"
+        Condition:
+          StringEquals:
+            ses:FromAddress: ${self:custom.sesSourceEmailAddress}
     events:
       - stream:
           arn: ${self:custom.tableStreamArn}
@@ -61,6 +59,17 @@ functions:
     maximumRetryAttempts: 2
   emailReviewer:
     handler: handlers/emailReviewer.handler
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - ses:SendEmail
+        Resource: "*"
+        Condition:
+          StringEquals:
+            ses:FromAddress: ${self:custom.sesSourceEmailAddress}
+          ForAllValues:StringLike:
+            ses:Recipients:
+              - ${self:custom.reviewerEmailAddress}
     events:
       - stream:
           arn: ${self:custom.tableStreamArn}
