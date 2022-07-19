@@ -55,11 +55,7 @@ function App() {
         loginLocalUser(alice);
         userHasAuthenticated(true);
       } else {
-        const authConfig = Auth.configure();
-        const { domain, redirectSignIn, responseType } = authConfig.oauth;
-        const clientId = authConfig.userPoolWebClientId;
-        const url = `https://${domain}/oauth2/authorize?redirect_uri=${redirectSignIn}&response_type=${responseType}&client_id=${clientId}`;
-        window.location.assign(url);
+        Auth.federatedSignIn();
       }
     } catch (e) {
       onError(e);
