@@ -105,6 +105,8 @@ resources:
         ClientName: ${self:custom.stage}-user-pool-client
         UserPoolId: !Ref CognitoUserPool
         GenerateSecret: false # pragma: allowlist secret
+        ExplicitAuthFlows:
+          - ALLOW_REFRESH_TOKEN_AUTH
         AllowedOAuthFlows:
           - code
         AllowedOAuthFlowsUserPoolClient: true
