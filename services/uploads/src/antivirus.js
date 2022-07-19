@@ -5,6 +5,7 @@
 const AWS = require("aws-sdk");
 const path = require("path");
 const fs = require("fs");
+const crypto = require("crypto");
 const clamav = require("./clamav");
 const s3 = new AWS.S3();
 const utils = require("./utils");
@@ -37,13 +38,19 @@ async function isS3FileTooBig(s3ObjectKey, s3ObjectBucket) {
   return fileSize > constants.MAX_FILE_SIZE;
 }
 
+/**
+ * Download a file from S3 to a local temp directory.
+ * @param {string} s3ObjectKey       Key of S3 Object
+ * @param {string} s3ObjectBucket    Bucket of S3 object
+ * @return {Promise<string>}         Path to downloaded file
+ */
 function downloadFileFromS3(s3ObjectKey, s3ObjectBucket) {
-  const downloadDir = `/tmp/download`;
-  if (!fs.existsSync(downloadDir)) {
-    fs.mkdirSync(downloadDir);
+  if (!fs.existsSync(constants.TMP_DOWNLOAD_PATH)) {
+    fs.mkdirSync(constants.TMP_DOWNLOAD_PATH);
   }
-  let localPath = `${downloadDir}/${path.basename(s3ObjectKey)}`;
 
+  const tmpFileName = `${crypto.randomUUID()}.tmp`;
+  let localPath = `${constants.TMP_DOWNLOAD_PATH}${tmpFileName}`;
   let writeStream = fs.createWriteStream(localPath);
 
   utils.generateSystemMessage(
@@ -62,7 +69,7 @@ function downloadFileFromS3(s3ObjectKey, s3ObjectBucket) {
         utils.generateSystemMessage(
           `Finished downloading new object ${s3ObjectKey}`
         );
-        resolve();
+        resolve(localPath);
       })
       .on("error", function (err) {
         console.log(err);
@@ -99,9 +106,9 @@ async function lambdaHandleEvent(event, context) {
       constants.PATH_TO_AV_DEFINITIONS
     );
     utils.generateSystemMessage("Download File from S3");
-    await downloadFileFromS3(s3ObjectKey, s3ObjectBucket);
+    const filePath = await downloadFileFromS3(s3ObjectKey, s3ObjectBucket);
     utils.generateSystemMessage("Set virusScanStatus");
-    virusScanStatus = clamav.scanLocalFile(path.basename(s3ObjectKey));
+    virusScanStatus = clamav.scanLocalFile(filePath);
     utils.generateSystemMessage(`virusScanStatus=${virusScanStatus}`);
   }
 

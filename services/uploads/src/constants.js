@@ -22,6 +22,7 @@ const PATH_TO_FRESHCLAM = "/opt/bin/freshclam";
 const PATH_TO_CLAMAV = "/opt/bin/clamscan";
 const FRESHCLAM_CONFIG = "/opt/bin/freshclam.conf";
 const FRESHCLAM_WORK_DIR = "/tmp/";
+const TMP_DOWNLOAD_PATH = "/tmp/download/";
 
 // Constants for tagging file after a virus scan.
 const STATUS_CLEAN_FILE = process.env.STATUS_CLEAN_FILE || "CLEAN";
@@ -42,6 +43,7 @@ module.exports = {
   PATH_TO_CLAMAV: PATH_TO_CLAMAV,
   FRESHCLAM_CONFIG: FRESHCLAM_CONFIG,
   FRESHCLAM_WORK_DIR: FRESHCLAM_WORK_DIR,
+  TMP_DOWNLOAD_PATH: TMP_DOWNLOAD_PATH,
   STATUS_CLEAN_FILE: STATUS_CLEAN_FILE,
   STATUS_INFECTED_FILE: STATUS_INFECTED_FILE,
   STATUS_ERROR_PROCESSING_FILE: STATUS_ERROR_PROCESSING_FILE,
