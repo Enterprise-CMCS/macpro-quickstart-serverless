@@ -113,6 +113,7 @@ resources:
         AllowedOAuthScopes:
           - email
           - openid
+          - aws.cognito.signin.user.admin # Needed to call Auth.currentUserInfo()
         CallbackURLs:
           - ${self:custom.application_endpoint_url}
           - http://localhost:3000/
