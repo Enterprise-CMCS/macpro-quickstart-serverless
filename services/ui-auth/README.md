@@ -17,7 +17,7 @@ This service:
     - all actions on the API Gateway
     - all actions on the `private` folder in the S3 attachments bucket,
     - `"cognito-identity:*"`, `"cognito-sync:*"`, and `"mobileanalytics:PutEvents"` actions
-- [supports `Okta federated users`](https://confluenceent.cms.gov/x/uKufEw#QuickStartService:uiauth-Sign-InExperience:Okta); i.e., users that use Okta (SAML) as their IdP
+- [supports `Okta federated users`](https://confluenceent.cms.gov/x/uKufEw#QuickStartService:uiauth-Sign-InExperience:Okta); i.e., users that use Okta as their IdP
 
 The reference docs for AWS resources referenced in `serverless.yml` are:
 
@@ -34,5 +34,8 @@ The following values are used to configure the deployment of this service.
 | --- | :---: | :---: | :---: | --- |
 | .../sesSourceEmailAddress | N | Y | Y | The email address from which the application sends email. This email address must be verified in AWS SES.|
 | .../okta_metadata_url | N | N | Y | The SAML Metadata URL for Okta, provided by the Okta team.|
+| .../okta_oidc_client_id | N | N | Y | The client_id for integrating Cognito user pool with Okta OIDC, provided by the Okta team.|
+| .../okta_oidc_client_secret | N | N | Y | The client_secret for integrating Cognito user pool with Okta OIDC, provided by the Okta team.
+| .../okta_oidc_issuer | N | N | Y | The Okta OIDC issuer for integrating Cognito user pool with Okta OIDC, provided by the Okta team.
 | .../cognito/bootstrapUsers/enabled | N | N | Y | Enables the creation of bootstrapped users. This is useful for testing. Should not be used in production.|
 | .../cognito/bootstrapUsers/password | N | N | Y | Sets the password used by all bootstrapped users. The password does not expire. Users are defined in `libs/users.json`.|
