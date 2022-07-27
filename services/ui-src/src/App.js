@@ -55,7 +55,7 @@ function App() {
         loginLocalUser(alice);
         userHasAuthenticated(true);
       } else {
-        Auth.federatedSignIn();
+        await Auth.federatedSignIn();
       }
     } catch (e) {
       onError(e);
