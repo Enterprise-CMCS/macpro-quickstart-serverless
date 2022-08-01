@@ -184,7 +184,7 @@ resources:
             Fn::If:
               - CreateCustomCloudFrontDomain
               - AcmCertificateArn: ${self:custom.cloudfrontCertificateArn}
-                MinimumProtocolVersion: TLSv1
+                MinimumProtocolVersion: TLSv1.2_2021
                 SslSupportMethod: sni-only
               - CloudFrontDefaultCertificate: true
           CustomErrorResponses:
