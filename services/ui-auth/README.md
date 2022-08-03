@@ -27,7 +27,7 @@ The reference docs for AWS resources referenced in `serverless.yml` are:
 
 ## Session Management
 
-For the Cognito IdP, absolute session timeout is implemented by limiting the lifetime of the refresh token that is issued by Cognito when a user signs in. If this token has expired, upon the next user action that requires an access token, the Amplify framework will make a refresh request, detect the expired refresh token, and redirect the user back to the login page. The default value for session timeout is set to 4 hours, and customized in `serverless.yml`:
+For the Cognito IdP, absolute session timeout is implemented by limiting the lifetime of the refresh token that is issued by Cognito when a user signs in. If this token has expired, upon the next user action that requires an access token, the Amplify framework will make a refresh request, detect the expired refresh token, and redirect the user back to the login page. The value for session timeout can be customized in `serverless.yml`:
 
 ```yml
 resources:
