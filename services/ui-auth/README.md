@@ -25,6 +25,22 @@ The reference docs for AWS resources referenced in `serverless.yml` are:
 - [IAM](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/AWS_IAM.html)
 - [functions](https://www.serverless.com/framework/docs/providers/aws/guide/functions)
 
+## Session Management
+
+For the Cognito IdP, absolute session timeout is implemented by limiting the lifetime of the refresh token that is issued by Cognito when a user signs in. If this token has expired, upon the next user action that requires an access token, the Amplify framework will make a refresh request, detect the expired refresh token, and redirect the user back to the login page. The value for session timeout can be customized in `serverless.yml`:
+
+```yml
+resources:
+  ...
+  Resources:
+  ...
+  CognitoUserPoolClient:
+    ...
+      RefreshTokenValidity: 4
+      TokenValidityUnits:
+        RefreshToken: hours
+```
+
 ## Service-Specific Configuration Parameters
 
 To enable Cognito to send email using AWS SES, you must move your AWS account out of the AWS SES sandbox. Instructions on how to do that are [here](https://docs.aws.amazon.com/ses/latest/dg/request-production-access.html).
