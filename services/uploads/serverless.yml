@@ -47,6 +47,12 @@ custom:
         # the attachments bucket has no name, so we need to make one up on our own
   serverless-iam-roles-per-function:
     defaultInherit: true
+  vpcId: ${ssm:/configuration/${self:custom.stage}/vpc/id, ssm:/configuration/default/vpc/id}
+  privateSubnets:
+    - ${ssm:/configuration/${self:custom.stage}/vpc/subnets/private/a/id, ssm:/configuration/default/vpc/subnets/private/a/id}
+    - ${ssm:/configuration/${self:custom.stage}/vpc/subnets/private/b/id, ssm:/configuration/default/vpc/subnets/private/b/id}
+    - ${ssm:/configuration/${self:custom.stage}/vpc/subnets/private/c/id, ssm:/configuration/default/vpc/subnets/private/c/id}
+  bootstrapBrokerStringTls: ${ssm:/configuration/${self:custom.stage}/bigmac/bootstrapBrokerStringTls, ssm:/configuration/default/bigmac/bootstrapBrokerStringTls}
 
 layers:
   clamDefs:
@@ -106,9 +112,51 @@ functions:
     environment:
       CLAMAV_BUCKET_NAME: !Ref ClamDefsBucket
       PATH_TO_AV_DEFINITIONS: "lambda/s3-antivirus/av-definitions"
+  foo:
+    handler: handlers/foo.handler
+    iamRoleStatements:
+      - Effect: "Allow"
+        Action:
+          - ec2:DescribeSecurityGroups
+          - ec2:DescribeSubnets
+          - ec2:DescribeVpcs
+          - ec2:DescribeNetworkInterfaces
+          - ec2:CreateNetworkInterface
+          - ec2:DeleteNetworkInterface
+        Resource:
+          - "*"
 
 resources:
   Resources:
+    MappingOne:
+      Type: AWS::Lambda::EventSourceMapping
+      DependsOn: FooIamRoleLambdaExecution
+      Properties:
+        FunctionName: !Sub ${FooLambdaFunction.Arn}
+        StartingPosition: TRIM_HORIZON
+        SelfManagedEventSource:
+          Endpoints:
+            KafkaBootstrapServers:
+              Fn::Split:
+                - ","
+                - ${self:custom.bootstrapBrokerStringTls}
+        Topics:
+          - aws.seatool.cmcs.dbo.State_Plan
+        SourceAccessConfigurations:
+          - Type: VPC_SUBNET
+            URI: !Sub subnet:${self:custom.privateSubnets.0}
+          - Type: VPC_SUBNET
+            URI: !Sub subnet:${self:custom.privateSubnets.1}
+          - Type: VPC_SUBNET
+            URI: !Sub subnet:${self:custom.privateSubnets.2}
+          - Type: VPC_SECURITY_GROUP
+            URI: !Sub security_group:${MySecurityGroup}
+        Enabled: true
+    MySecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Security Group allowing outbound.
+        VpcId: ${self:custom.vpcId}
     AttachmentsBucket:
       Type: AWS::S3::Bucket
       Properties:
