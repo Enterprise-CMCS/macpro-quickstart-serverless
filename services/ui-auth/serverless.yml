@@ -146,7 +146,7 @@ resources:
               - BackWithOkta
               - !Ref OktaUserPoolIdentityProvider
               - !Ref AWS::NoValue
-        RefreshTokenValidity: 1
+        RefreshTokenValidity: 4
         TokenValidityUnits:
           RefreshToken: hours
     UserPoolDomain:
