@@ -150,12 +150,12 @@ resources:
           - Type: VPC_SUBNET
             URI: !Sub subnet:${self:custom.privateSubnets.2}
           - Type: VPC_SECURITY_GROUP
-            URI: !Sub security_group:${MySecurityGroup}
+            URI: !Sub security_group:${FooSecurityGroup}
         Enabled: true
-    MySecurityGroup:
+    FooSecurityGroup:
       Type: AWS::EC2::SecurityGroup
       Properties:
-        GroupDescription: Security Group allowing outbound.
+        GroupDescription: Security Group for the foo function.
         VpcId: ${self:custom.vpcId}
     AttachmentsBucket:
       Type: AWS::S3::Bucket
