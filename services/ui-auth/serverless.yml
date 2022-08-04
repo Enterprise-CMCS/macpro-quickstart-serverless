@@ -169,6 +169,9 @@ resources:
               - BackWithOktaSAML
               - !Ref OktaUserPoolIdentityProviderSAML
               - !Ref AWS::NoValue
+        RefreshTokenValidity: 4
+        TokenValidityUnits:
+          RefreshToken: hours
     UserPoolDomain:
       Type: AWS::Cognito::UserPoolDomain
       Properties:
