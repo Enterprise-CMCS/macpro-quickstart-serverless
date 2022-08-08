@@ -51,7 +51,7 @@ export async function getSessionInfo() {
     const identityToken = session.getIdToken().decodePayload();
     const accessToken = session.getAccessToken().decodePayload();
 
-    const { email, given_name, family_name } = identityToken;
+    const { email, given_name, family_name, phone_number } = identityToken;
     const { username } = accessToken;
 
     const userInfo = {
@@ -60,6 +60,7 @@ export async function getSessionInfo() {
         email: email,
         given_name: given_name,
         family_name: family_name,
+        phone_number: phone_number,
       },
     };
 

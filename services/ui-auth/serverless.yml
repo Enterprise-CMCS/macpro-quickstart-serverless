@@ -190,6 +190,7 @@ resources:
           email: email
           given_name: given_name
           family_name: family_name
+          phone_number: phone_number
         IdpIdentifiers:
           - IdpIdentifier
         ProviderDetails:
