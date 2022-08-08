@@ -152,6 +152,7 @@ resources:
           - email
           - openid
           - profile
+          - aws.cognito.signin.user.admin
         CallbackURLs:
           - ${self:custom.application_endpoint_url}
           - http://localhost:3000/
