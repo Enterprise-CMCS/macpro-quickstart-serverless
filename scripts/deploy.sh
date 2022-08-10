@@ -91,9 +91,9 @@ install_deps() {
 
 deploy() {
   service=$1
-  pushd services/$service
+  pushd services/"$service"
   install_deps
-  serverless deploy  --stage $stage
+  serverless deploy  --stage "$stage"
   popd
 }
 
@@ -104,7 +104,7 @@ export PATH=$(pwd)/node_modules/.bin/:$PATH
 
 for i in "${services[@]}"
 do
-	deploy $i
+	deploy "$i"
 done
 
 pushd services
@@ -112,7 +112,7 @@ echo """
 
 ------------------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------------------
-Application endpoint:  `./output.sh ui CloudFrontEndpointUrl $stage`
+Application endpoint:  $(./output.sh ui CloudFrontEndpointUrl "$stage")
 ------------------------------------------------------------------------------------------------
 """
 popd
