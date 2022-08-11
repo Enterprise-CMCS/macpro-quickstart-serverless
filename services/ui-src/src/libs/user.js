@@ -1,5 +1,6 @@
 import { Auth } from "aws-amplify";
 import config from "../config";
+import { onError } from "./errorLib";
 
 const userKey = "userKey";
 
@@ -26,7 +27,7 @@ export async function currentUserInfo() {
   if (localLogin) {
     return getLocalUserInfo();
   } else {
-    return Auth.currentUserInfo();
+    return await getSessionInfo();
   }
 }
 
@@ -42,4 +43,29 @@ export async function loginLocalUser(userInfo) {
   const store = window.localStorage;
 
   store.setItem(userKey, JSON.stringify(userInfo));
+}
+
+export async function getSessionInfo() {
+  try {
+    const session = await Auth.currentSession();
+    const identityToken = session.getIdToken().decodePayload();
+    const accessToken = session.getAccessToken().decodePayload();
+
+    const { email, given_name, family_name, phone_number } = identityToken;
+    const { username } = accessToken;
+
+    const userInfo = {
+      username: username,
+      attributes: {
+        email: email,
+        given_name: given_name,
+        family_name: family_name,
+        phone_number: phone_number,
+      },
+    };
+
+    return userInfo;
+  } catch (e) {
+    onError(e);
+  }
 }
