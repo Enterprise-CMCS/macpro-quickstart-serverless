@@ -152,6 +152,7 @@ resources:
           - email
           - openid
           - profile
+          - phone
           - aws.cognito.signin.user.admin
         CallbackURLs:
           - ${self:custom.application_endpoint_url}
@@ -199,7 +200,7 @@ resources:
           client_secret: ${self:custom.okta_oidc_client_secret}
           oidc_issuer: ${self:custom.okta_oidc_issuer}
           attributes_request_method: GET
-          authorize_scopes: "email openid profile"
+          authorize_scopes: "email openid profile phone"
         ProviderName: Okta
         ProviderType: OIDC
         UserPoolId:
