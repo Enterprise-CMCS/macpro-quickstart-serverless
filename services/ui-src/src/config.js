@@ -19,6 +19,7 @@ const configToExport = {
     IDENTITY_POOL_ID: window._env_.COGNITO_IDENTITY_POOL_ID,
     REDIRECT_SIGNIN: window._env_.COGNITO_REDIRECT_SIGNIN,
     REDIRECT_SIGNOUT: window._env_.COGNITO_REDIRECT_SIGNOUT,
+    ALLOW_ADMIN_SCOPE: window._env_.ALLOW_ADMIN_SCOPE,
   },
 };
 

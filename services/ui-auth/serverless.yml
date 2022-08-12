@@ -95,6 +95,11 @@ resources:
           - Fn::Equals:
               - ""
               - ${self:custom.okta_metadata_url}
+    AllowAdminScope: !Not
+      - Fn::Or:
+          - !Condition BackWithOktaOIDC
+          - !Condition BackWithOktaSAML
+
   Resources:
     CognitoUserPool:
       Type: AWS::Cognito::UserPool
@@ -153,7 +158,10 @@ resources:
           - openid
           - profile
           - phone
-          - aws.cognito.signin.user.admin
+          - Fn::If:
+              - AllowAdminScope
+              - aws.cognito.signin.user.admin
+              - !Ref AWS::NoValue
         CallbackURLs:
           - ${self:custom.application_endpoint_url}
           - http://localhost:3000/
@@ -288,3 +296,9 @@ resources:
       Value: !Ref CognitoIdentityPool
     Region:
       Value: !Sub ${AWS::Region}
+    AllowAdminScope:
+      Value:
+        Fn::If:
+          - AllowAdminScope
+          - "true"
+          - "false"
