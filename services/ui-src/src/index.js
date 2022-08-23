@@ -8,6 +8,11 @@ import config from "./config";
 
 import "./index.scss";
 
+const adminScope =
+  config.cognito.ALLOW_ADMIN_SCOPE === "true"
+    ? "aws.cognito.signin.user.admin"
+    : "";
+
 Amplify.configure({
   Auth: {
     mandatorySignIn: true,
@@ -19,7 +24,9 @@ Amplify.configure({
       domain: config.cognito.APP_CLIENT_DOMAIN,
       redirectSignIn: config.cognito.REDIRECT_SIGNIN,
       redirectSignOut: config.cognito.REDIRECT_SIGNOUT,
-      scope: ["email", "openid", "profile", "aws.cognito.signin.user.admin"],
+      scope: adminScope
+        ? ["email", "openid", "profile", adminScope]
+        : ["email", "openid", "profile"],
       responseType: "code",
     },
   },

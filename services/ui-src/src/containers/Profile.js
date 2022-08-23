@@ -8,6 +8,9 @@ import LoaderButton from "../components/LoaderButton";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { currentUserInfo, updateCurrentUserAttributes } from "../libs/user";
 import { capitalize } from "../libs/helpers";
+import config from "../config";
+
+const allowAdminScope = config.cognito.ALLOW_ADMIN_SCOPE;
 
 export default function Profile() {
   const history = useHistory();
@@ -98,6 +101,7 @@ export default function Profile() {
             disableDropdown={true}
             enableAreaCodes={false}
             onChange={(e) => setPhoneNumber(e || "")}
+            disabled={allowAdminScope === "true" ? false : true}
           />
         </FormGroup>
         <LoaderButton
@@ -105,7 +109,9 @@ export default function Profile() {
           isLoading={isLoading}
           disabled={!validateForm()}
         >
-          Save
+          {allowAdminScope === "true"
+            ? "Save"
+            : "Contact the Help Desk to change your profile."}
         </LoaderButton>
       </form>
     </Container>
