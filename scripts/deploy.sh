@@ -35,16 +35,18 @@ if [[ ! $1 =~ $valid_stage ]]; then
     exit 1
 fi;
 
-services=(
-  'database'
-  'uploads'
-  'app-api'
-  'proxy-api'
-  'stream-functions'
-  'ui'
-  'ui-auth'
-  'ui-src'
-)
+# services=(
+#   'database'
+#   'uploads'
+#   'app-api'
+#   'proxy-api'
+#   'stream-functions'
+#   'ui'
+#   'ui-auth'
+#   'ui-src'
+# )
+
+services=${BUILD_SERVICE_LIST[@]}
 
 getMaxFuncName() {
   longestFuncName=""
@@ -61,7 +63,7 @@ getMaxFuncName() {
 }
 
 checkStageServiceFunctionLength() {
-  for i in "${BUILD_SERVICE_LIST[@]}"
+  for i in "${services[@]}"
   do
     if find "./services/${i}" -maxdepth 1 -type d | grep -q handlers; then
       funcName=$(cd "./services/${i}/handlers"; getMaxFuncName)
@@ -102,7 +104,7 @@ checkStageServiceFunctionLength
 install_deps
 export PATH=$(pwd)/node_modules/.bin/:$PATH
 
-for i in "${BUILD_SERVICE_LIST[@]}"
+for i in "${services[@]}"
 do
 	deploy "$i"
 done
