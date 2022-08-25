@@ -8,8 +8,43 @@ var_list=(
   'CODE_CLIMATE_ID'
 )
 
-echo "test1 ${@:2}"
-echo "test2 ${GIT_DIFF}"
+services=(
+  'database'
+  'uploads'
+  'app-api'
+  'proxy-api'
+  'stream-functions'
+  'ui'
+  'ui-auth'
+  'ui-src'
+)
+
+set_service_list() {
+  serviceList=()
+  allFlag=false;
+
+  for i in ${GIT_DIFF}; do 
+      serviceFound=false;
+      for j in "${services[@]}" ; do
+          if [[ "$i" == *"services/${j}/"* ]]; then
+              echo $i;
+              serviceList+=($j);
+              serviceFound=true;
+          fi
+      done
+      if [[ $serviceFound == false ]]; then 
+          allFlag=true
+      fi
+  done
+
+  if [[ $allFlag == true ]]; then
+      serviceList+=(${services[@]})
+  fi
+
+  uniques=($(for v in "${serviceList[@]}"; do echo "$v";done| sort| uniq| xargs))
+  echo "testServiceList ${uniques[@]}"
+  echo "BUILD_SERVICE_LIST=${uniques[@]}" >> $GITHUB_ENV
+}
 
 set_value() {
   varname=${1}
@@ -38,5 +73,8 @@ set_values)
   do
   	set_value $i
   done
+  ;;
+set_service_list)
+  set_service_list
   ;;
 esac

@@ -10,6 +10,8 @@ services=(
   'ui-src'
 )
 
+echo "HEY DID IT WORK ${BUILD_SERVICE_LIST}"
+
 install_deps() {
   if [ "$CI" == "true" ]; then # If we're in a CI system
     if [ ! -d "node_modules" ]; then # If we don't have any node_modules (CircleCI cache miss scenario), run yarn install --frozen-lockfile.  Otherwise, we're all set, do nothing.

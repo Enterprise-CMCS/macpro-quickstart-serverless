@@ -31,6 +31,8 @@ jobs:
         run: ./.github/scripts/branch_name_validation.sh $STAGE_PREFIX$branch_name
       - name: set branch specific variable names
         run: ./.github/scripts/build_vars.sh set_names
+      - name: set changed services to build
+        run: ./.github/scripts/build_vars.sh set_service_list
       - name: set variable values
         run: ./.github/scripts/build_vars.sh set_values
         env:
