@@ -8,6 +8,8 @@ var_list=(
   'CODE_CLIMATE_ID'
 )
 
+echo ${2}
+
 set_value() {
   varname=${1}
   if [ ! -z "${!varname}" ]; then

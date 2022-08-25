@@ -26,10 +26,11 @@ jobs:
             echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
           fi
       - uses: actions/checkout@v2
+      - uses: technote-space/get-diff-action@v4
       - name: Validate branch name
         run: ./.github/scripts/branch_name_validation.sh $STAGE_PREFIX$branch_name
       - name: set branch specific variable names
-        run: ./.github/scripts/build_vars.sh set_names
+        run: ./.github/scripts/build_vars.sh set_names ${{ env.GIT_DIFF }}
       - name: set variable values
         run: ./.github/scripts/build_vars.sh set_values
         env:
