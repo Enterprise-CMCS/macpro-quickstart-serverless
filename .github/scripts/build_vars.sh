@@ -10,7 +10,6 @@ var_list=(
 
 echo "test1 ${@:2}"
 echo "test2 ${GIT_DIFF}"
-echo "test3 ${env.GIT_DIFF}"
 
 set_value() {
   varname=${1}

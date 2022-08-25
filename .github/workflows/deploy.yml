@@ -30,7 +30,7 @@ jobs:
       - name: Validate branch name
         run: ./.github/scripts/branch_name_validation.sh $STAGE_PREFIX$branch_name
       - name: set branch specific variable names
-        run: ./.github/scripts/build_vars.sh set_names ${{ env.GIT_DIFF }}
+        run: ./.github/scripts/build_vars.sh set_names
       - name: set variable values
         run: ./.github/scripts/build_vars.sh set_values
         env:
