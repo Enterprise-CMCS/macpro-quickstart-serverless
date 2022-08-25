@@ -74,8 +74,7 @@ function App() {
         {isAuthenticated && (
           <IdleTimer
             handleLogout={handleLogout}
-            // timeout={15 * 60 * 1000}
-            timeout={5 * 1000}
+            timeout={15 * 60 * 1000}
             promptTimeout={10 * 1000}
           ></IdleTimer>
         )}

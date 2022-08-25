@@ -57,10 +57,11 @@ function IdleTimer(props) {
   return (
     modalIsOpen && (
       <Dialog
+        data-testid="timeout-dialog"
         onExit={handleStayActive}
         underlayClickExits={true}
         closeIcon={null}
-        closeButtonText={""}
+        closeButtonText={null}
       >
         <h2>Session Timeout</h2>
         <p>
