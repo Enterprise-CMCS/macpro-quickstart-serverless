@@ -8,7 +8,9 @@ var_list=(
   'CODE_CLIMATE_ID'
 )
 
-echo "test ${2}"
+echo "test ${@:2}"
+echo "test ${GIT_DIFF}"
+echo "test ${env.GIT_DIFF}"
 
 set_value() {
   varname=${1}
