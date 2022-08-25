@@ -46,7 +46,7 @@ fi;
 #   'ui-src'
 # )
 
-services=${BUILD_SERVICE_LIST[@]}
+services=($BUILD_SERVICE_LIST)
 
 getMaxFuncName() {
   longestFuncName=""
