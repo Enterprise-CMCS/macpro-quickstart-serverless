@@ -61,7 +61,7 @@ getMaxFuncName() {
 }
 
 checkStageServiceFunctionLength() {
-  for i in "${services[@]}"
+  for i in "${BUILD_SERVICE_LIST[@]}"
   do
     if find "./services/${i}" -maxdepth 1 -type d | grep -q handlers; then
       funcName=$(cd "./services/${i}/handlers"; getMaxFuncName)
@@ -102,7 +102,7 @@ checkStageServiceFunctionLength
 install_deps
 export PATH=$(pwd)/node_modules/.bin/:$PATH
 
-for i in "${services[@]}"
+for i in "${BUILD_SERVICE_LIST[@]}"
 do
 	deploy "$i"
 done

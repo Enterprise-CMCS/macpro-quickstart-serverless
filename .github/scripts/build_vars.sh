@@ -37,7 +37,7 @@ set_service_list() {
       fi
   done
 
-  if [[ $allFlag == true ]]; then
+  if [[ $allFlag == true || ! ((${GIT_DIFF[@]})) ]]; then
       serviceList+=(${services[@]})
   fi
 
