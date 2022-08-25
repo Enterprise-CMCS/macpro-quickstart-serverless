@@ -2,6 +2,8 @@ import * as cognitolib from "../libs/cognito-lib";
 const userPoolId = process.env.userPoolId;
 const users = require("../libs/users.json");
 
+// TODO: GIT Test remove
+
 async function myHandler(event, context, callback) {
   console.log("USER POOL ID: ");
   console.log(userPoolId);

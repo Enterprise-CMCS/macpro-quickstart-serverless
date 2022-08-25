@@ -2,6 +2,8 @@ import * as uuid from "uuid";
 import handler from "./../libs/handler-lib";
 import dynamoDb from "./../libs/dynamodb-lib";
 
+// TODO: GIT Test remove
+
 export const main = handler(async (event, context) => {
   // If this invocation is a pre-warm, do nothing and return.
   if (event.source == "serverless-plugin-warmup") {
