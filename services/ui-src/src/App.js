@@ -14,6 +14,7 @@ import config from "./config";
 // TODO: GIT Test remove
 // TODO: GIT Test remove
 // TODO: GIT Test remove
+// TODO: GIT Test remove
 
 function App() {
   const [isAuthenticating, setIsAuthenticating] = useState(true);
