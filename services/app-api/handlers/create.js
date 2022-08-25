@@ -13,6 +13,7 @@ export const main = handler(async (event, context) => {
 
   var nextValue = (await dynamoDb.increment(data.territory)).Attributes
     .lastValue.N;
+  console.log("update the version for create lambda 4 with successful pre and post hooks");
 
   const params = {
     TableName: process.env.tableName,

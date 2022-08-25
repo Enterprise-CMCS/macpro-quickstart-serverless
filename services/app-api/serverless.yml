@@ -19,6 +19,7 @@ plugins:
   - serverless-online
   - serverless-api-client-certificate
   - serverless-iam-roles-per-function
+  - serverless-plugin-canary-deployments
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -76,12 +77,32 @@ functions:
         Resource:
           - ${self:custom.tableArn}
           - ${self:custom.atomicCounterTableArn}
+      - Effect: "Allow"
+        Action:
+          - codedeploy:*
+        Resource:
+          - "*"
     events:
       - http:
           path: amendments
           method: post
           cors: true
           authorizer: aws_iam
+    deploymentSettings:
+      type: Linear10PercentEvery1Minute
+      alias: Live
+      preTrafficHook: preHookCreate
+      postTrafficHook: postHookCreate
+  preHookCreate:
+    handler: handlers/hooks.preCreate
+    warmup:
+      default:
+        enabled: false
+  postHookCreate:
+    handler: handlers/hooks.postCreate
+    warmup:
+      default:
+        enabled: false
   get:
     handler: handlers/get.main
     iamRoleStatements:
@@ -138,6 +159,9 @@ functions:
           method: delete
           cors: true
           authorizer: aws_iam
+    deploymentSettings:
+      type: Linear10PercentEvery1Minute
+      alias: Live
 
 resources:
   Resources:
