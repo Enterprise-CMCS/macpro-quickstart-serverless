@@ -35,18 +35,20 @@ if [[ ! $1 =~ $valid_stage ]]; then
     exit 1
 fi;
 
-# services=(
-#   'database'
-#   'uploads'
-#   'app-api'
-#   'proxy-api'
-#   'stream-functions'
-#   'ui'
-#   'ui-auth'
-#   'ui-src'
-# )
+services=(
+  'database'
+  'uploads'
+  'app-api'
+  'proxy-api'
+  'stream-functions'
+  'ui'
+  'ui-auth'
+  'ui-src'
+)
 
-services=($BUILD_SERVICE_LIST)
+if [[ ((${BUILD_SERVICE_LIST[@]})) ]]; then 
+  services=($BUILD_SERVICE_LIST)
+fi
 
 getMaxFuncName() {
   longestFuncName=""
