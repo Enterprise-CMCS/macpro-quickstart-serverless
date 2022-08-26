@@ -27,7 +27,6 @@ set_service_list() {
       serviceFound=false;
       for j in "${services[@]}" ; do
           if [[ "$i" == *"services/${j}/"* ]]; then
-              echo $i;
               serviceList+=($j);
               serviceFound=true;
           fi
@@ -38,10 +37,10 @@ set_service_list() {
   done
 
   if [[ $allFlag == true || ! ((${GIT_DIFF[@]})) ]]; then
-      serviceList+=(${services[@]})
+      serviceList=(${services[@]})
   fi
 
-  uniques=($(for v in "${serviceList[@]}"; do echo "$v";done| sort| uniq| xargs))
+  uniques=($(for v in "${serviceList[@]}"; do echo "$v";done| uniq| xargs))
   echo "Setting service list to build: ${uniques[@]}"
   echo "BUILD_SERVICE_LIST=${uniques[@]}" >> $GITHUB_ENV
 }
