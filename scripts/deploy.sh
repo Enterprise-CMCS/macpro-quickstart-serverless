@@ -46,7 +46,7 @@ base_services=(
   'ui-src'
 )
 
-services=($base_services)
+services=(${base_services[@]})
 
 if [[ ((${BUILD_SERVICE_LIST[@]})) && ( -z "$2" )  ]]; then 
   services=($BUILD_SERVICE_LIST)
