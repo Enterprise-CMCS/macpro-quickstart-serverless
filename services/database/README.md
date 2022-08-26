@@ -1,6 +1,5 @@
 # database
 
-#test
 This service is a DynamoDB service with two database tables.
 The names of each database table are constructed from the stage parameter:
 
