@@ -42,7 +42,7 @@ set_service_list() {
   fi
 
   uniques=($(for v in "${serviceList[@]}"; do echo "$v";done| sort| uniq| xargs))
-  echo "Setting service list to build: ${uniques[@]}"
+  echo "testServiceList ${uniques[@]}"
   echo "BUILD_SERVICE_LIST=${uniques[@]}" >> $GITHUB_ENV
 }
 
