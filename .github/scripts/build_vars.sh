@@ -44,7 +44,7 @@ set_service_list() {
   for l in "${services[@]}" ; do  
     for k in "${serviceList[@]}" ; do
       if [[ "$k" == "$l"]]
-        uniquesPrep+="$l";
+        uniquesPrep+=($l);
     done
   done
 
