@@ -35,7 +35,7 @@ if [[ ! $1 =~ $valid_stage ]]; then
     exit 1
 fi;
 
-services=(
+base_services=(
   'database'
   'uploads'
   'app-api'
@@ -45,6 +45,8 @@ services=(
   'ui-auth'
   'ui-src'
 )
+
+services=($base_services)
 
 if [[ ((${BUILD_SERVICE_LIST[@]})) ]]; then 
   services=($BUILD_SERVICE_LIST)
@@ -106,10 +108,14 @@ checkStageServiceFunctionLength
 install_deps
 export PATH=$(pwd)/node_modules/.bin/:$PATH
 
-for i in "${services[@]}"
-do
-	deploy "$i"
-done
+deploy_loop() { 
+  for i in "${services[@]}"
+  do
+    deploy "$i"
+  done
+}
+
+deploy_loop || services=($base_services) && deploy_loop
 
 pushd services
 echo """
