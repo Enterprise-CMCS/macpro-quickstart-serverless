@@ -2,7 +2,7 @@
 
 ## Session Timeouts
 
-To follow the CMS Acceptable Risk Safeguards(ARS) controls `AC-11 Idle Session Timeout` and `AC-12(03) Timeout Warning Message`, this service uses the (`react-idle-timer`)[https://idletimer.dev/] package to implement an idle timer. The idle timer is defined as a React component that is child of the `App` component and accepts the following props:
+To follow the CMS Acceptable Risk Safeguards(ARS) controls `AC-11 Idle Session Timeout` and `AC-12(03) Timeout Warning Message`, this service uses the [`react-idle-timer`](https://idletimer.dev/) package to implement an idle timer. The idle timer is defined as a React component that is a child of the `App` component and accepts the following props:
 
 - `handleLogout` (function): the function that performs session logout of the current user
 - `timeout` (number): the amount of idle time after which the 'Session Timeout' warning prompt will be displayed. Defaults to 15 minutes, as defined by AC-11.
