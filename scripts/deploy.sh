@@ -48,7 +48,7 @@ base_services=(
 
 services=($base_services)
 
-if [[ ((${BUILD_SERVICE_LIST[@]})) ]]; then 
+if [[ ((${BUILD_SERVICE_LIST[@]})) && ( -z "$2" )  ]]; then 
   services=($BUILD_SERVICE_LIST)
 fi
 
@@ -108,14 +108,10 @@ checkStageServiceFunctionLength
 install_deps
 export PATH=$(pwd)/node_modules/.bin/:$PATH
 
-deploy_loop() { 
-  for i in "${services[@]}"
-  do
-    deploy "$i"
-  done
-}
-
-deploy_loop || services=($base_services) && deploy_loop
+for i in "${services[@]}"
+do
+  deploy "$i"
+done
 
 pushd services
 echo """
