@@ -1,0 +1,57 @@
+name: Cypress tests for env
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  set-up-env:
+    uses: ./.github/workflows/set-up-env.yml
+    with:
+      env: ${{ inputs.env }}
+    secrets: inherit
+
+  cypress:
+    needs: [set-up-env]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [test.spec.js, test2.spec.js]
+    steps:
+      - name: check out repository
+        uses: actions/checkout@v3
+
+      - name: get application endpoint
+        run: |
+          pushd services
+          export APPLICATION_ENDPOINT=`./output.sh ui ApplicationEndpointUrl $STAGE_PREFIX$branch_name`
+          echo "APPLICATION_ENDPOINT=$APPLICATION_ENDPOINT" >> $GITHUB_ENV
+          echo "Application endpoint: $APPLICATION_ENDPOINT"
+          popd
+
+      # - name: run cypress tests
+      #   uses: cypress-io/github-action@v2.11.7
+      #   with:
+      #     working-directory: tests/cypress
+      #     spec: integration/${{ matrix.containers }}
+      #     browser: chrome
+      #     headless: true
+      #     config: baseUrl=${{ env.APPLICATION_ENDPOINT }}
+
+      - name: log for testing # TODO remove
+        run: echo "Cypress tests!!"
+
+      - name: upload screenshots
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: tests/cypress/screenshots/

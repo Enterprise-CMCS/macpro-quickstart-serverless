@@ -1,0 +1,113 @@
+name: Promote
+
+on:
+  push:
+    branches:
+      - "!bharvey-promote" # TODO revert
+      # - "master" TODO revert
+
+permissions:
+  id-token: write
+  contents: read
+  actions: read
+
+jobs:
+  unit-tests:
+    name: run unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: check out repository
+        uses: actions/checkout@v3
+
+      - name: lock this branch to prevent concurrent builds
+        run: ./.github/scripts/github_lock.sh master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: log for testing
+        run: echo "Unit tests!" # TODO remove
+      # - name: run unit tests
+      #   run: ./scripts/unit_test.sh
+
+      # - name: set up env
+      #   uses: ./.github/actions/setup_env
+
+      # - name: publish test coverage to code climate
+      #   if: env.CODE_CLIMATE_ID != ''
+      #   uses: paambaati/codeclimate-action@v2.7.5
+      #   env:
+      #     CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_ID }}
+      #   with:
+      #     coverageLocations: |
+      #       ${{github.workspace}}/services/ui-src/coverage/lcov.info:lcov
+
+      # - name: store unit test results
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: unit_test_results
+      #     path: ${{github.workspace}}/services/ui-src/coverage/lcov.info
+
+  promote-dev:
+    needs: [unit-tests]
+    name: promote to dev
+    uses: ./.github/workflows/deploy-to-env.yml
+    with:
+      env: dev
+    secrets: inherit
+
+  cypress-dev:
+    needs: [promote-dev, unit-tests]
+    name: cypress tests for dev
+    uses: ./.github/workflows/cypress-for-env.yml
+    with:
+      env: dev
+    secrets: inherit
+
+  promote-val:
+    needs: [cypress-dev, unit-tests]
+    name: promote to val
+    uses: ./.github/workflows/deploy-to-env.yml
+    with:
+      env: val
+    secrets: inherit
+
+  cypress-val:
+    needs: [promote-val, unit-tests]
+    name: cypress tests for val
+    uses: ./.github/workflows/cypress-for-env.yml
+    with:
+      env: val
+    secrets: inherit
+
+  promote-prod:
+    needs: [cypress-val, unit-tests]
+    name: promote to prod
+    uses: ./.github/workflows/deploy-to-env.yml
+    with:
+      env: prod
+    secrets: inherit
+
+  cypress-prod:
+    needs: [promote-prod, unit-tests]
+    name: cypress tests for prod
+    uses: ./.github/workflows/cypress-for-env.yml
+    with:
+      env: prod
+    secrets: inherit
+
+  notify-slack:
+    needs: [promote-prod, cypress-prod]
+    if: always()
+    name: notify slack on failure
+    runs-on: ubuntu-latest
+    steps:
+      - name: slack notification
+        uses: rtCamp/action-slack-notify@v2
+        if: env.SLACK_WEBHOOK_URL != '' && failure()
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_USERNAME: Deploy Alerts
+          SLACK_ICON_EMOJI: ":bell:"
+          SLACK_COLOR: ${{job.status}}
+          SLACK_FOOTER: ""
+          MSG_MINIMAL: actions url,commit,ref

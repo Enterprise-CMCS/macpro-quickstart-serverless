@@ -1,0 +1,35 @@
+name: Deploy to env
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  set-up-env:
+    uses: ./.github/workflows/set-up-env.yml
+    with:
+      env: ${{ inputs.env }}
+    secrets: inherit
+
+  deploy:
+    needs: [set-up-env]
+    env:
+      SLS_DEPRECATION_DISABLE: "*" # Turn off deprecation warnings in the pipeline
+    runs-on: ubuntu-latest
+    steps:
+      - name: check out repository
+        uses: actions/checkout@v3
+
+      - name: deploy
+        run: |
+          # When deploying multiple copies of this quickstart to the same AWS Account (not ideal), a prefix helps prevent stepping on each other.
+          # This can optionally be set as an GitHub Actions Secret
+          # ./scripts/deploy.sh $STAGE_PREFIX$branch_name  TODO undo this
+          echo "Deployed!!"
