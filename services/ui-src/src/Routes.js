@@ -52,7 +52,7 @@ export default function Routes() {
             <Route
               key={name}
               {...rest}
-              element={() => <AuthenticatedRoute component={component} />}
+              element={<AuthenticatedRoute component={component} />}
             />
           ) : (
             <Route key={name} {...rest} element={component()} />
