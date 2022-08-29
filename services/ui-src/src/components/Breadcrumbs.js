@@ -5,7 +5,7 @@ import { routes } from "../Routes";
 import "./Breadcrumb.css";
 
 export const Breadcrumbs = () => {
-  const route = useMatch(window.location.pathname);
+  const route = useMatch(window?.location?.pathname ?? "");
 
   const items = routes
     .filter(({ path }) => route.pathname.includes(path))
