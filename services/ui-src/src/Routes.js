@@ -49,7 +49,11 @@ export default function Routes() {
       <Switch>
         {routes.map(({ isAuthenticated, name, component, ...rest }) =>
           isAuthenticated ? (
-            <Route key={name} {...rest} element={AuthenticatedRoute({ isAuthenticated, name, component, ...rest })} />
+            <Route
+              key={name}
+              {...rest}
+              element={() => <AuthenticatedRoute component={component} />}
+            />
           ) : (
             <Route key={name} {...rest} element={component()} />
           )

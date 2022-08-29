@@ -5,15 +5,9 @@ import { useAppContext } from "../libs/contextLib";
 export default function AuthenticatedRoute({ children, component, ...rest }) {
   const { pathname, search } = useLocation();
   const { isAuthenticated } = useAppContext();
-  return (
-    <>
-      {
-        isAuthenticated ? (
-          component()
-        ) : (
-          <Navigate to={`/login?redirect=${pathname}${search}`} />
-        )
-      }
-    </>
+  return isAuthenticated ? (
+    component
+  ) : (
+    <Navigate to={`/login?redirect=${pathname}${search}`} />
   );
 }
