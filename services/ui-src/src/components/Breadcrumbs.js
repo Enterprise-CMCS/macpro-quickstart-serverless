@@ -12,9 +12,9 @@ export const Breadcrumbs = () => {
     .map(({ path, ...rest }) => ({
       path: Object.keys(route.params).length
         ? Object.keys(route.params).reduce(
-          (path, param) => path.replace(`:${param}`, route.params[param]),
-          path
-        )
+            (path, param) => path.replace(`:${param}`, route.params[param]),
+            path
+          )
         : path,
       ...rest,
     }));
