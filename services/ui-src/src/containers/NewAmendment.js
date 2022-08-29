@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FormGroup, FormControl, FormLabel, Container } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import { Breadcrumbs } from "../components/Breadcrumbs";
@@ -19,7 +19,7 @@ import { fileUpload } from "../libs/file";
 
 export default function NewAmendment() {
   const file = useRef(null);
-  const history = useHistory();
+  const history = useNavigate();
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");

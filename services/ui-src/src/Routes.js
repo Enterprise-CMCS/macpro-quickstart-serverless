@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, Switch } from "react-router-dom";
+import { Route, Routes as Switch } from "react-router-dom";
 import Home from "./containers/Home";
 import NotFound from "./containers/NotFound";
 import NewAmendment from "./containers/NewAmendment";
@@ -47,11 +47,11 @@ export default function Routes() {
   return (
     <main id="main-wrapper">
       <Switch>
-        {routes.map(({ isAuthenticated, name, ...rest }) =>
+        {routes.map(({ isAuthenticated, name, component, ...rest }) =>
           isAuthenticated ? (
-            <AuthenticatedRoute key={name} {...rest} />
+            <Route key={name} {...rest} element={AuthenticatedRoute({ isAuthenticated, name, component, ...rest })} />
           ) : (
-            <Route key={name} {...rest} />
+            <Route key={name} {...rest} element={component()} />
           )
         )}
       </Switch>
