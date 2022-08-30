@@ -1,0 +1,51 @@
+name: unit tests
+
+on:
+  workflow_call:
+    secrets:
+      CODE_CLIMATE_ID:
+        required: true
+
+jobs:
+  unit-tests:
+    name: run unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: check out repository
+        uses: actions/checkout@v3
+
+      - name: lock this branch to prevent concurrent builds
+        run: ./.github/scripts/github_lock.sh ${GITHUB_REF#refs/heads/}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: run unit tests TODO revert
+      #   run: ./scripts/unit_test.sh
+
+      # necessary because you can't use the secret context in 'if' conditionals
+      # https://github.com/actions/runner/issues/520
+      - name: check for codeclimate secret
+        id: codeclimate
+        run: |
+          if
+            [[ "${{ secrets.CODE_CLIMATE_ID }}" != "" ]]
+          then
+            echo "set-output:: name=has-secret::true"
+          else
+            echo "set-output:: name=has-secret::false"
+          fi
+
+      - name: publish test coverage to code climate
+        if: ${{ steps.codeclimate.outputs.has-secret == true }}
+        uses: paambaati/codeclimate-action@v2.7.5
+        env:
+          CC_TEST_REPORTER_ID: ${{ secrets.CODE_CLIMATE_ID }}
+        with:
+          coverageLocations: |
+            ${{github.workspace}}/services/ui-src/coverage/lcov.info:lcov
+
+      - name: store unit test results
+        uses: actions/upload-artifact@v2
+        with:
+          name: unit_test_results
+          path: ${{github.workspace}}/services/ui-src/coverage/lcov.info

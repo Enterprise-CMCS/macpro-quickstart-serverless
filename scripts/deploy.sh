@@ -37,13 +37,13 @@ fi;
 
 services=(
   'database'
-  'uploads'
-  'app-api'
-  'proxy-api'
-  'stream-functions'
-  'ui'
-  'ui-auth'
-  'ui-src'
+  # 'uploads' TODO revert
+  # 'app-api'
+  # 'proxy-api'
+  # 'stream-functions'
+  # 'ui'
+  # 'ui-auth'
+  # 'ui-src'
 )
 
 getMaxFuncName() {

@@ -1,0 +1,48 @@
+name: Set up env
+
+permissions:
+  id-token: write
+  contents: read
+
+inputs:
+  oidc-role:
+    required: true
+  aws-region:
+    required: true
+  branch-specific-oidc-role:
+    required: true
+  branch-specific-aws-region:
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: check out repository
+      uses: actions/checkout@v3
+
+    - name: configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        role-to-assume: ${{ inputs.branch-specific-oidc-role || inputs.oidc-role }}
+        aws-region: ${{ inputs.branch-specific-aws-region || inputs.aws-region }}
+
+    - name: read .nvmrc
+      id: node_version
+      shell: bash
+      run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
+
+    - uses: actions/setup-node@v1
+      with:
+        node-version: ${{ steps.node_version.outputs.NODE_VERSION }}
+
+    - uses: actions/cache@v2
+      with:
+        path: |
+          **/node_modules
+          ~/.cache/Cypress
+        key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock', 'plugins/**') }}-3
+
+    - name: set path
+      shell: bash
+      run: |
+        echo "PATH=$(pwd)/node_modules/.bin/:$PATH" >> $GITHUB_ENV

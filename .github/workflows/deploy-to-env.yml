@@ -12,14 +12,7 @@ permissions:
   contents: read
 
 jobs:
-  set-up-env:
-    uses: ./.github/workflows/set-up-env.yml
-    with:
-      env: ${{ inputs.env }}
-    secrets: inherit
-
   deploy:
-    needs: [set-up-env]
     env:
       SLS_DEPRECATION_DISABLE: "*" # Turn off deprecation warnings in the pipeline
     runs-on: ubuntu-latest
@@ -27,9 +20,22 @@ jobs:
       - name: check out repository
         uses: actions/checkout@v3
 
+      - name: upcase env name
+        id: string-case
+        uses: ASzc/change-string-case-action@v2
+        with:
+          string: ${{ inputs.env }}
+
+      - name: set up environment
+        uses: ./.github/actions/set-up-env
+        with:
+          oidc-role: ${{ secrets.AWS_OIDC_ROLE_TO_ASSUME }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          branch-specific-oidc-role: ${{ secrets[format('{0}_{1}', steps.string-case.outputs.uppercase, 'AWS_OIDC_ROLE_TO_ASSUME')] }}
+          branch-specific-aws-region: ${{ secrets[format('{0}_{1}', steps.string-case.outputs.uppercase, 'AWS_DEFAULT_REGION')] }}
+
       - name: deploy
         run: |
           # When deploying multiple copies of this quickstart to the same AWS Account (not ideal), a prefix helps prevent stepping on each other.
           # This can optionally be set as an GitHub Actions Secret
-          # ./scripts/deploy.sh $STAGE_PREFIX$branch_name  TODO undo this
-          echo "Deployed!!"
+          ./scripts/deploy.sh ${{ format('{0}{1}', secrets.STAGE_PREFIX, inputs.env) }}
