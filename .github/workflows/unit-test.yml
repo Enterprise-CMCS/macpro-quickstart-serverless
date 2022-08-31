@@ -19,8 +19,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: run unit tests TODO revert
-      #   run: ./scripts/unit_test.sh
+      - name: run unit tests
+        run: ./scripts/unit_test.sh
 
       # necessary because you can't use the secret context in 'if' conditionals
       # https://github.com/actions/runner/issues/520

@@ -1,4 +1,4 @@
-name: Deploy Feature Branch
+name: Deploy Branch
 
 on:
   push:
@@ -53,8 +53,9 @@ jobs:
     secrets:
       CODE_CLIMATE_ID: ${{ secrets.CODE_CLIMATE_ID}}
 
-  deploy:
+  deploy-branch:
     needs: [set-branch-name, unit-tests]
+    name: deploy branch
     runs-on: ubuntu-latest
     env:
       SLS_DEPRECATION_DISABLE: "*" # Turn off deprecation warnings in the pipeline
@@ -70,7 +71,7 @@ jobs:
           branch-specific-oidc-role: ${{ secrets[format('{0}_{1}', needs.set-branch-name.outputs.upcased-branch-name, 'AWS_OIDC_ROLE_TO_ASSUME')] }}
           branch-specific-aws-region: ${{ secrets[format('{0}_{1}', needs.set-branch-name.outputs.upcased-branch-name, 'AWS_DEFAULT_REGION')] }}
 
-      - name: deploy
+      - name: deploy branch
         run: |
           # When deploying multiple copies of this quickstart to the same AWS Account (not ideal), a prefix helps prevent stepping on each other.
           # This can optionally be set as an GitHub Actions Secret
@@ -89,7 +90,7 @@ jobs:
             echo "set-output:: name=has-secret::false"
           fi
 
-      - name: Slack Notification
+      - name: slack notification
         uses: rtCamp/action-slack-notify@v2
         if: ${{ steps.slack.outputs.has-secret == true && contains(fromJson('["master", "val", "production"]'), needs.set-branch-name.outputs.branch-name) && failure() }}
         env:
@@ -101,7 +102,7 @@ jobs:
           MSG_MINIMAL: actions url,commit,ref
 
   cypress-tests:
-    needs: [unit-tests, deploy]
+    needs: [set-branch-name, unit-tests, deploy-branch]
     name: cypress tests
     uses: ./.github/workflows/cypress-for-env.yml
     with:
@@ -110,7 +111,7 @@ jobs:
 
   a11y-tests:
     name: A11y Tests
-    needs: [set-branch-name, unit-tests, deploy]
+    needs: [set-branch-name, unit-tests, deploy-branch]
     if: ${{ github.ref != 'refs/heads/production' }}
     runs-on: ubuntu-latest
     strategy:
@@ -132,7 +133,7 @@ jobs:
       - name: Endpoint
         run: |
           pushd services
-          export APPLICATION_ENDPOINT=`./output.sh ui ApplicationEndpointUrl $STAGE_PREFIX$branch_name`
+          export APPLICATION_ENDPOINT=`./output.sh ui ApplicationEndpointUrl ${{ format('{0}{1}', secrets.STAGE_PREFIX, needs.set-branch-name.outputs.branch-name) }}`
           echo "APPLICATION_ENDPOINT=$APPLICATION_ENDPOINT" >> $GITHUB_ENV
           echo "Application endpoint: $APPLICATION_ENDPOINT"
           popd

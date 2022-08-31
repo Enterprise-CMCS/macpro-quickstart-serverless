@@ -31,16 +31,22 @@ runs:
       shell: bash
       run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
 
-    - uses: actions/setup-node@v1
+    - uses: actions/setup-node@v3
       with:
         node-version: ${{ steps.node_version.outputs.NODE_VERSION }}
 
     - uses: actions/cache@v2
+      id: cache
       with:
         path: |
           **/node_modules
           ~/.cache/Cypress
         key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock', 'plugins/**') }}-3
+
+    - name: install dependencies
+      if: steps.cache.outputs.cache-hit != 'true'
+      shell: bash
+      run: yarn install --frozen-lockfile
 
     - name: set path
       shell: bash
