@@ -1,0 +1,37 @@
+name: Check deploy strategy
+
+on:
+  workflow_call:
+    secrets:
+      USE_AUTO_PROMOTION:
+        required: true
+    outputs:
+      deploy-strategy:
+        description: "equals 'auto-promotion' if the USE_AUTO_PROMOTION secret is set and equal to 'true.'' otherwise equals 'branch-based'"
+        value: ${{ jobs.check-deploy-strategy.outputs.deploy-strategy }}
+
+jobs:
+  check-deploy-strategy:
+    runs-on: ubuntu-latest
+    name: check deploy strategy
+    outputs:
+      deploy-strategy: ${{ steps.deploy-strategy.outputs.deploy-strategy }}
+    steps:
+      - name: check out repository
+        uses: actions/checkout@v3
+
+      - name: check for auto-promotion secret
+        id: auto-promotion
+        uses: ./.github/actions/has-secret
+        with:
+          secret-to-check: ${{ secrets.USE_AUTO_PROMOTION }}
+
+      - id: deploy-strategy
+        run: |
+          if
+            [[ "${{ steps.auto-promotion.outputs.has-secret }}" == "true" && "${{ steps.auto-promotion.outputs.secret-value }}" == "true" ]]
+          then
+            echo "::set-output name=deploy-strategy::auto-promotion"
+          else
+            echo "::set-output name=deploy-strategy::branch-based"
+          fi

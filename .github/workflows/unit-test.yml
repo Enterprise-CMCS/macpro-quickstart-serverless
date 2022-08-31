@@ -22,18 +22,11 @@ jobs:
       - name: run unit tests
         run: ./scripts/unit_test.sh
 
-      # necessary because you can't use the secret context in 'if' conditionals
-      # https://github.com/actions/runner/issues/520
       - name: check for codeclimate secret
         id: codeclimate
-        run: |
-          if
-            [[ "${{ secrets.CODE_CLIMATE_ID }}" != "" ]]
-          then
-            echo "set-output:: name=has-secret::true"
-          else
-            echo "set-output:: name=has-secret::false"
-          fi
+        uses: ./.github/actions/has-secret
+        with:
+          secret-to-check: ${{ secrets.CODE_CLIMATE_ID }}
 
       - name: publish test coverage to code climate
         if: ${{ steps.codeclimate.outputs.has-secret == true }}

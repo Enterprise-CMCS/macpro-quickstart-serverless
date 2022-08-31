@@ -1,18 +1,19 @@
-name: Set up env
-
-permissions:
-  id-token: write
-  contents: read
+name: Set up environment
+description: sets up the environment for a deploy
 
 inputs:
   oidc-role:
     required: true
+    description: the OIDC role to use
   aws-region:
     required: true
+    description: the AWS region to use
   branch-specific-oidc-role:
     required: true
+    description: the branch-specific OIDC role to use
   branch-specific-aws-region:
     required: true
+    description: the branch-specific AWS region to use
 
 runs:
   using: composite

@@ -7,7 +7,6 @@ on:
       - "dependabot/**"
       - "!skipci*"
       - "!master" # TODO this should be conditional if auto-promotion is enabled
-      # - "!bharvey-promote" # TODO remove
 
 permissions:
   id-token: write
@@ -15,7 +14,22 @@ permissions:
   actions: read
 
 jobs:
+  check-deploy-strategy:
+    uses: ./.github/workflows/check-deploy-strategy.yml
+    secrets:
+      USE_AUTO_PROMOTION: ${{ secrets.USE_AUTO_PROMOTION }}
+
+  # each subsequent job should be configured to need this job to effectively gate on the deploy strategy
+  gate-on-deploy-strategy:
+    needs: [check-deploy-strategy]
+    runs-on: ubuntu-latest
+    if: ${{ needs.check-deploy-strategy.outputs.deploy-strategy == 'branch-based' }}
+    steps:
+      - name: confirm deploy strategy
+        run: echo "Using the branch-based deploy strategy"
+
   set-branch-name:
+    needs: [gate-on-deploy-strategy]
     name: set branch name
     runs-on: ubuntu-latest
     outputs:
@@ -48,13 +62,14 @@ jobs:
         run: echo "::set-output name=upcased-branch-name::${{ steps.string-case.outputs.uppercase }}"
 
   unit-tests:
+    needs: [gate-on-deploy-strategy]
     name: run unit tests
     uses: ./.github/workflows/unit-test.yml
     secrets:
       CODE_CLIMATE_ID: ${{ secrets.CODE_CLIMATE_ID}}
 
   deploy-branch:
-    needs: [set-branch-name, unit-tests]
+    needs: [set-branch-name, unit-tests, gate-on-deploy-strategy]
     name: deploy branch
     runs-on: ubuntu-latest
     env:
@@ -77,18 +92,11 @@ jobs:
           # This can optionally be set as an GitHub Actions Secret
           ./scripts/deploy.sh ${{ format('{0}{1}', secrets.STAGE_PREFIX, needs.set-branch-name.outputs.branch-name) }}
 
-      # necessary because you can't use the secret context in 'if' conditionals
-      # https://github.com/actions/runner/issues/520
       - name: check for slack webhook secret
         id: slack
-        run: |
-          if
-            [[ "${{ secrets.SLACK_WEBHOOK_URL }}" != "" ]]
-          then
-            echo "set-output:: name=has-secret::true"
-          else
-            echo "set-output:: name=has-secret::false"
-          fi
+        uses: ./.github/actions/has-secret
+        with:
+          secret-to-check: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: slack notification
         uses: rtCamp/action-slack-notify@v2
@@ -102,7 +110,7 @@ jobs:
           MSG_MINIMAL: actions url,commit,ref
 
   cypress-tests:
-    needs: [set-branch-name, unit-tests, deploy-branch]
+    needs: [set-branch-name, unit-tests, deploy-branch, gate-on-deploy-strategy]
     name: cypress tests
     uses: ./.github/workflows/cypress-for-env.yml
     with:
@@ -111,7 +119,7 @@ jobs:
 
   a11y-tests:
     name: A11y Tests
-    needs: [set-branch-name, unit-tests, deploy-branch]
+    needs: [set-branch-name, unit-tests, deploy-branch, gate-on-deploy-strategy]
     if: ${{ github.ref != 'refs/heads/production' }}
     runs-on: ubuntu-latest
     strategy:

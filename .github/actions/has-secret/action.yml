@@ -1,0 +1,27 @@
+name: Has secret
+description: this composite action is necessary because you can't use the secret context in an 'if' conditional. see https://github.com/actions/runner/issues/520
+
+inputs:
+  secret-to-check:
+    required: true
+    description: the value of the secret to check
+outputs:
+  has-secret:
+    value: ${{ steps.check-secret.outputs.has-secret }}
+    description: "'true' if the secret has a non-empty value"
+  secret-value:
+    value: ${{ steps.check-secret.outputs.value }}
+    description: the secret value
+
+runs:
+  using: composite
+  steps:
+    - id: check-secret
+      shell: bash
+      run: |
+        if
+          [[ "${{ inputs.secret-to-check }}" != "" ]]
+        then
+          echo "::set-output name=has-secret::true"
+          echo "::set-output name=value::${{ inputs.secret-to-check }}"
+        fi
