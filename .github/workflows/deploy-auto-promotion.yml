@@ -46,7 +46,7 @@ jobs:
     uses: ./.github/workflows/cypress-for-env.yml
     with:
       env: dev
-    secrets: inherit
+    secrets: inherit # pragma: allowlist secret
 
   promote-val:
     needs: [cypress-dev, unit-tests, gate-on-deploy-strategy]
@@ -54,7 +54,7 @@ jobs:
     uses: ./.github/workflows/deploy-to-env.yml
     with:
       env: val
-    secrets: inherit
+    secrets: inherit # pragma: allowlist secret
 
   cypress-val:
     needs: [promote-val, unit-tests, gate-on-deploy-strategy]
@@ -62,7 +62,7 @@ jobs:
     uses: ./.github/workflows/cypress-for-env.yml
     with:
       env: val
-    secrets: inherit
+    secrets: inherit # pragma: allowlist secret
 
   promote-production:
     needs: [cypress-val, unit-tests, gate-on-deploy-strategy]
@@ -70,7 +70,7 @@ jobs:
     uses: ./.github/workflows/deploy-to-env.yml
     with:
       env: production
-    secrets: inherit
+    secrets: inherit # pragma: allowlist secret
 
   cypress-production:
     needs: [promote-production, unit-tests, gate-on-deploy-strategy]
@@ -78,7 +78,7 @@ jobs:
     uses: ./.github/workflows/cypress-for-env.yml
     with:
       env: production
-    secrets: inherit
+    secrets: inherit # pragma: allowlist secret
 
   notify-slack:
     needs:
