@@ -1,4 +1,4 @@
-name: Deploy Branch
+name: Deploy branch-based
 
 on:
   push:
@@ -31,11 +31,13 @@ jobs:
     needs: gate-on-deploy-strategy
     name: set and validate branch name
     uses: ./.github/workflows/set-and-validate-branch-name.yml
+    secrets:
+      STAGE_PREFIX: ${{ secrets.STAGE_PREFIX }}
 
   unit-tests:
     needs: gate-on-deploy-strategy
     name: run unit tests
-    uses: ./.github/workflows/unit-test.yml
+    uses: ./.github/workflows/unit-tests.yml
     secrets:
       CODE_CLIMATE_ID: ${{ secrets.CODE_CLIMATE_ID}}
 

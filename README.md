@@ -1,4 +1,6 @@
-# macpro-quickstart-serverless ![Build](https://github.com/CMSgov/macpro-quickstart-serverless/workflows/Deploy/badge.svg?branch=master) [![latest release](https://img.shields.io/github/release/cmsgov/macpro-quickstart-serverless.svg)](https://github.com/cmsgov/macpro-quickstart-serverless/releases/latest) [![Maintainability](https://api.codeclimate.com/v1/badges/1449ad929006f559756b/maintainability)](https://codeclimate.com/github/CMSgov/macpro-quickstart-serverless/maintainability) [![CodeQL](https://github.com/CMSgov/macpro-quickstart-serverless/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/CMSgov/macpro-quickstart-serverless/actions/workflows/codeql-analysis.yml) [![Dependabot](https://badgen.net/badge/Dependabot/enabled/green?icon=dependabot)](https://dependabot.com/) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) [![Test Coverage](https://api.codeclimate.com/v1/badges/1449ad929006f559756b/test_coverage)](https://codeclimate.com/github/CMSgov/macpro-quickstart-serverless/test_coverage)
+# macpro-quickstart-serverless
+
+![Build](https://github.com/CMSgov/macpro-quickstart-serverless/workflows/Deploy/badge.svg?branch=master) [![latest release](https://img.shields.io/github/release/cmsgov/macpro-quickstart-serverless.svg)](https://github.com/cmsgov/macpro-quickstart-serverless/releases/latest) [![Maintainability](https://api.codeclimate.com/v1/badges/1449ad929006f559756b/maintainability)](https://codeclimate.com/github/CMSgov/macpro-quickstart-serverless/maintainability) [![CodeQL](https://github.com/CMSgov/macpro-quickstart-serverless/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/CMSgov/macpro-quickstart-serverless/actions/workflows/codeql-analysis.yml) [![Dependabot](https://badgen.net/badge/Dependabot/enabled/green?icon=dependabot)](https://dependabot.com/) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) [![Test Coverage](https://api.codeclimate.com/v1/badges/1449ad929006f559756b/test_coverage)](https://codeclimate.com/github/CMSgov/macpro-quickstart-serverless/test_coverage)
 
 A serverless form submission application, built and deployed to AWS with the [Serverless Application Framework](https://serverless.com). This QuickStart app provides a template for deploying your own QuickStart codebase. The [Architecture Diagram](./.images/architecture.svg?raw=true) shows the resources built by the QuickStart template in this repo.
 
@@ -163,9 +165,26 @@ These tests are defined in the `tests/cypress` folder. They use
 For more info, including how to run these tests locally, see the [testing README](tests/cypress/README.MD).
 Integration and accessibility tests are run automatically as part of the `deploy` GitHub Action.
 
-## Release
+## Deployment and Promotion
 
-Our product is promoted through branches. A developer branch is merged to the master branch. The master branch is merged to val to affect a val release, and the val branch is merged to production to affect a production release. Please use the buttons below to promote/release code to higher environments.<br />
+### Environments for feature branches
+
+The Quickstart is configured to deploy an environment on every push to a feature branch. This is useful for testing changes in development and demonstrating changes to other developers and product owners. These environments are automatically destroyed when the feature branch is deleted.
+
+### Higher environments
+
+The QuickStart supports two promotion strategies for higher environments, which are mutually exclusive.
+
+#### Branch-based promotion (default)
+
+This deployment strategy relies on Git branches for each environment. Manual merges to each branch trigger a deploy to the corresponding environment.
+
+- a feature branch is merged to the master branch to affect a dev release
+- the master branch is merged to val to affect a val release
+- the val branch is merged to production to affect a production release
+- see the [deploy-branch-based](./.github/workflows/deploy-branch-based.yml) workflow
+
+You can use the buttons below to release code to higher environments.<br />
 
 | branch     | status                                                                                                             | release                                                                                                                                                                                                                                                   |
 | ---------- | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -173,7 +192,18 @@ Our product is promoted through branches. A developer branch is merged to the ma
 | val        | ![val](https://github.com/CMSgov/macpro-quickstart-serverless/workflows/Deploy/badge.svg?branch=val)               | [![release to val](https://img.shields.io/badge/-Create%20PR-blue.svg)](https://github.com/CMSgov/macpro-quickstart-serverless/compare/val...master?quick_pull=1&template=PULL_REQUEST_TEMPLATE.val.md&title=Release%20to%20Val)                          |
 | production | ![production](https://github.com/CMSgov/macpro-quickstart-serverless/workflows/Deploy/badge.svg?branch=production) | [![release to production](https://img.shields.io/badge/-Create%20PR-blue.svg)](https://github.com/CMSgov/macpro-quickstart-serverless/compare/production...val?quick_pull=1&template=PULL_REQUEST_TEMPLATE.production.md&title=Release%20to%20Production) |
 
-## Setup Deployments for GitHub Actions
+#### Auto-promotion (optional)
+
+Optionally, the Quickstart can be configured to automatically promote between environments on merges to the master branch.
+Promotion observes the following rules:
+
+- unit tests must pass before the deploy to the dev environment
+- cypress tests must pass before the deploy to the next environment (e.g. cypress tests on the dev environment must pass before the deploy to val)
+- see the [deploy-auto-promotion](./.github/workflows/deploy-auto-promotion.yml) workflow
+
+To enable auto-promotion, set a GitHub Actions secret with the key `USE_AUTO_PROMOTION` and the value `true`.
+
+## Set Up Deployments for GitHub Actions
 
 Deployments via GitHub Actions authenticate using [Open ID Connect (OIDC)](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/about-security-hardening-with-openid-connect). This prevents needing to maintain a separate static user within AWS for the deployments.
 

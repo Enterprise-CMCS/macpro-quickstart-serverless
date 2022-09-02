@@ -7,7 +7,7 @@ on:
         required: true
     outputs:
       deploy-strategy:
-        description: "equals 'auto-promotion' if the USE_AUTO_PROMOTION secret is set and equal to 'true.'' otherwise equals 'branch-based'"
+        description: "equals 'auto-promotion' if the USE_AUTO_PROMOTION secret is set and equal to 'true'. otherwise equals 'branch-based'"
         value: ${{ jobs.check-deploy-strategy.outputs.deploy-strategy }}
 
 jobs:
