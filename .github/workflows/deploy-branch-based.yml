@@ -73,7 +73,7 @@ jobs:
 
       - name: slack notification
         uses: rtCamp/action-slack-notify@v2
-        if: ${{ steps.slack.outputs.has-secret == true && contains(fromJson('["master", "val", "production"]'), needs.set-and-validate-branch-name.outputs.branch-name) && failure() }}
+        if: ${{ steps.slack.outputs.has-secret == true && contains(fromJson('["master", "val", "production"]'), needs.set-and-validate-branch-name.outputs.branch-name) && failure() }} # pragma: allowlist secret
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_USERNAME: Deploy Alerts
@@ -94,7 +94,7 @@ jobs:
     uses: ./.github/workflows/cypress-for-env.yml
     with:
       env: ${{ needs.set-and-validate-branch-name.outputs.branch-name }}
-    secrets: inherit
+    secrets: inherit # pragma: allowlist secret
 
   a11y-tests:
     name: A11y Tests

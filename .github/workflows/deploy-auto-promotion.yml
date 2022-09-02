@@ -38,7 +38,7 @@ jobs:
     uses: ./.github/workflows/deploy-to-env.yml
     with:
       env: dev
-    secrets: inherit
+    secrets: inherit # pragma: allowlist secret
 
   cypress-dev:
     needs: [promote-dev, unit-tests, gate-on-deploy-strategy]
@@ -100,7 +100,7 @@ jobs:
 
       - name: slack notification
         uses: rtCamp/action-slack-notify@v2
-        if: ${{ steps.slack.outputs.has-secret == true && failure() }}
+        if: ${{ steps.slack.outputs.has-secret == true && failure() }} # pragma: allowlist secret
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
           SLACK_USERNAME: Deploy Alerts
