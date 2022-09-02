@@ -1,0 +1,54 @@
+name: Set and validate branch name
+
+on:
+  workflow_call:
+    inputs:
+      run-validation:
+        type: boolean
+        description: true runs validation on the branch name
+        required: false
+        default: true
+    secrets:
+      STAGE_PREFIX:
+        required: true
+    outputs:
+      branch-name:
+        description: the branch name
+        value: ${{ jobs.set-branch-name.outputs.branch-name }}
+      upcased-branch-name:
+        description: the upcased branch name
+        value: ${{ jobs.set-branch-name.outputs.upcased-branch-name }}
+
+jobs:
+  set-branch-name:
+    runs-on: ubuntu-latest
+    name: set branch name
+    outputs:
+      branch-name: ${{ steps.set-branch-name.outputs.branch-name }}
+      upcased-branch-name: ${{ steps.upcased.outputs.branch-name }}
+    steps:
+      - name: check out repository
+        uses: actions/checkout@v3
+
+      - name: set branch name
+        id: set-branch-name
+        run: |
+          if [[ "$GITHUB_REF" =~ ^refs/heads/dependabot/.* ]]; then # Dependabot builds very long branch names.  This is a switch to make it shorter.
+            echo "::set-output name=branch-name::`echo ${GITHUB_REF#refs/heads/} | md5sum | head -c 10 | sed 's/^/x/'`"
+          else
+            echo "::set-output name=branch-name::${GITHUB_REF#refs/heads/}"
+          fi
+
+      - name: validate branch name
+        if: inputs.run-validation
+        run: ./.github/scripts/branch_name_validation.sh ${{ secrets.STAGE_PREFIX }}${{ steps.set-branch-name.outputs.branch-name }}
+
+      - name: upcase branch name
+        id: string-case
+        uses: ASzc/change-string-case-action@v2
+        with:
+          string: ${{ steps.set-branch-name.outputs.branch-name }}
+
+      - name: output upcased branch name
+        id: upcased
+        run: echo "::set-output name=upcased-branch-name::${{ steps.string-case.outputs.uppercase }}"
