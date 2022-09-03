@@ -7,7 +7,7 @@ on:
         required: true
     outputs:
       deploy-strategy:
-        description: "equals 'auto-promotion' if the USE_AUTO_PROMOTION secret is set and equal to 'true'. otherwise equals 'branch-based'"
+        description: "equals 'auto-promotion' if the branch is 'master' and the USE_AUTO_PROMOTION secret is 'true'. otherwise equals 'branch-based'"
         value: ${{ jobs.check-deploy-strategy.outputs.deploy-strategy }}
 
 jobs:
@@ -29,7 +29,7 @@ jobs:
       - id: deploy-strategy
         run: |
           if
-            [[ "${{ steps.auto-promotion.outputs.has-secret }}" == "true" && "${{ steps.auto-promotion.outputs.secret-value }}" == "true" ]]
+            [[ "${GITHUB_REF#refs/heads/}" == "master" && "${{ steps.auto-promotion.outputs.has-secret }}" == "true" && "${{ steps.auto-promotion.outputs.secret-value }}" == "true" ]]
           then
             echo "::set-output name=deploy-strategy::auto-promotion"
           else

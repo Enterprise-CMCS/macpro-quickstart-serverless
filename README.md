@@ -173,7 +173,7 @@ The Quickstart is configured to deploy an environment on every push to a feature
 
 ### Higher environments
 
-The QuickStart supports two promotion strategies for higher environments, which are mutually exclusive.
+When merging to the master branch, the QuickStart supports two promotion strategies for higher environments, which are mutually exclusive.
 
 #### Branch-based promotion (default)
 
