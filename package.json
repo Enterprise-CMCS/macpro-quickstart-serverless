@@ -35,6 +35,7 @@
     "serverless-idempotency-helper": "CMSgov/serverless-idempotency-helper",
     "serverless-offline": "^8.5.0",
     "serverless-online": "CMSgov/serverless-online",
+    "serverless-plugin-canary-deployments": "^0.8.0",
     "serverless-plugin-scripts": "^1.0.2",
     "serverless-plugin-warmup": "^7.1.0",
     "serverless-s3-bucket-helper": "CMSgov/serverless-s3-bucket-helper#0.1.1",
@@ -43,6 +44,7 @@
     "yargs": "^16.1.1"
   },
   "dependencies": {
+    "@aws-sdk/client-codedeploy": "^3.163.0",
     "axe-core": "^4.4.1",
     "cypress-axe": "^0.14.0",
     "serverless-iam-roles-per-function": "^3.2.0"

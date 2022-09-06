@@ -18,6 +18,7 @@ The reference docs for AWS resources referenced in `serverless.yml` are here:
 - [API Gateway Response](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-apigateway-gatewayresponse.html)
 - [WAFv2 WebACL](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-wafv2-webacl.html)
 - [functions](https://www.serverless.com/framework/docs/providers/aws/guide/functions)
+- [CodeDeploy](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/clients/client-codedeploy/index.html)
 
 ## Service-Specific Configuration Parameters
 
