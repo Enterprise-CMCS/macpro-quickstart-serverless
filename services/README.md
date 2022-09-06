@@ -46,3 +46,13 @@ The following configuration parameters are common to all services deployed by th
 Functions defined by the services should follow the [principle of least privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege), meaning that each function should be granted the minimum set of permissions required to complete the job of the function. The QuickStart uses the `serverless-iam-roles-per-function` [Serverless plugin] to define a custom role for each function. Users should prefer per-function roles and avoid defining IAM permissions for the default IAM role, as these permissions will be shared among all functions for the service, which could violate the least privilege principle.
 
 A note on implementation: each `serverless.yml` for a service uses a boundary policy and path that are defined in the [default IAM role](https://www.serverless.com/framework/docs/providers/aws/guide/iam#the-default-iam-role). The `defaultInherit` flag for the plugin is set to `true`, which allows the per-function IAM roles to inherit the boundary policy and path.
+
+## CodeDeploy Functionality for Service Functions
+
+This [confluence doc](https://confluenceent.cms.gov/x/w4lqFQ) explains QuickStart and AWS CodeDeploy. The gradual deployment functionality is implemented by the [serverless-plugin-canary-deployments plugin](https://confluenceent.cms.gov/x/w4lqFQ).
+The ADO responsibility is to:
+
+- create AWS CloudWatch alarms
+- create 2 hooks: BeforeAllowTraffic (preHook) and AfterAllowTraffic (postHook) (see services/app-api/handlers/hooks.js for an example)
+- create AWS SNS topic to publish deployment results
+- reference the alarms, hook functions, and notification configurations in the deployment settings section for each lambda
