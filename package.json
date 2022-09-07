@@ -34,6 +34,7 @@
     "serverless-iam-helper": "CMSgov/serverless-iam-helper",
     "serverless-idempotency-helper": "CMSgov/serverless-idempotency-helper",
     "serverless-offline": "^8.5.0",
+    "serverless-offline-ssm": "^6.2.0",
     "serverless-online": "CMSgov/serverless-online",
     "serverless-plugin-scripts": "^1.0.2",
     "serverless-plugin-warmup": "^7.1.0",
