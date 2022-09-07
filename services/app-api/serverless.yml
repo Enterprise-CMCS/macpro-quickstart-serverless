@@ -19,6 +19,7 @@ plugins:
   - serverless-online
   - serverless-api-client-certificate
   - serverless-iam-roles-per-function
+  - "@enterprise-cmcs/serverless-waf-plugin"
 
 custom:
   stage: ${opt:stage, self:provider.stage}
