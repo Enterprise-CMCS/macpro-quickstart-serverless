@@ -114,35 +114,6 @@ resources:
               Principal:
                 AWS: !Sub "arn:aws:iam::${AWS::AccountId}:root"
         Bucket: !Ref LoggingBucket
-    CloudFrontWebAcl:
-      Type: AWS::WAFv2::WebACL
-      Properties:
-        Name: ${self:custom.webAclName}
-        DefaultAction:
-          Block: {}
-        Rules:
-          - Action:
-              Allow: {}
-            Name: ${self:custom.webAclName}-allow-usa-plus-territories
-            Priority: 0
-            Statement:
-              GeoMatchStatement:
-                CountryCodes:
-                  - GU # Guam
-                  - PR # Puerto Rico
-                  - US # USA
-                  - UM # US Minor Outlying Islands
-                  - VI # US Virgin Islands
-                  - MP # Northern Mariana Islands
-            VisibilityConfig:
-              SampledRequestsEnabled: true
-              CloudWatchMetricsEnabled: true
-              MetricName: WafWebAcl
-        Scope: CLOUDFRONT
-        VisibilityConfig:
-          CloudWatchMetricsEnabled: true
-          SampledRequestsEnabled: true
-          MetricName: ${self:custom.stage}-webacl
     CloudFrontOriginAccessIdentity:
       Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
       Properties:
@@ -191,7 +162,6 @@ resources:
             - ErrorCode: 403
               ResponseCode: 403
               ResponsePagePath: /index.html
-          WebACLId: !GetAtt CloudFrontWebAcl.Arn
           Logging:
             Bucket: !Sub "${LoggingBucket}.s3.amazonaws.com"
             Prefix: AWSLogs/CLOUDFRONT/${self:custom.stage}/
