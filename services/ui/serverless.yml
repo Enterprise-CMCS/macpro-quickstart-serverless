@@ -17,6 +17,7 @@ plugins:
   - serverless-stack-termination-protection
   - serverless-iam-helper
   - serverless-s3-bucket-helper
+  - "@enterprise-cmcs/serverless-waf-plugin"
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -31,6 +32,9 @@ custom:
   cloudfrontCertificateArn: ${ssm:/configuration/${self:custom.stage}/cloudfront/certificateArn, ssm:/configuration/default/cloudfront/certificateArn, ""}
   cloudfrontDomainName: ${ssm:/configuration/${self:custom.stage}/cloudfront/domainName, ""}
   webAclName: ${self:service}-${self:custom.stage}-webacl
+  custom:
+    wafExcludeRules:
+      wafScope: CLOUDFRONT
   firehoseStreamName: aws-waf-logs-${self:service}-${self:custom.stage}-firehose
   # scripts:
   #   hooks:
@@ -162,6 +166,7 @@ resources:
             - ErrorCode: 403
               ResponseCode: 403
               ResponsePagePath: /index.html
+          WebACLId: !GetAtt WafPluginAcl.Arn
           Logging:
             Bucket: !Sub "${LoggingBucket}.s3.amazonaws.com"
             Prefix: AWSLogs/CLOUDFRONT/${self:custom.stage}/
