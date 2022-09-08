@@ -32,9 +32,8 @@ custom:
   cloudfrontCertificateArn: ${ssm:/configuration/${self:custom.stage}/cloudfront/certificateArn, ssm:/configuration/default/cloudfront/certificateArn, ""}
   cloudfrontDomainName: ${ssm:/configuration/${self:custom.stage}/cloudfront/domainName, ""}
   webAclName: ${self:service}-${self:custom.stage}-webacl
-  custom:
-    wafExcludeRules:
-      wafScope: CLOUDFRONT
+  wafExcludeRules:
+    wafScope: CLOUDFRONT
   firehoseStreamName: aws-waf-logs-${self:service}-${self:custom.stage}-firehose
   # scripts:
   #   hooks:
