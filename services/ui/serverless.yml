@@ -32,15 +32,15 @@ custom:
   cloudfrontDomainName: ${ssm:/configuration/${self:custom.stage}/cloudfront/domainName, ""}
   webAclName: ${self:service}-${self:custom.stage}-webacl
   firehoseStreamName: aws-waf-logs-${self:service}-${self:custom.stage}-firehose
-  scripts:
-    hooks:
-      # Associate the WAF ACL with the Firehose Delivery Stream
-      deploy:finalize: |
-        wafAclArn=`aws wafv2 list-web-acls --scope CLOUDFRONT | jq -r '.WebACLs | .[] | select(.Name=="${self:custom.webAclName}") | .ARN'`
-        firehoseStreamArn=`aws firehose describe-delivery-stream --delivery-stream-name ${self:custom.firehoseStreamName} | jq -r '.DeliveryStreamDescription.DeliveryStreamARN'`
-        aws wafv2 put-logging-configuration \
-          --logging-configuration ResourceArn=$wafAclArn,LogDestinationConfigs=$firehoseStreamArn \
-          --region ${self:provider.region}
+  # scripts:
+  #   hooks:
+  #     # Associate the WAF ACL with the Firehose Delivery Stream
+  #     deploy:finalize: |
+  #       wafAclArn=`aws wafv2 list-web-acls --scope CLOUDFRONT | jq -r '.WebACLs | .[] | select(.Name=="${self:custom.webAclName}") | .ARN'`
+  #       firehoseStreamArn=`aws firehose describe-delivery-stream --delivery-stream-name ${self:custom.firehoseStreamName} | jq -r '.DeliveryStreamDescription.DeliveryStreamARN'`
+  #       aws wafv2 put-logging-configuration \
+  #         --logging-configuration ResourceArn=$wafAclArn,LogDestinationConfigs=$firehoseStreamArn \
+  #         --region ${self:provider.region}
 
 resources:
   Conditions:
