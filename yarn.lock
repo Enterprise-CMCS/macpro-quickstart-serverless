@@ -1067,6 +1067,11 @@
     debug "^3.1.0"
     lodash.once "^4.1.1"
 
+"@enterprise-cmcs/serverless-waf-plugin@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@enterprise-cmcs/serverless-waf-plugin/-/serverless-waf-plugin-1.3.0.tgz#b2f241f68218b94b62987596888730975c99b019"
+  integrity sha512-Xysp8ejNhkrxCMQ4CximHmphKO1vGt3JGKKzGs0tLX1r4yK8BdobmauX/GmDwAfrzqlHVGDRsdvvY1Grv1W0yw==
+
 "@eslint/eslintrc@^0.4.3":
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/@eslint/eslintrc/-/eslintrc-0.4.3.tgz#9e42981ef035beb3dd49add17acb96e8ff6f394c"

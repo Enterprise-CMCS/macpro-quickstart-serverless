@@ -19,6 +19,7 @@ plugins:
   - serverless-online
   - serverless-api-client-certificate
   - serverless-iam-roles-per-function
+  - "@enterprise-cmcs/serverless-waf-plugin"
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -32,7 +33,7 @@ custom:
   tableArn: ${env:AMENDMENTS_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsTableArn}
   atomicCounterTableName: ${env:AMENDMENTS_COUNTER_TABLE_NAME, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableName}
   atomicCounterTableArn: ${env:AMENDMENTS_COUNTER_TABLE_ARN, cf:database-${self:custom.stage}.AmendmentsAtomicCounterTableArn}
-  webAclName: ${self:service}-${self:custom.stage}-webacl
+  webAclName: ${self:custom.stage}-${self:service}-webacl
   associateWaf:
     name: ${self:custom.webAclName}
     version: V2
