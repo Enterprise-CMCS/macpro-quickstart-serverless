@@ -8,6 +8,7 @@ import Routes from "./Routes";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import config from "./config";
+import IdleTimer from "./components/IdleTimer";
 
 function App() {
   const [isAuthenticating, setIsAuthenticating] = useState(true);
@@ -70,6 +71,13 @@ function App() {
           handleLogout={handleLogout}
           handleLogin={handleLogin}
         />
+        {isAuthenticated && (
+          <IdleTimer
+            handleLogout={handleLogout}
+            timeout={15 * 60 * 1000}
+            promptTimeout={10 * 1000}
+          ></IdleTimer>
+        )}
         <AppContext.Provider value={{ isAuthenticated, userHasAuthenticated }}>
           <Routes />
           <Footer />
