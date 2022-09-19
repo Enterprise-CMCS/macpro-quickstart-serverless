@@ -19,6 +19,7 @@ plugins:
   - serverless-online
   - serverless-plugin-scripts
   - serverless-iam-roles-per-function
+  - "@enterprise-cmcs/serverless-waf-plugin"
 
 custom:
   proxyApi: ${ssm:/configuration/${self:custom.stage}/prince/api, ssm:/configuration/default/prince/api, ""}
@@ -89,35 +90,6 @@ resources:
           gatewayresponse.header.Access-Control-Allow-Headers: "'*'"
         ResponseType: DEFAULT_5XX
         RestApiId: !Ref ApiGatewayRestApi
-    ApiGwWebAcl:
-      Type: AWS::WAFv2::WebACL
-      Properties:
-        Name: ${self:custom.webAclName}
-        DefaultAction:
-          Block: {}
-        Rules:
-          - Action:
-              Allow: {}
-            Name: ${self:custom.webAclName}-allow-usa-plus-territories
-            Priority: 0
-            Statement:
-              GeoMatchStatement:
-                CountryCodes:
-                  - GU # Guam
-                  - PR # Puerto Rico
-                  - US # USA
-                  - UM # US Minor Outlying Islands
-                  - VI # US Virgin Islands
-                  - MP # Northern Mariana Islands
-            VisibilityConfig:
-              SampledRequestsEnabled: true
-              CloudWatchMetricsEnabled: true
-              MetricName: WafWebAcl
-        Scope: REGIONAL
-        VisibilityConfig:
-          CloudWatchMetricsEnabled: true
-          SampledRequestsEnabled: true
-          MetricName: ${self:custom.stage}-webacl
   Outputs:
     ApiGatewayRestApiName:
       Value: !Ref ApiGatewayRestApi
