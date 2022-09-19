@@ -19,8 +19,8 @@ afterEach(() => {
 jest.mock("react-router-dom", () => ({
   ...jest.requireActual("react-router-dom"), // use actual for all non-hook parts
 
-  useRouteMatch: () => ({
-    path: "/",
+  useMatch: () => ({
+    pathname: "/",
     url: "/",
     params: {},
   }),
