@@ -19,6 +19,7 @@ plugins:
   - serverless-online
   - serverless-plugin-scripts
   - serverless-iam-roles-per-function
+  - serverless-plugin-typescript
 
 custom:
   proxyApi: ${ssm:/configuration/${self:custom.stage}/prince/api, ssm:/configuration/default/prince/api, ""}
