@@ -17,8 +17,8 @@
     "serverless-associate-waf": "^1.2.1"
   },
   "dependencies": {
-    "axios": "^0.26.1",
+    "axios": "^0.27.2",
     "serverless-api-client-certificate": "^1.0.2",
-    "uuid": "^7.0.3"
+    "uuid": "^8.3.2"
   }
 }

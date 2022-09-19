@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Auth } from "aws-amplify";
 import { AppContext } from "./libs/contextLib";
 import { onError } from "./libs/errorLib";
@@ -12,7 +12,7 @@ import config from "./config";
 function App() {
   const [isAuthenticating, setIsAuthenticating] = useState(true);
   const [isAuthenticated, userHasAuthenticated] = useState(false);
-  const history = useHistory();
+  const history = useNavigate();
 
   useEffect(() => {
     onLoad();

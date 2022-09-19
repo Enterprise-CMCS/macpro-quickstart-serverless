@@ -59,16 +59,13 @@ exports[`Test Header.js Should match snapshot 1`] = `
         <button
           aria-controls="gov-banner_1"
           aria-expanded="false"
-          class="ds-c-usa-banner__button"
+          class="ds-c-usa-banner__button ds-c-usa-banner__button-text"
         >
-          <span
-            class="ds-c-usa-banner__button-text"
-          >
-            Here’s how you know
-          </span>
+          Here’s how you know
           <svg
             aria-hidden="true"
-            class="ds-c-icon ds-c-icon--arrow ds-c-icon--arrow-down ds-c-usa-banner__action-icon"
+            class="ds-c-icon ds-c-icon--arrow ds-c-icon--arrow-down ds-c-usa-banner__action-icon ds-u-margin-left--1"
+            direction="down"
             focusable="false"
             id="icon-3"
             viewBox="0 0 320 512"
@@ -167,28 +164,21 @@ exports[`Test Header.js Should match snapshot 1`] = `
             <strong>
                lock 
             </strong>
-             ( 
+             
             <svg
-              aria-hidden="false"
-              aria-labelledby="icon-6__title"
+              aria-hidden="true"
               class="ds-c-icon ds-c-icon--lock ds-c-usa-banner__lock-image"
               focusable="false"
               id="icon-6"
-              role="img"
               viewBox="0 0 52 64"
               xmlns="http://www.w3.org/2000/svg"
             >
-              <title
-                id="icon-6__title"
-              >
-                lock
-              </title>
               <path
                 d="M26 0c10.493 0 19 8.507 19 19v9h3a4 4 0 0 1 4 4v28a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V32a4 4 0 0 1 4-4h3v-9C7 8.507 15.507 0 26 0zm0 8c-5.979 0-10.843 4.77-10.996 10.712L15 19v9h22v-9c0-6.075-4.925-11-11-11z"
                 fill-rule="evenodd"
               />
             </svg>
-             ) or
+             or
             <strong>
                https:// 
             </strong>

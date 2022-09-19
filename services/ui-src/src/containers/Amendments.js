@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { onError } from "../libs/errorLib";
 import { FormGroup, FormControl, FormLabel, Container } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
@@ -26,7 +26,7 @@ import { fileUpload, fileURLResolver } from "../libs/file";
 export default function Amendments() {
   const file = useRef(null);
   const { id } = useParams();
-  const history = useHistory();
+  const history = useNavigate();
   const [amendment, setAmendment] = useState(null);
   const [transmittalNumber, setTransmittalNumber] = useState("");
   const [email, setEmail] = useState("");

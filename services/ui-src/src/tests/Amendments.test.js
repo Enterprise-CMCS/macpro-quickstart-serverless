@@ -2,6 +2,7 @@ import React from "react";
 import Amendments from "../containers/Amendments";
 import { render, screen, act } from "@testing-library/react";
 import { getAmendment } from "../libs/api";
+import { BrowserRouter } from "react-router-dom";
 
 const fileUpload = () => {};
 const fileURLResolver = () => new Promise.resolve("mock-attachmenturl");
@@ -40,7 +41,9 @@ describe("Test Amendments.js", () => {
 
   beforeEach(async () => {
     wrapper = render(
-      <Amendments fileUpload={fileUpload} fileURLResolver={fileURLResolver} />
+      <BrowserRouter>
+        <Amendments fileUpload={fileUpload} fileURLResolver={fileURLResolver} />
+      </BrowserRouter>
     );
     await waitForComponentToPaint(wrapper);
   });
