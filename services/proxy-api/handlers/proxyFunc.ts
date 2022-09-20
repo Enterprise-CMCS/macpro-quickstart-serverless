@@ -1,12 +1,12 @@
 import handler from "../libs/handler-lib";
-const axios = require("axios");
+import axios from "axios";
 import { APIGatewayProxyResult, APIGatewayEvent } from "aws-lambda";
 
 export const proxyFunc = async (
   event: APIGatewayEvent
 ): Promise<APIGatewayProxyResult> => {
   let response: any = {};
-  let api_endpoint = process.env.proxyApi;
+  const api_endpoint = process.env.proxyApi;
 
   await axios({
     method: "POST",
