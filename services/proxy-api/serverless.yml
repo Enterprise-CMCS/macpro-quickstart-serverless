@@ -7,7 +7,6 @@ package:
   individually: true
 
 plugins:
-  - serverless-plugin-typescript
   - serverless-bundle
   - serverless-dotenv-plugin
   - serverless-plugin-warmup
@@ -26,8 +25,8 @@ custom:
   proxyApi: ${ssm:/configuration/${self:custom.stage}/prince/api, ssm:/configuration/default/prince/api, ""}
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
-  serverlessPluginTypescript:
-    tsConfigFileLocation: "./tsconfig.json"
+  bundle:
+    tsConfig: "tsconfig.json"
   serverlessTerminationProtection:
     stages:
       - master
@@ -63,7 +62,7 @@ provider:
 functions:
   princeProxy:
     handler: handlers/proxyFunc.main
-    # iamRoleStatements: # add IAM statements for the function role here
+    iamRoleStatements: # add IAM statements for the function role here
     environment:
       proxyApi: ${self:custom.proxyApi}
     timeout: 30
