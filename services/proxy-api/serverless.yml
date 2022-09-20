@@ -63,7 +63,7 @@ provider:
 functions:
   princeProxy:
     handler: handlers/proxyFunc.main
-    iamRoleStatements: # add IAM statements for the function role here
+    # iamRoleStatements: # add IAM statements for the function role here
     environment:
       proxyApi: ${self:custom.proxyApi}
     timeout: 30
