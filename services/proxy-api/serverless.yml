@@ -19,8 +19,6 @@ plugins:
   - serverless-online
   - serverless-plugin-scripts
   - serverless-iam-roles-per-function
-  - "@enterprise-cmcs/serverless-waf-plugin"
-  - serverless-plugin-typescript
   - serverless-plugin-typescript
   - "@enterprise-cmcs/serverless-waf-plugin"
 
