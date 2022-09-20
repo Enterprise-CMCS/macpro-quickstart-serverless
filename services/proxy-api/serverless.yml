@@ -7,6 +7,7 @@ package:
   individually: true
 
 plugins:
+  - serverless-plugin-typescript
   - serverless-bundle
   - serverless-dotenv-plugin
   - serverless-plugin-warmup
@@ -19,13 +20,14 @@ plugins:
   - serverless-online
   - serverless-plugin-scripts
   - serverless-iam-roles-per-function
-  - serverless-plugin-typescript
   - "@enterprise-cmcs/serverless-waf-plugin"
 
 custom:
   proxyApi: ${ssm:/configuration/${self:custom.stage}/prince/api, ssm:/configuration/default/prince/api, ""}
   stage: ${opt:stage, self:provider.stage}
   region: ${opt:region, self:provider.region}
+  serverlessPluginTypescript:
+    tsConfigFileLocation: "./tsconfig.json"
   serverlessTerminationProtection:
     stages:
       - master
