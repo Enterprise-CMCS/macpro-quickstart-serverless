@@ -1,8 +1,8 @@
-import * as ses from "./../libs/ses-lib";
+import * as ses from "../libs/ses-lib";
 
-exports.handler = function (event, context, callback) {
+exports.handler = function (event: any, callback: any) {
   console.log("Received event:", JSON.stringify(event, null, 2));
-  event.Records.forEach(function (record) {
+  event.Records.forEach(function (record: any) {
     var params = (function (eventName) {
       switch (eventName) {
         case "INSERT":
