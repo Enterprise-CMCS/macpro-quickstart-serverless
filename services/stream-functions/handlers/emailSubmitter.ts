@@ -3,7 +3,7 @@ import * as ses from "../libs/ses-lib";
 exports.handler = function (event: any, callback: any) {
   console.log("Received event:", JSON.stringify(event, null, 2));
   event.Records.forEach(function (record: any) {
-    var params = (function (eventName) {
+    const params = (function (eventName) {
       switch (eventName) {
         case "INSERT":
           return ses.getSESEmailParams({
