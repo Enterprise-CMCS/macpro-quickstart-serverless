@@ -8,5 +8,15 @@
   },
   "author": "",
   "license": "CC0-1.0",
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/jest": "^27.4.0",
+    "@types/aws4": "^1.11.2",
+    "@types/aws-lambda": "^8.10.88",
+    "@types/prompt-sync": "^4.1.1",
+    "aws-lambda": "^1.0.7",
+    "serverless-plugin-typescript": "^2.1.2",
+    "ts-jest": "^27.1.3",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.4"
+  }
 }
