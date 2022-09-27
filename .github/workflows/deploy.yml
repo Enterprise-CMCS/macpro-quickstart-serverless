@@ -227,7 +227,7 @@ jobs:
     - uses: actions/checkout@v1
     - uses: mgenteluci/cloudformation-deploy-action@v1.4.1
       env:
-        TEMPLATE: '\nr-alerts\alert-conditions.yml'
+        TEMPLATE: 'nr-alerts/alert-conditions/alert-conditions.yml'
         AWS_STACK_NAME: 'newrelic-alert-conditions'
         AWS_REGION: ${{secrets.AWS_DEFAULT_REGION}}
         AWS_ACCESS_KEY_ID: ${{secrets.AWS_ACCESS_KEY_ID}}
