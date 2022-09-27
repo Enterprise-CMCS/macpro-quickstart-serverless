@@ -1,0 +1,1062 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: NewRelic Alert Condition
+
+Parameters:
+  ApiKey: 
+    Description: NewRelic API Key
+    Type: String
+    Default: NRAK-AP39PP62MDD844BGUDCB0WHEDIE
+  
+  SystemErrorPolicyId:
+    Description: The Policy Id you want to associate the System errors conditions to
+    Type: String
+    Default: 3572028
+### DynamoDb Parameters ###
+  UserErrorPolicyId:
+    Description: The Policy Id you want to associate the User errors conditions to
+    Type: String
+    Default: 3572029
+
+  LatencyPolicyId:
+    Description: The Policy Id you want to associate the Latency conditions to
+    Type: String
+    Default: 3572030 
+
+  ThrottledPolicyId:
+    Description: The Policy Id you want to associate the Throttled conditions to
+    Type: String
+    Default: 3572032 
+
+  CapacityPolicyId:
+    Description: The Policy Id you want to associate the Capacity conditions to
+    Type: String
+    Default: 3572033 
+    
+### S3 Parameters ###
+  S3PolicyId:
+    Description: The Policy Id you want to associate the Capacity conditions to
+    Type: String
+    Default: 3575124
+
+#   Branch:
+#     Type: String
+#     Default: BranchName
+
+# Mappings:
+#   Branch:
+#     BranchName:
+#       Master: AND `entityGuid` = 'XXXXXXX' TIMESERIES auto
+#       Personal: AND `entityGuid` = 'MzUwMzY2MnxJTkZSQXxOQXw4NTA5NTUzOTU2MjMzOTcxMDY2' TIMESERIES auto
+      
+
+
+Resources:
+### Systems Error Alert Conditions ###   
+  AlertForSystemError:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref SystemErrorPolicyId
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 #This is the number of groups you expect to see at any given time. It is used in combination with the OpenViolationOnGroupOverlay option.
+        IgnoreOverlap: true #If disabled, New Relic looks for a convergence of groups. If the condition is looking for 2 or more groups, and the returned values cannot be separated into that number of distinct groups, then that will also produce a violation.
+        Name: DB Alert For System Error
+        Nrql:
+          #Query: "SELECT count(*) FROM AwsLambdaInvocation WHERE provider.functionName = 'LambdaNode'"
+          Query: SELECT sum(`provider.systemErrors.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable' 
+          SinceValue: "1" #This is the time (in minutes) for the condition to persist before triggering an event.
+        Terms:
+          - Duration: "120" #This is the time (in minutes) for the condition to persist before triggering an event.
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "1" #This is the threshold that the ValueFunction must be compared to using the Operator for an event to be triggered.
+            TimeFunction: "any"
+        Type: "integer" #This defines the type of metric that will be used for the alert.
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200   
+
+  # AlertForQuerySystemError:
+  #   Type: NewRelic::Alerts::NrqlAlert
+  #   Properties:
+  #     ApiKey: !Ref ApiKey
+  #     PolicyId: !Ref SystemErrorPolicyId
+  #     NrqlCondition:
+  #       Enabled: true
+  #       ExpectedGroups: 1 
+  #       IgnoreOverlap: true 
+  #       Name: DB Alert For Query System Error
+  #       Nrql:
+  #         Query: !Join 
+  #           - ""
+  #           - - "SELECT sum(`provider.querySystemErrors.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'"
+  #             - !FindInMap [Branch, BranchName, Personal]
+  #         # Query: !Join 
+  #         #   - ""
+  #         #   - - !FindInMap [SELECT sum(`provider.querySystemErrors.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable', !Ref Branch, Personal]
+  #         #     - !Ref Branch
+  #         #SELECT sum(`provider.querySystemErrors.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+  #         SinceValue: "5" 
+  #       Terms:
+  #         - Duration: "5" 
+  #           Operator: "equal" 
+  #           Priority: "critical"
+  #           Threshold: "1" 
+  #           TimeFunction: "any"
+  #         - Duration: "2" 
+  #           Operator: "equal" 
+  #           Priority: "warning"
+  #           Threshold: "1" 
+  #           TimeFunction: "any"
+  #       Type: "integer" 
+  #       #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+  #       ViolationTimeLimitSeconds: 7200 
+
+  # AlertForQuerySystemError:
+  #   Type: NewRelic::Alerts::NrqlAlert
+  #   Properties:
+  #     ApiKey: !Ref ApiKey
+  #     PolicyId: !Ref SystemErrorPolicyId
+  #     NrqlCondition:
+  #       Enabled: true
+  #       ExpectedGroups: 1 
+  #       IgnoreOverlap: true 
+  #       Name: DB Alert For Query System Error
+  #       Nrql:
+  #         Query: !Join 
+  #           - ""
+  #           - - "SELECT sum(`provider.querySystemErrors.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'"
+  #             - !FindInMap [Branch, BranchName, Personal]
+  #         # Query: !Join 
+  #         #   - ""
+  #         #   - - !FindInMap [SELECT sum(`provider.querySystemErrors.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable', !Ref Branch, Personal]
+  #         #     - !Ref Branch
+  #         #SELECT sum(`provider.querySystemErrors.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+  #         SinceValue: "5" 
+  #       Terms:
+  #         - Duration: "5" 
+  #           Operator: "equal" 
+  #           Priority: "critical"
+  #           Threshold: "1" 
+  #           TimeFunction: "any"
+  #         - Duration: "2" 
+  #           Operator: "equal" 
+  #           Priority: "warning"
+  #           Threshold: "1" 
+  #           TimeFunction: "any"
+  #       Type: "integer" 
+  #       #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+  #       ViolationTimeLimitSeconds: 7200 
+
+  AlertForScanSystemError:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref SystemErrorPolicyId
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Scan System Error
+        Nrql:
+          Query: SELECT sum(`provider.scanSystemErrors.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "1" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForGetSystemError:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref SystemErrorPolicyId
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Get System Error
+        Nrql:
+          Query: SELECT sum(`provider.getSystemErrors.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "1" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForPutSystemError:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref SystemErrorPolicyId
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Put System Error
+        Nrql:
+          Query: SELECT sum(`provider.putSystemErrors.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "1" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForDeleteSystemError:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref SystemErrorPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Delete System Error
+        Nrql:
+          Query: SELECT sum(`provider.deleteSystemErrors.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "1" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForUpdateSystemError:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref SystemErrorPolicyId
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Update System Error
+        Nrql:
+          Query: SELECT sum(`provider.updateSystemErrors.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "1" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForBatchGetSystemError:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref SystemErrorPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For BatchGet System Error
+        Nrql:
+          Query: SELECT sum(`provider.batchGetSystemErrors.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "1" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForBatchWriteSystemError:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref SystemErrorPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For BatchWrite System Error
+        Nrql:
+          Query: SELECT sum(`provider.batchWriteSystemErrors.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "1" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+    
+
+######################################################## User Error Alert Conditions ################################################################
+
+  AlertForUserError:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref UserErrorPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert for User Errors
+        Nrql:
+          Query: SELECT sum(`provider.userErrors.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "1" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+################################## Latency Alert Conditions ######################################################################## 
+
+  AlertForGetSuccessfulRequestLatency:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref LatencyPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Get Successful Request Latency
+        Nrql:
+          Query: SELECT min(`provider.getSuccessfulRequestLatency.Minimum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200    
+
+  AlertForPutSuccessfulRequestLatency:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref LatencyPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Put Successful Request Latency
+        Nrql:
+          Query: SELECT min(`provider.putSuccessfulRequestLatency.Minimum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForDeleteSuccessfulRequestLatency:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref LatencyPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Delete Successful Request Latency
+        Nrql:
+          Query: SELECT min(`provider.deleteSuccessfulRequestLatency.Minimum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForUpdateSuccessfulRequestLatency:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref LatencyPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Update Successful Request Latency
+        Nrql:
+          Query: SELECT sum(`provider.updateSuccessfulRequestLatency.SampleCount`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForQuerySuccessfulRequestLatency:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref LatencyPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Query Successful Request Latency
+        Nrql:
+          Query: SELECT sum(`provider.querySuccessfulRequestLatency.SampleCount`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForScanSuccessfulRequestLatency:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref LatencyPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Scan Successful Request Latency
+        Nrql:
+          Query: SELECT sum(`provider.scanSuccessfulRequestLatency.SampleCount`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForBatchGetSuccessfulRequestLatency:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref LatencyPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For BatchGet Successful Request Latency
+        Nrql:
+          Query: SELECT sum(`provider.batchGetSuccessfulRequestLatency.SampleCount`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForBatchWriteSuccessfulRequestLatency:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref LatencyPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For BatchWrite Successful Request Latency
+        Nrql:
+          Query: SELECT sum(`provider.batchWriteSuccessfulRequestLatency.SampleCount`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+################################## Throttled Alert Conditions ######################################################################## 
+
+  AlertForGetThrottledRequest:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref ThrottledPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Get Throttled Request
+        Nrql:
+          Query: SELECT sum(`provider.getThrottledRequests.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForPutThrottledRequest:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref ThrottledPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Put Throttled Request
+        Nrql:
+          Query: SELECT sum(`provider.putThrottledRequests.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForDeleteThrottledRequest:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref ThrottledPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Delete Throttled Request
+        Nrql:
+          Query: SELECT sum(`provider.deleteThrottledRequests.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForUpdateThrottledRequest:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref ThrottledPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Update Throttled Request
+        Nrql:
+          Query: SELECT sum(`provider.updateThrottledRequests.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForQueryThrottledRequest:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref ThrottledPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Query Throttled Request
+        Nrql:
+          Query: SELECT sum(`provider.queryThrottledRequests.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForScanThrottledRequest:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref ThrottledPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Scan Throttled Request
+        Nrql:
+          Query: SELECT sum(`provider.scanThrottledRequests.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForBatchGetThrottledRequest:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref ThrottledPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For BatchGet Throttled Request
+        Nrql:
+          Query: SELECT sum(`provider.batchGetThrottledRequests.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForBatchWriteThrottledRequest:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref ThrottledPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For BatchWrite Throttled Request
+        Nrql:
+          Query: SELECT sum(`provider.batchWriteThrottledRequests.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForWriteThrottledEvents:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref ThrottledPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Write Throttled Events
+        Nrql:
+          Query: SELECT sum(`provider.writeThrottledEvents.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForReadThrottledEvents:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref ThrottledPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Read Throttled Events
+        Nrql:
+          Query: SELECT sum(`provider.readThrottledEvents.Sum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+
+################################## Capacity Alert Conditions ######################################################################## 
+
+  AlertForProvisionedReadCapacityUnits:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref CapacityPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Provisioned Read Capacity Units
+        Nrql:
+          Query: SELECT max(`provider.provisionedReadCapacityUnits.Maximum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForConsumedReadCapacityUnits:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref CapacityPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Consumed Read Capacity Units
+        Nrql:
+          Query: SELECT max(`provider.consumedReadCapacityUnits.Maximum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForProvisionedWriteCapacityUnits:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref CapacityPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Providioned Write Capacity Units
+        Nrql:
+          Query: SELECT max(`provider.provisionedWriteCapacityUnits.Maximum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForConsumedWriteCapacityUnits:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref CapacityPolicyId 
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: DB Alert For Consumed Write Capacity Units
+        Nrql:
+          Query: SELECT max(`provider.consumedWriteCapacityUnits.Maximum`) FROM DatastoreSample WHERE provider='DynamoDbTable'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+
+
+### S3 Alert Conditions #######
+
+  AlertForS3Errors:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref S3PolicyId
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: S3 Alert For Errors
+        Nrql:
+          Query: SELECT sum(`provider.error4xxErrors.Sum`) as '4xx' FROM DatastoreSample WHERE provider='S3BucketRequests'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForS3Latency:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref S3PolicyId
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: S3 Alert For Latency
+        Nrql:
+          Query: SELECT average(`provider.totalRequestLatency.Average`) as 'Average latency (ms)' FROM DatastoreSample WHERE provider='S3BucketRequests'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+ 
