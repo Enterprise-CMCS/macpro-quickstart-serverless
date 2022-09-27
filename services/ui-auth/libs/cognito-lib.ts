@@ -1,13 +1,14 @@
-var aws = require("aws-sdk");
+let aws = require("aws-sdk");
 const COGNITO_CLIENT = new aws.CognitoIdentityServiceProvider({
   apiVersion: "2016-04-19",
   region: "us-east-1",
 });
+import * as types from "../types"
 
-export async function createUser(params) {
-  await new Promise((resolve, reject) => {
-    COGNITO_CLIENT.adminCreateUser(params, function (err, data) {
-      var response;
+export async function createUser(params: types.poolDataType) {
+  await new Promise((resolve, _reject) => {
+    COGNITO_CLIENT.adminCreateUser(params, function (err: any, data: object) {
+      let response;
       if (err) {
         console.log("FAILED ", err, err.stack); // an error occurred
         response = { statusCode: 500, body: { message: "FAILED", error: err } };
@@ -21,12 +22,12 @@ export async function createUser(params) {
   });
 }
 
-export async function setPassword(params) {
+export async function setPassword(params: types.passwordDataType) {
   await new Promise((resolve, reject) => {
-    COGNITO_CLIENT.adminSetUserPassword(params, function (err, data) {
+    COGNITO_CLIENT.adminSetUserPassword(params, function (err: any, data: object) {
       if (err) {
         console.log("FAILED to update password", err, err.stack); // an error occurred
-        var response = {
+        let response = {
           statusCode: 500,
           body: { message: "FAILED", error: err },
         };
@@ -39,12 +40,12 @@ export async function setPassword(params) {
   });
 }
 
-export async function updateUserAttributes(params) {
+export async function updateUserAttributes(params: types.attributeDataType) {
   await new Promise((resolve, reject) => {
-    COGNITO_CLIENT.adminUpdateUserAttributes(params, function (err, data) {
+    COGNITO_CLIENT.adminUpdateUserAttributes(params, function (err: any, data: object) {
       if (err) {
         console.log("FAILED to update user attributes", err, err.stack); // an error occurred
-        var response = {
+        let response = {
           statusCode: 500,
           body: { message: "FAILED", error: err },
         };
