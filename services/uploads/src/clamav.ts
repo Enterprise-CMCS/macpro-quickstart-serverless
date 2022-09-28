@@ -1,9 +1,11 @@
+export {};
 const AWS = require("aws-sdk");
 const fs = require("fs");
 const spawnSync = require("child_process").spawnSync;
 const path = require("path");
 const constants = require("./constants");
 const utils = require("./utils");
+const execSync = require("child_process").execSync;
 
 const S3 = new AWS.S3();
 
@@ -12,13 +14,13 @@ const S3 = new AWS.S3();
  *
  * returns a list of keys
  */
-async function listBucketFiles(bucketName) {
+async function listBucketFiles(bucketName: any) {
   try {
     const listFilesResult = await S3.listObjectsV2({
       Bucket: bucketName,
     }).promise();
 
-    const keys = listFilesResult.Contents.map((c) => c.Key);
+    const keys = listFilesResult.Contents!.map((c: { Key: any }) => c.Key);
     return keys;
   } catch (err) {
     utils.generateSystemMessage(`Error listing files`);
@@ -65,12 +67,12 @@ async function downloadAVDefinitions() {
   const allFileKeys = await listBucketFiles(constants.CLAMAV_BUCKET_NAME);
 
   const definitionFileKeys = allFileKeys
-    .filter((key) => key.startsWith(constants.PATH_TO_AV_DEFINITIONS))
-    .map((fullPath) => path.basename(fullPath));
+    .filter((key: any) => key!.startsWith(constants.PATH_TO_AV_DEFINITIONS))
+    .map((fullPath: any) => path.basename(fullPath));
 
   // download each file in the bucket.
-  const downloadPromises = definitionFileKeys.map((filenameToDownload) => {
-    return new Promise((resolve, reject) => {
+  const downloadPromises = definitionFileKeys.map((filenameToDownload: any) => {
+    return new Promise<void>((resolve, reject) => {
       let destinationFile = path.join("/tmp/", filenameToDownload);
 
       utils.generateSystemMessage(
@@ -92,7 +94,7 @@ async function downloadAVDefinitions() {
           );
           resolve();
         })
-        .on("error", function (err) {
+        .on("error", function (err: any) {
           utils.generateSystemMessage(
             `Error downloading definition file ${filenameToDownload}`
           );
@@ -116,8 +118,8 @@ async function uploadAVDefinitions() {
   utils.generateSystemMessage("Uploading Definitions");
   const s3AllFullKeys = await listBucketFiles(constants.CLAMAV_BUCKET_NAME);
 
-  const s3DefinitionFileFullKeys = s3AllFullKeys.filter((key) =>
-    key.startsWith(constants.PATH_TO_AV_DEFINITIONS)
+  const s3DefinitionFileFullKeys = s3AllFullKeys.filter((key: any) =>
+    key!.startsWith(constants.PATH_TO_AV_DEFINITIONS)
   );
 
   // If there are any s3 Definition files in the s3 bucket, delete them.
@@ -126,7 +128,7 @@ async function uploadAVDefinitions() {
       await S3.deleteObjects({
         Bucket: constants.CLAMAV_BUCKET_NAME,
         Delete: {
-          Objects: s3DefinitionFileFullKeys.map((k) => {
+          Objects: s3DefinitionFileFullKeys.map((k: any) => {
             return { Key: k };
           }),
         },
@@ -146,8 +148,8 @@ async function uploadAVDefinitions() {
   // list all the files in the work dir for upload
   const definitionFiles = fs.readdirSync(constants.FRESHCLAM_WORK_DIR);
 
-  const uploadPromises = definitionFiles.map((filenameToUpload) => {
-    return new Promise((resolve, reject) => {
+  const uploadPromises = definitionFiles.map((filenameToUpload: any) => {
+    return new Promise<void>((resolve, reject) => {
       utils.generateSystemMessage(
         `Uploading updated definitions for file ${filenameToUpload} ---`
       );
@@ -160,7 +162,7 @@ async function uploadAVDefinitions() {
         ),
       };
 
-      S3.putObject(options, function (err, data) {
+      S3.putObject(options, function (err: any, data: any) {
         if (err) {
           utils.generateSystemMessage(
             `--- Error uploading ${filenameToUpload} ---`
@@ -191,7 +193,7 @@ async function uploadAVDefinitions() {
  *
  * @param pathToFile Path in the filesystem where the file is stored.
  */
-function scanLocalFile(pathToFile) {
+function scanLocalFile(pathToFile: any) {
   try {
     let avResult = spawnSync(constants.PATH_TO_CLAMAV, [
       "--stdout",
@@ -204,7 +206,7 @@ function scanLocalFile(pathToFile) {
     console.log(avResult.toString());
 
     return constants.STATUS_CLEAN_FILE;
-  } catch (err) {
+  } catch (err: any) {
     // Error status 1 means that the file is infected.
     if (err.status === 1) {
       utils.generateSystemMessage("SUCCESSFUL SCAN, FILE INFECTED");
