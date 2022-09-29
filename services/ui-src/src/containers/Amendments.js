@@ -112,7 +112,7 @@ export default function Amendments() {
         comments,
         attachment: attachment || amendment.attachment,
       });
-      history.push("/");
+      history("/");
     } catch (e) {
       onError(e);
       setIsLoading(false);
@@ -185,7 +185,7 @@ export default function Amendments() {
 
     try {
       await deleteAmendment(id);
-      history.push("/");
+      history("/");
     } catch (e) {
       onError(e);
       setIsDeleting(false);

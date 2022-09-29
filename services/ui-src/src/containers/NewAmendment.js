@@ -60,7 +60,8 @@ export default function NewAmendment() {
         comments,
         attachment,
       });
-      history.push("/");
+      console.log("here");
+      history("/");
     } catch (e) {
       onError(e);
       setIsLoading(false);
