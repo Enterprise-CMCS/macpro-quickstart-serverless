@@ -1,14 +1,12 @@
 import * as cognitolib from "../libs/cognito-lib";
 const userPoolId = process.env.userPoolId;
-const users = require("../libs/users.json");
+import { users } from "../libs/users";
 import {
   APIGatewayProxyResult,
   APIGatewayEvent,
   APIGatewayEventRequestContextV2,
 } from "aws-lambda";
-import * as types from "../types"
-
-
+import * as types from "../types";
 
 async function myHandler(
   _event: APIGatewayEvent,
