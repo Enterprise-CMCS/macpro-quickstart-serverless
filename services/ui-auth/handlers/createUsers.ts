@@ -18,19 +18,19 @@ async function myHandler(
 
   for (let i = 0; i < users.length; i++) {
     console.log(users[i]);
-    let poolData: types.poolDataType = {
+    const poolData: types.poolDataType = {
       UserPoolId: userPoolId,
       Username: users[i].username,
       DesiredDeliveryMediums: ["EMAIL"],
       UserAttributes: users[i].attributes,
     };
-    let passwordData: types.passwordDataType = {
+    const passwordData: types.passwordDataType = {
       Password: process.env.bootstrapUsersPassword,
       UserPoolId: userPoolId,
       Username: users[i].username,
       Permanent: true,
     };
-    let attributeData: types.attributeDataType = {
+    const attributeData: types.attributeDataType = {
       Username: users[i].username,
       UserPoolId: userPoolId,
       UserAttributes: users[i].attributes,

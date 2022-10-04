@@ -1,4 +1,4 @@
-const aws = require("aws-sdk");
+import * as aws from "aws-sdk";
 const COGNITO_CLIENT = new aws.CognitoIdentityServiceProvider({
   apiVersion: "2016-04-19",
   region: "us-east-1",
