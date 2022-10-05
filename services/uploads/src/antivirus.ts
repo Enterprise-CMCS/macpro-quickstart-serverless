@@ -1,6 +1,7 @@
 /**
  * Lambda function that will be perform the scan and tag the file accordingly.
  */
+export {};
 
 const AWS = require("aws-sdk");
 const path = require("path");
@@ -17,7 +18,7 @@ const constants = require("./constants");
  * @param {string} bucket Bucket of S3 Object
  * @return {int} Length of S3 object in bytes.
  */
-async function sizeOf(key, bucket) {
+async function sizeOf(key: string, bucket: string) {
   console.log("key: " + key);
   console.log("bucket: " + bucket);
   var sts = new AWS.STS();
@@ -33,7 +34,7 @@ async function sizeOf(key, bucket) {
  * @param {string} s3ObjectBucket   Bucket of S3 object
  * @return {boolean} True if S3 object is larger then MAX_FILE_SIZE
  */
-async function isS3FileTooBig(s3ObjectKey, s3ObjectBucket) {
+async function isS3FileTooBig(s3ObjectKey: any, s3ObjectBucket: any) {
   let fileSize = await sizeOf(s3ObjectKey, s3ObjectBucket);
   return fileSize > constants.MAX_FILE_SIZE;
 }
@@ -44,7 +45,7 @@ async function isS3FileTooBig(s3ObjectKey, s3ObjectBucket) {
  * @param {string} s3ObjectBucket    Bucket of S3 object
  * @return {Promise<string>}         Path to downloaded file
  */
-function downloadFileFromS3(s3ObjectKey, s3ObjectBucket) {
+function downloadFileFromS3(s3ObjectKey: any, s3ObjectBucket: any) {
   if (!fs.existsSync(constants.TMP_DOWNLOAD_PATH)) {
     fs.mkdirSync(constants.TMP_DOWNLOAD_PATH);
   }
@@ -71,7 +72,7 @@ function downloadFileFromS3(s3ObjectKey, s3ObjectBucket) {
         );
         resolve(localPath);
       })
-      .on("error", function (err) {
+      .on("error", function (err: any) {
         console.log(err);
         reject();
       })
@@ -79,7 +80,7 @@ function downloadFileFromS3(s3ObjectKey, s3ObjectBucket) {
   });
 }
 
-async function lambdaHandleEvent(event, context) {
+async function lambdaHandleEvent(event: any, context: any) {
   utils.generateSystemMessage("Start Antivirus Lambda function");
 
   let s3ObjectKey = utils.extractKeyFromS3Event(event);
@@ -128,7 +129,7 @@ async function lambdaHandleEvent(event, context) {
   }
 }
 
-async function scanS3Object(s3ObjectKey, s3ObjectBucket) {
+async function scanS3Object(s3ObjectKey: any, s3ObjectBucket: any) {
   await clamav.downloadAVDefinitions(
     constants.CLAMAV_BUCKET_NAME,
     constants.PATH_TO_AV_DEFINITIONS
