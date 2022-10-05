@@ -69,7 +69,7 @@ export default function Profile() {
         family_name: lastName,
         phone_number: formatPhoneNumberForSubmission(phoneNumber),
       });
-      history.push("/");
+      history("/");
     } catch (e) {
       onError(e);
       setIsLoading(false);

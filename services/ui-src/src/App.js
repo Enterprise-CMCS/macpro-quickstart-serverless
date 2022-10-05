@@ -36,7 +36,7 @@ function App() {
 
     userHasAuthenticated(false);
 
-    history.push("/");
+    history("/");
   }
 
   async function handleLogin(event) {

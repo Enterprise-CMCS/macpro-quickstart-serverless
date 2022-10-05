@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "preserveConstEnums": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "strictNullChecks": true,
+    "sourceMap": true,
+    "strict": true,
+    "allowJs": true,
+    "target": "es5",
+    "outDir": ".build",
+    "lib": ["ES2018", "DOM"],
+    "rootDir": "./"
+  }
+}
