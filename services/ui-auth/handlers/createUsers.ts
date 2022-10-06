@@ -1,26 +1,36 @@
 import * as cognitolib from "../libs/cognito-lib";
 const userPoolId = process.env.userPoolId;
-const users = require("../libs/users.json");
+import { users } from "../libs/users";
+import {
+  APIGatewayProxyResult,
+  APIGatewayEvent,
+  APIGatewayEventRequestContextV2,
+} from "aws-lambda";
+import * as types from "../types";
 
-async function myHandler(event, context, callback) {
+async function myHandler(
+  _event: APIGatewayEvent,
+  _context: APIGatewayEventRequestContextV2,
+  _callback: APIGatewayProxyResult
+) {
   console.log("USER POOL ID: ");
   console.log(userPoolId);
 
-  for (var i = 0; i < users.length; i++) {
+  for (let i = 0; i < users.length; i++) {
     console.log(users[i]);
-    var poolData = {
+    const poolData: types.poolDataType = {
       UserPoolId: userPoolId,
       Username: users[i].username,
       DesiredDeliveryMediums: ["EMAIL"],
       UserAttributes: users[i].attributes,
     };
-    var passwordData = {
+    const passwordData: types.passwordDataType = {
       Password: process.env.bootstrapUsersPassword,
       UserPoolId: userPoolId,
       Username: users[i].username,
       Permanent: true,
     };
-    var attributeData = {
+    const attributeData: types.attributeDataType = {
       Username: users[i].username,
       UserPoolId: userPoolId,
       UserAttributes: users[i].attributes,
