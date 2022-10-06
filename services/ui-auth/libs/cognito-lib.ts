@@ -8,7 +8,7 @@ import * as types from "../types";
 export async function createUser(params: types.poolDataType) {
   await new Promise((resolve, _reject) => {
     COGNITO_CLIENT.adminCreateUser(params, function (err: any, data: any) {
-      let response;
+      let response = {};
       if (err) {
         console.log("FAILED ", err, err.stack); // an error occurred
         response = { statusCode: 500, body: { message: "FAILED", error: err } };
