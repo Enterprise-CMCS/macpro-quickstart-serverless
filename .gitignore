@@ -13,3 +13,4 @@ tests_output
 *.log
 tests/cypress/videos
 tests/cypress/screenshots
+services/ui-src/public/configenv.copy
