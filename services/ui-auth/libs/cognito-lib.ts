@@ -8,14 +8,16 @@ import * as types from "../types";
 export async function createUser(params: types.poolDataType) {
   await new Promise((resolve, _reject) => {
     COGNITO_CLIENT.adminCreateUser(params, function (err: any, data: any) {
-      let response = {};
       if (err) {
         console.log("FAILED ", err, err.stack); // an error occurred
-        response = { statusCode: 500, body: { message: "FAILED", error: err } };
+        const response = {
+          statusCode: 500,
+          body: { message: "FAILED", error: err },
+        };
         resolve(response); //if user already exists, we still continue and ignore
       } else {
         console.log("SUCCESS", data); // successful response
-        response = { statusCode: 200, body: { message: "SUCCESS" } };
+        const response = { statusCode: 200, body: { message: "SUCCESS" } };
         resolve(response);
       }
     });
@@ -27,7 +29,7 @@ export async function setPassword(params: types.passwordDataType) {
     COGNITO_CLIENT.adminSetUserPassword(params, function (err: any, data: any) {
       if (err) {
         console.log("FAILED to update password", err, err.stack); // an error occurred
-        let response = {
+        const response = {
           statusCode: 500,
           body: { message: "FAILED", error: err },
         };
@@ -47,7 +49,7 @@ export async function updateUserAttributes(params: types.attributeDataType) {
       function (err: any, data: any) {
         if (err) {
           console.log("FAILED to update user attributes", err, err.stack); // an error occurred
-          let response = {
+          const response = {
             statusCode: 500,
             body: { message: "FAILED", error: err },
           };
