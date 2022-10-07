@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Container, ListGroup, ListGroupItem } from "react-bootstrap";
 import { PageHeader } from "../components/PageHeader";
 import { Breadcrumbs } from "../components/Breadcrumbs";
@@ -8,7 +8,7 @@ import { listAmendments } from "../libs/api";
 import { LinkContainer } from "react-router-bootstrap";
 
 export default function Home() {
-  const [amendments, setAmendments] = useState([]);
+  const [amendments, setAmendments] = useState<any[]>([]);
   const { isAuthenticated } = useAppContext();
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
@@ -34,8 +34,8 @@ export default function Home() {
     return listAmendments();
   }
 
-  function renderAmendmentsList(amendments) {
-    return [{}].concat(amendments).map((amendment, i) =>
+  function renderAmendmentsList(amendments: any) {
+    return [{}].concat(amendments).map((amendment: any, i) =>
       i !== 0 ? (
         <LinkContainer
           key={amendment.amendmentId}

@@ -2,7 +2,17 @@ import { API } from "aws-amplify";
 import config from "../config";
 import { getLocalUserInfo } from "./user";
 
-function requestOptions() {
+interface AmendmentBody {
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  territory?: string;
+  urgent?: boolean;
+  comments?: any;
+  attachment?: any;
+}
+
+function requestOptions(): Record<string, any> {
   const localLogin = config.LOCAL_LOGIN === "true";
 
   if (localLogin) {
@@ -23,29 +33,29 @@ export function listAmendments() {
   return API.get("amendments", "/amendments", opts);
 }
 
-export function getAmendment(id) {
+export function getAmendment(id: string) {
   const opts = requestOptions();
   return API.get("amendments", `/amendments/${id}`, opts);
 }
 
-export function createAmendment(body) {
+export function createAmendment(body: AmendmentBody) {
   const opts = requestOptions();
   opts.body = body;
   return API.post("amendments", "/amendments", opts);
 }
 
-export function updateAmendment(id, body) {
+export function updateAmendment(id: string, body: AmendmentBody) {
   const opts = requestOptions();
   opts.body = body;
   return API.put("amendments", `/amendments/${id}`, opts);
 }
 
-export function deleteAmendment(id) {
+export function deleteAmendment(id: string) {
   const opts = requestOptions();
   return API.del("amendments", `/amendments/${id}`, opts);
 }
 
-export function getAccessiblePdf(html) {
+export function getAccessiblePdf(html: any) {
   const opts = requestOptions();
   opts.body = html;
   return API.post("proxy", `/proxyFunc`, opts);

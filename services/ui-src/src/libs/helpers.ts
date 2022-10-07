@@ -1,11 +1,17 @@
+import { MutableRefObject } from "react";
 import config from "../config";
 
-export function capitalize(s) {
+export function capitalize(s: string) {
   if (typeof s !== "string") return "";
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-export function validateAmendmentForm(email, firstName, lastName, territory) {
+export function validateAmendmentForm(
+  email: string,
+  firstName: string,
+  lastName: string,
+  territory: string
+) {
   return (
     email.length > 0 &&
     firstName.length > 0 &&
@@ -14,8 +20,8 @@ export function validateAmendmentForm(email, firstName, lastName, territory) {
   );
 }
 
-function validFileSize(file) {
-  if (file.current.size > config.MAX_ATTACHMENT_SIZE) {
+function validFileSize(file: MutableRefObject<File | null>) {
+  if (file.current && file.current.size > config.MAX_ATTACHMENT_SIZE) {
     alert(
       `Please pick a file smaller than ${
         config.MAX_ATTACHMENT_SIZE / 1000000
@@ -26,7 +32,7 @@ function validFileSize(file) {
   return true;
 }
 
-function validFileName(fileName) {
+function validFileName(fileName: string) {
   const fileNameRegex = new RegExp("^[0-9a-zA-z-_.]*$");
   if (!fileNameRegex.test(fileName)) {
     alert(
@@ -37,7 +43,7 @@ function validFileName(fileName) {
   return true;
 }
 
-function validFileExtension(fileName) {
+function validFileExtension(fileName: string) {
   const validExt =
     ".bmp,.csv,.doc,.docx,.gif,.jpg,.jpeg,.odp,.ods,.odt,\n.png,.pdf,.ppt,.pptx,.rtf,.tif,.tiff,.txt,.xls,.xlsx";
   var fileExt = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
@@ -53,7 +59,7 @@ function validFileExtension(fileName) {
   return true;
 }
 
-export function validateFileAttachment(file) {
+export function validateFileAttachment(file: MutableRefObject<File | null>) {
   if (file.current) {
     return (
       validFileSize(file) &&

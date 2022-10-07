@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Auth } from "aws-amplify";
 import { AppContext } from "./libs/contextLib";
@@ -39,7 +39,7 @@ function App() {
     history("/");
   }
 
-  async function handleLogin(event) {
+  async function handleLogin(event: any) {
     event.preventDefault();
     try {
       const localLogin = config.LOCAL_LOGIN === "true";
@@ -62,20 +62,18 @@ function App() {
     }
   }
 
-  return (
-    !isAuthenticating && (
-      <div id="app-wrapper">
-        <Header
-          isAuthenticated={isAuthenticated}
-          handleLogout={handleLogout}
-          handleLogin={handleLogin}
-        />
-        <AppContext.Provider value={{ isAuthenticated, userHasAuthenticated }}>
-          <Routes />
-          <Footer />
-        </AppContext.Provider>
-      </div>
-    )
+  return isAuthenticating ? null : (
+    <div id="app-wrapper">
+      <Header
+        isAuthenticated={isAuthenticated}
+        handleLogout={handleLogout}
+        handleLogin={handleLogin}
+      />
+      <AppContext.Provider value={{ isAuthenticated, userHasAuthenticated }}>
+        <Routes />
+        <Footer />
+      </AppContext.Provider>
+    </div>
   );
 }
 

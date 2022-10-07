@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import { ChangeEventHandler, FormEventHandler, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FormGroup, FormControl, FormLabel, Container } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
@@ -18,7 +18,7 @@ import {
 import { fileUpload } from "../libs/file";
 
 export default function NewAmendment() {
-  const file = useRef(null);
+  const file = useRef<File | null>(null);
   const history = useNavigate();
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -38,11 +38,11 @@ export default function NewAmendment() {
 
   populateUserInfo();
 
-  function handleFileChange(event) {
+  const handleFileChange: ChangeEventHandler<any> = (event) => {
     file.current = event.target.files[0];
-  }
+  };
 
-  async function handleSubmit(event) {
+  const handleSubmit: FormEventHandler = async (event) => {
     event.preventDefault();
 
     if (!validateFileAttachment(file)) return;
@@ -66,7 +66,7 @@ export default function NewAmendment() {
       onError(e);
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <Container className="NewAmendment">
@@ -103,7 +103,7 @@ export default function NewAmendment() {
             value={territoryList.filter(function (option) {
               return option.value === territory;
             })}
-            onChange={(e) => setTerritory(e.value)}
+            onChange={(e) => setTerritory(e?.value ?? "")}
             options={territoryList}
           />
         </FormGroup>
@@ -112,7 +112,7 @@ export default function NewAmendment() {
           <Switch
             controlId="urgent"
             checked={urgent}
-            onChange={(e) => setUrgent(!urgent)}
+            onChange={(_e: any) => setUrgent(!urgent)}
           />
         </FormGroup>
         <FormGroup controlId="file">

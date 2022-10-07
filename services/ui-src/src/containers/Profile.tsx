@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect, FormEventHandler } from "react";
 import { useNavigate } from "react-router-dom";
 import "react-phone-input-2/lib/style.css";
 import PhoneInput from "react-phone-input-2";
@@ -38,7 +38,7 @@ export default function Profile() {
     onLoad();
   }, []);
 
-  function validatePhoneNumber(phone) {
+  function validatePhoneNumber(phone: string) {
     if (phone === "1" || phone === "") return true;
     return phone.length === 11;
   }
@@ -51,16 +51,16 @@ export default function Profile() {
     );
   }
 
-  function formatPhoneNumberForForm(phone) {
+  function formatPhoneNumberForForm(phone: string) {
     if (phone == null) return "";
     return phone.replace("+", "");
   }
 
-  function formatPhoneNumberForSubmission(phone) {
+  function formatPhoneNumberForSubmission(phone: string) {
     if (phone === "1" || phone === "" || phone == null) return "";
     return "+" + phone.replace("+", "");
   }
-  async function handleSubmit(event) {
+  const handleSubmit: FormEventHandler = async (event) => {
     event.preventDefault();
     setIsLoading(true);
     try {
@@ -74,7 +74,7 @@ export default function Profile() {
       onError(e);
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <Container>
