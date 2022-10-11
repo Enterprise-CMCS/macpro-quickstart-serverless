@@ -1,4 +1,3 @@
-import React from "react";
 import { Container } from "react-bootstrap";
 import { helpDeskContact } from "../libs/contacts";
 import { HelpSection } from "./HelpSection";
