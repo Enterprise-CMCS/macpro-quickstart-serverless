@@ -1,4 +1,3 @@
-import React from "react";
 import * as Bootstrap from "react-bootstrap";
 import { helpDeskContact, qualityContact } from "../libs/contacts";
 

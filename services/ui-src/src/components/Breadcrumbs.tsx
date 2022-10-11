@@ -1,4 +1,3 @@
-import React from "react";
 import { Breadcrumb } from "react-bootstrap";
 import { Link, useMatch } from "react-router-dom";
 import { routes } from "../Routes";
@@ -8,11 +7,12 @@ export const Breadcrumbs = () => {
   const route = useMatch(window?.location?.pathname ?? "");
 
   const items = routes
-    .filter(({ path }) => route.pathname.includes(path))
+    .filter(({ path }) => route!.pathname.includes(path ?? ""))
     .map(({ path, ...rest }) => ({
-      path: Object.keys(route.params).length
-        ? Object.keys(route.params).reduce(
-            (path, param) => path.replace(`:${param}`, route.params[param]),
+      path: Object.keys(route!.params).length
+        ? Object.keys(route!.params).reduce(
+            (path, param) =>
+              path!.replace(`:${param}`, route!.params[param] ?? ""),
             path
           )
         : path,

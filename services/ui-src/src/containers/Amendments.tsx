@@ -1,4 +1,10 @@
-import React, { useRef, useState, useEffect } from "react";
+import {
+  useRef,
+  useState,
+  useEffect,
+  ChangeEventHandler,
+  FormEventHandler,
+} from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { onError } from "../libs/errorLib";
 import { FormGroup, FormControl, FormLabel, Container } from "react-bootstrap";
@@ -27,7 +33,7 @@ export default function Amendments() {
   const file = useRef(null);
   const { id } = useParams();
   const history = useNavigate();
-  const [amendment, setAmendment] = useState(null);
+  const [amendment, setAmendment] = useState<any>();
   const [transmittalNumber, setTransmittalNumber] = useState("");
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -40,7 +46,7 @@ export default function Amendments() {
 
   useEffect(() => {
     function loadAmendment() {
-      return getAmendment(id);
+      return getAmendment(id ?? "");
     }
 
     async function onLoad() {
@@ -77,19 +83,19 @@ export default function Amendments() {
     onLoad();
   }, [id]);
 
-  function formatFilename(str) {
+  function formatFilename(str: string) {
     return str.replace(/^\w+-/, "");
   }
 
-  function handleFileChange(event) {
+  const handleFileChange: ChangeEventHandler<any> = (event) => {
     file.current = event.target.files[0];
+  };
+
+  function saveAmendment(amendment: any) {
+    return updateAmendment(id ?? "", amendment);
   }
 
-  function saveAmendment(amendment) {
-    return updateAmendment(id, amendment);
-  }
-
-  async function handleSubmit(event) {
+  const handleSubmit: FormEventHandler = async (event) => {
     let attachment;
 
     event.preventDefault();
@@ -110,21 +116,21 @@ export default function Amendments() {
         transmittalNumber,
         urgent,
         comments,
-        attachment: attachment || amendment.attachment,
+        attachment: attachment || amendment?.attachment,
       });
       history("/");
     } catch (e) {
       onError(e);
       setIsLoading(false);
     }
-  }
+  };
 
   // async function handlePrint(event) {
   //   event.preventDefault();
   //   window.print();
   // };
 
-  const openPdf = (basePdf) => {
+  const openPdf = (basePdf: string) => {
     let byteCharacters = atob(basePdf);
     let byteNumbers = new Array(byteCharacters.length);
     for (let i = 0; i < byteCharacters.length; i++) {
@@ -136,8 +142,8 @@ export default function Amendments() {
     window.open(fileURL);
   };
 
-  async function handlePrintAccessiblePdf(event) {
-    event.preventDefault();
+  async function handlePrintAccessiblePdf(event: any) {
+    event?.preventDefault();
     // let html = document.querySelector("html").innerHTML;
     let html = printableHtml();
     console.log(html);
@@ -157,7 +163,7 @@ export default function Amendments() {
             src="https://i.pinimg.com/originals/c4/52/04/c4520440b727695b5aca89e7afa2e7e3.jpg"
             width="50"
           />
-          <p style={{ "border-top": "1px solid black" }}>&nbsp;</p>
+          <p style={{ borderTop: "1px solid black" }}>&nbsp;</p>
           <h1>Amendment to Planned Settlement (APS)</h1>
           <p>&nbsp;</p>
           <p>APD-ID:&nbsp;&nbsp;{transmittalNumber}</p>
@@ -170,7 +176,7 @@ export default function Amendments() {
     );
   }
 
-  async function handleDelete(event) {
+  async function handleDelete(event: any) {
     event.preventDefault();
 
     const confirmed = window.confirm(
@@ -184,7 +190,7 @@ export default function Amendments() {
     setIsDeleting(true);
 
     try {
-      await deleteAmendment(id);
+      await deleteAmendment(id ?? "");
       history("/");
     } catch (e) {
       onError(e);
@@ -192,9 +198,9 @@ export default function Amendments() {
     }
   }
 
-  function openAttachment(event, attachmentURL) {
+  function openAttachment(event: any, attachmentURL: any) {
     event.preventDefault();
-    const uri = url.parse(attachmentURL);
+    const uri: any = url.parse(attachmentURL);
     var options = {
       hostname: uri.hostname,
       port: uri.port,
@@ -203,7 +209,7 @@ export default function Amendments() {
       method: "GET",
     };
     fetch(uri, options)
-      .then((res) => {
+      .then((_res) => {
         window.open(attachmentURL, "_blank");
       })
       .catch((err) => {
@@ -251,7 +257,7 @@ export default function Amendments() {
               })}
               data-testid="amendments-territory"
               isDisabled={true}
-              onChange={(e) => setTerritory(e.value)}
+              onChange={(e: any) => setTerritory(e!.value)}
               options={territoryList}
             />
           </FormGroup>
@@ -260,7 +266,7 @@ export default function Amendments() {
             <Switch
               controlId="urgent"
               checked={urgent}
-              onChange={(e) => setUrgent(!urgent)}
+              onChange={(_e: any) => setUrgent(!urgent)}
             />
           </FormGroup>
           {amendment.attachment && (

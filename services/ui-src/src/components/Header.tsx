@@ -1,9 +1,12 @@
-import React from "react";
 import { UsaBanner } from "@cmsgov/design-system";
 import { Navbar, Container, NavDropdown, Nav } from "react-bootstrap";
 import { CMSLogo } from "./CMSLogo";
 
-function Header({ handleLogout, isAuthenticated, handleLogin }) {
+function Header({
+  handleLogout,
+  isAuthenticated,
+  handleLogin,
+}: Record<string, any>) {
   return (
     <>
       <UsaBanner />

@@ -2,7 +2,7 @@ import * as uuid from "uuid";
 import handler from "../libs/handler-lib";
 import dynamoDb from "../libs/dynamodb-lib";
 
-export const main = handler(async (event, context) => {
+export const main = handler(async (event: any, context: any) => {
   // If this invocation is a pre-warm, do nothing and return.
   if (event.source == "serverless-plugin-warmup") {
     console.log("Warmed up!");
@@ -11,7 +11,7 @@ export const main = handler(async (event, context) => {
   const data = JSON.parse(event.body);
   console.log(JSON.stringify(event, null, 2));
 
-  var nextValue = (await dynamoDb.increment(data.territory)).Attributes
+  var nextValue = (await dynamoDb.increment(data!.territory)).Attributes
     .lastValue.N;
 
   const params = {

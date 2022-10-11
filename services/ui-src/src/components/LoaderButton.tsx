@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "react-bootstrap";
 import "./LoaderButton.css";
 
@@ -7,7 +6,7 @@ export default function LoaderButton({
   className = "",
   disabled = false,
   ...props
-}) {
+}: any) {
   return (
     <div className="d-grid mt-4" data-testid="loader-button">
       <Button

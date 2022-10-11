@@ -41,9 +41,10 @@ export default function Home() {
           key={amendment.amendmentId}
           to={`/amendments/${amendment.amendmentId}`}
         >
-          <ListGroupItem
-            header={amendment.transmittalNumber.trim().split("\n")[0]}
-          >
+          <ListGroupItem>
+            <h4>
+              <b>{amendment.transmittalNumber.trim().split("\n")[0]}</b>
+            </h4>
             {"Created: " + new Date(amendment.createdAt).toLocaleString()}
           </ListGroupItem>
         </LinkContainer>
