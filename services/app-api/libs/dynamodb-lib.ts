@@ -1,6 +1,6 @@
 import AWS from "aws-sdk";
 
-const dynamoConfig = {};
+const dynamoConfig: any = {};
 
 // ugly but OK, here's where we will check the environment
 const atomicTableName = process.env.atomicCounterTableName;
@@ -16,25 +16,25 @@ if (endpoint) {
 const client = new AWS.DynamoDB.DocumentClient(dynamoConfig);
 
 export default {
-  get: (params) => client.get(params).promise(),
-  put: (params) => client.put(params).promise(),
-  query: (params) => client.query(params).promise(),
-  update: (params) => client.update(params).promise(),
-  delete: (params) => client.delete(params).promise(),
-  increment: (counterId) =>
+  get: (params: any) => client.get(params).promise(),
+  put: (params: any) => client.put(params).promise(),
+  query: (params: any) => client.query(params).promise(),
+  update: (params: any) => client.update(params).promise(),
+  delete: (params: any) => client.delete(params).promise(),
+  increment: (counterId: any) =>
     atomicUpdate(counterId, { tableName: atomicTableName }),
 };
 
-function atomicUpdate(counterId, options) {
+function atomicUpdate(counterId: any, options: any) {
   options || (options = {});
-  var params = {
+  const params: any = {
     Key: {},
     AttributeUpdates: {},
     ReturnValues: "UPDATED_NEW",
     TableName: options.tableName,
   };
-  var keyAttribute = options.keyAttribute || "id";
-  var countAttribute = options.countAttribute || "lastValue";
+  const keyAttribute = options.keyAttribute || "id";
+  const countAttribute = options.countAttribute || "lastValue";
 
   params.Key[keyAttribute] = { S: counterId };
   params.AttributeUpdates[countAttribute] = {

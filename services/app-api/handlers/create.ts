@@ -11,8 +11,8 @@ export const main = handler(async (event: any, context: any) => {
   const data = JSON.parse(event.body);
   console.log(JSON.stringify(event, null, 2));
 
-  var nextValue = (await dynamoDb.increment(data!.territory)).Attributes
-    .lastValue.N;
+  const nextValue = (await dynamoDb.increment(data.territory)).Attributes
+    ?.lastValue.N;
 
   const params = {
     TableName: process.env.tableName,
