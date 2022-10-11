@@ -1,4 +1,3 @@
-import React from "react";
 import LoaderButton from "../components/LoaderButton";
 import { render, within } from "@testing-library/react";
 
