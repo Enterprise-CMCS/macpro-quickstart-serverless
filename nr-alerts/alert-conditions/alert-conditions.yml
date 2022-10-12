@@ -11,6 +11,7 @@ Parameters:
     Description: The Policy Id you want to associate the System errors conditions to
     Type: String
     Default: 3572028
+
 ### DynamoDb Parameters ###
   UserErrorPolicyId:
     Description: The Policy Id you want to associate the User errors conditions to
@@ -37,6 +38,18 @@ Parameters:
     Description: The Policy Id you want to associate the Capacity conditions to
     Type: String
     Default: 3575124
+
+### API Gateway Parameters ###
+  APIGatewayPolicyId:
+    Description: The Policy Id you want to associate the Capacity conditions to
+    Type: String
+    Default: 3614101
+
+### WAF Parameters ###
+  WAFPolicyId:
+    Description: The Policy Id you want to associate the Capacity conditions to
+    Type: String
+    Default: 3614100
 
 #   Branch:
 #     Type: String
@@ -1001,7 +1014,7 @@ Resources:
 
 
 
-### S3 Alert Conditions #######
+###################################################### S3 Alert Conditions #####################################################
 
   AlertForS3Errors:
     Type: NewRelic::Alerts::NrqlAlert
@@ -1059,4 +1072,91 @@ Resources:
         #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
         ViolationTimeLimitSeconds: 7200 
 
- 
+
+###################################################### API Gateway Alert Conditions #####################################################
+
+  AlertForAPIGatewayErrors:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref APIGatewayPolicyId
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: API Gateway Alert For Errors
+        Nrql:
+          Query: SELECT sum(`aws.apigateway.5XXError.byStage`) as '5xx errors' FROM Metric WHERE `entity.guid` = 'MzUwMzY2MnxJTkZSQXxOQXwzOTI5NjcwODkxMjkzMzA4NjA1'  #Make sure entity grid mitchers your branch ##
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForAPIGatewayLatency:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref APIGatewayPolicyId
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: API Latency Alert For Errors
+        Nrql:
+          Query: SELECT average(`aws.apigateway.Latency.byStage`) as 'Latency (ms)' FROM Metric WHERE `entity.guid` = 'MzUwMzY2MnxJTkZSQXxOQXwzOTI5NjcwODkxMjkzMzA4NjA1' #Make sure entity grid mitchers your branch ##
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+###################################################### WAF Alert Conditions #####################################################
+
+  AlertForWAFBlockedRequests:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref WAFPolicyId
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: WAF locked Requests Alert For Errors
+        Nrql:
+          Query: SELECT sum(`provider.blockedRequests.Sum`) FROM AwsWafV2WebACLSample WHERE provider='AwsWafV2WebACL'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
