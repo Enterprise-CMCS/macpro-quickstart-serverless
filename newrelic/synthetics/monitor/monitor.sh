@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # API key from your account settings
-API_KEY=''
+API_KEY='NRAK-043OA67JOXYCYOD5EUL8DJFZB2M'
 # Other attributes found at https://docs.newrelic.com/docs/apis/synthetics-rest-api/monitor-examples/attributes-synthetics-rest-api#api-attributes
 monitorName='Ish-Test-API-Script'
 monitorType='SCRIPT_BROWSER'
