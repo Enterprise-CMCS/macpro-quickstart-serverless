@@ -35,21 +35,33 @@ Parameters:
     
 ### S3 Parameters ###
   S3PolicyId:
-    Description: The Policy Id you want to associate the Capacity conditions to
+    Description: The Policy Id you want to associate the s3 conditions to
     Type: String
     Default: 3575124
 
 ### API Gateway Parameters ###
   APIGatewayPolicyId:
-    Description: The Policy Id you want to associate the Capacity conditions to
+    Description: The Policy Id you want to associate the API conditions to
     Type: String
     Default: 3614101
 
 ### WAF Parameters ###
   WAFPolicyId:
-    Description: The Policy Id you want to associate the Capacity conditions to
+    Description: The Policy Id you want to associate the WAF conditions to
     Type: String
     Default: 3614100
+
+### Cognito Parameters ###
+  CognitoPolicyId:
+    Description: The Policy Id you want to associate the Cognito conditions to 
+    Type: String
+    Default: 3644879
+
+### CloudFront Parameters ###
+  CloudfrontPolicyId:
+    Description: The Policy Id you want to associate the Cognito conditions to 
+    Type: String
+    Default: 3644892
 
 #   Branch:
 #     Type: String
@@ -1160,3 +1172,93 @@ Resources:
         Type: "integer" 
         #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
         ViolationTimeLimitSeconds: 7200 
+
+
+###################################################### WAF Alert Conditions #####################################################
+
+  AlertForCognitoSignUpThrottles:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref CognitoPolicyId
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: Cognito SignUp Throttles
+        Nrql:
+          Query: SELECT sum(`provider.signUpThrottles.Sum`) FROM AwsCognitoUserPoolSample WHERE provider='AwsCognitoUserPool'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+  AlertForCognitoSignInThrottles:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref CognitoPolicyId
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: Cognito SignIn Throttles
+        Nrql:
+          Query: SELECT sum(`provider.signInThrottles.Sum`) FROM AwsCognitoUserPoolSample WHERE provider='AwsCognitoUserPool'
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
+###################################################### CloudFront Alert Conditions #####################################################
+
+  AlertForCloudFrontErrorRate:
+    Type: NewRelic::Alerts::NrqlAlert
+    Properties:
+      ApiKey: !Ref ApiKey
+      PolicyId: !Ref CloudfrontPolicyId
+      NrqlCondition:
+        Enabled: true
+        ExpectedGroups: 1 
+        IgnoreOverlap: true 
+        Name: CloudFront Error Rate
+        Nrql:
+          Query: SELECT average(`aws.cloudfront.5xxErrorRate`) as '5xx Errors' FROM Metric WHERE `entity.guid` = 'MzUwMzY2MnxJTkZSQXxOQXw0Nzc5NTY0NzY4MzMyODgzNTY5'  #Make sure entity grid mitchers your branch ##
+          SinceValue: "5" 
+        Terms:
+          - Duration: "5" 
+            Operator: "equal" 
+            Priority: "critical"
+            Threshold: "2" 
+            TimeFunction: "any"
+          - Duration: "2" 
+            Operator: "equal" 
+            Priority: "warning"
+            Threshold: "1" 
+            TimeFunction: "any"
+        Type: "integer" 
+        #ValueFunction: "sum" #Function to be applied to the Threshold values. Allowd Value (single_value or sum)
+        ViolationTimeLimitSeconds: 7200 
+
