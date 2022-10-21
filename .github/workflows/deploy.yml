@@ -146,7 +146,9 @@ jobs:
           echo "Application endpoint: $APPLICATION_ENDPOINT"
           popd
       - name: deploy newrelic synthetic monitor
-        run: ./newrelic/synthetics/monitor/monitor.sh
+        run: |
+          cd ./newrelic/synthetics/monitor/
+          bash monitor.sh
       - name: Run Cypress Tests
         uses: cypress-io/github-action@v2.11.7
         with:
