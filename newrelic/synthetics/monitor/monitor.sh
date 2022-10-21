@@ -6,7 +6,7 @@ API_KEY=''
 monitorName='Ish-Test-API-Script'
 monitorType='SCRIPT_BROWSER'
 frequency=1440
-locations= '"AWS_US_EAST_1"'
+locations= 
 slaThreshold=7.0
 # Location of the file with your script
 scriptfile=sample_synth_script.js
@@ -37,7 +37,7 @@ then
     echo "Monitor created, $LOCATION "
     echo "Uploading script"
       # base64 encode script
-      encoded=`echo "$script" | base64`
+      encoded=`echo "$script" | base64 -w 0`
       scriptPayload="{\"scriptText\":\"$encoded\"}"
         curl -s -X PUT -H "Api-Key:$API_KEY" -H 'Content-Type:application/json' "$LOCATION/script" -d $scriptPayload
         echo "Script uploaded"
