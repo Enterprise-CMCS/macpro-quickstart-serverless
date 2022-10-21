@@ -6,7 +6,7 @@ API_KEY='NRAK-043OA67JOXYCYOD5EUL8DJFZB2M'
 monitorName='Ish-Test-API-Script'
 monitorType='SCRIPT_BROWSER'
 frequency=1440
-locations= 
+locations='"AWS_US_WEST_1", "AWS_US_EAST_1"'
 slaThreshold=7.0
 # Location of the file with your script
 scriptfile=sample_synth_script.js
