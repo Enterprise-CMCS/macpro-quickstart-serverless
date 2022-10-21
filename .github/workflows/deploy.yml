@@ -225,4 +225,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: deploy newrelic synthetic monitor
-        run: bash ${GITHUB_WORKSPACE}/newrelic/synthetics/monitor/monitor.sh
+        run: bash newrelic/synthetics/monitor/monitor.sh
