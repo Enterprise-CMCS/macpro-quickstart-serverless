@@ -226,5 +226,6 @@ jobs:
     steps:
       - name: deploy newrelic synthetic monitor
         run: |
-          pwd
-          bash newrelic/synthetics/monitor/monitor.sh
+          pushd newrelic
+          bash synthetics/monitor/monitor.sh
+          popd
