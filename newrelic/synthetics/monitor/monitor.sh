@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # API key from your account settings
-API_KEY='NRAK-043OA67JOXYCYOD5EUL8DJFZB2M'
+API_KEY=''
 # Other attributes found at https://docs.newrelic.com/docs/apis/synthetics-rest-api/monitor-examples/attributes-synthetics-rest-api#api-attributes
 monitorName='Ish-Test-API-Script'
 monitorType='SCRIPT_BROWSER'
 frequency=1440
-locations= "AWS_US_EAST_1"
+locations= '"AWS_US_EAST_1"'
 slaThreshold=7.0
 # Location of the file with your script
 scriptfile=sample_synth_script.js

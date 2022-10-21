@@ -236,6 +236,6 @@ jobs:
         run: ./.github/scripts/build_vars.sh set_names
       - name: deploy newrelic synthetic monitor
         run: |
-          pushd newrelic
-          bash synthetics/monitor/monitor.sh
+          pushd newrelic/synthetics/monitor
+          bash monitor.sh
           popd
