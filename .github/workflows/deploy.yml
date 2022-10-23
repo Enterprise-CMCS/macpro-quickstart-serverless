@@ -251,17 +251,6 @@ nr-alerts-conditions:
         with:
           role-to-assume: ${{ env.AWS_OIDC_ROLE_TO_ASSUME }}
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
-    # - uses: mgenteluci/cloudformation-deploy-action@v1.4.1
-    #   env:
-    #     TEMPLATE: 'nr-alerts/alert-conditions/alert-conditions.yml'
-    #     AWS_STACK_NAME: 'newrelic-alert-conditions'
-    #     AWS_REGION: ${{secrets.AWS_DEFAULT_REGION}}
-    #     # AWS_ROLE_TO_ASSUME: ${{secrets.AWS_OIDC_ROLE_TO_ASSUME}}        
-    #     # AWS_OIDC_ROLE_TO_ASSUME: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_OIDC_ROLE_TO_ASSUME] || secrets.AWS_OIDC_ROLE_TO_ASSUME }}
-    #     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-    #     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    #     # AWS_DEPLOY_BUCKET: ${{secrets.AWS_DEPLOY_BUCKET}}
-    #     AWS_DEPLOY_BUCKET: 'arn:aws:s3:::nr-alert-condition-deployment-bucket'
 
   # nr-alerts-conditions:
   #   runs-on: ubuntu-latest
