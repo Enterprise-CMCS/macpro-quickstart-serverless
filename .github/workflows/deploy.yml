@@ -240,13 +240,13 @@ jobs:
       - name: set variable values
         run: ./.github/scripts/build_vars.sh set_values
         env:
-          TEMPLATE: 'nr-alerts/alert-conditions/alert-conditions.yml'
+          TEMPLATE: "nr-alerts/alert-conditions/alert-conditions.yml"
           AWS_DEFAULT_REGION: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_DEFAULT_REGION] || secrets.AWS_DEFAULT_REGION }}
           AWS_OIDC_ROLE_TO_ASSUME: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_OIDC_ROLE_TO_ASSUME] || secrets.AWS_OIDC_ROLE_TO_ASSUME }}
           STAGE_PREFIX: ${{ secrets.STAGE_PREFIX }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
           CODE_CLIMATE_ID: ${{ secrets.CODE_CLIMATE_ID }
-          AWS_DEPLOY_BUCKET: 'arn:aws:s3:::nr-alert-condition-deployment-bucket'
+          AWS_DEPLOY_BUCKET: "arn:aws:s3:::nr-alert-condition-deployment-bucket"
       - name: Configure AWS credentials for GitHub Actions
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -257,19 +257,3 @@ jobs:
           # When deploying multiple copies of this quickstart to the same AWS Account (not ideal), a prefix helps prevent stepping on each other.
           # This can optionally be set as an GitHub Actions Secret
           ./scripts/deploy.sh $STAGE_PREFIX$branch_name
-
-  # nr-alerts-conditions:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #   - uses: actions/checkout@v1
-  #   - uses: mgenteluci/cloudformation-deploy-action@v1.4.1
-  #     env:
-  #       TEMPLATE: 'nr-alerts/alert-conditions/alert-conditions.yml'
-  #       AWS_STACK_NAME: 'newrelic-alert-conditions'
-  #       AWS_REGION: ${{secrets.AWS_DEFAULT_REGION}}
-  #       # AWS_ROLE_TO_ASSUME: ${{secrets.AWS_OIDC_ROLE_TO_ASSUME}}        
-  #       # AWS_OIDC_ROLE_TO_ASSUME: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_OIDC_ROLE_TO_ASSUME] || secrets.AWS_OIDC_ROLE_TO_ASSUME }}
-  #       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #       # AWS_DEPLOY_BUCKET: ${{secrets.AWS_DEPLOY_BUCKET}}
-  #       AWS_DEPLOY_BUCKET: 'arn:aws:s3:::nr-alert-condition-deployment-bucket'
