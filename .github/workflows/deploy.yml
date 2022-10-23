@@ -221,38 +221,38 @@ jobs:
           headless: true
           config: baseUrl=${{ env.APPLICATION_ENDPOINT }}
 
-nr-alerts-conditions:
+  nr-alerts-conditions:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
-    - name: set branch_name
+      - name: set branch_name
         run: |
           if [[ "$GITHUB_REF" =~ ^refs/heads/dependabot/.* ]]; then # Dependabot builds very long branch names.  This is a switch to make it shorter.
             echo "branch_name=`echo ${GITHUB_REF#refs/heads/} | md5sum | head -c 10 | sed 's/^/x/'`" >> $GITHUB_ENV
           else
             echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
           fi
-    - uses: actions/checkout@v1
-    - name: Validate branch name
-      run: ./.github/scripts/branch_name_validation.sh $STAGE_PREFIX$branch_name
-    - name: set branch specific variable names
-      run: ./.github/scripts/build_vars.sh set_names
-    - name: set variable values
-      run: ./.github/scripts/build_vars.sh set_values
-      env:
-        TEMPLATE: 'nr-alerts/alert-conditions/alert-conditions.yml'
-        AWS_DEFAULT_REGION: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_DEFAULT_REGION] || secrets.AWS_DEFAULT_REGION }}
-        AWS_OIDC_ROLE_TO_ASSUME: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_OIDC_ROLE_TO_ASSUME] || secrets.AWS_OIDC_ROLE_TO_ASSUME }}
-        STAGE_PREFIX: ${{ secrets.STAGE_PREFIX }}
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        CODE_CLIMATE_ID: ${{ secrets.CODE_CLIMATE_ID }
-        AWS_DEPLOY_BUCKET: 'arn:aws:s3:::nr-alert-condition-deployment-bucket'
-    - name: Configure AWS credentials for GitHub Actions
+      - uses: actions/checkout@v1
+      - name: Validate branch name
+        run: ./.github/scripts/branch_name_validation.sh $STAGE_PREFIX$branch_name
+      - name: set branch specific variable names
+        run: ./.github/scripts/build_vars.sh set_names
+      - name: set variable values
+        run: ./.github/scripts/build_vars.sh set_values
+        env:
+          TEMPLATE: 'nr-alerts/alert-conditions/alert-conditions.yml'
+          AWS_DEFAULT_REGION: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_DEFAULT_REGION] || secrets.AWS_DEFAULT_REGION }}
+          AWS_OIDC_ROLE_TO_ASSUME: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_OIDC_ROLE_TO_ASSUME] || secrets.AWS_OIDC_ROLE_TO_ASSUME }}
+          STAGE_PREFIX: ${{ secrets.STAGE_PREFIX }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          CODE_CLIMATE_ID: ${{ secrets.CODE_CLIMATE_ID }
+          AWS_DEPLOY_BUCKET: 'arn:aws:s3:::nr-alert-condition-deployment-bucket'
+      - name: Configure AWS credentials for GitHub Actions
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: ${{ env.AWS_OIDC_ROLE_TO_ASSUME }}
           aws-region: ${{ env.AWS_DEFAULT_REGION }}
-    - name: deploy
+      - name: deploy
         run: |
           # When deploying multiple copies of this quickstart to the same AWS Account (not ideal), a prefix helps prevent stepping on each other.
           # This can optionally be set as an GitHub Actions Secret
