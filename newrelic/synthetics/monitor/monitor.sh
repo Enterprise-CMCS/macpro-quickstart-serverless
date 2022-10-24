@@ -1,15 +1,14 @@
 #!/bin/bash
 
-export $(grep -v '^#' .env | xargs)
 # API key from your account settings
 API_KEY=$1
 # Other attributes found at https://docs.newrelic.com/docs/apis/synthetics-rest-api/monitor-examples/attributes-synthetics-rest-api#api-attributes
-#monitorType='SCRIPT_BROWSER'
-#frequency=$3 #1440
-#locations=$4 #'"AWS_US_WEST_1", "AWS_US_EAST_1"'
-#slaThreshold=$5 #7.0
+monitorType='SCRIPT_BROWSER'
+frequency=600
+locations='"AWS_US_WEST_1", "AWS_US_EAST_1"'
+slaThreshold=7.0
 # Location of the file with your script
-#scriptfile=sample_synth_script.js
+scriptfile=sample_synth_script.js
 
 # Test that the script file exists (does not validate content)
 if [ -e "$scriptfile" ]
