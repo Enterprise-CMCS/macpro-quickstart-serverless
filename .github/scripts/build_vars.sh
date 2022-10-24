@@ -6,6 +6,7 @@ var_list=(
   'STAGE_PREFIX'
   'SLACK_WEBHOOK_URL'
   'CODE_CLIMATE_ID'
+  'NEWRELIC_API_KEY'
 )
 
 set_value() {
