@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 export $(grep -v '^#' .env | xargs)
 # API key from your account settings
 API_KEY=$1
