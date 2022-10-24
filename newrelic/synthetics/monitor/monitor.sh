@@ -3,6 +3,7 @@
 # API key from your account settings
 API_KEY=$1
 # Other attributes found at https://docs.newrelic.com/docs/apis/synthetics-rest-api/monitor-examples/attributes-synthetics-rest-api#api-attributes
+monitorName='Test API Script'
 monitorType='SCRIPT_BROWSER'
 frequency=600
 locations='"AWS_US_WEST_1", "AWS_US_EAST_1"'
@@ -36,7 +37,7 @@ then
     echo "Monitor created, $LOCATION "
     echo "Uploading script"
       # base64 encode script
-      encoded=`echo "$script" | base64 -w 0`
+      encoded=`echo "$script" | base64`
       scriptPayload="{\"scriptText\":\"$encoded\"}"
         curl -s -X PUT -H "Api-Key:$API_KEY" -H 'Content-Type:application/json' "$LOCATION/script" -d $scriptPayload
         echo "Script uploaded"
@@ -47,3 +48,18 @@ then
 else
   echo "script file not found, not creating monitor"
 fi
+Copy
+Was this page helpful?
+Yes
+No
+Create issue
+Edit page
+Suggest a change and learn how to contribute
+
+On this page
+Features
+Monitor types in API
+Use the API
+Script API for scripted browser and API test monitors
+Scripted browser example
+COPYRIGHT © 2022 NEW RELIC INC.
