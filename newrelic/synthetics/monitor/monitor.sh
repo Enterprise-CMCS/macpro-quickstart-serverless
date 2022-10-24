@@ -5,7 +5,7 @@ API_KEY=$1
 # Other attributes found at https://docs.newrelic.com/docs/apis/synthetics-rest-api/monitor-examples/attributes-synthetics-rest-api#api-attributes
 monitorName='Test API Script'
 monitorType='SCRIPT_BROWSER'
-frequency=600
+frequency=1440
 locations='"AWS_US_WEST_1", "AWS_US_EAST_1"'
 slaThreshold=7.0
 # Location of the file with your script
@@ -48,18 +48,3 @@ then
 else
   echo "script file not found, not creating monitor"
 fi
-Copy
-Was this page helpful?
-Yes
-No
-Create issue
-Edit page
-Suggest a change and learn how to contribute
-
-On this page
-Features
-Monitor types in API
-Use the API
-Script API for scripted browser and API test monitors
-Scripted browser example
-COPYRIGHT © 2022 NEW RELIC INC.
