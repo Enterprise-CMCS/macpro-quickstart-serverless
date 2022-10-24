@@ -237,5 +237,5 @@ jobs:
       - name: deploy newrelic synthetic monitor
         run: |
           pushd newrelic/synthetics/monitor
-          bash monitor.sh ${{ secrets.NEWRELIC_API_KEY }} env.branch_name
+          bash monitor.sh ${{ secrets.NEWRELIC_API_KEY }} ${{ env.branch_name }}
           popd
