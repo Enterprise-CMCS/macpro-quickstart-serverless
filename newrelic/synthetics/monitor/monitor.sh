@@ -3,9 +3,9 @@
 # API key from your account settings
 API_KEY=$1
 # Other attributes found at https://docs.newrelic.com/docs/apis/synthetics-rest-api/monitor-examples/attributes-synthetics-rest-api#api-attributes
-monitorName='Test API Script'
+monitorName=$2-scripted-browser
 monitorType='SCRIPT_BROWSER'
-frequency=1440
+frequency=10  # frquency of monitoring in minutes 1,5,10,15,50,60 etc
 locations='"AWS_US_WEST_1", "AWS_US_EAST_1"'
 slaThreshold=7.0
 # Location of the file with your script
