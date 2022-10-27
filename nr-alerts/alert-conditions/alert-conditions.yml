@@ -1008,7 +1008,7 @@ Resources:
         IgnoreOverlap: true
         Name: API Gateway Alert For Errors
         Nrql:
-          Query: SELECT sum(`aws.apigateway.5XXError.byStage`) as '5xx errors' FROM Metric WHERE `entity.guid` = 'MzUwMzY2MnxJTkZSQXxOQXwzOTI5NjcwODkxMjkzMzA4NjA1' 
+          Query: SELECT sum(`aws.apigateway.5XXError.byStage`) as '5xx errors' FROM Metric WHERE `entity.guid` = 'MzUwMzY2MnxJTkZSQXxOQXwzOTI5NjcwODkxMjkzMzA4NjA1'
           SinceValue: "5"
         Terms:
           - Duration: "5"
