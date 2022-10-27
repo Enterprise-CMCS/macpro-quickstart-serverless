@@ -12,7 +12,7 @@ Parameters:
     Type: String
     Default: 3572028
 
-  ### DynamoDb Parameters ###
+  ### DynamoDB Parameters ###
   UserErrorPolicyId:
     Description: The Policy Id you want to associate the User errors conditions to
     Type: String
