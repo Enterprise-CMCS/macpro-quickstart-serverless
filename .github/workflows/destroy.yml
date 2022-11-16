@@ -8,7 +8,16 @@ permissions:
   actions: read
 
 jobs:
+  set-branch-name:
+    name: set branch name
+    uses: ./.github/workflows/set-and-validate-branch-name.yml
+    with:
+      run-validation: false
+    secrets:
+      STAGE_PREFIX: ${{ secrets.STAGE_PREFIX }}
+
   destroy:
+    needs: set-branch-name
     # Protected branches should be designated as such in the GitHub UI.
     # So, a protected branch should never have this workflow run, since the branch should never be deleted.
     # This conditional is a backup mechanism to help prevent mistakes from becoming disasters.
@@ -17,29 +26,21 @@ jobs:
     if: github.event.ref_type == 'branch' && !contains(fromJson('["master", "val", "production"]'), github.event.ref)
     runs-on: ubuntu-latest
     steps:
-      - name: set branch_name
-        run: |
-          if [[ "${{ github.event.ref }}" =~ ^dependabot/.* ]]; then # Dependabot builds very long branch names.  This is a switch to make it shorter.
-            echo "branch_name=`echo ${{ github.event.ref }} | md5sum | head -c 10 | sed 's/^/x/'`" >> $GITHUB_ENV
-          else
-            echo "branch_name=${{ github.event.ref }}" >> $GITHUB_ENV
-          fi
-      - uses: actions/checkout@v2
-      - name: set branch specific variable names
-        run: ./.github/scripts/build_vars.sh set_names
-      - name: set variable values
-        run: ./.github/scripts/build_vars.sh set_values
-        env:
-          AWS_DEFAULT_REGION: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_DEFAULT_REGION] || secrets.AWS_DEFAULT_REGION }}
-          AWS_OIDC_ROLE_TO_ASSUME: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_OIDC_ROLE_TO_ASSUME] || secrets.AWS_OIDC_ROLE_TO_ASSUME }}
-          STAGE_PREFIX: ${{ secrets.STAGE_PREFIX }}
-      - name: Configure AWS credentials for GitHub Actions
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: check out repository
+        uses: actions/checkout@v3
+
+      - name: set up environment
+        uses: ./.github/actions/set-up-env
         with:
-          role-to-assume: ${{ env.AWS_OIDC_ROLE_TO_ASSUME }}
-          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+          oidc-role: ${{ secrets.AWS_OIDC_ROLE_TO_ASSUME }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          branch-specific-oidc-role: ${{ secrets[format('{0}_{1}', needs.set-branch-name.outputs.upcased-branch-name, 'AWS_OIDC_ROLE_TO_ASSUME')] }}
+          branch-specific-aws-region: ${{ secrets[format('{0}_{1}', needs.set-branch-name.outputs.upcased-branch-name, 'AWS_DEFAULT_REGION')] }}
+
       - name: lock this branch to prevent concurrent builds
-        run: ./.github/scripts/github_lock.sh $branch_name
+        run: ./.github/scripts/github_lock.sh ${GITHUB_REF#refs/heads/}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: ./scripts/destroy.sh $STAGE_PREFIX$branch_name
+
+      - name: destroy resources
+        run: ./scripts/destroy.sh ${{ format('{0}{1}', secrets.STAGE_PREFIX, needs.set-branch-name.outputs.branch-name) }}

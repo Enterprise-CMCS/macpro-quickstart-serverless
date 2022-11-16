@@ -12,64 +12,53 @@ permissions:
   actions: read
 
 jobs:
-  deploy:
+  set-and-validate-branch-name:
+    name: set and validate branch name
+    uses: ./.github/workflows/set-and-validate-branch-name.yml
+    secrets:
+      STAGE_PREFIX: ${{ secrets.STAGE_PREFIX }}
+
+  deploy-support:
+    needs: [set-and-validate-branch-name]
+    name: deploy support
     runs-on: ubuntu-latest
     env:
       SLS_DEPRECATION_DISABLE: "*" # Turn off deprecation warnings in the pipeline
     steps:
-      - name: set branch_name
-        run: |
-          if [[ "$GITHUB_REF" =~ ^refs/heads/dependabot/.* ]]; then # Dependabot builds very long branch names.  This is a switch to make it shorter.
-            echo "branch_name=`echo ${GITHUB_REF#refs/heads/} | md5sum | head -c 10 | sed 's/^/x/'`" >> $GITHUB_ENV
-          else
-            echo "branch_name=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
-          fi
-      - uses: actions/checkout@v2
-      - name: Validate branch name
-        run: ./.github/scripts/branch_name_validation.sh $STAGE_PREFIX$branch_name
-      - name: set branch specific variable names
-        run: ./.github/scripts/build_vars.sh set_names
-      - name: set variable values
-        run: ./.github/scripts/build_vars.sh set_values
-        env:
-          AWS_DEFAULT_REGION: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_DEFAULT_REGION] || secrets.AWS_DEFAULT_REGION }}
-          AWS_OIDC_ROLE_TO_ASSUME: ${{ secrets[env.BRANCH_SPECIFIC_VARNAME_AWS_OIDC_ROLE_TO_ASSUME] || secrets.AWS_OIDC_ROLE_TO_ASSUME }}
-          STAGE_PREFIX: ${{ secrets.STAGE_PREFIX }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-          CODE_CLIMATE_ID: ${{ secrets.CODE_CLIMATE_ID }}
-      - name: Configure AWS credentials for GitHub Actions
-        uses: aws-actions/configure-aws-credentials@v1
+      - name: check out repository
+        uses: actions/checkout@v3
+
+      - name: set up environment
+        uses: ./.github/actions/set-up-env
         with:
-          role-to-assume: ${{ env.AWS_OIDC_ROLE_TO_ASSUME }}
-          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+          oidc-role: ${{ secrets.AWS_OIDC_ROLE_TO_ASSUME }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          branch-specific-oidc-role: ${{ secrets[format('{0}_{1}', needs.set-and-validate-branch-name.outputs.upcased-branch-name, 'AWS_OIDC_ROLE_TO_ASSUME')] }}
+          branch-specific-aws-region: ${{ secrets[format('{0}_{1}', needs.set-and-validate-branch-name.outputs.upcased-branch-name, 'AWS_DEFAULT_REGION')] }}
+
       - name: lock this branch to prevent concurrent builds
-        run: ./.github/scripts/github_lock.sh $branch_name
+        run: ./.github/scripts/github_lock.sh ${GITHUB_REF#refs/heads/}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: read .nvmrc
-        id: node_version
-        run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
-      - uses: actions/setup-node@v1
-        with:
-          node-version: ${{ steps.node_version.outputs.NODE_VERSION }}
-      - uses: actions/cache@v2
-        with:
-          path: "**/node_modules"
-          key: deploy-support-${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock', 'plugins/**') }}
-      - name: set path
-        run: |
-          echo "PATH=$(pwd)/node_modules/.bin/:$PATH" >> $GITHUB_ENV
-      - name: deploy
+
+      - name: deploy support
         run: |
           # When deploying multiple copies of this quickstart to the same AWS Account (not ideal), a prefix helps prevent stepping on each other.
           # This can optionally be set as an GitHub Actions Secret
-          ./scripts/deploy_support.sh $STAGE_PREFIX$branch_name
-      - name: Slack Notification
+          ./scripts/deploy_support.sh ${{ format('{0}{1}', secrets.STAGE_PREFIX, needs.set-and-validate-branch-name.outputs.branch-name) }}
+
+      - name: check for slack webhook secret
+        id: slack
+        uses: ./.github/actions/has-secret
+        with:
+          secret-to-check: ${{ secrets.SLACK_WEBHOOK_URL }}
+
+      - name: slack notification
         uses: rtCamp/action-slack-notify@v2
-        if: env.SLACK_WEBHOOK_URL != '' && contains(fromJson('["master", "val", "production"]'), env.branch_name) && failure ()
+        if: ${{ steps.slack.outputs.has-secret == true && failure() }} # pragma: allowlist secret
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
-          SLACK_USERNAME: GitHub Actions Alerts
+          SLACK_USERNAME: Deploy Alerts
           SLACK_ICON_EMOJI: ":bell:"
           SLACK_COLOR: ${{job.status}}
           SLACK_FOOTER: ""

@@ -1,0 +1,61 @@
+name: Cypress tests for env
+
+on:
+  workflow_call:
+    inputs:
+      env:
+        required: true
+        type: string
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  cypress:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [test.spec.js, test2.spec.js]
+    steps:
+      - name: check out repository
+        uses: actions/checkout@v3
+
+      - name: upcase env name
+        id: string-case
+        uses: ASzc/change-string-case-action@v2
+        with:
+          string: ${{ inputs.env }}
+
+      - name: set up environment
+        uses: ./.github/actions/set-up-env
+        with:
+          oidc-role: ${{ secrets.AWS_OIDC_ROLE_TO_ASSUME }}
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
+          branch-specific-oidc-role: ${{ secrets[format('{0}_{1}', steps.string-case.outputs.uppercase, 'AWS_OIDC_ROLE_TO_ASSUME')] }}
+          branch-specific-aws-region: ${{ secrets[format('{0}_{1}', steps.string-case.outputs.uppercase, 'AWS_DEFAULT_REGION')] }}
+
+      - name: get application endpoint
+        run: |
+          pushd services
+          export APPLICATION_ENDPOINT=`./output.sh ui ApplicationEndpointUrl ${{ format('{0}{1}', secrets.STAGE_PREFIX, inputs.env) }}`
+          echo "APPLICATION_ENDPOINT=$APPLICATION_ENDPOINT" >> $GITHUB_ENV
+          echo "Application endpoint: $APPLICATION_ENDPOINT"
+          popd
+
+      - name: run cypress tests
+        uses: cypress-io/github-action@v2.11.7
+        with:
+          working-directory: tests/cypress
+          spec: integration/${{ matrix.containers }}
+          browser: chrome
+          headless: true
+          config: baseUrl=${{ env.APPLICATION_ENDPOINT }}
+
+      - name: upload screenshots
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: tests/cypress/screenshots/
