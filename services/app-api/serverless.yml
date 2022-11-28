@@ -11,6 +11,7 @@ plugins:
   - serverless-dotenv-plugin
   - serverless-plugin-warmup
   - serverless-associate-waf
+  - serverless-offline-ssm
   - serverless-offline
   - serverless-stack-termination-protection
   - serverless-idempotency-helper
@@ -49,6 +50,14 @@ custom:
       concurrency: ${ssm:/configuration/${self:custom.stage}/warmup/concurrency, ssm:/configuration/default/warmup/concurrency, 5}
   serverless-iam-roles-per-function:
     defaultInherit: true
+  serverless-offline-ssm:
+    stages:
+      - local
+  ssm:
+    "/configuration/local/iam/path": "/"
+    "/configuration/local/iam/permissionsBoundaryPolicy": ""
+    "/configuration/${self:custom.stage}/warmup/schedule": "4 minutes"
+    "/configuration/${self:custom.stage}/warmup/concurrency": 5
 
 provider:
   name: aws

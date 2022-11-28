@@ -66,8 +66,6 @@ When run locally, auth bypasses Cognito. The frontend mimics login using local s
 
 #### Pre-Requisites
 
-- valid short-term access keys for your AWS account pasted in your terminal window
-
 Run _all_ the services locally with the command `./scripts/dev.sh local`. For example,
 
 ```

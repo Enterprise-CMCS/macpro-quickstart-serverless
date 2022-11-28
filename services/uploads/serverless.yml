@@ -5,6 +5,7 @@ frameworkVersion: "3"
 
 plugins:
   - serverless-plugin-scripts
+  - serverless-offline-ssm
   - serverless-s3-local
   - serverless-stack-termination-protection
   - serverless-iam-helper
@@ -47,6 +48,12 @@ custom:
         # the attachments bucket has no name, so we need to make one up on our own
   serverless-iam-roles-per-function:
     defaultInherit: true
+  serverless-offline-ssm:
+    stages:
+      - local
+    ssm:
+    "/configuration/local/iam/path": "/"
+    "/configuration/local/iam/permissionsBoundaryPolicy": ""
 
 layers:
   clamDefs:
