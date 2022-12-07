@@ -31,7 +31,7 @@ custom:
       - master
       - val
       - production
-  webAclName: ${self:service}-${self:custom.stage}-webacl
+  webAclName: ${self:custom.stage}-${self:service}-webacl
   associateWaf:
     name: ${self:custom.webAclName}
     version: V2
