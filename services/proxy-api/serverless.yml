@@ -17,6 +17,7 @@ plugins:
   - serverless-iam-helper
   - serverless-s3-bucket-helper
   - serverless-online
+  - serverless-api-client-certificate
   - serverless-plugin-scripts
   - serverless-iam-roles-per-function
   - "@enterprise-cmcs/serverless-waf-plugin"
@@ -34,6 +35,9 @@ custom:
   associateWaf:
     name: ${self:custom.webAclName}
     version: V2
+  serverlessApiClientCertificate:
+    rotateCerts: true
+    daysLeft: 30
   warmup:
     default:
       enabled: true
