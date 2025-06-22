@@ -1,0 +1,64 @@
+{
+  "name": "macpro-quickstart-serverless",
+  "description": "",
+  "longDescription": "",
+  "status": "",
+  "permissions": {
+    "license": [
+      {
+        "name": "",
+        "URL": ""
+      }
+    ],
+    "usageType": "",
+    "exemptionText": ""
+  },
+  "organization": "",
+  "repositoryURL": "https://github.com/Enterprise-CMCS/macpro-quickstart-serverless",
+  "projectURL": "",
+  "repositoryHost": "github",
+  "repositoryVisibility": "",
+  "vcs": "git",
+  "laborHours": 5532,
+  "reuseFrequency": {
+    "forks": 0,
+    "clones": 0
+  },
+  "platforms": [],
+  "categories": [],
+  "softwareType": "",
+  "languages": [
+    "JavaScript",
+    "Shell",
+    "TypeScript",
+    "SCSS",
+    "HTML",
+    "CSS"
+  ],
+  "maintenance": "",
+  "contractNumber": "",
+  "date": {
+    "created": "2020-08-27T12:30:25Z",
+    "lastModified": "2025-06-22T05:07:45Z",
+    "metaDataLastUpdated": "2025-06-22T05:31:44.906Z"
+  },
+  "tags": [],
+  "contact": {
+    "email": "",
+    "name": ""
+  },
+  "feedbackMechanisms": [
+    "https://github.com/Enterprise-CMCS/macpro-quickstart-serverless/issues"
+  ],
+  "localisation": false,
+  "repositoryType": "",
+  "userInput": false,
+  "fismaLevel": "",
+  "group": "",
+  "projects": [],
+  "systems": [],
+  "upstream": "",
+  "subsetInHealthcare": [],
+  "userType": [],
+  "maturityModelTier": 0
+}
