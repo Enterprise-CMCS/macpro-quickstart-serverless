@@ -1,32 +1,32 @@
 {
   "name": "macpro-quickstart-serverless",
-  "description": "",
-  "longDescription": "",
-  "status": "",
+  "description": "A serverless form submission application, built and deployed to AWS with the Serverless Application Framework",
+  "longDescription": "macpro-quickstart-serverless is a comprehensive serverless application template that provides a complete solution for form submission and data management in AWS environments. This QuickStart template includes a React-based user interface, REST API endpoints for CRUD operations, DynamoDB database integration, Cognito authentication, file upload capabilities with antivirus scanning, and email notification services. The application is designed to serve as a foundation for CMS projects requiring secure, scalable form processing capabilities. It implements best practices for serverless architecture including Infrastructure as Code with the Serverless Framework, automated CI/CD deployment pipelines, comprehensive testing strategies with unit and integration tests, and accessibility compliance. The system supports multi-environment deployments with branch-based promotion workflows and includes robust security features such as WAF protection, IAM role segregation, and FISMA compliance measures suitable for government healthcare applications.",
+  "status": "Production",
   "permissions": {
-    "license": [
+    "licenses": [
       {
-        "name": "",
-        "URL": ""
+        "name": "CC0-1.0",
+        "URL": "https://creativecommons.org/publicdomain/zero/1.0/legalcode"
       }
     ],
-    "usageType": "",
+    "usageType": "openSource",
     "exemptionText": ""
   },
-  "organization": "",
+  "organization": "Centers for Medicare & Medicaid Services",
   "repositoryURL": "https://github.com/Enterprise-CMCS/macpro-quickstart-serverless",
   "projectURL": "",
-  "repositoryHost": "github",
-  "repositoryVisibility": "",
+  "repositoryHost": "github.com/Enterprise-CMCS",
+  "repositoryVisibility": "public",
   "vcs": "git",
   "laborHours": 5532,
   "reuseFrequency": {
     "forks": 0,
     "clones": 0
   },
-  "platforms": [],
-  "categories": [],
-  "softwareType": "",
+  "platforms": ["web", "linux", "other"],
+  "categories": ["application-development", "it-development", "content-management"],
+  "softwareType": "standalone/web",
   "languages": [
     "JavaScript",
     "Shell",
@@ -35,30 +35,30 @@
     "HTML",
     "CSS"
   ],
-  "maintenance": "",
-  "contractNumber": "",
+  "maintenance": "contract",
+  "contractNumber": "75FCMC24F0027",
   "date": {
     "created": "2020-08-27T12:30:25Z",
     "lastModified": "2025-06-22T05:07:45Z",
     "metaDataLastUpdated": "2025-06-22T05:31:44.906Z"
   },
-  "tags": [],
+  "tags": ["cms", "serverless", "aws", "react", "form-submission", "healthcare", "quickstart", "template"],
   "contact": {
-    "email": "",
-    "name": ""
+    "email": "bpaige@gswell.com",
+    "name": "Benjamin Paige"
   },
   "feedbackMechanisms": [
     "https://github.com/Enterprise-CMCS/macpro-quickstart-serverless/issues"
   ],
   "localisation": false,
-  "repositoryType": "",
-  "userInput": false,
-  "fismaLevel": "",
-  "group": "",
-  "projects": [],
-  "systems": [],
-  "upstream": "",
-  "subsetInHealthcare": [],
-  "userType": [],
-  "maturityModelTier": 0
+  "repositoryType": "application",
+  "userInput": true,
+  "fismaLevel": "Moderate",
+  "group": "MACPro",
+  "projects": ["MACPro Quickstart"],
+  "systems": ["AWS Lambda", "DynamoDB", "API Gateway", "Cognito", "S3", "CloudFormation", "SES"],
+  "upstream": "https://github.com/Enterprise-CMCS/macpro-quickstart-serverless/network/dependencies",
+  "subsetInHealthcare": ["Policy", "Operational", "Medicare", "Medicaid"],
+  "userType": ["Government"],
+  "maturityModelTier": 3
 }
